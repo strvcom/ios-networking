@@ -16,6 +16,10 @@
 		23A575CC25F8B9DC00617551 /* ios_networking_sample_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575CB25F8B9DC00617551 /* ios_networking_sample_appTests.swift */; };
 		23A575D725F8B9DC00617551 /* ios_networking_sample_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575D625F8B9DC00617551 /* ios_networking_sample_appUITests.swift */; };
 		23A575E925F8BA3600617551 /* ios-networking in Frameworks */ = {isa = PBXBuildFile; productRef = 23A575E825F8BA3600617551 /* ios-networking */; };
+		23A575F925F9699400617551 /* ExampleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F525F9699400617551 /* ExampleAPI.swift */; };
+		23A575FA25F9699400617551 /* ExampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F625F9699400617551 /* ExampleUserRouter.swift */; };
+		23A575FB25F9699400617551 /* ExampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F725F9699400617551 /* ExampleAPIError.swift */; };
+		23A575FC25F9699400617551 /* ExampleAPIErrorProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,10 @@
 		23A575D225F8B9DC00617551 /* ios networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575D625F8B9DC00617551 /* ios_networking_sample_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ios_networking_sample_appUITests.swift; sourceTree = "<group>"; };
 		23A575D825F8B9DC00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		23A575F525F9699400617551 /* ExampleAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPI.swift; sourceTree = "<group>"; };
+		23A575F625F9699400617551 /* ExampleUserRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleUserRouter.swift; sourceTree = "<group>"; };
+		23A575F725F9699400617551 /* ExampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPIError.swift; sourceTree = "<group>"; };
+		23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPIErrorProcessing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +110,10 @@
 		23A575B325F8B9DA00617551 /* ios networking sample app */ = {
 			isa = PBXGroup;
 			children = (
+				23A575F125F8BF1F00617551 /* API */,
+				23A575ED25F8BF0E00617551 /* Scene */,
 				23A575B425F8B9DA00617551 /* AppDelegate.swift */,
 				23A575B625F8B9DA00617551 /* SceneDelegate.swift */,
-				23A575B825F8B9DA00617551 /* ViewController.swift */,
-				23A575BA25F8B9DA00617551 /* Main.storyboard */,
 				23A575BD25F8B9DB00617551 /* Assets.xcassets */,
 				23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */,
 				23A575C225F8B9DB00617551 /* Info.plist */,
@@ -136,6 +144,26 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		23A575ED25F8BF0E00617551 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				23A575B825F8B9DA00617551 /* ViewController.swift */,
+				23A575BA25F8B9DA00617551 /* Main.storyboard */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		23A575F125F8BF1F00617551 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				23A575F525F9699400617551 /* ExampleAPI.swift */,
+				23A575F725F9699400617551 /* ExampleAPIError.swift */,
+				23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */,
+				23A575F625F9699400617551 /* ExampleUserRouter.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -272,8 +300,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A575B925F8B9DA00617551 /* ViewController.swift in Sources */,
+				23A575F925F9699400617551 /* ExampleAPI.swift in Sources */,
+				23A575FB25F9699400617551 /* ExampleAPIError.swift in Sources */,
+				23A575FA25F9699400617551 /* ExampleUserRouter.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
+				23A575FC25F9699400617551 /* ExampleAPIErrorProcessing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,7 +411,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -434,7 +466,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
