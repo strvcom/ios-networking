@@ -1,5 +1,5 @@
 //
-//  ExampleAPIErrorProcessing.swift
+//  SampleAPIErrorProcessor.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 10.02.2021.
@@ -11,7 +11,7 @@ import Combine
 import ios_networking
 
 // custom api business logic error solution
-class ExampleAPIErrorProcessing: ResponseProcessing {
+class SampleAPIErrorProcessor: ResponseProcessing {
     private lazy var decoder = JSONDecoder()
     func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error> {
         responsePublisher
@@ -20,7 +20,7 @@ class ExampleAPIErrorProcessing: ResponseProcessing {
                     return responsePublisher
                 }
 
-                let apiError = try self.decoder.decode(ExampleAPIError.self, from: response.data)
+                let apiError = try self.decoder.decode(SampleAPIError.self, from: response.data)
                 throw apiError
             }.eraseToAnyPublisher()
     }

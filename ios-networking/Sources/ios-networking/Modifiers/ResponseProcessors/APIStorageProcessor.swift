@@ -38,7 +38,6 @@ public class APIStorageProcessor: ResponseProcessing {
                 // for http responses read headers
                 var responseHeaders: [String: String]?
                 var statusCode: Int?
-                // TODO: Solve maping headers
                 
                 if let httpResponse = output.response as? HTTPURLResponse {
                     responseHeaders = httpResponse.allHeaderFields as? [String: String]

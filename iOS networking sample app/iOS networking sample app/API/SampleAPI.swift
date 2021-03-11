@@ -1,5 +1,5 @@
 //
-//  ExampleAPI.swift
+//  SampleAPI.swift
 //  STRV_template
 //
 //  Created by Jan Pacek on 04.12.2020.
@@ -10,7 +10,9 @@ import Foundation
 import Combine
 import ios_networking
 
-class ExampleAPI: AccessTokenManaging {
+// Custom API object
+// For simplicity it manages also auth token with refresh logic
+final class SampleAPI: AccessTokenManaging {
     var accessToken: String?
     var expirationDate: Date?
     var refreshToken: String?
@@ -25,19 +27,20 @@ class ExampleAPI: AccessTokenManaging {
     
     //lazy var reachability: Reachability? = Reachability()
     
-    lazy var apiManager: STRVAPIManager = {
+    lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
-            ExampleAPIErrorProcessing(),
+            SampleAPIErrorProcessor(),
             AuthorizationTokenInterceptor(accessTokenManager: self, refreshTokenPublisher: self),
             LoggingInterceptor()
         ]
         
         #if DEBUG
+        // allows store whole api call to local file
         responseProcessors.append(APIStorageProcessor())
         #endif
         
-        return STRVAPIManager(
+        return APIManager(
             requestAdapters: [
                 AuthorizationTokenInterceptor(accessTokenManager: self, refreshTokenPublisher: self),
                 LoggingInterceptor()
@@ -69,7 +72,7 @@ class ExampleAPI: AccessTokenManaging {
 //            .store(in: &cancellables)
         
         // success expected, url params testing
-        apiManager.request(ExampleUserRouter.users)
+        apiManager.request(SampleUserRouter.users)
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
@@ -77,7 +80,7 @@ class ExampleAPI: AccessTokenManaging {
             ).store(in: &cancellables)
         
         // success expected
-        apiManager.request(ExampleUserRouter.user(2))
+        apiManager.request(SampleUserRouter.user(2))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
@@ -85,7 +88,7 @@ class ExampleAPI: AccessTokenManaging {
             ).store(in: &cancellables)
         
         // success expected, post body encoding test
-        apiManager.request(ExampleUserRouter.createUser(ExampleUserRequest(name: "CJ", job: "Developer")))
+        apiManager.request(SampleUserRouter.createUser(SampleUserRequest(name: "CJ", job: "Developer")))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
@@ -93,7 +96,7 @@ class ExampleAPI: AccessTokenManaging {
             ).store(in: &cancellables)
         
         // custom error processing
-        apiManager.request(ExampleUserRouter.registerUser(ExampleUserAuthRequest(email: "test@test.test", password: nil)))
+        apiManager.request(SampleUserRouter.registerUser(SampleUserAuthRequest(email: "test@test.test", password: nil)))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
@@ -101,7 +104,7 @@ class ExampleAPI: AccessTokenManaging {
             ).store(in: &cancellables)
         
         // error expected -> auth processing -> retry
-        apiManager.request(ExampleUserRouter.user(23))
+        apiManager.request(SampleUserRouter.user(23))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
@@ -111,9 +114,9 @@ class ExampleAPI: AccessTokenManaging {
     }
 }
 
-extension ExampleAPI: RefreshTokenPublishing {
+extension SampleAPI: RefreshTokenPublishing {
     func refreshAuthenticationToken() -> AnyPublisher<String, Error> {
-        let accessTokenPublisher: AnyPublisher<ExampleUserAuthResponse, Error> = apiManager.request(ExampleUserRouter.loginUser(ExampleUserAuthRequest(email: "eve.holt@reqres.in", password: "cityslicka")))
+        let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager.request(SampleUserRouter.loginUser(SampleUserAuthRequest(email: "eve.holt@reqres.in", password: "cityslicka")))
         
         return accessTokenPublisher
             .map { response in

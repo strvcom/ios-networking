@@ -1,5 +1,5 @@
 //
-//  ExampleAPIError.swift
+//  SampleAPIError.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 10.02.2021.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct ExampleAPIError: Decodable, Error, LocalizedError {
-  // fields that model your error
+// Custom error
+struct SampleAPIError: Decodable, Error, LocalizedError {
     let error: String?
  
     var errorDescription: String? {

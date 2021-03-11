@@ -1,5 +1,5 @@
 //
-//  STRVAPIManager.swift
+//  APIManager.swift
 //  STRV_template
 //
 //  Created by Jan Pacek on 04.12.2020.
@@ -9,8 +9,7 @@
 import Foundation
 import Combine
 
-// TODO: temp name to avoid conflict with original moya api manager
-public class STRVAPIManager: STRVAPIManaging {
+public class APIManager: APIManaging {
     
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.apimanager")
     
@@ -48,7 +47,7 @@ public class STRVAPIManager: STRVAPIManaging {
 }
 
 // MARK: - Private extenstion to use same api call for retry
-private extension STRVAPIManager {
+private extension APIManager {
     func request(_ apiCall: APICall) -> AnyPublisher<Response, Error> {
         
         // create url request

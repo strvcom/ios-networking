@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public protocol AccessTokenManaging {
     var accessToken: String? { get set }
     var expirationDate: Date? { get set }

@@ -1,5 +1,5 @@
 //
-//  STRVAPIManaging.swift
+//  APIManaging.swift
 //  STRV_template
 //
 //  Created by Jan Pacek on 04.12.2020.
@@ -9,8 +9,7 @@
 import Foundation
 import Combine
 
-// TODO: Temp name to avoid conflict with original moya api manager
-public protocol STRVAPIManaging {
+public protocol APIManaging {
     func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error>
     func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<Body, Error>
 }

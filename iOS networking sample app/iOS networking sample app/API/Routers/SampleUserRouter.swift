@@ -1,35 +1,20 @@
 //
-//  ExampleUserRouter.swift
-//  STRV_template
+//  SampleUserRouter.swift
+//  ios networking sample app
 //
-//  Created by Tomas Cejka on 10.02.2021.
-//  Copyright © 2021 STRV. All rights reserved.
+//  Created by Tomas Cejka on 11.03.2021.
 //
 
 import Foundation
 import ios_networking
 
-struct ExampleUserRequest: Encodable {
-    let name: String
-    let job: String
-}
-
-struct ExampleUserAuthRequest: Encodable {
-    let email: String?
-    let password: String?
-}
-
-struct ExampleUserAuthResponse: Decodable {
-    let token: String
-}
-
-enum ExampleUserRouter: Requestable {
+enum SampleUserRouter: Requestable {
     
     case users
     case user(Int)
-    case createUser(ExampleUserRequest)
-    case registerUser(ExampleUserAuthRequest)
-    case loginUser(ExampleUserAuthRequest)
+    case createUser(SampleUserRequest)
+    case registerUser(SampleUserAuthRequest)
+    case loginUser(SampleUserAuthRequest)
     
     var baseURL: URL {
         // this comes from a config - already force unwrapped
@@ -81,9 +66,9 @@ enum ExampleUserRouter: Requestable {
     
     var authenticated: Bool {
         switch self {
-        case .registerUser, .loginUser, .users:
+        case .registerUser, .loginUser, .users, .user:
             return false
-        default:
+        case .createUser:
             return true
         }
     }

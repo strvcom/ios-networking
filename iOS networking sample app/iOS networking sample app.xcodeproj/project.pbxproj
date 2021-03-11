@@ -16,10 +16,13 @@
 		23A575CC25F8B9DC00617551 /* ios_networking_sample_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575CB25F8B9DC00617551 /* ios_networking_sample_appTests.swift */; };
 		23A575D725F8B9DC00617551 /* ios_networking_sample_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575D625F8B9DC00617551 /* ios_networking_sample_appUITests.swift */; };
 		23A575E925F8BA3600617551 /* ios-networking in Frameworks */ = {isa = PBXBuildFile; productRef = 23A575E825F8BA3600617551 /* ios-networking */; };
-		23A575F925F9699400617551 /* ExampleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F525F9699400617551 /* ExampleAPI.swift */; };
-		23A575FA25F9699400617551 /* ExampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F625F9699400617551 /* ExampleUserRouter.swift */; };
-		23A575FB25F9699400617551 /* ExampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F725F9699400617551 /* ExampleAPIError.swift */; };
-		23A575FC25F9699400617551 /* ExampleAPIErrorProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */; };
+		23A575F925F9699400617551 /* SampleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F525F9699400617551 /* SampleAPI.swift */; };
+		23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F725F9699400617551 /* SampleAPIError.swift */; };
+		23A575FC25F9699400617551 /* SampleAPIErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */; };
+		23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5765D25FA120B00617551 /* SampleUserRouter.swift */; };
+		23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766225FA12B000617551 /* SampleUserRequest.swift */; };
+		23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */; };
+		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,10 +57,13 @@
 		23A575D225F8B9DC00617551 /* ios networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575D625F8B9DC00617551 /* ios_networking_sample_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ios_networking_sample_appUITests.swift; sourceTree = "<group>"; };
 		23A575D825F8B9DC00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23A575F525F9699400617551 /* ExampleAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPI.swift; sourceTree = "<group>"; };
-		23A575F625F9699400617551 /* ExampleUserRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleUserRouter.swift; sourceTree = "<group>"; };
-		23A575F725F9699400617551 /* ExampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPIError.swift; sourceTree = "<group>"; };
-		23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleAPIErrorProcessing.swift; sourceTree = "<group>"; };
+		23A575F525F9699400617551 /* SampleAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPI.swift; sourceTree = "<group>"; };
+		23A575F725F9699400617551 /* SampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIError.swift; sourceTree = "<group>"; };
+		23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIErrorProcessor.swift; sourceTree = "<group>"; };
+		23A5765D25FA120B00617551 /* SampleUserRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRouter.swift; sourceTree = "<group>"; };
+		23A5766225FA12B000617551 /* SampleUserRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
+		23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
+		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,12 +164,39 @@
 		23A575F125F8BF1F00617551 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				23A575F525F9699400617551 /* ExampleAPI.swift */,
-				23A575F725F9699400617551 /* ExampleAPIError.swift */,
-				23A575F825F9699400617551 /* ExampleAPIErrorProcessing.swift */,
-				23A575F625F9699400617551 /* ExampleUserRouter.swift */,
+				23A5765A25FA0ED500617551 /* Requests */,
+				23A5765B25FA0EDE00617551 /* Responses */,
+				23A5765C25FA0EEB00617551 /* Routers */,
+				23A575F525F9699400617551 /* SampleAPI.swift */,
+				23A575F725F9699400617551 /* SampleAPIError.swift */,
+				23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */,
 			);
 			path = API;
+			sourceTree = "<group>";
+		};
+		23A5765A25FA0ED500617551 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				23A5766225FA12B000617551 /* SampleUserRequest.swift */,
+				23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		23A5765B25FA0EDE00617551 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		23A5765C25FA0EEB00617551 /* Routers */ = {
+			isa = PBXGroup;
+			children = (
+				23A5765D25FA120B00617551 /* SampleUserRouter.swift */,
+			);
+			path = Routers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,12 +333,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A575B925F8B9DA00617551 /* ViewController.swift in Sources */,
-				23A575F925F9699400617551 /* ExampleAPI.swift in Sources */,
-				23A575FB25F9699400617551 /* ExampleAPIError.swift in Sources */,
-				23A575FA25F9699400617551 /* ExampleUserRouter.swift in Sources */,
+				23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */,
+				23A575F925F9699400617551 /* SampleAPI.swift in Sources */,
+				23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */,
+				23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */,
+				23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
+				23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
-				23A575FC25F9699400617551 /* ExampleAPIErrorProcessing.swift in Sources */,
+				23A575FC25F9699400617551 /* SampleAPIErrorProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
