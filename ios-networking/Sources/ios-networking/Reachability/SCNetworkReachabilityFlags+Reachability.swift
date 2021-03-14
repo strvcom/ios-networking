@@ -11,9 +11,7 @@ import SystemConfiguration
 
 extension SCNetworkReachabilityFlags {
 
-    typealias Connection = Reachability.Connection
-
-    var connection: Connection {
+    var connection: ConnectionType {
         guard isReachableFlagSet else {
             return .unavailable
         }
@@ -22,7 +20,7 @@ extension SCNetworkReachabilityFlags {
         #if targetEnvironment(simulator)
         return .wifi
         #else
-        var connection = Connection.unavailable
+        var connection: ConnectionType = .unavailable
 
         if !isConnectionRequiredFlagSet {
             connection = .wifi

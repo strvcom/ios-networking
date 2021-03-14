@@ -10,48 +10,29 @@ import Foundation
 import SystemConfiguration
 import Combine
 
-enum ReachabilityError: Error {
-    case failedToCreateWithAddress(sockaddr, Int32)
-    case failedToCreateWithHostname(String, Int32)
-    case unableToSetCallback(Int32)
-    case unableToSetDispatchQueue(Int32)
-    case unableToGetFlags(Int32)
-}
-
-class Reachability {
-
-    enum Connection: CustomStringConvertible {
-        case unavailable, wifi, cellular
-        public var description: String {
-            switch self {
-            case .cellular: return "Cellular"
-            case .wifi: return "WiFi"
-            case .unavailable: return "No Connection"
-            }
-        }
-    }
+public class Reachability {
     
     // network status observable
-    private var reachabilityState = CurrentValueSubject<Reachability.Connection, ReachabilityError>(.unavailable)
+    private var reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
     
-    var connection: AnyPublisher<Reachability.Connection, ReachabilityError> {
+    public var connection: AnyPublisher<ConnectionType, ReachabilityError> {
         reachabilityState.removeDuplicates().eraseToAnyPublisher()
     }
     
-    var isReachable: AnyPublisher<Bool, ReachabilityError> {
+    public var isReachable: AnyPublisher<Bool, ReachabilityError> {
         reachabilityState
             .map { $0 != .unavailable }
             .eraseToAnyPublisher()
     }
     
-    var isConnected: AnyPublisher<Void, ReachabilityError> {
+    public var isConnected: AnyPublisher<Void, ReachabilityError> {
         isReachable
             .filter { $0 }
             .map { _ in }
             .eraseToAnyPublisher()
     }
     
-    var isDisconnected: AnyPublisher<Void, ReachabilityError> {
+    public var isDisconnected: AnyPublisher<Void, ReachabilityError> {
         isReachable
             .filter { !$0 }
             .map { _ in }
@@ -94,7 +75,7 @@ class Reachability {
         }
     }
     
-    required  init(reachabilityRef: SCNetworkReachability,
+    public required  init(reachabilityRef: SCNetworkReachability,
                    queueQoS: DispatchQoS = .default,
                    targetQueue: DispatchQueue? = nil) {
         self.allowsCellularConnection = true
@@ -103,7 +84,7 @@ class Reachability {
         startNotifier()
     }
     
-    convenience init?(hostname: String,
+    public convenience init?(hostname: String,
                       queueQoS: DispatchQoS = .default,
                       targetQueue: DispatchQueue? = nil) {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
@@ -113,7 +94,7 @@ class Reachability {
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue)
     }
 
-    convenience init?(queueQoS: DispatchQoS = .default,
+    public convenience init?(queueQoS: DispatchQoS = .default,
                       targetQueue: DispatchQueue? = nil) {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
@@ -132,7 +113,7 @@ class Reachability {
     }
     
     func restart() {
-        reachabilityState = CurrentValueSubject<Reachability.Connection, ReachabilityError>(.unavailable)
+        reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
         startNotifier()
     }
 }

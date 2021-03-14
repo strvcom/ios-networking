@@ -25,7 +25,7 @@ final class SampleAPI: AccessTokenManaging {
     
     var cancellables = Set<AnyCancellable>()
     
-    //lazy var reachability: Reachability? = Reachability()
+    lazy var reachability: Reachability? = Reachability()
     
     lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
@@ -52,24 +52,22 @@ final class SampleAPI: AccessTokenManaging {
     func run() {
         
         // test reachability
-        // TODO:
-//        reachability?.connection
-//            .sink { completion in
-//                print(completion)
-//            } receiveValue: { value in
-//                print(value)
-//            }
-//            .store(in: &cancellables)
+        reachability?.connection
+            .sink { completion in
+                print(completion)
+            } receiveValue: { value in
+                print(value)
+            }
+            .store(in: &cancellables)
         
         // test reachability
-        // TODO
-//        reachability?.isReachable
-//            .sink { completion in
-//                print(completion)
-//            } receiveValue: { value in
-//                print(value)
-//            }
-//            .store(in: &cancellables)
+        reachability?.isReachable
+            .sink { completion in
+                print(completion)
+            } receiveValue: { value in
+                print(value)
+            }
+            .store(in: &cancellables)
         
         // success expected, url params testing
         apiManager.request(SampleUserRouter.users)
