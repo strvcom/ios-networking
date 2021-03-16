@@ -13,7 +13,7 @@ import ios_networking
 // custom api business logic error solution
 class SampleAPIErrorProcessor: ResponseProcessing {
     private lazy var decoder = JSONDecoder()
-    func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error> {
+    func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
             .tryCatch { error -> AnyPublisher<Response, Error> in
                 guard let networkError = error as? NetworkError, case .unacceptableStatusCode(let statusCode, _, let response) = networkError, statusCode == 400 else {

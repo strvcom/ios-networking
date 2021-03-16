@@ -27,7 +27,7 @@ public class RequestRetrier: RequestRetrying {
         self.configuration = configuration
     }
     
-    public func retry<Output>(_ publisher: AnyPublisher<Output, Error>, error: Error, in apiCall: APICall) -> AnyPublisher<Output, Error> {
+    public func retry<Output>(_ publisher: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error> {
         
         do {
             // only retriable errors are managed
@@ -35,31 +35,31 @@ public class RequestRetrier: RequestRetrying {
                 throw error
             }
 
-            errors[apiCall.identifier] = error
+            errors[endpointRequest.identifier] = error
             
             // add to counter
-            if !retryCounter.keys.contains(apiCall.identifier) {
-                retryCounter[apiCall.identifier] = 0
+            if !retryCounter.keys.contains(endpointRequest.identifier) {
+                retryCounter[endpointRequest.identifier] = 0
             }
             
             // check retry count
-            if let retryCount = retryCounter[apiCall.identifier], retryCount < self.configuration.retryLimit {
-                retryCounter[apiCall.identifier] = retryCount + 1
+            if let retryCount = retryCounter[endpointRequest.identifier], retryCount < self.configuration.retryLimit {
+                retryCounter[endpointRequest.identifier] = retryCount + 1
                 return publisher
             } else {
-                reset(apiCall.identifier)
-                guard let apiCallError =  errors[apiCall.identifier] else {
+                reset(endpointRequest.identifier)
+                guard let endpointRequestError =  errors[endpointRequest.identifier] else {
                     throw error
                 }
-                throw apiCallError
+                throw endpointRequestError
             }
         } catch let caughtError {
             return Fail(error: caughtError).eraseToAnyPublisher()
         }
     }
     
-    public func finished(_ apiCall: APICall) {
-        reset(apiCall.identifier)
+    public func finished(_ endpointRequest: EndpointRequest) {
+        reset(endpointRequest.identifier)
     }
 }
 

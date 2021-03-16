@@ -1,5 +1,5 @@
 //
-//  APIStorageProcessor.swift
+//  EndpointRequestStorageProcessor.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 23.02.2021.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 
-struct APIStorageModel: Codable {
+struct EndpointRequestStorageModel: Codable {
     let path: String
     let method: String
     let statusCode: Int?
@@ -21,7 +21,7 @@ struct APIStorageModel: Codable {
 }
 
 // Storing responses with all metadata
-public class APIStorageProcessor: ResponseProcessing {
+public class EndpointRequestStorageProcessor: ResponseProcessing {
     
     private lazy var fileManager: FileManager = FileManager.default
     private lazy var jsonEncoder: JSONEncoder = JSONEncoder()
@@ -31,7 +31,7 @@ public class APIStorageProcessor: ResponseProcessing {
         createFolderIfNeeded()
     }
     
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         
         responsePublisher
             .handleEvents(receiveOutput: { output in
@@ -44,14 +44,14 @@ public class APIStorageProcessor: ResponseProcessing {
                     statusCode = httpResponse.statusCode
                 }
                 // create data model & url
-                let fileUrl = self.responsesDirectory.appendingPathComponent("\(apiCall.identifier).json")
-                let storageModel = APIStorageModel(
-                    path: apiCall.endpoint.path,
-                    method: apiCall.endpoint.method.rawValue,
+                let fileUrl = self.responsesDirectory.appendingPathComponent("\(endpointRequest.identifier).json")
+                let storageModel = EndpointRequestStorageModel(
+                    path: endpointRequest.endpoint.path,
+                    method: endpointRequest.endpoint.method.rawValue,
                     statusCode: statusCode,
-                    requestBody: request.httpBody,
+                    requestBody: urlRequest.httpBody,
                     responseBody: output.data,
-                    requestHeaders: request.allHTTPHeaderFields,
+                    requestHeaders: urlRequest.allHTTPHeaderFields,
                     responseHeaders: responseHeaders
                 )
                 self.store(storageModel, url: fileUrl)
@@ -60,7 +60,7 @@ public class APIStorageProcessor: ResponseProcessing {
     }
 }
 
-private extension APIStorageProcessor {
+private extension EndpointRequestStorageProcessor {
     func createFolderIfNeeded() {
         do {
             if !fileManager.fileExists(atPath: responsesDirectory.path) {
@@ -71,7 +71,7 @@ private extension APIStorageProcessor {
         }
     }
     
-    func store(_ model: APIStorageModel, url: URL) {
+    func store(_ model: EndpointRequestStorageModel, url: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
             try jsonData.write(to: url)

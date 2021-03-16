@@ -1,5 +1,5 @@
 //
-//  APICall.swift
+//  EndpointRequest.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 04.03.2021.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct APICall: Identifiable {
+public struct EndpointRequest: Identifiable {
     public let identifier: String
     public let endpoint: Requestable
 }

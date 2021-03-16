@@ -11,6 +11,6 @@ import Combine
 
 // manage retry for the request due to error
 public protocol RequestRetrying {
-    func retry<Output>(_ request: AnyPublisher<Output, Error>, error: Error, in apiCall: APICall) -> AnyPublisher<Output, Error>
-    func finished(_ apiCall: APICall)
+    func retry<Output>(_ request: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error>
+    func finished(_ endpointRequest: EndpointRequest)
 }

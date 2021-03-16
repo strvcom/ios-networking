@@ -11,5 +11,5 @@ import Combine
 
 // modify the response before it's been returned
 public protocol ResponseProcessing {
-    func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error>
+    func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error>
 }

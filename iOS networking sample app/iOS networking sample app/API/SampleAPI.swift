@@ -37,7 +37,7 @@ final class SampleAPI: AccessTokenManaging {
         
         #if DEBUG
         // allows store whole api call to local file
-        responseProcessors.append(APIStorageProcessor())
+        responseProcessors.append(EndpointRequestStorageProcessor())
         #endif
         
         return APIManager(

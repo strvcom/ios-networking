@@ -11,5 +11,5 @@ import Combine
 
 // modify the request before it's been sent
 public protocol RequestAdapting {
-    func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, in apiCall: APICall) -> AnyPublisher<URLRequest, Error>
+    func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error>
 }

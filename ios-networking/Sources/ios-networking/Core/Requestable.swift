@@ -9,7 +9,7 @@
 import Foundation
 
 // Endpoint definition
-public protocol Requestable: Identifiable, APICallIdentifying {
+public protocol Requestable: Identifiable, EndpointIdentifiable {
     var baseURL: URL { get }
 
     var path: String { get }

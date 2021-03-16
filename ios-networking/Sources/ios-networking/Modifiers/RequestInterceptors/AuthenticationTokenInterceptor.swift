@@ -55,14 +55,14 @@ public class AuthorizationTokenInterceptor: RequestInterceptor {
         self.refreshTokenPublisher = refreshTokenPublisher
     }
     
-    public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, in apiCall: APICall) -> AnyPublisher<URLRequest, Error> {
+    public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // if is auth token needed
         // check token available & valid
         // add to header
         // else refresh token
         // add to header & recall original request
         
-        guard apiCall.endpoint.authenticated else {
+        guard endpointRequest.endpoint.authenticated else {
             return requestPublisher
         }
         
@@ -87,7 +87,7 @@ public class AuthorizationTokenInterceptor: RequestInterceptor {
             .eraseToAnyPublisher()
     }
     
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         
         // check if response code 401
         // refresh token

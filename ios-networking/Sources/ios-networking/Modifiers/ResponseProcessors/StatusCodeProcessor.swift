@@ -13,10 +13,10 @@ public class StatusCodeProcessor: ResponseProcessing {
     
     public init() {}
     
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with request: URLRequest, in apiCall: APICall) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
             .tryMap { response -> Response in
-                guard let acceptableStatusCodes = apiCall.endpoint.acceptableStatusCodes, !acceptableStatusCodes.isEmpty else {
+                guard let acceptableStatusCodes = endpointRequest.endpoint.acceptableStatusCodes, !acceptableStatusCodes.isEmpty else {
                     return response
                 }
                 guard let httpResponse = response.response as? HTTPURLResponse else {
