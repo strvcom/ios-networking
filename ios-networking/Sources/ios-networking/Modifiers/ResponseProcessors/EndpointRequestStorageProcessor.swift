@@ -9,8 +9,9 @@
 import Foundation
 import Combine
 
+// MARK: - Defines data model storing full endpoint request
 
-struct EndpointRequestStorageModel: Codable {
+public struct EndpointRequestStorageModel: Codable {
     let path: String
     let method: String
     let statusCode: Int?
@@ -20,7 +21,8 @@ struct EndpointRequestStorageModel: Codable {
     let responseHeaders: [String: String]?
 }
 
-// Storing responses with all metadata
+// MARK: - Modifier storing endpoint requests
+
 public class EndpointRequestStorageProcessor: ResponseProcessing {
     
     private lazy var fileManager: FileManager = FileManager.default
@@ -59,6 +61,8 @@ public class EndpointRequestStorageProcessor: ResponseProcessing {
             .eraseToAnyPublisher()
     }
 }
+
+// MARK: - Private storage extension
 
 private extension EndpointRequestStorageProcessor {
     func createFolderIfNeeded() {

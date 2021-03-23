@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// MARK: - Defines api managing
+
 public protocol APIManaging {
     func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error>
     func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<Body, Error>

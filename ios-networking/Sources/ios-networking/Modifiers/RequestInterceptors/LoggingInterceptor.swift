@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// MARK: - Pretty logging modifier
+
 public class LoggingInterceptor: RequestInterceptor {
     
     public init() {}
@@ -41,6 +43,7 @@ public class LoggingInterceptor: RequestInterceptor {
 }
 
 // MARK: - Private pretty logging
+
 private extension LoggingInterceptor {
     func prettyRequestLog(_ request: URLRequest) {
         

@@ -9,7 +9,9 @@
 import Foundation
 import Combine
 
-// Networking is the thing that can make a request - URLSession or some mock class that only reads testing responses
+// MARK: - Defines networking layer which allows to make a request
+// URLSession or some mock class that only reads testing responses
+
 public protocol Networking {
     func requestPublisher(for: URLRequest) -> AnyPublisher<Response, NetworkError>
 }

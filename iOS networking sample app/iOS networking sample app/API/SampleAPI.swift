@@ -12,8 +12,15 @@ import ios_networking
 
 // Custom API object
 // For simplicity it manages also auth token with refresh logic
-final class SampleAPI: AccessTokenManaging {
-    var accessToken: String?
+final class SampleAPI: AuthenticationTokenManaging {
+
+    var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { self }
+    
+    var isAuthenticated: Bool {
+        !isExpired && authenticationToken != nil
+    }
+    
+    var authenticationToken: String?
     var expirationDate: Date?
     var refreshToken: String?
     var refreshExpirationDate: Date?
@@ -31,7 +38,7 @@ final class SampleAPI: AccessTokenManaging {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
-            AuthorizationTokenInterceptor(accessTokenManager: self, refreshTokenPublisher: self),
+            AuthorizationTokenInterceptor(authenticationManager: self),
             LoggingInterceptor()
         ]
         
@@ -42,7 +49,7 @@ final class SampleAPI: AccessTokenManaging {
         
         return APIManager(
             requestAdapters: [
-                AuthorizationTokenInterceptor(accessTokenManager: self, refreshTokenPublisher: self),
+                AuthorizationTokenInterceptor(authenticationManager: self),
                 LoggingInterceptor()
             ],
             responseProcessors: responseProcessors
@@ -50,7 +57,7 @@ final class SampleAPI: AccessTokenManaging {
     }()
     
     func run() {
-        
+   
         // test reachability
         reachability?.connection
             .sink { completion in
@@ -100,25 +107,16 @@ final class SampleAPI: AccessTokenManaging {
                 }, receiveValue: { _ in
                 }
             ).store(in: &cancellables)
-        
-        // error expected -> auth processing -> retry
-        apiManager.request(SampleUserRouter.user(23))
-            .sink(
-                receiveCompletion: { _ in
-                }, receiveValue: { _ in
-                }
-            ).store(in: &cancellables)
-        
     }
 }
 
-extension SampleAPI: RefreshTokenPublishing {
+extension SampleAPI: RefreshAuthenticationTokenManaging {
     func refreshAuthenticationToken() -> AnyPublisher<String, Error> {
         let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager.request(SampleUserRouter.loginUser(SampleUserAuthRequest(email: "eve.holt@reqres.in", password: "cityslicka")))
         
         return accessTokenPublisher
             .map { response in
-                self.accessToken = response.token
+                self.authenticationToken = response.token
                 return response.token
             }
             .eraseToAnyPublisher()

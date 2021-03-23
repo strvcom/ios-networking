@@ -9,6 +9,8 @@
 import Foundation
 import SystemConfiguration
 
+// MARK: - Extension wrapping SCNetworkReachabilityFlags to more usable format
+
 extension SCNetworkReachabilityFlags {
 
     var connection: ConnectionType {

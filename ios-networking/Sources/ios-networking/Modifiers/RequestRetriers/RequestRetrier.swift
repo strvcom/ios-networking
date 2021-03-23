@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// MARK: - Default retrying logic
+
 public class RequestRetrier: RequestRetrying {
     public struct Configuration {
         let retryLimit: Int
@@ -62,6 +64,8 @@ public class RequestRetrier: RequestRetrying {
         reset(endpointRequest.identifier)
     }
 }
+
+// MARK: - Private retrier extension
 
 private extension RequestRetrier {
     func reset(_ indentifier: String) {

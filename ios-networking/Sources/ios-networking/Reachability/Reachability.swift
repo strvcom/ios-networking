@@ -10,11 +10,14 @@ import Foundation
 import SystemConfiguration
 import Combine
 
+// MARK: - Manages reachability
+
 public class Reachability {
     
     // network status observable
     private var reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
     
+    // MARK: Public publishers to observe reachability changes
     public var connection: AnyPublisher<ConnectionType, ReachabilityError> {
         reachabilityState.removeDuplicates().eraseToAnyPublisher()
     }
@@ -39,7 +42,7 @@ public class Reachability {
             .eraseToAnyPublisher()
     }
 
-    /// Set to `false` to force Reachability.connection to .none when on cellular connection (default value `true`)
+    // Set to `false` to force Reachability.connection to .none when on cellular connection (default value `true`)
     public var allowsCellularConnection: Bool
     
     private var isRunningOnDevice: Bool = {
@@ -88,6 +91,7 @@ public class Reachability {
                       queueQoS: DispatchQoS = .default,
                       targetQueue: DispatchQueue? = nil) {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
+            // TODO:
             // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithHostname(hostname, SCError())))
             return nil
         }
@@ -101,6 +105,7 @@ public class Reachability {
         zeroAddress.sa_family = sa_family_t(AF_INET)
         
         guard let ref = SCNetworkReachabilityCreateWithAddress(nil, &zeroAddress) else {
+            // TODO:
             // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithAddress(zeroAddress, SCError())))
             return nil
         }
@@ -117,6 +122,8 @@ public class Reachability {
         startNotifier()
     }
 }
+
+// MARK: - Private notifying methods
 
 private extension Reachability {
 
@@ -186,6 +193,8 @@ private extension Reachability {
     }
 }
 
+// MARK: - Handle SCNetwork flags
+
 private extension Reachability {
 
     func setReachabilityFlags() {
@@ -204,6 +213,8 @@ private extension Reachability {
     }
 }
 
+
+// MARK: - Helper structure for weak reachability
 
 /**
  `ReachabilityWeakifier` weakly wraps the `Reachability` class

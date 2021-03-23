@@ -8,10 +8,14 @@
 
 import Foundation
 
+// MARK: - Defines attributes indentifying endpoint
+
 public protocol EndpointIdentifiable {
     var apiPath: String { get }
     var apiMethod: String { get }
 }
+
+// MARK: - Default implementation for endpoint identifiable
 
 public extension Identifiable where Self: EndpointIdentifiable {
     var identifier: String {
@@ -26,6 +30,8 @@ public extension Identifiable where Self: EndpointIdentifiable {
     }
 }
 
+// MARK: - Default implementation for URLRequest
+
 extension URLRequest: EndpointIdentifiable, Identifiable {
     public var apiPath: String {
         url?.path ?? ""
@@ -35,6 +41,8 @@ extension URLRequest: EndpointIdentifiable, Identifiable {
         httpMethod ?? ""
     }
 }
+
+// MARK: - Default implementation indentifying endpoint
 
 public extension Requestable where Self: EndpointIdentifiable {
     var apiPath: String {

@@ -8,7 +8,8 @@
 
 import Foundation
 
-// Error for endpoints composing URL request
+// MARK: - Defines errors for endpoints composing URL request
+
 public enum RequestableError: Error {
     case invalidURLComponents
 }

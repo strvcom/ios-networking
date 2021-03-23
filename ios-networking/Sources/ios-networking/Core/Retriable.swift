@@ -8,7 +8,8 @@
 
 import Foundation
 
-// Defines which objects should retry
+// MARK: - Defines error is retriable
+
 public protocol Retriable {
     var shouldRetry: Bool { get }
 }

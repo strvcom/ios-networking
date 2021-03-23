@@ -7,4 +7,6 @@
 
 import Foundation
 
+// MARK: - Defines complete response
+
 public typealias Response = (data: Data, response: URLResponse)

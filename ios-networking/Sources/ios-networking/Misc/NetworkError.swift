@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - Defines networking errors
+
 public enum NetworkError: Error, LocalizedError {
 
     case unacceptableStatusCode(HTTPStatusCode, Range<HTTPStatusCode>, Response)

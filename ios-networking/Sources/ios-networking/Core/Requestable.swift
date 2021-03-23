@@ -8,7 +8,8 @@
 
 import Foundation
 
-// Endpoint definition
+// MARK: - Endpoint definition
+
 public protocol Requestable: Identifiable, EndpointIdentifiable {
     var baseURL: URL { get }
 
@@ -31,7 +32,8 @@ public protocol Requestable: Identifiable, EndpointIdentifiable {
     func asRequest() throws -> URLRequest
 }
 
-// Default values
+// MARK: - Default values
+
 public extension Requestable {
     var method: HTTPMethod {
         .get

@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Defines reachability errors
+
 public enum ReachabilityError: Error {
     case failedToCreateWithAddress(sockaddr, Int32)
     case failedToCreateWithHostname(String, Int32)

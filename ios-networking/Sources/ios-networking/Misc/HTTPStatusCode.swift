@@ -10,6 +10,8 @@ import Foundation
 
 public typealias HTTPStatusCode = Int
 
+// MARK: - HTTP status code ranges
+
 extension HTTPStatusCode {
     static var successCodes: Range<HTTPStatusCode> {
         200..<300

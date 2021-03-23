@@ -9,7 +9,8 @@
 import Foundation
 import Combine
 
-// modify the response before it's been returned
+// MARK: - Defines modifying the response after it's been received
+
 public protocol ResponseProcessing {
     func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error>
 }

@@ -1,5 +1,5 @@
 //
-//  RefreshTokenPublishing.swift
+//  RefreshAuthenticationTokenManaging.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 01.03.2021.
@@ -9,7 +9,8 @@
 import Foundation
 import Combine
 
-// Defines responsibility for refresh token
-public protocol RefreshTokenPublishing {
+// MARK: - Defines responsibility for refreshing authentication token
+
+public protocol RefreshAuthenticationTokenManaging {
     func refreshAuthenticationToken() -> AnyPublisher<String, Error>
 }

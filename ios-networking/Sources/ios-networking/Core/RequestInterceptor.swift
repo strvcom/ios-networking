@@ -8,5 +8,6 @@
 
 import Foundation
 
-// For object which works like adapter & processor modifier
+// MARK: - Typealias for modifiers both before & after request
+
 public typealias RequestInterceptor = RequestAdapting & ResponseProcessing

@@ -8,7 +8,8 @@
 
 import Foundation
 
-// Data types for request to be sent in body
+// MARK: - Defines various request data types to be sent in body
+
 public enum RequestDataType {
     case noData
     case encodable(Encodable)

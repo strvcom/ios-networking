@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - Struct wrapping endpoint request with its identifier
+
 public struct EndpointRequest: Identifiable {
     public let identifier: String
     public let endpoint: Requestable

@@ -9,8 +9,10 @@
 import Foundation
 import Combine
 
-// manage retry for the request due to error
+// MARK: - Defines retry logic for requests
+
 public protocol RequestRetrying {
     func retry<Output>(_ request: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error>
+    
     func finished(_ endpointRequest: EndpointRequest)
 }

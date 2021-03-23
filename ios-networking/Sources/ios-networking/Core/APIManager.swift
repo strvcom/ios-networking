@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// MARK: - Default implementation for api managing
+
 public class APIManager: APIManaging {
     
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.apimanager")
@@ -45,6 +47,7 @@ public class APIManager: APIManaging {
 }
 
 // MARK: - Private extenstion to use same api call for retry
+
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         

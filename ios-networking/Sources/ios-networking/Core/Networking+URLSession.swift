@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// MARK: - Implementation of networking for URLSession
+
 extension URLSession: Networking {
     public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
         dataTaskPublisher(for: request)
