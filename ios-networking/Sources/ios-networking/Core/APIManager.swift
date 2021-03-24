@@ -24,7 +24,7 @@ public class APIManager: APIManaging {
         network: Networking = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [],
-        requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration(retryLimit: 3))
+        requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration())
     ) {
         self.network = network
         self.requestAdapters = requestAdapters
@@ -35,8 +35,7 @@ public class APIManager: APIManaging {
     public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
         
         // create idenfier of api call
-        let requestIdentifier = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
-        return request(EndpointRequest(identifier: requestIdentifier, endpoint: endpoint))
+        return request(EndpointRequest(endpoint))
     }
     
     public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<DecodableResponse, Error> {
@@ -59,20 +58,18 @@ private extension APIManager {
             .tryMap { try $0.asRequest() }
             // adapt request
             .flatMap { request -> AnyPublisher<URLRequest, Error> in
-                let requestPublisher = Just(request).setFailureType(to: Error.self).eraseToAnyPublisher()
-                return self.requestAdapters.reduce(requestPublisher) { $1.adapt($0, for: endpointRequest) }
+                self.requestAdapters.adapt(request, for: endpointRequest)
             }
             // call request
             .flatMap { urlRequest -> AnyPublisher<(URLRequest, Response), Error> in
-                return self.network.requestPublisher(for: urlRequest)
+                self.network.requestPublisher(for: urlRequest)
                     .mapError { $0 as Error }
                     .map { (urlRequest, $0) }
                     .eraseToAnyPublisher()
             }
             // process response
             .flatMap { (request, response) -> AnyPublisher<Response, Error> in
-                let responsePublisher = Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
-                return self.responseProcessors.reduce(responsePublisher) { $1.process($0, with: request, for: endpointRequest) }
+                self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
             // retry
             .catch { error -> AnyPublisher<Response, Error> in

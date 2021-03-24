@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import OSLog
 
 // MARK: - Pretty logging modifier
 
@@ -46,71 +47,69 @@ public class LoggingInterceptor: RequestInterceptor {
 
 private extension LoggingInterceptor {
     func prettyRequestLog(_ request: URLRequest) {
-        
-        print("🔽🔽🔽 REQUEST  🔽🔽🔽")
-        print("🔈 \(request.httpMethod ?? "Request method") \(request.url?.absoluteString ?? "URL")")
+        os_log("🔽🔽🔽 REQUEST  🔽🔽🔽", type: .info)
+        os_log("🔈 %{public}@ %{public}@", type: .info, request.httpMethod ?? "Request method", request.url?.absoluteString ?? "URL")
         if let headers = request.allHTTPHeaderFields, !headers.isEmpty {
-            print("👉 Headers: \(headers)")
+            os_log("👉 Headers: %{public}@", type: .info, headers)
         }
         if let body = request.httpBody, let stringBody = String(data: body, encoding: .utf8) {
-            print("👉 Body: \(stringBody)")
+            os_log("👉 Body: %{public}@", type: .info, stringBody)
         }
-        print("🔼🔼🔼 REQUEST END 🔼🔼🔼")
+        os_log("🔼🔼🔼 REQUEST END 🔼🔼🔼", type: .info)
     }
     
     func prettyResponseLog(_ response: Response, from endpoint: Requestable) {
-        print("✅✅✅ RESPONSE ✅✅✅")
+        os_log("✅✅✅ RESPONSE ✅✅✅", type: .info)
         if let httpResponse = response.response as? HTTPURLResponse {
-            print("🔈 \(httpResponse.statusCode) \(endpoint.method.rawValue.uppercased()) \(httpResponse.url?.absoluteString ?? "URL")")
-                
+            os_log("🔈 %{public}@ %{public}@ %{public}@", type: .info, "\(httpResponse.statusCode)", endpoint.method.rawValue.uppercased(), httpResponse.url?.absoluteString ?? "URL")
+
             if !httpResponse.allHeaderFields.isEmpty {
-                if let date = httpResponse.allHeaderFields["Date"] {
-                    print("👉 Date: \(date)")
+                if let date = httpResponse.allHeaderFields["Date"] as? String {
+                    os_log("👉 Date: %{public}@", type: .info, date)
                 }
-                if let server = httpResponse.allHeaderFields["Server"] {
-                    print("👉 Server: \(server)")
+                if let server = httpResponse.allHeaderFields["Server"] as? String {
+                    os_log("👉 Server: %{public}@", type: .info, server)
                 }
-                if let contentType = httpResponse.allHeaderFields["Content-Type"] {
-                    print("👉 Content-Type: \(contentType)")
+                if let contentType = httpResponse.allHeaderFields["Content-Type"] as? String {
+                    os_log("👉 Content-Type: %{public}@", type: .info, contentType)
                 }
-                if let contentLength = httpResponse.allHeaderFields["Content-Length"] {
-                    print("👉 Content-Length: \(contentLength)")
+                if let contentLength = httpResponse.allHeaderFields["Content-Length"] as? String {
+                    os_log("👉 Content-Length: %{public}@", type: .info, contentLength)
                 }
-                if let connection = httpResponse.allHeaderFields["Connection"] {
-                    print("👉 Connection: \(connection)")
+                if let connection = httpResponse.allHeaderFields["Connection"] as? String {
+                    os_log("👉 Connection: %{public}@", type: .info, connection)
                 }
                 if let body = String(data: response.data, encoding: .utf8) {
-                    print("👉 Body: \(body)")
+                    os_log("👉 Body: %{public}@", type: .info, body)
                 }
             }
         }
-        
-        print("✅✅✅ RESPONSE END ✅✅✅")
+        os_log("✅✅✅ RESPONSE END ✅✅✅", type: .info)
     }
     
     func prettyErrorLog(_ error: Error, from endpoint: Requestable) {
         
         // retry error
         if let retriableError = error as? Retriable, retriableError.shouldRetry {
-            print("⏬❎⏬ RETRY ⏬❎⏬")
-            print("🔈 \(endpoint.method.rawValue.uppercased()) \(endpoint.path)")
-            print("❌  Error: \(error.localizedDescription)")
-            print("⏫❎⏫ RETRY END ⏫❎⏫")
+            os_log("⏬❎⏬ RETRY ⏬❎⏬", type: .debug)
+            os_log("🔈 %{public}@ %{public}@", type: .debug, endpoint.method.rawValue.uppercased(), endpoint.path)
+            os_log("❌  Error: %{public}@", type: .debug, error.localizedDescription)
+            os_log("⏫❎⏫ RETRY END ⏫❎⏫", type: .debug)
         } else {
-            
+
             // other errors
-            print("❌❌❌ ERROR ❌❌❌")
+            os_log("❌❌❌ ERROR ❌❌❌", type: .error)
             if let networkError = error as? NetworkError, case .unacceptableStatusCode(let statusCode, _, let response) = networkError {
-                print("🔈 \(statusCode) \(endpoint.method.rawValue.uppercased()) \(endpoint.path)")
-                
+                os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, statusCode, endpoint.method.rawValue.uppercased(), endpoint.path)
+
                 if let body = String(data: response.data, encoding: .utf8) {
-                    print("👉 Body: \(body)")
+                    os_log("👉 Body: %{public}@", type: .error, body)
                 }
             } else {
-                print("🔈 \(endpoint.method.rawValue.uppercased()) \(endpoint.path)")
-                print(error.localizedDescription)
+                os_log("🔈 %{public}@ %{public}@", type: .error, endpoint.method.rawValue.uppercased(), endpoint.path)
+                os_log("❌ %{public}@", type: .error, error.localizedDescription)
             }
-            print("❌❌❌ ERROR END ❌❌❌")
+            os_log("❌❌❌ ERROR END ❌❌❌", type: .error)
         }
     }
 }

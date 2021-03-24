@@ -14,14 +14,15 @@ import Combine
 public class RequestRetrier: RequestRetrying {
     public struct Configuration {
         let retryLimit: Int
+        let retryDelay: Int // milliseconds
         
-        public init(retryLimit: Int) {
+        public init(retryLimit: Int = 3, retryDelay: Int = 200) {
             self.retryLimit = retryLimit
+            self.retryDelay = retryDelay
         }
     }
     
-    private lazy var retryCounter: [String: Int] = [:]
-    private lazy var errors: [String: Error] = [:]
+    private lazy var retryCounter: [String: (Int, Error)] = [:]
     
     let configuration: Configuration
     
@@ -36,23 +37,21 @@ public class RequestRetrier: RequestRetrying {
             guard let retriableError = error as? Retriable, retriableError.shouldRetry else {
                 throw error
             }
-
-            errors[endpointRequest.identifier] = error
             
             // add to counter
             if !retryCounter.keys.contains(endpointRequest.identifier) {
-                retryCounter[endpointRequest.identifier] = 0
+                retryCounter[endpointRequest.identifier] = (0, error)
             }
             
             // check retry count
-            if let retryCount = retryCounter[endpointRequest.identifier], retryCount < self.configuration.retryLimit {
-                retryCounter[endpointRequest.identifier] = retryCount + 1
+            if let retryCount = retryCounter[endpointRequest.identifier]?.0, retryCount < self.configuration.retryLimit {
+                retryCounter[endpointRequest.identifier]?.0 = retryCount + 1
                 return publisher
             } else {
-                reset(endpointRequest.identifier)
-                guard let endpointRequestError =  errors[endpointRequest.identifier] else {
+                guard let endpointRequestError =  retryCounter[endpointRequest.identifier]?.1 else {
                     throw error
                 }
+                reset(endpointRequest.identifier)
                 throw endpointRequestError
             }
         } catch let caughtError {
@@ -73,9 +72,5 @@ private extension RequestRetrier {
             return
         }
         retryCounter.remove(at: requestIndex)
-        guard let errorIndex = errors.index(forKey: indentifier) else {
-            return
-        }
-        errors.remove(at: errorIndex)
     }
 }

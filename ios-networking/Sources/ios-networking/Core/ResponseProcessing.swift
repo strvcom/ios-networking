@@ -14,3 +14,12 @@ import Combine
 public protocol ResponseProcessing {
     func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error>
 }
+
+// MARK: - Array extension to avoid boilerplate
+
+public extension Array where Element == ResponseProcessing {
+    func process(_ response: Response, with request: URLRequest, for endpoint: EndpointRequest) -> AnyPublisher<Response, Error> {
+        let responsePublisher = Just(response).setFailureType(to: Error.self).eraseToAnyPublisher()
+        return reduce(responsePublisher) { $1.process($0, with: request, for: endpoint)}
+    }
+}
