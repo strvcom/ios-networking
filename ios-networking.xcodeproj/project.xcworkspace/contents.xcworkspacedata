@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:ios networking sample app/ios networking sample app.xcodeproj">
+      location = "group:../Sources">
    </FileRef>
    <FileRef
-      location = "group:">
+      location = "group:../Tests">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>
