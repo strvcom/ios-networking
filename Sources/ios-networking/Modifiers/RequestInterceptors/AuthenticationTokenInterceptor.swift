@@ -11,7 +11,7 @@ import Combine
 
 // MARK: - Defines networking errors
 
-public class AuthorizationTokenInterceptor: RequestInterceptor {
+open class AuthorizationTokenInterceptor: RequestInterceptor {
 
     var cancellables = Set<AnyCancellable>()
 

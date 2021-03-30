@@ -11,7 +11,7 @@ import Combine
 
 // MARK: - Default retrying logic
 
-public class RequestRetrier: RequestRetrying {
+open class RequestRetrier: RequestRetrying {
     public struct Configuration {
         let retryLimit: Int
         let retryDelay: Int // milliseconds

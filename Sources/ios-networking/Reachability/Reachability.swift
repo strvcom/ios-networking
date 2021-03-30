@@ -12,7 +12,7 @@ import Combine
 
 // MARK: - Manages reachability
 
-public class Reachability {
+open class Reachability {
     
     // network status observable
     private var reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)

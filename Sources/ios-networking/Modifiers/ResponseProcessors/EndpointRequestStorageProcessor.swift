@@ -24,7 +24,7 @@ public struct EndpointRequestStorageModel: Codable {
 
 // MARK: - Modifier storing endpoint requests
 
-public class EndpointRequestStorageProcessor: ResponseProcessing {
+open class EndpointRequestStorageProcessor: ResponseProcessing {
     
     private lazy var fileManager: FileManager = FileManager.default
     private lazy var jsonEncoder: JSONEncoder = JSONEncoder()

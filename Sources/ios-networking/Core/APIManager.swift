@@ -11,7 +11,7 @@ import Combine
 
 // MARK: - Default implementation for api managing
 
-public class APIManager: APIManaging {
+open class APIManager: APIManaging {
     
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.apimanager")
     

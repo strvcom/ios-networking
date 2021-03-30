@@ -12,7 +12,7 @@ import OSLog
 
 // MARK: - Pretty logging modifier
 
-public class LoggingInterceptor: RequestInterceptor {
+open class LoggingInterceptor: RequestInterceptor {
     
     public init() {}
     

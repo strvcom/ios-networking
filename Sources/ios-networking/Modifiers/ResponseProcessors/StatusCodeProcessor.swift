@@ -11,7 +11,7 @@ import Combine
 
 // MARK: - Modifier handling validity of response http status codes
 
-public class StatusCodeProcessor: ResponseProcessing {
+open class StatusCodeProcessor: ResponseProcessing {
     
     public init() {}
     
