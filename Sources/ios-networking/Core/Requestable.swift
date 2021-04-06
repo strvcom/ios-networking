@@ -38,6 +38,10 @@ public extension Requestable {
     var method: HTTPMethod {
         .get
     }
+    
+    var authenticated: Bool {
+        false
+    }
 
     var headers: [String: String]? {
         nil
