@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2305D1E6261E595E003632D9 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2305D1E5261E595E003632D9 /* Networking */; };
 		2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */; };
 		2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */; };
 		23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B425F8B9DA00617551 /* AppDelegate.swift */; };
@@ -15,7 +16,6 @@
 		23A575BC25F8B9DA00617551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BA25F8B9DA00617551 /* Main.storyboard */; };
 		23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BD25F8B9DB00617551 /* Assets.xcassets */; };
 		23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */; };
-		23A575E925F8BA3600617551 /* ios-networking in Frameworks */ = {isa = PBXBuildFile; productRef = 23A575E825F8BA3600617551 /* ios-networking */; };
 		23A575F925F9699400617551 /* SampleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F525F9699400617551 /* SampleAPI.swift */; };
 		23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F725F9699400617551 /* SampleAPIError.swift */; };
 		23A575FC25F9699400617551 /* SampleAPIErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */; };
@@ -23,7 +23,7 @@
 		23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766225FA12B000617551 /* SampleUserRequest.swift */; };
 		23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */; };
 		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
-		23D8FA42261DA2F800DE1800 /* ios_networking_sample_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* ios_networking_sample_appUITests.swift */; };
+		23D8FA42261DA2F800DE1800 /* networking_sample_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */; };
 		23D8FA52261DA56B00DE1800 /* TestStoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA50261DA56B00DE1800 /* TestStoredData.swift */; };
 		23D8FA5A261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
 		23D8FA5B261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
@@ -49,7 +49,7 @@
 /* Begin PBXFileReference section */
 		2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
-		23A575B125F8B9DA00617551 /* ios networking sample app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios networking sample app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23A575B125F8B9DA00617551 /* Networking sample app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Networking sample app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575B425F8B9DA00617551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23A575B625F8B9DA00617551 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		23A575B825F8B9DA00617551 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,10 +64,10 @@
 		23A5766225FA12B000617551 /* SampleUserRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 		23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
-		23D8FA29261DA21200DE1800 /* ios networking sample appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios networking sample appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23D8FA3F261DA2F800DE1800 /* ios networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		23D8FA41261DA2F800DE1800 /* ios_networking_sample_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ios_networking_sample_appUITests.swift; sourceTree = "<group>"; };
+		23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = networking_sample_appUITests.swift; sourceTree = "<group>"; };
 		23D8FA43261DA2F800DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA50261DA56B00DE1800 /* TestStoredData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestStoredData.swift; sourceTree = "<group>"; };
 		23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23A575E925F8BA3600617551 /* ios-networking in Frameworks */,
+				2305D1E6261E595E003632D9 /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,9 +102,9 @@
 		23A575A825F8B9DA00617551 = {
 			isa = PBXGroup;
 			children = (
-				23A575B325F8B9DA00617551 /* ios networking sample app */,
-				23D8FA2A261DA21200DE1800 /* ios networking sample appTests */,
-				23D8FA40261DA2F800DE1800 /* ios networking sample appUITests */,
+				23A575B325F8B9DA00617551 /* Networking sample app */,
+				23D8FA2A261DA21200DE1800 /* Networking sample appTests */,
+				23D8FA40261DA2F800DE1800 /* Networking sample appUITests */,
 				23A575B225F8B9DA00617551 /* Products */,
 				23A575E725F8BA3600617551 /* Frameworks */,
 			);
@@ -113,14 +113,14 @@
 		23A575B225F8B9DA00617551 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				23A575B125F8B9DA00617551 /* ios networking sample app.app */,
-				23D8FA29261DA21200DE1800 /* ios networking sample appTests.xctest */,
-				23D8FA3F261DA2F800DE1800 /* ios networking sample appUITests.xctest */,
+				23A575B125F8B9DA00617551 /* Networking sample app.app */,
+				23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */,
+				23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		23A575B325F8B9DA00617551 /* ios networking sample app */ = {
+		23A575B325F8B9DA00617551 /* Networking sample app */ = {
 			isa = PBXGroup;
 			children = (
 				23A575F125F8BF1F00617551 /* API */,
@@ -131,7 +131,7 @@
 				23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */,
 				23A575C225F8B9DB00617551 /* Info.plist */,
 			);
-			path = "ios networking sample app";
+			path = "Networking sample app";
 			sourceTree = "<group>";
 		};
 		23A575E725F8BA3600617551 /* Frameworks */ = {
@@ -190,31 +190,31 @@
 			path = Routers;
 			sourceTree = "<group>";
 		};
-		23D8FA2A261DA21200DE1800 /* ios networking sample appTests */ = {
+		23D8FA2A261DA21200DE1800 /* Networking sample appTests */ = {
 			isa = PBXGroup;
 			children = (
 				23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */,
 				23D8FA50261DA56B00DE1800 /* TestStoredData.swift */,
 				23D8FA2D261DA21200DE1800 /* Info.plist */,
 			);
-			path = "ios networking sample appTests";
+			path = "Networking sample appTests";
 			sourceTree = "<group>";
 		};
-		23D8FA40261DA2F800DE1800 /* ios networking sample appUITests */ = {
+		23D8FA40261DA2F800DE1800 /* Networking sample appUITests */ = {
 			isa = PBXGroup;
 			children = (
-				23D8FA41261DA2F800DE1800 /* ios_networking_sample_appUITests.swift */,
+				23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */,
 				23D8FA43261DA2F800DE1800 /* Info.plist */,
 			);
-			path = "ios networking sample appUITests";
+			path = "Networking sample appUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		23A575B025F8B9DA00617551 /* ios networking sample app */ = {
+		23A575B025F8B9DA00617551 /* Networking sample app */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "ios networking sample app" */;
+			buildConfigurationList = 23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "Networking sample app" */;
 			buildPhases = (
 				23A575AD25F8B9DA00617551 /* Sources */,
 				23A575AE25F8B9DA00617551 /* Frameworks */,
@@ -224,17 +224,17 @@
 			);
 			dependencies = (
 			);
-			name = "ios networking sample app";
+			name = "Networking sample app";
 			packageProductDependencies = (
-				23A575E825F8BA3600617551 /* ios-networking */,
+				2305D1E5261E595E003632D9 /* Networking */,
 			);
 			productName = "ios networking sample app";
-			productReference = 23A575B125F8B9DA00617551 /* ios networking sample app.app */;
+			productReference = 23A575B125F8B9DA00617551 /* Networking sample app.app */;
 			productType = "com.apple.product-type.application";
 		};
-		23D8FA28261DA21200DE1800 /* ios networking sample appTests */ = {
+		23D8FA28261DA21200DE1800 /* Networking sample appTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "ios networking sample appTests" */;
+			buildConfigurationList = 23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appTests" */;
 			buildPhases = (
 				23D8FA25261DA21200DE1800 /* Sources */,
 				23D8FA26261DA21200DE1800 /* Frameworks */,
@@ -245,14 +245,14 @@
 			dependencies = (
 				23D8FA2F261DA21200DE1800 /* PBXTargetDependency */,
 			);
-			name = "ios networking sample appTests";
+			name = "Networking sample appTests";
 			productName = "ios networking sample appTests";
-			productReference = 23D8FA29261DA21200DE1800 /* ios networking sample appTests.xctest */;
+			productReference = 23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		23D8FA3E261DA2F800DE1800 /* ios networking sample appUITests */ = {
+		23D8FA3E261DA2F800DE1800 /* Networking sample appUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "ios networking sample appUITests" */;
+			buildConfigurationList = 23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appUITests" */;
 			buildPhases = (
 				23D8FA3B261DA2F800DE1800 /* Sources */,
 				23D8FA3C261DA2F800DE1800 /* Frameworks */,
@@ -263,9 +263,9 @@
 			dependencies = (
 				23D8FA45261DA2F800DE1800 /* PBXTargetDependency */,
 			);
-			name = "ios networking sample appUITests";
+			name = "Networking sample appUITests";
 			productName = "ios networking sample appUITests";
-			productReference = 23D8FA3F261DA2F800DE1800 /* ios networking sample appUITests.xctest */;
+			productReference = 23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -290,7 +290,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "ios networking sample app" */;
+			buildConfigurationList = 23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "Networking sample app" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -303,9 +303,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				23A575B025F8B9DA00617551 /* ios networking sample app */,
-				23D8FA28261DA21200DE1800 /* ios networking sample appTests */,
-				23D8FA3E261DA2F800DE1800 /* ios networking sample appUITests */,
+				23A575B025F8B9DA00617551 /* Networking sample app */,
+				23D8FA28261DA21200DE1800 /* Networking sample appTests */,
+				23D8FA3E261DA2F800DE1800 /* Networking sample appUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -371,7 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23D8FA42261DA2F800DE1800 /* ios_networking_sample_appUITests.swift in Sources */,
+				23D8FA42261DA2F800DE1800 /* networking_sample_appUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,12 +380,12 @@
 /* Begin PBXTargetDependency section */
 		23D8FA2F261DA21200DE1800 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A575B025F8B9DA00617551 /* ios networking sample app */;
+			target = 23A575B025F8B9DA00617551 /* Networking sample app */;
 			targetProxy = 23D8FA2E261DA21200DE1800 /* PBXContainerItemProxy */;
 		};
 		23D8FA45261DA2F800DE1800 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A575B025F8B9DA00617551 /* ios networking sample app */;
+			target = 23A575B025F8B9DA00617551 /* Networking sample app */;
 			targetProxy = 23D8FA44261DA2F800DE1800 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -533,12 +533,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample app/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/networking sample app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strvs.ios-networking-sample-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -552,12 +552,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample app/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/networking sample app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strvs.ios-networking-sample-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -570,18 +570,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample appTests/Info.plist";
+				INFOPLIST_FILE = "networking sample appTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.ios-networking-sample-appTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios networking sample app.app/ios networking sample app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Networking sample app.app/Networking sample app";
 			};
 			name = Debug;
 		};
@@ -591,18 +591,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample appTests/Info.plist";
+				INFOPLIST_FILE = "networking sample appTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.ios-networking-sample-appTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios networking sample app.app/ios networking sample app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Networking sample app.app/Networking sample app";
 			};
 			name = Release;
 		};
@@ -611,14 +611,14 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample appUITests/Info.plist";
+				INFOPLIST_FILE = "networking sample appUITests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.ios-networking-sample-appUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -631,14 +631,14 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "ios networking sample appUITests/Info.plist";
+				INFOPLIST_FILE = "networking sample appUITests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.ios-networking-sample-appUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -649,7 +649,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "ios networking sample app" */ = {
+		23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "Networking sample app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A575D925F8B9DC00617551 /* Debug */,
@@ -658,7 +658,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "ios networking sample app" */ = {
+		23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "Networking sample app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A575DC25F8B9DC00617551 /* Debug */,
@@ -667,7 +667,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "ios networking sample appTests" */ = {
+		23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23D8FA31261DA21200DE1800 /* Debug */,
@@ -676,7 +676,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "ios networking sample appUITests" */ = {
+		23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23D8FA47261DA2F800DE1800 /* Debug */,
@@ -688,9 +688,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		23A575E825F8BA3600617551 /* ios-networking */ = {
+		2305D1E5261E595E003632D9 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = "ios-networking";
+			productName = Networking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

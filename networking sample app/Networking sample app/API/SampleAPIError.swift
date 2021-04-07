@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ios_networking
+import Networking
 
 // Custom error
 struct SampleAPIError: Decodable, Error, LocalizedError, Retriable {

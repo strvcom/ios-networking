@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import ios_networking
+import Networking
 
 // Custom API object
 // For simplicity it manages also auth token with refresh logic

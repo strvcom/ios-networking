@@ -17,8 +17,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2349E1AF260CA88C00F1E9CF /* ios_networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ios_networking.framework; path = "/Users/cj/Projects/ios-networking/build/Debug-iphoneos/ios_networking.framework"; sourceTree = "<absolute>"; };
-		2349E1B8260CA88C00F1E9CF /* ios-networkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ios-networkingTests.xctest"; path = "/Users/cj/Projects/ios-networking/build/Debug-iphoneos/ios-networkingTests.xctest"; sourceTree = "<absolute>"; };
+		2305D1D8261E529B003632D9 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2305D1D9261E529B003632D9 /* NetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +42,8 @@
 		2349E1A5260CA88C00F1E9CF = {
 			isa = PBXGroup;
 			children = (
+				2305D1D8261E529B003632D9 /* Networking.framework */,
+				2305D1D9261E529B003632D9 /* NetworkingTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,9 +60,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2349E1AE260CA88C00F1E9CF /* ios-networking */ = {
+		2349E1AE260CA88C00F1E9CF /* Networking */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2349E1C3260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "ios-networking" */;
+			buildConfigurationList = 2349E1C3260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "Networking" */;
 			buildPhases = (
 				2349E1AA260CA88C00F1E9CF /* Headers */,
 				2349E1AB260CA88C00F1E9CF /* Sources */,
@@ -71,14 +73,14 @@
 			);
 			dependencies = (
 			);
-			name = "ios-networking";
+			name = Networking;
 			productName = "ios-networking";
-			productReference = 2349E1AF260CA88C00F1E9CF /* ios_networking.framework */;
+			productReference = 2305D1D8261E529B003632D9 /* Networking.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		2349E1B7260CA88C00F1E9CF /* ios-networkingTests */ = {
+		2349E1B7260CA88C00F1E9CF /* NetworkingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2349E1C6260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "ios-networkingTests" */;
+			buildConfigurationList = 2349E1C6260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "NetworkingTests" */;
 			buildPhases = (
 				2349E1B4260CA88C00F1E9CF /* Sources */,
 				2349E1B5260CA88C00F1E9CF /* Frameworks */,
@@ -89,9 +91,9 @@
 			dependencies = (
 				2349E1BB260CA88C00F1E9CF /* PBXTargetDependency */,
 			);
-			name = "ios-networkingTests";
+			name = NetworkingTests;
 			productName = "ios-networkingTests";
-			productReference = 2349E1B8260CA88C00F1E9CF /* ios-networkingTests.xctest */;
+			productReference = 2305D1D9261E529B003632D9 /* NetworkingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -111,7 +113,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2349E1A9260CA88C00F1E9CF /* Build configuration list for PBXProject "ios-networking" */;
+			buildConfigurationList = 2349E1A9260CA88C00F1E9CF /* Build configuration list for PBXProject "Networking" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -124,8 +126,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2349E1AE260CA88C00F1E9CF /* ios-networking */,
-				2349E1B7260CA88C00F1E9CF /* ios-networkingTests */,
+				2349E1AE260CA88C00F1E9CF /* Networking */,
+				2349E1B7260CA88C00F1E9CF /* NetworkingTests */,
 			);
 		};
 /* End PBXProject section */
@@ -167,7 +169,7 @@
 /* Begin PBXTargetDependency section */
 		2349E1BB260CA88C00F1E9CF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2349E1AE260CA88C00F1E9CF /* ios-networking */;
+			target = 2349E1AE260CA88C00F1E9CF /* Networking */;
 			targetProxy = 2349E1BA260CA88C00F1E9CF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -382,7 +384,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2349E1A9260CA88C00F1E9CF /* Build configuration list for PBXProject "ios-networking" */ = {
+		2349E1A9260CA88C00F1E9CF /* Build configuration list for PBXProject "Networking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2349E1C1260CA88C00F1E9CF /* Debug */,
@@ -391,7 +393,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2349E1C3260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "ios-networking" */ = {
+		2349E1C3260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "Networking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2349E1C4260CA88C00F1E9CF /* Debug */,
@@ -400,7 +402,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2349E1C6260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "ios-networkingTests" */ = {
+		2349E1C6260CA88C00F1E9CF /* Build configuration list for PBXNativeTarget "NetworkingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2349E1C7260CA88C00F1E9CF /* Debug */,

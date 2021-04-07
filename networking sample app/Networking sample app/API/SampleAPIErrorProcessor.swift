@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import ios_networking
+import Networking
 
 // custom api business logic error solution
 class SampleAPIErrorProcessor: ResponseProcessing {

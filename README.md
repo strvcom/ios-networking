@@ -1,3 +1,3 @@
-# ios-networking
+# Networking
 
 A description of this package.
