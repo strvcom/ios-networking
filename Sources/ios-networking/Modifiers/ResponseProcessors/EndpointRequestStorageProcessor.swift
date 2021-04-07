@@ -13,13 +13,13 @@ import OSLog
 // MARK: - Defines data model storing full endpoint request
 
 public struct EndpointRequestStorageModel: Codable {
-    let path: String
-    let method: String
-    let statusCode: Int?
-    let requestBody: Data?
-    let responseBody: Data?
-    let requestHeaders: [String: String]?
-    let responseHeaders: [String: String]?
+    public let path: String
+    public let method: String
+    public let statusCode: Int?
+    public let requestBody: Data?
+    public let responseBody: Data?
+    public let requestHeaders: [String: String]?
+    public let responseHeaders: [String: String]?
 }
 
 // MARK: - Modifier storing endpoint requests
@@ -49,7 +49,8 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
                         statusCode = httpResponse.statusCode
                     }
                     // create data model & url
-                    let fileUrl = self.responsesDirectory.appendingPathComponent("\(endpointRequest.identifier).json")
+                    let fileUrl = self.responsesDirectory.appendingPathComponent("\(endpointRequest.endpoint.identifier).json")
+                    
                     let storageModel = EndpointRequestStorageModel(
                         path: endpointRequest.endpoint.path,
                         method: endpointRequest.endpoint.method.rawValue,

@@ -2,7 +2,7 @@
 //  ios_networking_sample_appUITests.swift
 //  ios networking sample appUITests
 //
-//  Created by Tomas Cejka on 10.03.2021.
+//  Created by Tomas Cejka on 07.04.2021.
 //
 
 import XCTest

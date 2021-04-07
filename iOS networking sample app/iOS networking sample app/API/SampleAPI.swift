@@ -76,12 +76,22 @@ final class SampleAPI: AuthenticationTokenManaging {
             }
             .store(in: &cancellables)
         
+        // success expected, decode data model
+        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users)
+        
+        userPublisher
+            .sink(
+                receiveCompletion: { _ in
+                }, receiveValue: { value in
+                    print(value)
+                }
+            ).store(in: &cancellables)
+        
         // success expected, url params testing
         apiManager.request(SampleUserRouter.users)
             .sink(
                 receiveCompletion: { _ in
-                }, receiveValue: { _ in
-                }
+                }, receiveValue: { value in }
             ).store(in: &cancellables)
         
         // success expected

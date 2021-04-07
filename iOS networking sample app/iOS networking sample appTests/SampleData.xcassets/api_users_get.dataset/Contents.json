@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "api_users_get.json",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
