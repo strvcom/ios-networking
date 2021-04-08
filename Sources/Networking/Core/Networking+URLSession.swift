@@ -6,8 +6,8 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Implementation of networking for URLSession
 

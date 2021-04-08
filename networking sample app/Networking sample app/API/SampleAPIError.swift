@@ -12,11 +12,11 @@ import Networking
 // Custom error
 struct SampleAPIError: Decodable, Error, LocalizedError, Retrying {
     let error: String?
- 
+
     var errorDescription: String? {
         "Custom error from api, message: \(error ?? "unknown"))"
     }
-    
+
     var shouldRetry: Bool {
         true
     }

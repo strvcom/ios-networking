@@ -6,35 +6,34 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
+import Combine
 import Foundation
 import SystemConfiguration
-import Combine
 
 // MARK: - Manages reachability
 
 open class Reachability {
-    
     // network status observable
     private var reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
-    
+
     // MARK: Public publishers to observe reachability changes
     public var connection: AnyPublisher<ConnectionType, ReachabilityError> {
         reachabilityState.removeDuplicates().eraseToAnyPublisher()
     }
-    
+
     public var isReachable: AnyPublisher<Bool, ReachabilityError> {
         reachabilityState
             .map { $0 != .unavailable }
             .eraseToAnyPublisher()
     }
-    
+
     public var isConnected: AnyPublisher<Void, ReachabilityError> {
         isReachable
             .filter { $0 }
             .map { _ in }
             .eraseToAnyPublisher()
     }
-    
+
     public var isDisconnected: AnyPublisher<Void, ReachabilityError> {
         isReachable
             .filter { !$0 }
@@ -44,7 +43,7 @@ open class Reachability {
 
     // Set to `false` to force Reachability.connection to .none when on cellular connection (default value `true`)
     public var allowsCellularConnection: Bool
-    
+
     private var isRunningOnDevice: Bool = {
         #if targetEnvironment(simulator)
             return false
@@ -52,21 +51,21 @@ open class Reachability {
             return true
         #endif
     }()
-    
+
     var description: String {
-        return flags?.description ?? "unavailable flags"
+        flags?.description ?? "unavailable flags"
     }
 
     private var notifierRunning = false
     private let reachabilityRef: SCNetworkReachability
     private let reachabilitySerialQueue: DispatchQueue
-    
+
     private(set) var flags: SCNetworkReachabilityFlags? {
         didSet {
             guard flags != oldValue else {
                 return
             }
-            
+
             switch flags?.connection {
             case .unavailable?, nil:
                 reachabilityState.value = .unavailable
@@ -77,16 +76,18 @@ open class Reachability {
             }
         }
     }
-    
-    public required  init(reachabilityRef: SCNetworkReachability,
-                          queueQoS: DispatchQoS = .default,
-                          targetQueue: DispatchQueue? = nil) {
-        self.allowsCellularConnection = true
+
+    public required init(
+        reachabilityRef: SCNetworkReachability,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil
+    ) {
+        allowsCellularConnection = true
         self.reachabilityRef = reachabilityRef
-        self.reachabilitySerialQueue = DispatchQueue(label: "com.strv.reachability", qos: queueQoS, target: targetQueue)
+        reachabilitySerialQueue = DispatchQueue(label: "com.strv.reachability", qos: queueQoS, target: targetQueue)
         startNotifier()
     }
-    
+
     public convenience init?(
         hostname: String,
         queueQoS: DispatchQoS = .default,
@@ -100,12 +101,14 @@ open class Reachability {
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue)
     }
 
-    public convenience init?(queueQoS: DispatchQoS = .default,
-                             targetQueue: DispatchQueue? = nil) {
+    public convenience init?(
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil
+    ) {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
         zeroAddress.sa_family = sa_family_t(AF_INET)
-        
+
         guard let ref = SCNetworkReachabilityCreateWithAddress(nil, &zeroAddress) else {
             // TODO:
             // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithAddress(zeroAddress, SCError())))
@@ -118,7 +121,7 @@ open class Reachability {
     deinit {
         stopNotifier()
     }
-    
+
     func restart() {
         reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
         startNotifier()
@@ -128,13 +131,12 @@ open class Reachability {
 // MARK: - Private notifying methods
 
 private extension Reachability {
-
     func startNotifier() {
         guard !notifierRunning else {
             return
         }
 
-        let callback: SCNetworkReachabilityCallBack = { (reachability, flags, info) in
+        let callback: SCNetworkReachabilityCallBack = { _, flags, info in
             guard let info = info else {
                 return
             }
@@ -198,7 +200,6 @@ private extension Reachability {
 // MARK: - Handle SCNetwork flags
 
 private extension Reachability {
-
     func setReachabilityFlags() {
         reachabilitySerialQueue.sync { [weak self] in
             guard let self = self else {
@@ -209,12 +210,11 @@ private extension Reachability {
                 self.stopNotifier()
                 reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.unableToGetFlags(SCError())))
             }
-            
+
             self.flags = flags
         }
     }
 }
-
 
 // MARK: - Helper structure for weak reachability
 

@@ -25,7 +25,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
         if apiPath.starts(with: "/") {
             normalizedApiPath = String(apiPath.dropFirst())
         }
-        
+
         return "\(normalizedApiPath.replacingOccurrences(of: "/", with: "_"))_\(apiMethod.lowercased())"
     }
 }
@@ -36,7 +36,7 @@ extension URLRequest: EndpointIdentifiable, Identifiable {
     public var apiPath: String {
         url?.path ?? ""
     }
-    
+
     public var apiMethod: String {
         httpMethod ?? ""
     }
@@ -48,7 +48,7 @@ public extension Requestable where Self: EndpointIdentifiable {
     var apiPath: String {
         path
     }
-    
+
     var apiMethod: String {
         method.rawValue
     }

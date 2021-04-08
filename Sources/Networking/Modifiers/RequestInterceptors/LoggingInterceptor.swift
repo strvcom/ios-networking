@@ -6,39 +6,38 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 import OSLog
 
 // MARK: - Pretty logging modifier
 
 open class LoggingInterceptor: RequestInterceptor {
-    
     public init() {}
-    
+
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // log request
         requestPublisher
             .handleEvents(receiveOutput: { request in
                 self.prettyRequestLog(request)
             })
-            .catch({ error  -> AnyPublisher<URLRequest, Error> in
+            .catch { error -> AnyPublisher<URLRequest, Error> in
                 self.prettyErrorLog(error, from: endpointRequest.endpoint)
                 return requestPublisher
-            })
+            }
             .eraseToAnyPublisher()
     }
-    
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
+
+    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         // log response
         responsePublisher
             .handleEvents(receiveOutput: { response in
                 self.prettyResponseLog(response, from: endpointRequest.endpoint)
             })
-            .catch({ error  -> AnyPublisher<Response, Error> in
+            .catch { error -> AnyPublisher<Response, Error> in
                 self.prettyErrorLog(error, from: endpointRequest.endpoint)
                 return responsePublisher
-            })
+            }
             .eraseToAnyPublisher()
     }
 }
@@ -57,7 +56,7 @@ private extension LoggingInterceptor {
         }
         os_log("🔼🔼🔼 REQUEST END 🔼🔼🔼", type: .info)
     }
-    
+
     func prettyResponseLog(_ response: Response, from endpoint: Requestable) {
         os_log("✅✅✅ RESPONSE ✅✅✅", type: .info)
         if let httpResponse = response.response as? HTTPURLResponse {
@@ -86,9 +85,8 @@ private extension LoggingInterceptor {
         }
         os_log("✅✅✅ RESPONSE END ✅✅✅", type: .info)
     }
-    
+
     func prettyErrorLog(_ error: Error, from endpoint: Requestable) {
-        
         // retry error
         if let retryingError = error as? Retrying, retryingError.shouldRetry {
             os_log("⏬❎⏬ RETRY ⏬❎⏬", type: .debug)
@@ -96,10 +94,9 @@ private extension LoggingInterceptor {
             os_log("❌  Error: %{public}@", type: .debug, error.localizedDescription)
             os_log("⏫❎⏫ RETRY END ⏫❎⏫", type: .debug)
         } else {
-
             // other errors
             os_log("❌❌❌ ERROR ❌❌❌", type: .error)
-            if let networkError = error as? NetworkError, case .unacceptableStatusCode(let statusCode, _, let response) = networkError {
+            if let networkError = error as? NetworkError, case let .unacceptableStatusCode(statusCode, _, response) = networkError {
                 os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, statusCode, endpoint.method.rawValue.uppercased(), endpoint.path)
 
                 if let body = String(data: response.data, encoding: .utf8) {

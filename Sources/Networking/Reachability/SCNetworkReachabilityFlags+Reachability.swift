@@ -12,7 +12,6 @@ import SystemConfiguration
 // MARK: - Extension wrapping SCNetworkReachabilityFlags to more usable format
 
 extension SCNetworkReachabilityFlags {
-
     var connection: ConnectionType {
         guard isReachableFlagSet else {
             return .unavailable
@@ -20,64 +19,74 @@ extension SCNetworkReachabilityFlags {
 
         // If we're reachable, but not on an iOS device (i.e. simulator), we must be on WiFi
         #if targetEnvironment(simulator)
-        return .wifi
+            return .wifi
         #else
-        var connection: ConnectionType = .unavailable
+            var connection: ConnectionType = .unavailable
 
-        if !isConnectionRequiredFlagSet {
-            connection = .wifi
-        }
-
-        if isConnectionOnTrafficOrDemandFlagSet {
-            if !isInterventionRequiredFlagSet {
+            if !isConnectionRequiredFlagSet {
                 connection = .wifi
             }
-        }
 
-        if isOnWWANFlagSet {
-            connection = .cellular
-        }
+            if isConnectionOnTrafficOrDemandFlagSet {
+                if !isInterventionRequiredFlagSet {
+                    connection = .wifi
+                }
+            }
 
-        return connection
+            if isOnWWANFlagSet {
+                connection = .cellular
+            }
+
+            return connection
         #endif
     }
 
     var isOnWWANFlagSet: Bool {
         #if os(iOS)
-        return contains(.isWWAN)
+            return contains(.isWWAN)
         #else
-        return false
+            return false
         #endif
     }
+
     var isReachableFlagSet: Bool {
-        return contains(.reachable)
+        contains(.reachable)
     }
+
     var isConnectionRequiredFlagSet: Bool {
-        return contains(.connectionRequired)
+        contains(.connectionRequired)
     }
+
     var isInterventionRequiredFlagSet: Bool {
-        return contains(.interventionRequired)
+        contains(.interventionRequired)
     }
+
     var isConnectionOnTrafficFlagSet: Bool {
-        return contains(.connectionOnTraffic)
+        contains(.connectionOnTraffic)
     }
+
     var isConnectionOnDemandFlagSet: Bool {
-        return contains(.connectionOnDemand)
+        contains(.connectionOnDemand)
     }
+
     var isConnectionOnTrafficOrDemandFlagSet: Bool {
-        return !intersection([.connectionOnTraffic, .connectionOnDemand]).isEmpty
+        !intersection([.connectionOnTraffic, .connectionOnDemand]).isEmpty
     }
+
     var isTransientConnectionFlagSet: Bool {
-        return contains(.transientConnection)
+        contains(.transientConnection)
     }
+
     var isLocalAddressFlagSet: Bool {
-        return contains(.isLocalAddress)
+        contains(.isLocalAddress)
     }
+
     var isDirectFlagSet: Bool {
-        return contains(.isDirect)
+        contains(.isDirect)
     }
+
     var isConnectionRequiredAndTransientFlagSet: Bool {
-        return intersection([.connectionRequired, .transientConnection]) == [.connectionRequired, .transientConnection]
+        intersection([.connectionRequired, .transientConnection]) == [.connectionRequired, .transientConnection]
     }
 
     var description: String {

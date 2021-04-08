@@ -6,13 +6,13 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Defines authentication managing
 
 public protocol AuthenticationManaging {
     var isAuthenticated: Bool { get }
-    
+
     func authenticate(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error>
 }

@@ -6,15 +6,14 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Default implementation for api managing
 
 open class APIManager: APIManaging {
-    
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.apimanager")
-    
+
     private let network: Networking
     private let requestAdapters: [RequestAdapting]
     private let requestRetrier: RequestRetrying
@@ -33,11 +32,10 @@ open class APIManager: APIManaging {
     }
 
     public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
-        
         // create identifier of api call
-        return request(EndpointRequest(endpoint))
+        request(EndpointRequest(endpoint))
     }
-    
+
     public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<DecodableResponse, Error> {
         request(endpoint)
             .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
@@ -49,7 +47,6 @@ open class APIManager: APIManaging {
 
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
-        
         // create url request
         Just(endpointRequest.endpoint)
             // work in background

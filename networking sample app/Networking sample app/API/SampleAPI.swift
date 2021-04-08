@@ -6,20 +6,19 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 import Networking
 
 // Custom API object
 // For simplicity it manages also auth token with refresh logic
 final class SampleAPI: AuthenticationTokenManaging {
-
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { self }
-    
+
     var isAuthenticated: Bool {
         !isExpired && authenticationToken != nil
     }
-    
+
     var authenticationToken: String?
     var expirationDate: Date?
     var refreshToken: String?
@@ -29,11 +28,11 @@ final class SampleAPI: AuthenticationTokenManaging {
         !((expirationDate != nil && (expirationDate)! > Date())
             || expirationDate == nil)
     }
-    
+
     var cancellables = Set<AnyCancellable>()
-    
+
     lazy var reachability: Reachability? = Reachability()
-    
+
     lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
@@ -41,12 +40,12 @@ final class SampleAPI: AuthenticationTokenManaging {
             AuthorizationTokenInterceptor(authenticationManager: self),
             LoggingInterceptor()
         ]
-        
+
         #if DEBUG
-        // allows store whole api call to local file
-        responseProcessors.append(EndpointRequestStorageProcessor())
+            // allows store whole api call to local file
+            responseProcessors.append(EndpointRequestStorageProcessor())
         #endif
-        
+
         return APIManager(
             requestAdapters: [
                 AuthorizationTokenInterceptor(authenticationManager: self),
@@ -55,9 +54,8 @@ final class SampleAPI: AuthenticationTokenManaging {
             responseProcessors: responseProcessors
         )
     }()
-    
+
     func run() {
-   
         // test reachability
         reachability?.connection
             .sink { completion in
@@ -66,7 +64,7 @@ final class SampleAPI: AuthenticationTokenManaging {
                 print(value)
             }
             .store(in: &cancellables)
-        
+
         // test reachability
         reachability?.isReachable
             .sink { completion in
@@ -75,10 +73,10 @@ final class SampleAPI: AuthenticationTokenManaging {
                 print(value)
             }
             .store(in: &cancellables)
-        
+
         // success expected, decode data model
         let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users)
-        
+
         userPublisher
             .sink(
                 receiveCompletion: { _ in
@@ -86,14 +84,14 @@ final class SampleAPI: AuthenticationTokenManaging {
                     print(value)
                 }
             ).store(in: &cancellables)
-        
+
         // success expected, url params testing
         apiManager.request(SampleUserRouter.users)
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in }
             ).store(in: &cancellables)
-        
+
         // success expected
         apiManager.request(SampleUserRouter.user(2))
             .sink(
@@ -101,7 +99,7 @@ final class SampleAPI: AuthenticationTokenManaging {
                 }, receiveValue: { _ in
                 }
             ).store(in: &cancellables)
-        
+
         // success expected, post body encoding test
         apiManager.request(SampleUserRouter.createUser(SampleUserRequest(name: "CJ", job: "Developer")))
             .sink(
@@ -109,7 +107,7 @@ final class SampleAPI: AuthenticationTokenManaging {
                 }, receiveValue: { _ in
                 }
             ).store(in: &cancellables)
-        
+
         // custom error processing
         apiManager.request(SampleUserRouter.registerUser(SampleUserAuthRequest(email: "test@test.test", password: nil)))
             .sink(
@@ -123,7 +121,7 @@ final class SampleAPI: AuthenticationTokenManaging {
 extension SampleAPI: RefreshAuthenticationTokenManaging {
     func refreshAuthenticationToken() -> AnyPublisher<String, Error> {
         let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager.request(SampleUserRouter.loginUser(SampleUserAuthRequest(email: "eve.holt@reqres.in", password: "cityslicka")))
-        
+
         return accessTokenPublisher
             .map { response in
                 self.authenticationToken = response.token

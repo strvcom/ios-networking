@@ -12,7 +12,7 @@ public enum AuthenticationError: Error, LocalizedError, Retrying {
     case unauthorized
     case missingAuthenticationToken
     case expiredAuthenticationToken
-    
+
     public var errorDescription: String? {
         switch self {
         case .unauthorized:
@@ -23,7 +23,7 @@ public enum AuthenticationError: Error, LocalizedError, Retrying {
             return NSLocalizedString("Authentication token expired", comment: "")
         }
     }
-    
+
     public var shouldRetry: Bool {
         true
     }

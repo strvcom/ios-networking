@@ -22,11 +22,11 @@ public protocol Requestable: Identifiable, EndpointIdentifiable {
     var headers: [String: String]? { get }
 
     var acceptableStatusCodes: Range<HTTPStatusCode>? { get }
-    
+
     var dataType: RequestDataType? { get }
-    
+
     var authenticated: Bool { get }
-    
+
     func encodeBody() throws -> Data?
 
     func asRequest() throws -> URLRequest
@@ -38,7 +38,7 @@ public extension Requestable {
     var method: HTTPMethod {
         .get
     }
-    
+
     var authenticated: Bool {
         false
     }
@@ -54,7 +54,7 @@ public extension Requestable {
     var acceptableStatusCodes: Range<HTTPStatusCode>? {
         HTTPStatusCode.successAndRedirectCodes
     }
-    
+
     var dataType: RequestDataType? {
         nil
     }
@@ -65,14 +65,14 @@ public extension Requestable {
             return nil
         }
         switch dataType {
-        case .encodable(let encodable):
+        case let .encodable(encodable):
             let anyEncodable = AnyEncodable(encodable)
             let jsonEncoder = JSONEncoder()
             return try jsonEncoder.encode(anyEncodable)
         default:
             break
         }
-        
+
         return nil
     }
 
@@ -87,17 +87,17 @@ public extension Requestable {
         if let urlParameters = urlParameters {
             mutableComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
         }
-        
+
         guard let url = mutableComponents.url else {
             throw RequestableError.invalidURLComponents
         }
-        
+
         // request setup
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers
         request.httpBody = try encodeBody()
-        
+
         // content type
         switch dataType {
         case .encodable:

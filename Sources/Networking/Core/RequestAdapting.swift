@@ -6,8 +6,8 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Defines modifying the request before it's been sent
 

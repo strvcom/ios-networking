@@ -6,13 +6,13 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Defines retry logic for requests
 
 public protocol RequestRetrying {
     func retry<Output>(_ request: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error>
-    
+
     func finished(_ endpointRequest: EndpointRequest)
 }

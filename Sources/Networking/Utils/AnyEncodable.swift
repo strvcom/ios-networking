@@ -11,7 +11,6 @@ import Foundation
 // Wrapper struct for encodable
 // Allows to encode any encodable type
 struct AnyEncodable: Encodable {
-
     private let encodable: Encodable
 
     public init(_ encodable: Encodable) {

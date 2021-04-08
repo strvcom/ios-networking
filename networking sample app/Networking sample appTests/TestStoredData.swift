@@ -6,16 +6,15 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import XCTest
 import Combine
 import Networking
 @testable import Networking_sample_app
+import XCTest
 
 class TestStoredData: XCTestCase {
-
     private var apiManager: APIManaging?
     private lazy var cancellables = Set<AnyCancellable>()
-    
+
     override func setUpWithError() throws {
         apiManager = APIManager(
             network: SampleDataNetworking(with: Bundle(for: Self.self)),
@@ -31,16 +30,15 @@ class TestStoredData: XCTestCase {
     }
 
     func testSampleDataNetworking() throws {
-        
         guard let apiManager = apiManager else {
             return
         }
-        
+
         let expectation = self.expectation(description: "Sample data networking")
 
         // success expected, decode data model
         let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users)
-        
+
         userPublisher
             .sink(
                 receiveCompletion: { completion in
@@ -50,12 +48,12 @@ class TestStoredData: XCTestCase {
                     }
                     XCTAssertFalse(isFailure)
                     expectation.fulfill()
-                    
+
                 }, receiveValue: { value in
                     XCTAssert(value.data.count == 6)
                 }
             ).store(in: &cancellables)
-        
+
         waitForExpectations(timeout: 200, handler: nil)
     }
 }

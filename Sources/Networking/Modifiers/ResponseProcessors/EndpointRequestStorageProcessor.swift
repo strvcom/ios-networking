@@ -6,8 +6,8 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 import OSLog
 
 // MARK: - Defines data model storing full endpoint request
@@ -25,32 +25,30 @@ public struct EndpointRequestStorageModel: Codable {
 // MARK: - Modifier storing endpoint requests
 
 open class EndpointRequestStorageProcessor: ResponseProcessing {
-    
-    private lazy var fileManager: FileManager = FileManager.default
-    private lazy var jsonEncoder: JSONEncoder = JSONEncoder()
+    private lazy var fileManager = FileManager.default
+    private lazy var jsonEncoder = JSONEncoder()
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.requeststorage")
-    
+
     public init() {}
-    
+
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
-        
         responsePublisher
             .handleEvents(receiveOutput: { output in
                 self.backgroundQueue.async {
                     self.createFolderIfNeeded()
-                    
+
                     // for http responses read headers
                     var responseHeaders: [String: String]?
                     var statusCode: Int?
-                    
+
                     if let httpResponse = output.response as? HTTPURLResponse {
                         responseHeaders = httpResponse.allHeaderFields as? [String: String]
                         statusCode = httpResponse.statusCode
                     }
                     // create data model & url
                     let fileUrl = self.responsesDirectory.appendingPathComponent("\(endpointRequest.endpoint.identifier).json")
-                    
+
                     let storageModel = EndpointRequestStorageModel(
                         path: endpointRequest.endpoint.path,
                         method: endpointRequest.endpoint.method.rawValue,
@@ -79,7 +77,7 @@ private extension EndpointRequestStorageProcessor {
             os_log("❌ Can't create responses storage directory %{public}@", type: .error, error.localizedDescription)
         }
     }
-    
+
     func store(_ model: EndpointRequestStorageModel, url: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
@@ -89,5 +87,4 @@ private extension EndpointRequestStorageProcessor {
             os_log("❌ Can't store %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
         }
     }
-    
 }

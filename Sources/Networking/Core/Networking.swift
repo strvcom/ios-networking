@@ -6,8 +6,8 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Defines networking layer which allows to make a request
 // URLSession or some mock class that only reads testing responses

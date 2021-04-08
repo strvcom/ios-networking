@@ -9,13 +9,12 @@ import Foundation
 import Networking
 
 enum SampleUserRouter: Requestable {
-    
     case users
     case user(Int)
     case createUser(SampleUserRequest)
     case registerUser(SampleUserAuthRequest)
     case loginUser(SampleUserAuthRequest)
-    
+
     var baseURL: URL {
         // this comes from a config - already force unwrapped
         // swiftlint:disable:next force_unwrapping
@@ -26,7 +25,7 @@ enum SampleUserRouter: Requestable {
         switch self {
         case .users, .createUser:
             return "api/users"
-        case .user(let id):
+        case let .user(id):
             return "api/user/\(id)"
         case .registerUser:
             return "api/register"
@@ -34,7 +33,7 @@ enum SampleUserRouter: Requestable {
             return "api/login"
         }
     }
-    
+
     var urlParameters: [String: Any]? {
         switch self {
         case .users:
@@ -43,7 +42,7 @@ enum SampleUserRouter: Requestable {
             return nil
         }
     }
-    
+
     var method: HTTPMethod {
         switch self {
         case .createUser, .registerUser, .loginUser:
@@ -52,18 +51,18 @@ enum SampleUserRouter: Requestable {
             return .get
         }
     }
-    
+
     var dataType: RequestDataType? {
         switch self {
-        case .createUser(let user):
+        case let .createUser(user):
             return .encodable(user)
-        case .registerUser(let user), .loginUser(let user):
+        case let .registerUser(user), let .loginUser(user):
             return .encodable(user)
         default:
             return nil
         }
     }
-    
+
     var authenticated: Bool {
         switch self {
         case .registerUser, .loginUser, .users, .user:
