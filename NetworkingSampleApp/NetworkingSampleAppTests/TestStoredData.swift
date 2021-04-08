@@ -8,7 +8,7 @@
 
 import Combine
 import Networking
-@testable import Networking_sample_app
+@testable import NetworkingSampleApp
 import XCTest
 
 class TestStoredData: XCTestCase {

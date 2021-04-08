@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2305D1E6261E595E003632D9 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2305D1E5261E595E003632D9 /* Networking */; };
+		2309D580261F51BD00C8AEAB /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2309D57F261F51BD00C8AEAB /* SampleData.xcassets */; };
 		2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */; };
 		2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */; };
 		23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B425F8B9DA00617551 /* AppDelegate.swift */; };
@@ -25,8 +26,6 @@
 		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
 		23D8FA42261DA2F800DE1800 /* NetworkingSampleAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */; };
 		23D8FA52261DA56B00DE1800 /* TestStoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA50261DA56B00DE1800 /* TestStoredData.swift */; };
-		23D8FA5A261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
-		23D8FA5B261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,9 +46,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2309D57F261F51BD00C8AEAB /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
 		2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
-		23A575B125F8B9DA00617551 /* Networking sample app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Networking sample app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkingSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575B425F8B9DA00617551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23A575B625F8B9DA00617551 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		23A575B825F8B9DA00617551 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,13 +64,12 @@
 		23A5766225FA12B000617551 /* SampleUserRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 		23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
-		23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleAppUITests.swift; sourceTree = "<group>"; };
 		23D8FA43261DA2F800DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA50261DA56B00DE1800 /* TestStoredData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestStoredData.swift; sourceTree = "<group>"; };
-		23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,9 +101,9 @@
 		23A575A825F8B9DA00617551 = {
 			isa = PBXGroup;
 			children = (
-				23A575B325F8B9DA00617551 /* Networking sample app */,
-				23D8FA2A261DA21200DE1800 /* Networking sample appTests */,
-				23D8FA40261DA2F800DE1800 /* Networking sample appUITests */,
+				23A575B325F8B9DA00617551 /* NetworkingSampleApp */,
+				23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */,
+				23D8FA40261DA2F800DE1800 /* NetworkingSampleAppUITests */,
 				23A575B225F8B9DA00617551 /* Products */,
 				23A575E725F8BA3600617551 /* Frameworks */,
 			);
@@ -113,14 +112,14 @@
 		23A575B225F8B9DA00617551 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				23A575B125F8B9DA00617551 /* Networking sample app.app */,
-				23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */,
-				23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */,
+				23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */,
+				23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */,
+				23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		23A575B325F8B9DA00617551 /* Networking sample app */ = {
+		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
 				23A575F125F8BF1F00617551 /* API */,
@@ -131,7 +130,7 @@
 				23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */,
 				23A575C225F8B9DB00617551 /* Info.plist */,
 			);
-			path = "Networking sample app";
+			path = NetworkingSampleApp;
 			sourceTree = "<group>";
 		};
 		23A575E725F8BA3600617551 /* Frameworks */ = {
@@ -190,31 +189,31 @@
 			path = Routers;
 			sourceTree = "<group>";
 		};
-		23D8FA2A261DA21200DE1800 /* Networking sample appTests */ = {
+		23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */,
+				2309D57F261F51BD00C8AEAB /* SampleData.xcassets */,
 				23D8FA50261DA56B00DE1800 /* TestStoredData.swift */,
 				23D8FA2D261DA21200DE1800 /* Info.plist */,
 			);
-			path = "Networking sample appTests";
+			path = NetworkingSampleAppTests;
 			sourceTree = "<group>";
 		};
-		23D8FA40261DA2F800DE1800 /* Networking sample appUITests */ = {
+		23D8FA40261DA2F800DE1800 /* NetworkingSampleAppUITests */ = {
 			isa = PBXGroup;
 			children = (
 				23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */,
 				23D8FA43261DA2F800DE1800 /* Info.plist */,
 			);
-			path = "Networking sample appUITests";
+			path = NetworkingSampleAppUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		23A575B025F8B9DA00617551 /* Networking sample app */ = {
+		23A575B025F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "Networking sample app" */;
+			buildConfigurationList = 23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "NetworkingSampleApp" */;
 			buildPhases = (
 				2309D549261F3E4000C8AEAB /* Run Script - Swiftformat */,
 				23A575AD25F8B9DA00617551 /* Sources */,
@@ -226,17 +225,17 @@
 			);
 			dependencies = (
 			);
-			name = "Networking sample app";
+			name = NetworkingSampleApp;
 			packageProductDependencies = (
 				2305D1E5261E595E003632D9 /* Networking */,
 			);
 			productName = "ios networking sample app";
-			productReference = 23A575B125F8B9DA00617551 /* Networking sample app.app */;
+			productReference = 23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		23D8FA28261DA21200DE1800 /* Networking sample appTests */ = {
+		23D8FA28261DA21200DE1800 /* NetworkingSampleAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appTests" */;
+			buildConfigurationList = 23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "NetworkingSampleAppTests" */;
 			buildPhases = (
 				23D8FA25261DA21200DE1800 /* Sources */,
 				23D8FA26261DA21200DE1800 /* Frameworks */,
@@ -247,14 +246,14 @@
 			dependencies = (
 				23D8FA2F261DA21200DE1800 /* PBXTargetDependency */,
 			);
-			name = "Networking sample appTests";
+			name = NetworkingSampleAppTests;
 			productName = "ios networking sample appTests";
-			productReference = 23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */;
+			productReference = 23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		23D8FA3E261DA2F800DE1800 /* Networking sample appUITests */ = {
+		23D8FA3E261DA2F800DE1800 /* NetworkingSampleAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appUITests" */;
+			buildConfigurationList = 23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "NetworkingSampleAppUITests" */;
 			buildPhases = (
 				23D8FA3B261DA2F800DE1800 /* Sources */,
 				23D8FA3C261DA2F800DE1800 /* Frameworks */,
@@ -265,9 +264,9 @@
 			dependencies = (
 				23D8FA45261DA2F800DE1800 /* PBXTargetDependency */,
 			);
-			name = "Networking sample appUITests";
+			name = NetworkingSampleAppUITests;
 			productName = "ios networking sample appUITests";
-			productReference = 23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */;
+			productReference = 23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -292,7 +291,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "Networking sample app" */;
+			buildConfigurationList = 23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "NetworkingSampleApp" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -305,9 +304,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				23A575B025F8B9DA00617551 /* Networking sample app */,
-				23D8FA28261DA21200DE1800 /* Networking sample appTests */,
-				23D8FA3E261DA2F800DE1800 /* Networking sample appUITests */,
+				23A575B025F8B9DA00617551 /* NetworkingSampleApp */,
+				23D8FA28261DA21200DE1800 /* NetworkingSampleAppTests */,
+				23D8FA3E261DA2F800DE1800 /* NetworkingSampleAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -327,7 +326,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23D8FA5A261DA5FE00DE1800 /* SampleData.xcassets in Resources */,
+				2309D580261F51BD00C8AEAB /* SampleData.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +334,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23D8FA5B261DA5FE00DE1800 /* SampleData.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,12 +419,12 @@
 /* Begin PBXTargetDependency section */
 		23D8FA2F261DA21200DE1800 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A575B025F8B9DA00617551 /* Networking sample app */;
+			target = 23A575B025F8B9DA00617551 /* NetworkingSampleApp */;
 			targetProxy = 23D8FA2E261DA21200DE1800 /* PBXContainerItemProxy */;
 		};
 		23D8FA45261DA2F800DE1800 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23A575B025F8B9DA00617551 /* Networking sample app */;
+			target = 23A575B025F8B9DA00617551 /* NetworkingSampleApp */;
 			targetProxy = 23D8FA44261DA2F800DE1800 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -574,7 +572,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "$(SRCROOT)/networking sample app/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -593,7 +591,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "$(SRCROOT)/networking sample app/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -611,18 +609,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "networking sample appTests/Info.plist";
+				INFOPLIST_FILE = networkingSampleAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Networking sample app.app/Networking sample app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NetworkingSampleApp.app/NetworkingSampleApp";
 			};
 			name = Debug;
 		};
@@ -632,18 +630,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "networking sample appTests/Info.plist";
+				INFOPLIST_FILE = networkingSampleAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Networking sample app.app/Networking sample app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NetworkingSampleApp.app/NetworkingSampleApp";
 			};
 			name = Release;
 		};
@@ -652,18 +650,18 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "networking sample appUITests/Info.plist";
+				INFOPLIST_FILE = NetworkingSampleAppUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app_uitests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "ios networking sample app";
+				TEST_TARGET_NAME = "networking sample app";
 			};
 			name = Debug;
 		};
@@ -672,25 +670,25 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
-				INFOPLIST_FILE = "networking sample appUITests/Info.plist";
+				INFOPLIST_FILE = NetworkingSampleAppUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-appUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.strv.networking-sample-app_uitests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "ios networking sample app";
+				TEST_TARGET_NAME = "networking sample app";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "Networking sample app" */ = {
+		23A575AC25F8B9DA00617551 /* Build configuration list for PBXProject "NetworkingSampleApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A575D925F8B9DC00617551 /* Debug */,
@@ -699,7 +697,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "Networking sample app" */ = {
+		23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "NetworkingSampleApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23A575DC25F8B9DC00617551 /* Debug */,
@@ -708,7 +706,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appTests" */ = {
+		23D8FA30261DA21200DE1800 /* Build configuration list for PBXNativeTarget "NetworkingSampleAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23D8FA31261DA21200DE1800 /* Debug */,
@@ -717,7 +715,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "Networking sample appUITests" */ = {
+		23D8FA46261DA2F800DE1800 /* Build configuration list for PBXNativeTarget "NetworkingSampleAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23D8FA47261DA2F800DE1800 /* Debug */,

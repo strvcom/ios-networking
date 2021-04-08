@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "23D8FA28261DA21200DE1800"
-               BuildableName = "Networking sample appTests.xctest"
-               BlueprintName = "Networking sample appTests"
-               ReferencedContainer = "container:Networking sample app.xcodeproj">
+               BuildableName = "NetworkingSampleAppTests.xctest"
+               BlueprintName = "NetworkingSampleAppTests"
+               ReferencedContainer = "container:NetworkingSampleApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "23D8FA3E261DA2F800DE1800"
-               BuildableName = "Networking sample appUITests.xctest"
-               BlueprintName = "Networking sample appUITests"
-               ReferencedContainer = "container:Networking sample app.xcodeproj">
+               BuildableName = "NetworkingSampleAppUITests.xctest"
+               BlueprintName = "NetworkingSampleAppUITests"
+               ReferencedContainer = "container:NetworkingSampleApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -65,11 +65,20 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "23A575B025F8B9DA00617551"
+            BuildableName = "NetworkingSampleApp.app"
+            BlueprintName = "NetworkingSampleApp"
+            ReferencedContainer = "container:NetworkingSampleApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "23A575B025F8B9DA00617551"
             BuildableName = "Networking sample app.app"
             BlueprintName = "Networking sample app"
             ReferencedContainer = "container:Networking sample app.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
