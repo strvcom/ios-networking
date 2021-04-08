@@ -21,8 +21,11 @@ open class SampleDataNetworking: Networking {
     }
 
     public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
-        guard let sampleData = loadSampleData(request),
-              let statusCode = sampleData.statusCode,
+        guard let sampleData = try? loadSampleData(request) else {
+            fatalError("❌ Can't load data")
+        }
+
+        guard let statusCode = sampleData.statusCode,
               let url = request.url
         else {
             return Fail(error: NetworkError.unknown)
@@ -48,18 +51,11 @@ open class SampleDataNetworking: Networking {
 // MARK: Read data from assets
 
 private extension SampleDataNetworking {
-    func loadSampleData(_ request: URLRequest) -> EndpointRequestStorageModel? {
+    func loadSampleData(_ request: URLRequest) throws -> EndpointRequestStorageModel? {
         guard let data = NSDataAsset(name: request.identifier, bundle: bundle)?.data else {
             return nil
         }
 
-        do {
-            let endpointRequestStorageModel: EndpointRequestStorageModel = try decoder.decode(EndpointRequestStorageModel.self, from: data)
-            return endpointRequestStorageModel
-        } catch {
-            print("❌ Can't load data: \(error.localizedDescription)")
-        }
-
-        return nil
+        return try decoder.decode(EndpointRequestStorageModel.self, from: data)
     }
 }
