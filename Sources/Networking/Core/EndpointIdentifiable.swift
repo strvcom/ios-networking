@@ -11,45 +11,67 @@ import Foundation
 // MARK: - Defines attributes identifying endpoint
 
 public protocol EndpointIdentifiable {
-    var apiPath: String { get }
-    var apiMethod: String { get }
+    var identifiableComponents: [String] { get }
 }
 
 // MARK: - Default implementation for endpoint identifiable
 
 public extension Identifiable where Self: EndpointIdentifiable {
     var identifier: String {
-        // solve potential doubled '_' when api path starting by '/'
-        // first is path to have method like a divider to avoid ambiguity like users vs users_2
-        var normalizedApiPath = apiPath
-        if apiPath.starts(with: "/") {
-            normalizedApiPath = String(apiPath.dropFirst())
-        }
-
-        return "\(normalizedApiPath.replacingOccurrences(of: "/", with: "_"))_\(apiMethod.lowercased())"
+//        // solve potential doubled '_' when api path starting by '/'
+//        // first is path to have method like a divider to avoid ambiguity like users vs users_2
+//        var normalizedApiPath = apiPath
+//        if apiPath.starts(with: "/") {
+//            normalizedApiPath = String(apiPath.dropFirst())
+//        }
+//
+//        return "\(normalizedApiPath.replacingOccurrences(of: "/", with: "_"))_\(apiMethod.lowercased())"
+        identifiableComponents.filter { !$0.isEmpty }.map { $0.lowercased() }.joined(separator: "_")
     }
 }
 
 // MARK: - Default implementation for URLRequest
 
 extension URLRequest: EndpointIdentifiable, Identifiable {
-    public var apiPath: String {
-        url?.path ?? ""
-    }
+    public var identifiableComponents: [String] {
+        var components: [String] = []
 
-    public var apiMethod: String {
-        httpMethod ?? ""
+        if let url = url, let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+            // add path parts
+            let pathComponents = urlComponents.path.split(separator: "/").filter { !$0.isEmpty }.map { String($0) }
+            components.append(contentsOf: pathComponents)
+
+            // add query items
+            if let queryItems = urlComponents.queryItems {
+                components.append(contentsOf: queryItems.flatMap { [$0.name, $0.value ?? ""] })
+            }
+
+            // add method
+            components.append(httpMethod ?? "")
+        }
+
+        return components
     }
 }
 
 // MARK: - Default implementation identifying endpoint
 
 public extension Requestable where Self: EndpointIdentifiable {
-    var apiPath: String {
-        path
-    }
+    var identifiableComponents: [String] {
+        var components: [String] = []
 
-    var apiMethod: String {
-        method.rawValue
+        // add path parts
+        let pathComponents = path.split(separator: "/").filter { !$0.isEmpty }.map { String($0) }
+        components.append(contentsOf: pathComponents)
+
+        // add parameters
+        if let urlParameters = urlParameters {
+            components.append(contentsOf: urlParameters.flatMap { [$0.key, "\($0.value)"] })
+        }
+
+        // add method
+        components.append(method.rawValue)
+
+        return components
     }
 }
