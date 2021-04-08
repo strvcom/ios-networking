@@ -23,7 +23,7 @@
 		23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766225FA12B000617551 /* SampleUserRequest.swift */; };
 		23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */; };
 		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
-		23D8FA42261DA2F800DE1800 /* networking_sample_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */; };
+		23D8FA42261DA2F800DE1800 /* NetworkingSampleAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */; };
 		23D8FA52261DA56B00DE1800 /* TestStoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA50261DA56B00DE1800 /* TestStoredData.swift */; };
 		23D8FA5A261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
 		23D8FA5B261DA5FE00DE1800 /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */; };
@@ -67,7 +67,7 @@
 		23D8FA29261DA21200DE1800 /* Networking sample appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA3F261DA2F800DE1800 /* Networking sample appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Networking sample appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = networking_sample_appUITests.swift; sourceTree = "<group>"; };
+		23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleAppUITests.swift; sourceTree = "<group>"; };
 		23D8FA43261DA2F800DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA50261DA56B00DE1800 /* TestStoredData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestStoredData.swift; sourceTree = "<group>"; };
 		23D8FA59261DA5FE00DE1800 /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
@@ -203,7 +203,7 @@
 		23D8FA40261DA2F800DE1800 /* Networking sample appUITests */ = {
 			isa = PBXGroup;
 			children = (
-				23D8FA41261DA2F800DE1800 /* networking_sample_appUITests.swift */,
+				23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */,
 				23D8FA43261DA2F800DE1800 /* Info.plist */,
 			);
 			path = "Networking sample appUITests";
@@ -219,6 +219,7 @@
 				23A575AD25F8B9DA00617551 /* Sources */,
 				23A575AE25F8B9DA00617551 /* Frameworks */,
 				23A575AF25F8B9DA00617551 /* Resources */,
+				2309D53F261F392200C8AEAB /* Run Script - Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -339,6 +340,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2309D53F261F392200C8AEAB /* Run Script - Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Swiftlint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mint run realm/SwiftLint@0.40.3\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		23A575AD25F8B9DA00617551 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -371,7 +393,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23D8FA42261DA2F800DE1800 /* networking_sample_appUITests.swift in Sources */,
+				23D8FA42261DA2F800DE1800 /* NetworkingSampleAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

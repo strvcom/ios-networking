@@ -79,17 +79,19 @@ open class Reachability {
     }
     
     public required  init(reachabilityRef: SCNetworkReachability,
-                   queueQoS: DispatchQoS = .default,
-                   targetQueue: DispatchQueue? = nil) {
+                          queueQoS: DispatchQoS = .default,
+                          targetQueue: DispatchQueue? = nil) {
         self.allowsCellularConnection = true
         self.reachabilityRef = reachabilityRef
         self.reachabilitySerialQueue = DispatchQueue(label: "com.strv.reachability", qos: queueQoS, target: targetQueue)
         startNotifier()
     }
     
-    public convenience init?(hostname: String,
-                      queueQoS: DispatchQoS = .default,
-                      targetQueue: DispatchQueue? = nil) {
+    public convenience init?(
+        hostname: String,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil
+    ) {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
             // TODO:
             // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithHostname(hostname, SCError())))
@@ -99,7 +101,7 @@ open class Reachability {
     }
 
     public convenience init?(queueQoS: DispatchQoS = .default,
-                      targetQueue: DispatchQueue? = nil) {
+                             targetQueue: DispatchQueue? = nil) {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
         zeroAddress.sa_family = sa_family_t(AF_INET)

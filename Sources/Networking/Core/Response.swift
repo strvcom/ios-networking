@@ -1,6 +1,5 @@
 //
 //  File.swift
-//  
 //
 //  Created by Tomas Cejka on 11.03.2021.
 //

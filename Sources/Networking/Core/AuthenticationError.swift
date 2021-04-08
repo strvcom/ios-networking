@@ -1,6 +1,5 @@
 //
 //  AuthenticationError.swift
-//  
 //
 //  Created by Tomas Cejka on 22.03.2021.
 //

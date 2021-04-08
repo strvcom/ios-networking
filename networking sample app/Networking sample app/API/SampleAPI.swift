@@ -91,7 +91,7 @@ final class SampleAPI: AuthenticationTokenManaging {
         apiManager.request(SampleUserRouter.users)
             .sink(
                 receiveCompletion: { _ in
-                }, receiveValue: { value in }
+                }, receiveValue: { _ in }
             ).store(in: &cancellables)
         
         // success expected
