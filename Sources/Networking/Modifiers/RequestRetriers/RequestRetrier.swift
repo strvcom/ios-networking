@@ -33,8 +33,8 @@ open class RequestRetrier: RequestRetrying {
     public func retry<Output>(_ publisher: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error> {
         
         do {
-            // only retriable errors are managed
-            guard let retriableError = error as? Retriable, retriableError.shouldRetry else {
+            // only retrying errors are managed
+            guard let retryingError = error as? Retrying, retryingError.shouldRetry else {
                 throw error
             }
             
@@ -67,8 +67,8 @@ open class RequestRetrier: RequestRetrying {
 // MARK: - Private retrier extension
 
 private extension RequestRetrier {
-    func reset(_ indentifier: String) {
-        guard let requestIndex = retryCounter.index(forKey: indentifier) else {
+    func reset(_ identifier: String) {
+        guard let requestIndex = retryCounter.index(forKey: identifier) else {
             return
         }
         retryCounter.remove(at: requestIndex)

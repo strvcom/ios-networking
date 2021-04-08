@@ -34,7 +34,7 @@ open class APIManager: APIManaging {
 
     public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
         
-        // create idenfier of api call
+        // create identifier of api call
         return request(EndpointRequest(endpoint))
     }
     
@@ -45,7 +45,7 @@ open class APIManager: APIManaging {
     }
 }
 
-// MARK: - Private extenstion to use same api call for retry
+// MARK: - Private extension to use same api call for retry
 
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {

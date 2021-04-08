@@ -1,5 +1,5 @@
 //
-//  Retriable.swift
+//  Retrying.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 02.03.2021.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-// MARK: - Defines error is retriable
+// MARK: - Defines error is retrying
 
-public protocol Retriable {
+public protocol Retrying {
     var shouldRetry: Bool { get }
 }

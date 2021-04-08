@@ -10,7 +10,7 @@ import Foundation
 import Networking
 
 // Custom error
-struct SampleAPIError: Decodable, Error, LocalizedError, Retriable {
+struct SampleAPIError: Decodable, Error, LocalizedError, Retrying {
     let error: String?
  
     var errorDescription: String? {

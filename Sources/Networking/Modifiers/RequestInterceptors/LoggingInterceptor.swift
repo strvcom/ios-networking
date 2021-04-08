@@ -90,7 +90,7 @@ private extension LoggingInterceptor {
     func prettyErrorLog(_ error: Error, from endpoint: Requestable) {
         
         // retry error
-        if let retriableError = error as? Retriable, retriableError.shouldRetry {
+        if let retryingError = error as? Retrying, retryingError.shouldRetry {
             os_log("⏬❎⏬ RETRY ⏬❎⏬", type: .debug)
             os_log("🔈 %{public}@ %{public}@", type: .debug, endpoint.method.rawValue.uppercased(), endpoint.path)
             os_log("❌  Error: %{public}@", type: .debug, error.localizedDescription)

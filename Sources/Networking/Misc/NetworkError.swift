@@ -22,7 +22,7 @@ public enum NetworkError: Error, LocalizedError {
         switch self {
         
         case .unacceptableStatusCode(let statusCode, let range, _):
-            return NSLocalizedString("Unaccapted status code \(statusCode), allowed range is \(range)", comment: "")
+            return NSLocalizedString("Unaccepted status code \(statusCode), allowed range is \(range)", comment: "")
         case .noStatusCode:
             return NSLocalizedString("Response is missing status code", comment: "")
         case .invalidRequest(let error):

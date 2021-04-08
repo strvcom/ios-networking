@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - Defines attributes indentifying endpoint
+// MARK: - Defines attributes identifying endpoint
 
 public protocol EndpointIdentifiable {
     var apiPath: String { get }
@@ -42,7 +42,7 @@ extension URLRequest: EndpointIdentifiable, Identifiable {
     }
 }
 
-// MARK: - Default implementation indentifying endpoint
+// MARK: - Default implementation identifying endpoint
 
 public extension Requestable where Self: EndpointIdentifiable {
     var apiPath: String {

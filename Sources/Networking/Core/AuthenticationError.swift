@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Defines base authentication errors
 
-public enum AuthenticationError: Error, LocalizedError, Retriable {
+public enum AuthenticationError: Error, LocalizedError, Retrying {
     case unauthorized
     case missingAuthenticationToken
     case expiredAuthenticationToken
