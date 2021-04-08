@@ -17,7 +17,7 @@
                BlueprintIdentifier = "23A575B025F8B9DA00617551"
                BuildableName = "Networking sample app.app"
                BlueprintName = "Networking sample app"
-               ReferencedContainer = "container:networking sample app.xcodeproj">
+               ReferencedContainer = "container:Networking sample app.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "23D8FA28261DA21200DE1800"
+               BuildableName = "Networking sample appTests.xctest"
+               BlueprintName = "Networking sample appTests"
+               ReferencedContainer = "container:Networking sample app.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "23D8FA3E261DA2F800DE1800"
+               BuildableName = "Networking sample appUITests.xctest"
+               BlueprintName = "Networking sample appUITests"
+               ReferencedContainer = "container:Networking sample app.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -47,7 +67,7 @@
             BlueprintIdentifier = "23A575B025F8B9DA00617551"
             BuildableName = "Networking sample app.app"
             BlueprintName = "Networking sample app"
-            ReferencedContainer = "container:networking sample app.xcodeproj">
+            ReferencedContainer = "container:Networking sample app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +84,7 @@
             BlueprintIdentifier = "23A575B025F8B9DA00617551"
             BuildableName = "Networking sample app.app"
             BlueprintName = "Networking sample app"
-            ReferencedContainer = "container:networking sample app.xcodeproj">
+            ReferencedContainer = "container:Networking sample app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

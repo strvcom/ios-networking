@@ -8,8 +8,8 @@
 
 import XCTest
 import Combine
-import ios_networking
-@testable import ios_networking_sample_app
+import Networking
+@testable import Networking_sample_app
 
 class TestStoredData: XCTestCase {
 
