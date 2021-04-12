@@ -12,10 +12,17 @@ import Foundation
 
 public struct EndpointRequest: Identifiable {
     public let identifier: String
+    public var sessionId: String?
     public let endpoint: Requestable
 
     init(_ endpoint: Requestable) {
         identifier = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
         self.endpoint = endpoint
+    }
+
+    init(_ endpoint: Requestable, sessionId: String) {
+        identifier = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
+        self.endpoint = endpoint
+        self.sessionId = sessionId
     }
 }

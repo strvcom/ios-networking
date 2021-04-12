@@ -29,6 +29,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
     private lazy var jsonEncoder = JSONEncoder()
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.requeststorage")
+    private lazy var requestCounter: [String: Int] = [:]
 
     public init() {}
 
@@ -36,7 +37,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
         responsePublisher
             .handleEvents(receiveOutput: { output in
                 self.backgroundQueue.async {
-                    self.createFolderIfNeeded()
+                    self.createFolderIfNeeded(endpointRequest.sessionId)
 
                     // for http responses read headers
                     var responseHeaders: [String: String]?
@@ -46,9 +47,8 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
                         responseHeaders = httpResponse.allHeaderFields as? [String: String]
                         statusCode = httpResponse.statusCode
                     }
-                    // create data model & url
-                    let fileUrl = self.responsesDirectory.appendingPathComponent("\(endpointRequest.endpoint.identifier).json")
 
+                    // create data model
                     let storageModel = EndpointRequestStorageModel(
                         path: endpointRequest.endpoint.path,
                         method: endpointRequest.endpoint.method.rawValue,
@@ -58,7 +58,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
                         requestHeaders: urlRequest.allHTTPHeaderFields,
                         responseHeaders: responseHeaders
                     )
-                    self.store(storageModel, url: fileUrl)
+                    self.store(storageModel, url: self.createFileUrl(endpointRequest))
                 }
             })
             .eraseToAnyPublisher()
@@ -68,14 +68,38 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 // MARK: - Private storage extension
 
 private extension EndpointRequestStorageProcessor {
-    func createFolderIfNeeded() {
+    func createFolderIfNeeded(_ sessionId: String?) {
         do {
+            // root storage folder
             if !fileManager.fileExists(atPath: responsesDirectory.path) {
                 try fileManager.createDirectory(atPath: responsesDirectory.path, withIntermediateDirectories: true, attributes: nil)
+            }
+
+            // session folder
+            if let sessionId = sessionId {
+                let sessionDirectory = responsesDirectory.appendingPathComponent(sessionId)
+                if !fileManager.fileExists(atPath: sessionDirectory.path) {
+                    try fileManager.createDirectory(atPath: sessionDirectory.path, withIntermediateDirectories: true, attributes: nil)
+                }
             }
         } catch {
             os_log("❌ Can't create responses storage directory %{public}@", type: .error, error.localizedDescription)
         }
+    }
+
+    func createFileUrl(_ endpointRequest: EndpointRequest) -> URL {
+        var requestDirectory = responsesDirectory
+        var fileName = endpointRequest.endpoint.identifier
+        if let sessionId = endpointRequest.sessionId {
+            requestDirectory = requestDirectory.appendingPathComponent(sessionId)
+            fileName = "\(sessionId)_\(endpointRequest.endpoint.identifier)"
+        }
+
+        let count = requestCounter[endpointRequest.endpoint.identifier] ?? 1
+        fileName = fileName.appending("_\(count)")
+        requestCounter[endpointRequest.endpoint.identifier] = count + 1
+
+        return requestDirectory.appendingPathComponent("\(fileName).json")
     }
 
     func store(_ model: EndpointRequestStorageModel, url: URL) {

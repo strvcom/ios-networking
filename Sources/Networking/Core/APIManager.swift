@@ -18,6 +18,7 @@ open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let requestRetrier: RequestRetrying
     private let responseProcessors: [ResponseProcessing]
+    private let sessionId: String
 
     public init(
         network: Networking = URLSession(configuration: .default),
@@ -25,6 +26,10 @@ open class APIManager: APIManaging {
         responseProcessors: [ResponseProcessing] = [],
         requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration())
     ) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMddyyyy_hhmmssa"
+        // keep session id in readable format
+        sessionId = dateFormatter.string(from: Date())
         self.network = network
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
@@ -33,7 +38,7 @@ open class APIManager: APIManaging {
 
     public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
         // create identifier of api call
-        request(EndpointRequest(endpoint))
+        request(EndpointRequest(endpoint, sessionId: sessionId))
     }
 
     public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<DecodableResponse, Error> {

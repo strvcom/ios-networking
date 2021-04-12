@@ -18,14 +18,6 @@ public protocol EndpointIdentifiable {
 
 public extension Identifiable where Self: EndpointIdentifiable {
     var identifier: String {
-//        // solve potential doubled '_' when api path starting by '/'
-//        // first is path to have method like a divider to avoid ambiguity like users vs users_2
-//        var normalizedApiPath = apiPath
-//        if apiPath.starts(with: "/") {
-//            normalizedApiPath = String(apiPath.dropFirst())
-//        }
-//
-//        return "\(normalizedApiPath.replacingOccurrences(of: "/", with: "_"))_\(apiMethod.lowercased())"
         identifiableComponents.filter { !$0.isEmpty }.map { $0.lowercased() }.joined(separator: "_")
     }
 }

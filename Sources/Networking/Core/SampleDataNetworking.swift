@@ -13,11 +13,14 @@ import UIKit
 // Implementation of networking which reads data from files
 open class SampleDataNetworking: Networking {
     private let bundle: Bundle
+    private let sessionId: String
+    private lazy var requestCounter: [String: Int] = [:]
     private lazy var decoder = JSONDecoder()
 
     // need to inject bundle
-    public init(with bundle: Bundle) {
+    public init(with bundle: Bundle, sessionId: String) {
         self.bundle = bundle
+        self.sessionId = sessionId
     }
 
     public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
@@ -52,10 +55,17 @@ open class SampleDataNetworking: Networking {
 
 private extension SampleDataNetworking {
     func loadSampleData(_ request: URLRequest) throws -> EndpointRequestStorageModel? {
-        guard let data = NSDataAsset(name: request.identifier, bundle: bundle)?.data else {
-            return nil
+        let count = requestCounter[request.identifier] ?? 1
+        requestCounter[request.identifier] = count + 1
+
+        if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {
+            return try decoder.decode(EndpointRequestStorageModel.self, from: data)
+        }
+        // return previous response
+        if count > 1, let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count - 1)", bundle: bundle)?.data {
+            return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }
 
-        return try decoder.decode(EndpointRequestStorageModel.self, from: data)
+        return nil
     }
 }

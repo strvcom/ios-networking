@@ -17,7 +17,7 @@ class TestStoredData: XCTestCase {
 
     override func setUpWithError() throws {
         apiManager = APIManager(
-            network: SampleDataNetworking(with: Bundle(for: Self.self)),
+            network: SampleDataNetworking(with: Bundle(for: Self.self), sessionId: "04122021_084417PM"),
             requestAdapters: [LoggingInterceptor()],
             responseProcessors: [StatusCodeProcessor(),
                                  SampleAPIErrorProcessor(),
