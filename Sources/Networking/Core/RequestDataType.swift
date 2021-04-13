@@ -12,5 +12,5 @@ import Foundation
 
 public enum RequestDataType {
     case noData
-    case encodable(Encodable)
+    case encodable(Encodable, JSONEncoder = JSONEncoder())
 }
