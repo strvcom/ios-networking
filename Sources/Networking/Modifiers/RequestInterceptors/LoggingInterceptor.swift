@@ -78,7 +78,12 @@ private extension LoggingInterceptor {
                 if let connection = httpResponse.allHeaderFields["Connection"] as? String {
                     os_log("👉 Connection: %{public}@", type: .info, connection)
                 }
-                if let body = String(data: response.data, encoding: .utf8) {
+
+                if let object = try? JSONSerialization.jsonObject(with: response.data, options: []),
+                   let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+                   let body = String(data: data, encoding: .utf8)
+                {
+                    // swiftlint:disable:previous opening_brace
                     os_log("👉 Body: %{public}@", type: .info, body)
                 }
             }
