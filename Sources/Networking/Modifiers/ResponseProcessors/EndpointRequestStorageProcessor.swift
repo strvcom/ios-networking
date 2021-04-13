@@ -26,7 +26,12 @@ public struct EndpointRequestStorageModel: Codable {
 
 open class EndpointRequestStorageProcessor: ResponseProcessing {
     private lazy var fileManager = FileManager.default
-    private lazy var jsonEncoder = JSONEncoder()
+    private lazy var jsonEncoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        return encoder
+    }()
+
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.requeststorage")
     private lazy var requestCounter: [String: Int] = [:]
