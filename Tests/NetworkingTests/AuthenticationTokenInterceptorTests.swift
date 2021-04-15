@@ -1,7 +1,7 @@
 @testable import Networking
 import XCTest
 
-final class NetworkingTests: XCTestCase {
+final class AuthenticationTokenInterceptorTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct

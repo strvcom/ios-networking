@@ -34,7 +34,7 @@ extension URLRequest: EndpointIdentifiable, Identifiable {
             components.append(contentsOf: pathComponents)
 
             // add query items
-            if let queryItems = urlComponents.queryItems {
+            if let queryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name }) {
                 components.append(contentsOf: queryItems.flatMap { [$0.name, $0.value ?? ""] })
             }
 
@@ -57,7 +57,7 @@ public extension Requestable where Self: EndpointIdentifiable {
         components.append(contentsOf: pathComponents)
 
         // add parameters
-        if let urlParameters = urlParameters {
+        if let urlParameters = urlParameters?.sorted(by: { $0.key < $1.key }) {
             components.append(contentsOf: urlParameters.flatMap { [$0.key, "\($0.value)"] })
         }
 
