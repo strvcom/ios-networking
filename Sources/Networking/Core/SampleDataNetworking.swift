@@ -56,9 +56,9 @@ open class SampleDataNetworking: Networking {
 private extension SampleDataNetworking {
     func loadSampleData(_ request: URLRequest) throws -> EndpointRequestStorageModel? {
         let count = requestCounter[request.identifier] ?? 1
-        requestCounter[request.identifier] = count + 1
 
         if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {
+            requestCounter[request.identifier] = count + 1
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }
         // return previous response

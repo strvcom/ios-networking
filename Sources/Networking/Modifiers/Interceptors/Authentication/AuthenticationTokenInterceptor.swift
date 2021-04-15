@@ -12,7 +12,7 @@ import Foundation
 // MARK: - Defines networking errors
 
 open class AuthorizationTokenInterceptor: RequestInterceptor {
-    var cancellables = Set<AnyCancellable>()
+    private lazy var cancellables = Set<AnyCancellable>()
 
     private var authenticationManager: AuthenticationManaging
 
