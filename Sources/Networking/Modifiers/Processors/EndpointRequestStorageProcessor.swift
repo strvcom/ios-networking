@@ -13,7 +13,9 @@ import OSLog
 // MARK: - Defines data model storing full endpoint request
 
 public struct EndpointRequestStorageModel: Codable {
+    public let date: Date
     public let path: String
+    public let parameters: [String: String]?
     public let method: String
     public let statusCode: Int?
     public let requestBody: Data?
@@ -53,9 +55,23 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
                         statusCode = httpResponse.statusCode
                     }
 
+                    // parameters
+                    var parameters: [String: String]?
+                    if let url = urlRequest.url,
+                       let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                       let queryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
+                    {
+                        // swiftlint:disable:previous opening_brace
+                        parameters = queryItems.reduce(into: [String: String]()) { dict, item in
+                            dict[item.name] = item.value
+                        }
+                    }
+
                     // create data model
                     let storageModel = EndpointRequestStorageModel(
+                        date: Date(),
                         path: endpointRequest.endpoint.path,
+                        parameters: parameters,
                         method: endpointRequest.endpoint.method.rawValue,
                         statusCode: statusCode,
                         requestBody: urlRequest.httpBody,

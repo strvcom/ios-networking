@@ -1,12 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Tomas Cejka on 15.04.2021.
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 // MARK: Extension provides option to test output value in combine stream
@@ -42,10 +42,11 @@ extension XCTestCase {
     func awaitCompletion<P: Publisher>(for publisher: P) -> Result<[P.Output], P.Failure> {
         let finishedExpectation = expectation(description: "completion expectation")
         var output = [P.Output]()
+        // swiftlint:disable:next implicitly_unwrapped_optional
         var result: Result<[P.Output], P.Failure>!
 
         _ = publisher.sink(receiveCompletion: { completion in
-            if case .failure(let error) = completion {
+            if case let .failure(error) = completion {
                 result = .failure(error)
             } else {
                 result = .success(output)

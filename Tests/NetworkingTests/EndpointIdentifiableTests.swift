@@ -1,6 +1,6 @@
 //
 //  EndpointIdentifiableTests.swift
-//  
+//
 //
 //  Created by Tomas Cejka on 15.04.2021.
 //
@@ -10,7 +10,6 @@ import Foundation
 import XCTest
 
 final class EndpointIdentifiableTests: XCTestCase {
-
     enum MockRouter: Requestable {
         case testPlain
         case testMethod
@@ -59,18 +58,19 @@ final class EndpointIdentifiableTests: XCTestCase {
         var url: URL {
             switch self {
             case .testPlain:
+                // swiftlint:disable:next force_unwrapping
                 return URL(string: "https://identifiable.tests/testPlain")!
             case .testMethod:
+                // swiftlint:disable:next force_unwrapping
                 return URL(string: "https://identifiable.tests/testMethod")!
             case .testParameters:
+                // swiftlint:disable:next force_unwrapping
                 return URL(string: "https://identifiable.tests/testParameters?page=1&limit=20&empty=&string=!test!&alphabetically=true")!
             }
         }
     }
 
-
     func testEqualIdentifiers() {
-
         // test identifier for plain request
         var plainRequest = URLRequest(url: MockRouter.testPlain.url)
         XCTAssertEqual(MockRouter.testPlain.identifier, plainRequest.identifier)

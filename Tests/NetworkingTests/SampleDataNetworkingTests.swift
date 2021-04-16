@@ -3,10 +3,9 @@ import Combine
 import XCTest
 
 final class SampleDataNetworkingTests: XCTestCase {
-
     // swiftlint:disable:next force_unwrapping
     private lazy var urlRequest = URLRequest(url: URL(string: "https://reqres.in/api/users?page=2")!)
-    private let sessionId = "04122021_084417PM"
+    private let sessionId = "04162021_103805AM"
 
     func testLoadingData() {
         let sampleDataNetworking = SampleDataNetworking(with: Bundle.module, sessionId: sessionId)
