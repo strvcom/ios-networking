@@ -6,9 +6,16 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
+
 import Combine
 import Foundation
-import UIKit
+
+// For NSDataAsset import
+#if os(iOS)
+    import UIKit
+#else
+    import AppKit
+#endif
 
 // Implementation of networking which reads data from files
 open class SampleDataNetworking: Networking {
