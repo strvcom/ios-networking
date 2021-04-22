@@ -31,7 +31,7 @@ final class SampleAPI: AuthenticationTokenManaging {
 
     var cancellables = Set<AnyCancellable>()
 
-    lazy var reachability: Reachability? = Reachability()
+    lazy var reachability: Reachability? = try? Reachability()
 
     lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [

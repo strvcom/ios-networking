@@ -92,11 +92,9 @@ open class Reachability {
         hostname: String,
         queueQoS: DispatchQoS = .default,
         targetQueue: DispatchQueue? = nil
-    ) {
+    ) throws {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
-            // TODO:
-            // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithHostname(hostname, SCError())))
-            return nil
+            throw ReachabilityError.failedToCreateWithHostname(hostname, SCError())
         }
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue)
     }
@@ -104,15 +102,13 @@ open class Reachability {
     public convenience init?(
         queueQoS: DispatchQoS = .default,
         targetQueue: DispatchQueue? = nil
-    ) {
+    ) throws {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
         zeroAddress.sa_family = sa_family_t(AF_INET)
 
         guard let ref = SCNetworkReachabilityCreateWithAddress(nil, &zeroAddress) else {
-            // TODO:
-            // reachabilityState.send(completion: Subscribers.Completion<ReachabilityError>.failure(.failedToCreateWithAddress(zeroAddress, SCError())))
-            return nil
+            throw ReachabilityError.failedToCreateWithAddress(zeroAddress, SCError())
         }
 
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue)
