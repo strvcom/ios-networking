@@ -1,6 +1,6 @@
+import Combine
 @testable import Networking
 import XCTest
-import Combine
 
 final class StatusCodeProcessorTests: XCTestCase {
     enum MockRouter: Requestable {
@@ -18,7 +18,7 @@ final class StatusCodeProcessorTests: XCTestCase {
             case .emptyAcceptStatuses:
                 return "emptyAcceptStatuses"
             case .regularAcceptStatuses:
-                return  "regularAcceptStatuses"
+                return "regularAcceptStatuses"
             case .iregularAcceptStatuses:
                 return "iregularAcceptStatuses"
             }
@@ -37,7 +37,6 @@ final class StatusCodeProcessorTests: XCTestCase {
     }
 
     func testEmptyAcceptableStatuses() {
-
         // no error when empty acceptableStatusCodes
         let testNotFound = createMockResult(MockRouter.emptyAcceptStatuses, statusCode: 404)
         XCTAssertNoThrow(try testNotFound.get())
@@ -73,11 +72,11 @@ final class StatusCodeProcessorTests: XCTestCase {
         }
     }
 
-    func testNotHttpURLResponse() {
+    func testNotHttpsURLResponse() {
         let mockEndpointRequest = EndpointRequest(MockRouter.regularAcceptStatuses)
         let mockURLRequest = URLRequest(url: MockRouter.regularAcceptStatuses.baseURL)
-        // swiftlint:disable:next
-        let mockURLResponse: URLResponse = URLResponse(url: MockRouter.regularAcceptStatuses.baseURL, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+
+        let mockURLResponse = URLResponse(url: MockRouter.regularAcceptStatuses.baseURL, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
         let mockResponse = (Data(), mockURLResponse)
         let statusProcessor = StatusCodeProcessor()
         let mockResponsePublisher: AnyPublisher<Response, Error> = Just(mockResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
@@ -96,7 +95,7 @@ final class StatusCodeProcessorTests: XCTestCase {
     static var allTests = [
         ("testEmptyAcceptableStatuses", testEmptyAcceptableStatuses),
         ("testNotInAcceptableStatuses", testNotInAcceptableStatuses),
-        ("testNotHttpURLResponse", testNotHttpURLResponse)
+        ("testNotHttpsURLResponse", testNotHttpsURLResponse)
     ]
 }
 
@@ -105,7 +104,7 @@ private extension StatusCodeProcessorTests {
     func createMockResult(_ router: MockRouter, statusCode: HTTPStatusCode) -> Result<[Response], Error> {
         let mockEndpointRequest = EndpointRequest(router)
         let mockURLRequest = URLRequest(url: router.baseURL)
-        // swiftlint:disable:next
+        // swiftlint:disable:next force_unwrapping
         let mockURLResponse: URLResponse = HTTPURLResponse(url: router.baseURL, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
         let mockResponse = (Data(), mockURLResponse)
 
