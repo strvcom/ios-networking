@@ -111,6 +111,3 @@ final class EndpointIdentifiableTests: XCTestCase {
         ("testEqualIdentifiers", testEqualIdentifiers)
     ]
 }
-
-// https://identifiable.tests/testParameters?alphabetically=true&string=!test!&page=1&limit=20&empty=
-// https://identifiable.tests/testParameters?page=1&limit=20&empty=&string=!test!&alphabetically=true
