@@ -8,7 +8,12 @@
 
 import Combine
 import Foundation
+
+#if os(watchOS)
+import os
+#else
 import OSLog
+#endif
 
 // MARK: - Defines data model storing full endpoint request
 

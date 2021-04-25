@@ -6,6 +6,7 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
+#if !os(watchOS)
 import Combine
 import Foundation
 import SystemConfiguration
@@ -247,3 +248,4 @@ private class ReachabilityWeakifier {
         self.reachability = reachability
     }
 }
+#endif

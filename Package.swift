@@ -7,7 +7,8 @@ let package = Package(
     name: "Networking",
     platforms: [
         .iOS(SupportedPlatform.IOSVersion.v13),
-        .macOS(SupportedPlatform.MacOSVersion.v11)
+        .macOS(SupportedPlatform.MacOSVersion.v11),
+        .watchOS(SupportedPlatform.WatchOSVersion.v6)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
