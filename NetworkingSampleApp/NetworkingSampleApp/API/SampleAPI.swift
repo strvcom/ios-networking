@@ -24,9 +24,10 @@ final class SampleAPI: AuthenticationTokenManaging {
     var refreshToken: String?
     var refreshExpirationDate: Date?
     var isExpired: Bool {
-        // swiftlint:disable:next force_unwrapping
-        !((expirationDate != nil && (expirationDate)! > Date())
-            || expirationDate == nil)
+        guard let expirationDate = expirationDate else {
+            return true
+        }
+        return expirationDate <= Date()
     }
 
     var cancellables = Set<AnyCancellable>()

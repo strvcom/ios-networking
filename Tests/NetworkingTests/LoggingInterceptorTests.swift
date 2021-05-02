@@ -1,6 +1,6 @@
+import Combine
 @testable import Networking
 import XCTest
-import Combine
 
 final class LoggingInterceptorTests: XCTestCase {
     enum MockRouter: Requestable {
@@ -20,7 +20,7 @@ final class LoggingInterceptorTests: XCTestCase {
     }
 
     func testNoEffect() {
-       // test logging interceptor doesn't effect request or response anyway
+        // test logging interceptor doesn't effect request or response anyway
 
         let mockEndpointRequest = EndpointRequest(MockRouter.logging)
         let mockURLRequest = URLRequest(url: MockRouter.logging.baseURL)

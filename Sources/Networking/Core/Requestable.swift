@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Endpoint definition
 
-public protocol Requestable: Identifiable, EndpointIdentifiable {
+public protocol Requestable: EndpointIdentifiable {
     var baseURL: URL { get }
 
     var path: String { get }
@@ -25,7 +25,7 @@ public protocol Requestable: Identifiable, EndpointIdentifiable {
 
     var dataType: RequestDataType? { get }
 
-    var authenticated: Bool { get }
+    var isAuthenticationRequired: Bool { get }
 
     func encodeBody() throws -> Data?
 
@@ -39,7 +39,7 @@ public extension Requestable {
         .get
     }
 
-    var authenticated: Bool {
+    var isAuthenticationRequired: Bool {
         false
     }
 
@@ -78,16 +78,16 @@ public extension Requestable {
     func asRequest() throws -> URLRequest {
         // url creation
         let urlPath = baseURL.appendingPathComponent(path)
-        guard let urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
+        guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
             throw RequestableError.invalidURLComponents
         }
-        var mutableComponents = urlComponents
+
         // encode url parameters
         if let urlParameters = urlParameters {
-            mutableComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
+            urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
         }
 
-        guard let url = mutableComponents.url else {
+        guard let url = urlComponents.url else {
             throw RequestableError.invalidURLComponents
         }
 

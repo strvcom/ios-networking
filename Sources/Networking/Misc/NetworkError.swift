@@ -14,7 +14,7 @@ public enum NetworkError: Error, LocalizedError {
     case unacceptableStatusCode(HTTPStatusCode, Range<HTTPStatusCode>, Response)
     case noStatusCode(Response)
     case invalidRequest(Error)
-    case underlaying(Error)
+    case underlying(Error)
     case unknown
 
     public var errorDescription: String? {
@@ -25,7 +25,7 @@ public enum NetworkError: Error, LocalizedError {
             return NSLocalizedString("Response is missing status code", comment: "")
         case let .invalidRequest(error):
             return NSLocalizedString("Invalid request \(error.localizedDescription)", comment: "")
-        case let .underlaying(error):
+        case let .underlying(error):
             return NSLocalizedString("Network error \(error.localizedDescription)", comment: "")
         case .unknown:
             return NSLocalizedString("Unknown error", comment: "")

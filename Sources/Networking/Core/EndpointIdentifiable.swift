@@ -10,13 +10,13 @@ import Foundation
 
 // MARK: - Defines attributes identifying endpoint
 
-public protocol EndpointIdentifiable {
+public protocol EndpointIdentifiable: Identifiable {
     var identifiableComponents: [String] { get }
 }
 
 // MARK: - Default implementation for endpoint identifiable
 
-public extension Identifiable where Self: EndpointIdentifiable {
+public extension EndpointIdentifiable {
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }.map { $0.lowercased() }.joined(separator: "_")
     }
@@ -24,7 +24,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
 
 // MARK: - Default implementation for URLRequest
 
-extension URLRequest: EndpointIdentifiable, Identifiable {
+extension URLRequest: EndpointIdentifiable {
     public var identifiableComponents: [String] {
         var components: [String] = []
 

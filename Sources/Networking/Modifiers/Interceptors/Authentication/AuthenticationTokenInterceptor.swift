@@ -9,7 +9,7 @@
 import Combine
 import Foundation
 
-// MARK: - Defines networking errors
+// MARK: - Defines authentication handling in requests
 
 open class AuthorizationTokenInterceptor: RequestInterceptor {
     private lazy var cancellables = Set<AnyCancellable>()
@@ -24,7 +24,7 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
         // if is auth token needed
         // proceed authorization
 
-        guard endpointRequest.endpoint.authenticated else {
+        guard endpointRequest.endpoint.isAuthenticationRequired else {
             return requestPublisher
         }
 

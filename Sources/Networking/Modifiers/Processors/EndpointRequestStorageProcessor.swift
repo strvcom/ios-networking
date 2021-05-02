@@ -42,7 +42,10 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
-            .handleEvents(receiveOutput: { output in
+            .handleEvents(receiveOutput: { [weak self] output in
+                guard let self = self else {
+                    return
+                }
                 self.backgroundQueue.async {
                     self.createFolderIfNeeded(endpointRequest.sessionId)
 

@@ -21,6 +21,6 @@ extension URLSession: Networking {
 
 private extension URLSession {
     func mapToNetworkError(_ error: URLError) -> NetworkError {
-        .underlaying(error)
+        .underlying(error)
     }
 }

@@ -51,8 +51,12 @@ private extension LoggingInterceptor {
         if let headers = request.allHTTPHeaderFields, !headers.isEmpty {
             os_log("👉 Headers: %{public}@", type: .info, headers)
         }
-        if let body = request.httpBody, let stringBody = String(data: body, encoding: .utf8) {
-            os_log("👉 Body: %{public}@", type: .info, stringBody)
+        if let requestBody = request.httpBody, let object = try? JSONSerialization.jsonObject(with: requestBody, options: []),
+           let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+           let body = String(data: data, encoding: .utf8)
+        {
+            // swiftlint:disable:previous opening_brace
+            os_log("👉 Body: %{public}@", type: .info, body)
         }
         os_log("🔼🔼🔼 REQUEST END 🔼🔼🔼", type: .info)
     }

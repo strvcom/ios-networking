@@ -63,11 +63,11 @@ enum SampleUserRouter: Requestable {
         }
     }
 
-    var authenticated: Bool {
+    var isAuthenticationRequired: Bool {
         switch self {
-        case .registerUser, .loginUser, .users, .user:
+        case .registerUser, .loginUser:
             return false
-        case .createUser:
+        case .createUser, .users, .user:
             return true
         }
     }
