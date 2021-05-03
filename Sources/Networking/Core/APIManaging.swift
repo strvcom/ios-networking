@@ -19,7 +19,7 @@ public protocol APIManaging {
 // MARK: - Extension to provide default json decoder
 
 public extension APIManaging {
-    func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<Body, Error> {
-        request(endpoint, decoder: decoder)
+    func request<Body: Decodable>(_ endpoint: Requestable) -> AnyPublisher<Body, Error> {
+        request(endpoint, decoder: JSONDecoder())
     }
 }

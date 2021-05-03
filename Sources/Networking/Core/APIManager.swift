@@ -41,7 +41,7 @@ open class APIManager: APIManaging {
         request(EndpointRequest(endpoint, sessionId: sessionId))
     }
 
-    public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<DecodableResponse, Error> {
+    public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error> {
         request(endpoint)
             .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
             .eraseToAnyPublisher()
