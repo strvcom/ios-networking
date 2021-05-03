@@ -19,7 +19,9 @@ public struct EndpointRequestStorageModel: Codable {
     public let method: String
     public let statusCode: Int?
     public let requestBody: Data?
+    public let requestBodyString: String?
     public let responseBody: Data?
+    public let responseBodyString: String?
     public let requestHeaders: [String: String]?
     public let responseHeaders: [String: String]?
 }
@@ -78,7 +80,9 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
                         method: endpointRequest.endpoint.method.rawValue,
                         statusCode: statusCode,
                         requestBody: urlRequest.httpBody,
+                        requestBodyString: String(data: urlRequest.httpBody ?? Data(), encoding: .utf8),
                         responseBody: output.data,
+                        responseBodyString: String(data: output.data, encoding: .utf8),
                         requestHeaders: urlRequest.allHTTPHeaderFields,
                         responseHeaders: responseHeaders
                     )
