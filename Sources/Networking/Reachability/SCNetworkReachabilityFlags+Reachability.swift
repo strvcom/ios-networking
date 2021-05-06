@@ -6,6 +6,7 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
+#if !os(watchOS)
 import Foundation
 import SystemConfiguration
 
@@ -103,3 +104,4 @@ extension SCNetworkReachabilityFlags {
         return "\(wwan)\(reachable) \(connectionRequired)\(transientConnection)\(interventionRequired)\(connectionOnTraffic)\(connectionOnDemand)\(localAddress)\(direct)"
     }
 }
+#endif

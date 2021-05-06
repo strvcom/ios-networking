@@ -10,10 +10,10 @@ import Combine
 import Foundation
 
 // For NSDataAsset import
-#if os(iOS)
-    import UIKit
-#else
+#if os(macOS)
     import AppKit
+#else
+    import UIKit
 #endif
 
 // Implementation of networking which reads data from files
