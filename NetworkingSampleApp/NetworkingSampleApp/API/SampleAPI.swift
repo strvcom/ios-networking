@@ -13,6 +13,15 @@ import Networking
 // Custom API object
 // For simplicity it manages also auth token with refresh logic
 final class SampleAPI: AuthenticationTokenManaging {
+    // Constants for sample API calling regres.in
+    enum SampleAPIConstants {
+        static let validEmail = "eve.holt@reqres.in"
+        static let validPassword = "cityslicka"
+        static let sampleEmail = "email@email.me"
+        static let sampleName = "Dummy"
+        static let sampleJob = "Foo"
+    }
+
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { self }
 
     var isAuthenticated: Bool {
@@ -56,7 +65,7 @@ final class SampleAPI: AuthenticationTokenManaging {
         )
     }()
 
-    func run() {
+    func sampleRun() {
         // test reachability
         reachability?.connection
             .sink { completion in
@@ -76,7 +85,9 @@ final class SampleAPI: AuthenticationTokenManaging {
             .store(in: &cancellables)
 
         // success expected, decode data model
-        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users(page: 2))
+        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(
+            SampleUserRouter.users(page: 2)
+        )
 
         userPublisher
             .sink(
@@ -84,14 +95,16 @@ final class SampleAPI: AuthenticationTokenManaging {
                 }, receiveValue: { value in
                     print(value)
                 }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
 
         // success expected, url params testing
         apiManager.request(SampleUserRouter.users(page: 2))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
 
         // success expected
         apiManager.request(SampleUserRouter.user(userId: 2))
@@ -99,29 +112,45 @@ final class SampleAPI: AuthenticationTokenManaging {
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
                 }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
 
         // success expected, post body encoding test
-        apiManager.request(SampleUserRouter.createUser(SampleUserRequest(name: "CJ", job: "Developer")))
+        apiManager.request(
+            SampleUserRouter.createUser(
+                SampleUserRequest(name: SampleAPIConstants.sampleName, job: SampleAPIConstants.sampleJob)
+            ))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
                 }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
 
         // custom error processing
-        apiManager.request(SampleUserRouter.registerUser(SampleUserAuthRequest(email: "test@test.test", password: nil)))
+        apiManager.request(
+            SampleUserRouter.registerUser(
+                SampleUserAuthRequest(email: SampleAPIConstants.sampleEmail, password: nil)
+            ))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in
                 }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
     }
 }
 
 extension SampleAPI: RefreshAuthenticationTokenManaging {
     func refreshAuthenticationToken() -> AnyPublisher<String, Error> {
-        let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager.request(SampleUserRouter.loginUser(SampleUserAuthRequest(email: "eve.holt@reqres.in", password: "cityslicka")))
+        let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager.request(
+            SampleUserRouter.loginUser(
+                SampleUserAuthRequest(
+                    email: SampleAPIConstants.validEmail,
+                    password: SampleAPIConstants.validPassword
+                )
+            )
+        )
 
         return accessTokenPublisher
             .map { response in

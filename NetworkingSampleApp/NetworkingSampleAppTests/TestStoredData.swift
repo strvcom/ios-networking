@@ -19,9 +19,11 @@ class TestStoredData: XCTestCase {
         apiManager = APIManager(
             network: SampleDataNetworking(with: Bundle(for: Self.self), sessionId: "04162021_103805AM"),
             requestAdapters: [LoggingInterceptor()],
-            responseProcessors: [StatusCodeProcessor(),
-                                 SampleAPIErrorProcessor(),
-                                 LoggingInterceptor()]
+            responseProcessors: [
+                StatusCodeProcessor(),
+                SampleAPIErrorProcessor(),
+                LoggingInterceptor()
+            ]
         )
     }
 
@@ -30,29 +32,26 @@ class TestStoredData: XCTestCase {
     }
 
     func testSampleDataNetworking() throws {
-        guard let apiManager = apiManager else {
-            return
-        }
-
-        let expectation = self.expectation(description: "Sample data networking")
+        let expectation = self.expectation(description: "Sample networking - get users request")
 
         // success expected, decode data model
-        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users)
+        // swiftlint:disable:next force_unwrapping
+        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager!.request(
+            SampleUserRouter.users(page: 2)
+        )
 
         userPublisher
             .sink(
                 receiveCompletion: { completion in
-                    var isFailure = false
                     if case .failure = completion {
-                        isFailure = true
+                        XCTFail()
                     }
-                    XCTAssertFalse(isFailure)
                     expectation.fulfill()
-
                 }, receiveValue: { value in
                     XCTAssert(value.data.count == 6)
                 }
-            ).store(in: &cancellables)
+            )
+            .store(in: &cancellables)
 
         waitForExpectations(timeout: 200, handler: nil)
     }
