@@ -42,11 +42,16 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
                     return responsePublisher
                 }
 
-                return self.authenticationManager.authenticate(Just(urlRequest).setFailureType(to: Error.self).eraseToAnyPublisher())
-                    .tryMap { _ -> Response in
-                        throw AuthenticationError.unauthorized
-                    }
-                    .eraseToAnyPublisher()
+                // Authenticate and throw retrying error to recall whole api manager request flow
+                return self.authenticationManager.authenticate(
+                    Just(urlRequest)
+                        .setFailureType(to: Error.self)
+                        .eraseToAnyPublisher()
+                )
+                .tryMap { _ -> Response in
+                    throw AuthenticationError.unauthorized
+                }
+                .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }

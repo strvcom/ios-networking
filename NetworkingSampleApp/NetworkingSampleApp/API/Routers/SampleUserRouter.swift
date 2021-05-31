@@ -9,8 +9,8 @@ import Foundation
 import Networking
 
 enum SampleUserRouter: Requestable {
-    case users
-    case user(Int)
+    case users(page: Int)
+    case user(userId: Int)
     case createUser(SampleUserRequest)
     case registerUser(SampleUserAuthRequest)
     case loginUser(SampleUserAuthRequest)
@@ -18,26 +18,26 @@ enum SampleUserRouter: Requestable {
     var baseURL: URL {
         // this comes from a config - already force unwrapped
         // swiftlint:disable:next force_unwrapping
-        URL(string: "https://reqres.in")!
+        URL(string: "https://reqres.in/api")!
     }
 
     var path: String {
         switch self {
         case .users, .createUser:
-            return "api/users"
-        case let .user(id):
-            return "api/user/\(id)"
+            return "users"
+        case let .user(userId):
+            return "user/\(userId)"
         case .registerUser:
-            return "api/register"
+            return "register"
         case .loginUser:
-            return "api/login"
+            return "login"
         }
     }
 
     var urlParameters: [String: Any]? {
         switch self {
-        case .users:
-            return ["page": 2]
+        case let .users(page):
+            return ["page": page]
         default:
             return nil
         }

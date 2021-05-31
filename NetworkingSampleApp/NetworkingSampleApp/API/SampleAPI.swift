@@ -16,7 +16,7 @@ final class SampleAPI: AuthenticationTokenManaging {
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { self }
 
     var isAuthenticated: Bool {
-        !isExpired && authenticationToken != nil
+        authenticationToken != nil && !isExpired
     }
 
     var authenticationToken: String?
@@ -43,7 +43,7 @@ final class SampleAPI: AuthenticationTokenManaging {
         ]
 
         #if DEBUG
-            // allows store whole api call to local file
+            // stores the whole API call to a local file
             responseProcessors.append(EndpointRequestStorageProcessor())
         #endif
 
@@ -76,7 +76,7 @@ final class SampleAPI: AuthenticationTokenManaging {
             .store(in: &cancellables)
 
         // success expected, decode data model
-        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users)
+        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager.request(SampleUserRouter.users(page: 2))
 
         userPublisher
             .sink(
@@ -87,14 +87,14 @@ final class SampleAPI: AuthenticationTokenManaging {
             ).store(in: &cancellables)
 
         // success expected, url params testing
-        apiManager.request(SampleUserRouter.users)
+        apiManager.request(SampleUserRouter.users(page: 2))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in }
             ).store(in: &cancellables)
 
         // success expected
-        apiManager.request(SampleUserRouter.user(2))
+        apiManager.request(SampleUserRouter.user(userId: 2))
             .sink(
                 receiveCompletion: { _ in
                 }, receiveValue: { _ in

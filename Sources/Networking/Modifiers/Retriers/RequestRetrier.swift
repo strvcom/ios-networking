@@ -57,10 +57,6 @@ open class RequestRetrier: RequestRetrying {
             return Fail(error: caughtError).eraseToAnyPublisher()
         }
     }
-
-    public func finished(_ endpointRequest: EndpointRequest) {
-        reset(endpointRequest.identifier)
-    }
 }
 
 // MARK: - Private retrier extension

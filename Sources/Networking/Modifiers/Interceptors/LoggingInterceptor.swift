@@ -9,9 +9,9 @@
 import Combine
 import Foundation
 #if os(watchOS)
-import os
+    import os
 #else
-import OSLog
+    import OSLog
 #endif
 
 // MARK: - Pretty logging modifier

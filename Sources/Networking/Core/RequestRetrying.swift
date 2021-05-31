@@ -13,6 +13,4 @@ import Foundation
 
 public protocol RequestRetrying {
     func retry<Output>(_ request: AnyPublisher<Output, Error>, with error: Error, for endpointRequest: EndpointRequest) -> AnyPublisher<Output, Error>
-
-    func finished(_ endpointRequest: EndpointRequest)
 }

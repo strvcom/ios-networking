@@ -40,7 +40,8 @@ public extension AuthenticationTokenManaging {
         let error: AuthenticationError = authenticationToken == nil ? .missingAuthenticationToken : .expiredAuthenticationToken
 
         // retry whole flow, do not just add auth header bc it can has unwanted/unexpected impact to other modifiers
-        return refreshAuthenticationTokenManager.refreshAuthenticationToken()
+        return refreshAuthenticationTokenManager
+            .refreshAuthenticationToken()
             .tryMap { _ -> URLRequest in
                 throw error
             }
