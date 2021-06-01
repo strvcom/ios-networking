@@ -28,7 +28,7 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
             return requestPublisher
         }
 
-        return authenticationManager.authenticate(requestPublisher)
+        return authenticationManager.authorize(requestPublisher)
     }
 
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
@@ -38,12 +38,17 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
 
         responsePublisher
             .catch { [weak self] error -> AnyPublisher<Response, Error> in
-                guard let self = self, let networkError = error as? NetworkError, case let .unacceptableStatusCode(statusCode, _, _) = networkError, statusCode == 401 else {
+                guard
+                    let self = self,
+                    let networkError = error as? NetworkError,
+                    case let .unacceptableStatusCode(statusCode, _, _) = networkError,
+                    statusCode == 401
+                else {
                     return responsePublisher
                 }
 
                 // Authenticate and throw retrying error to recall whole api manager request flow
-                return self.authenticationManager.authenticate(
+                return self.authenticationManager.authorize(
                     Just(urlRequest)
                         .setFailureType(to: Error.self)
                         .eraseToAnyPublisher()

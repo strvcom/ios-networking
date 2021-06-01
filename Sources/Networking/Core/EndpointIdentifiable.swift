@@ -18,7 +18,9 @@ public protocol EndpointIdentifiable: Identifiable {
 
 public extension EndpointIdentifiable {
     var identifier: String {
-        identifiableComponents.filter { !$0.isEmpty }.map { $0.lowercased() }.joined(separator: "_")
+        identifiableComponents.filter { !$0.isEmpty }
+            .map { $0.lowercased() }
+            .joined(separator: "_")
     }
 }
 
@@ -30,12 +32,17 @@ extension URLRequest: EndpointIdentifiable {
 
         if let url = url, let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
             // add path parts
-            let pathComponents = urlComponents.path.split(separator: "/").filter { !$0.isEmpty }.map { String($0) }
+            let pathComponents = urlComponents.path
+                .split(separator: "/")
+                .filter { !$0.isEmpty }
+                .map { String($0) }
             components.append(contentsOf: pathComponents)
 
+            let sortedQueryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
             // add query items
-            if let queryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name }) {
-                components.append(contentsOf: queryItems.flatMap { [$0.name, $0.value ?? ""] })
+            if let queryItems = sortedQueryItems {
+                let mappedQueryItems = queryItems.flatMap { [$0.name, $0.value ?? ""] }
+                components.append(contentsOf: mappedQueryItems)
             }
 
             // add method
@@ -48,17 +55,22 @@ extension URLRequest: EndpointIdentifiable {
 
 // MARK: - Default implementation identifying endpoint
 
-public extension Requestable where Self: EndpointIdentifiable {
+public extension Requestable {
     var identifiableComponents: [String] {
         var components: [String] = []
 
         // add path parts
-        let pathComponents = path.split(separator: "/").filter { !$0.isEmpty }.map { String($0) }
+        let pathComponents = path
+            .split(separator: "/")
+            .filter { !$0.isEmpty }
+            .map { String($0) }
         components.append(contentsOf: pathComponents)
 
+        let sortedParameters = urlParameters?.sorted(by: { $0.key < $1.key })
         // add parameters
-        if let urlParameters = urlParameters?.sorted(by: { $0.key < $1.key }) {
-            components.append(contentsOf: urlParameters.flatMap { [$0.key, "\($0.value)"] })
+        if let urlParameters = sortedParameters {
+            let mappedParameters = urlParameters.flatMap { [$0.key, "\($0.value)"] }
+            components.append(contentsOf: mappedParameters)
         }
 
         // add method

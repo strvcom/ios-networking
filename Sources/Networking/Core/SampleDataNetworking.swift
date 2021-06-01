@@ -30,23 +30,26 @@ open class SampleDataNetworking: Networking {
     }
 
     public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
-        guard let sampleData = try? loadSampleData(request) else {
+        guard let sampleData = try? loadSampleData(for: request) else {
             fatalError("❌ Can't load data")
         }
 
-        guard let statusCode = sampleData.statusCode,
-              let url = request.url
+        guard
+            let statusCode = sampleData.statusCode,
+            let url = request.url
         else {
             return Fail(error: NetworkError.unknown)
                 .eraseToAnyPublisher()
         }
 
-        guard let httpResponse = HTTPURLResponse(
-            url: url,
-            statusCode: statusCode,
-            httpVersion: nil,
-            headerFields: sampleData.responseHeaders
-        ) else {
+        guard
+            let httpResponse = HTTPURLResponse(
+                url: url,
+                statusCode: statusCode,
+                httpVersion: nil,
+                headerFields: sampleData.responseHeaders
+            )
+        else {
             return Fail(error: NetworkError.unknown)
                 .eraseToAnyPublisher()
         }
@@ -60,7 +63,7 @@ open class SampleDataNetworking: Networking {
 // MARK: Read data from assets
 
 private extension SampleDataNetworking {
-    func loadSampleData(_ request: URLRequest) throws -> EndpointRequestStorageModel? {
+    func loadSampleData(for request: URLRequest) throws -> EndpointRequestStorageModel? {
         let count = requestCounter[request.identifier] ?? 1
 
         if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {

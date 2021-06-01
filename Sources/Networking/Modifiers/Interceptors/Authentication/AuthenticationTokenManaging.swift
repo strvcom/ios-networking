@@ -27,7 +27,7 @@ public extension AuthenticationTokenManaging {
         "Authorization"
     }
 
-    func authenticate(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error> {
+    func authorize(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error> {
         if let accessToken = authenticationToken, !isExpired {
             return requestPublisher
                 .map { request -> URLRequest in

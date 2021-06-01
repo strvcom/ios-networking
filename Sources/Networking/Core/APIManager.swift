@@ -65,8 +65,10 @@ private extension APIManager {
             // call request
             .flatMap { urlRequest -> AnyPublisher<(URLRequest, Response), Error> in
                 self.network.requestPublisher(for: urlRequest)
-                    .mapError { $0 as Error }
-                    .map { (urlRequest, $0) }
+                    .mapError { error in error as Error }
+                    .map { response -> (URLRequest, Response) in
+                        (urlRequest, response)
+                    }
                     .eraseToAnyPublisher()
             }
             // process response

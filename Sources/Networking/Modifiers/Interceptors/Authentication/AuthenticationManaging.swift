@@ -14,5 +14,5 @@ import Foundation
 public protocol AuthenticationManaging {
     var isAuthenticated: Bool { get }
 
-    func authenticate(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error>
+    func authorize(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error>
 }

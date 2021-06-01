@@ -11,10 +11,14 @@ import Foundation
 // MARK: - Defines networking errors
 
 public enum NetworkError: Error, LocalizedError {
-    case unacceptableStatusCode(HTTPStatusCode, Range<HTTPStatusCode>, Response)
-    case noStatusCode(Response)
-    case invalidRequest(Error)
-    case underlying(Error)
+    case unacceptableStatusCode(
+        statusCode: HTTPStatusCode,
+        acceptedStatusCodes: Range<HTTPStatusCode>,
+        response: Response
+    )
+    case noStatusCode(response: Response)
+    case invalidRequest(error: Error)
+    case underlying(error: Error)
     case unknown
 
     public var errorDescription: String? {

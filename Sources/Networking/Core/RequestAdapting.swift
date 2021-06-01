@@ -19,7 +19,12 @@ public protocol RequestAdapting {
 
 public extension Array where Element == RequestAdapting {
     func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
-        let requestPublisher = Just(request).setFailureType(to: Error.self).eraseToAnyPublisher()
-        return reduce(requestPublisher) { $1.adapt($0, for: endpointRequest) }
+        let requestPublisher = Just(request)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+
+        return reduce(requestPublisher) { request, requestAdapting in
+            requestAdapting.adapt(request, for: endpointRequest)
+        }
     }
 }

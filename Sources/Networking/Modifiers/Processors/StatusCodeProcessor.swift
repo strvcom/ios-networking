@@ -21,10 +21,14 @@ open class StatusCodeProcessor: ResponseProcessing {
                     return response
                 }
                 guard let httpResponse = response.response as? HTTPURLResponse else {
-                    throw NetworkError.noStatusCode(response)
+                    throw NetworkError.noStatusCode(response: response)
                 }
                 guard acceptableStatusCodes.contains(httpResponse.statusCode) else {
-                    throw NetworkError.unacceptableStatusCode(httpResponse.statusCode, acceptableStatusCodes, response)
+                    throw NetworkError.unacceptableStatusCode(
+                        statusCode: httpResponse.statusCode,
+                        acceptedStatusCodes: acceptableStatusCodes,
+                        response: response
+                    )
                 }
                 return response
             }

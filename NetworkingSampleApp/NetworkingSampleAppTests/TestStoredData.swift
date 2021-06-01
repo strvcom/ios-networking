@@ -44,7 +44,7 @@ class TestStoredData: XCTestCase {
             .sink(
                 receiveCompletion: { completion in
                     if case .failure = completion {
-                        XCTFail()
+                        XCTFail("Get users request failed")
                     }
                     expectation.fulfill()
                 }, receiveValue: { value in
