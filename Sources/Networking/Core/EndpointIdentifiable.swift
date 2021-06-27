@@ -16,7 +16,7 @@ public protocol EndpointIdentifiable: Identifiable {
 
 // MARK: - Default implementation for endpoint identifiable
 
-public extension EndpointIdentifiable {
+public extension Identifiable where Self: EndpointIdentifiable {
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }
             .map { $0.lowercased() }

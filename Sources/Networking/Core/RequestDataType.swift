@@ -11,6 +11,5 @@ import Foundation
 // MARK: - Defines various request data types to be sent in body
 
 public enum RequestDataType {
-    case noData
     case encodable(Encodable, encoder: JSONEncoder = JSONEncoder())
 }

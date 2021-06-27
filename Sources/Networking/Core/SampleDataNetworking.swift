@@ -64,13 +64,15 @@ open class SampleDataNetworking: Networking {
 
 private extension SampleDataNetworking {
     func loadSampleData(for request: URLRequest) throws -> EndpointRequestStorageModel? {
+        // counting from 1, check storage request processing
         let count = requestCounter[request.identifier] ?? 1
 
         if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {
+            // store info about next indexed api call
             requestCounter[request.identifier] = count + 1
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }
-        // return previous response
+        // return previous response, if no more stored indexed api calls
         if count > 1, let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count - 1)", bundle: bundle)?.data {
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }

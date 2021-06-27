@@ -14,6 +14,7 @@ import Networking
 class SampleAPIErrorProcessor: ResponseProcessing {
     private lazy var decoder = JSONDecoder()
 
+    // Custom error processing sample, sample api provides custom error on status code 400
     func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
             .tryCatch { error -> AnyPublisher<Response, Error> in
