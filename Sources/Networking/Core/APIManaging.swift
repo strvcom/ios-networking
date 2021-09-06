@@ -16,10 +16,20 @@ public protocol APIManaging {
     func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<Body, Error>
 }
 
-// MARK: - Extension to provide default json decoder
+// MARK: - Provide request with default json decoder
 
 public extension APIManaging {
     func request<Body: Decodable>(_ endpoint: Requestable) -> AnyPublisher<Body, Error> {
         request(endpoint, decoder: JSONDecoder())
+    }
+}
+
+// MARK: - Provide request with default decoding
+
+public extension APIManaging {
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint)
+            .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
+            .eraseToAnyPublisher()
     }
 }

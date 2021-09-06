@@ -9,7 +9,7 @@
 import Combine
 import Foundation
 
-// MARK: - Defines modifying the request before it's been sent
+// MARK: - Modifying the request before it's been sent
 
 public protocol RequestAdapting {
     func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error>

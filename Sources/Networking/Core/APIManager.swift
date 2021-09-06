@@ -40,12 +40,6 @@ open class APIManager: APIManaging {
         // create identifier of api call
         request(EndpointRequest(endpoint, sessionId: sessionId))
     }
-
-    public func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error> {
-        request(endpoint)
-            .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
-            .eraseToAnyPublisher()
-    }
 }
 
 // MARK: - Private extension to use same api call for retry
