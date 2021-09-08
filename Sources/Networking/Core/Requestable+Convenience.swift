@@ -47,6 +47,8 @@ public extension Requestable {
         case let .encodable(encodable, jsonEncoder):
             let anyEncodable = AnyEncodable(encodable)
             return try jsonEncoder.encode(anyEncodable)
+        case let .custom(data, _):
+            return data
         }
     }
 
@@ -75,7 +77,15 @@ public extension Requestable {
         // content type
         switch dataType {
         case .encodable:
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(
+                HTTPHeader.ContentTypeValue.json.rawValue,
+                forHTTPHeaderField: HTTPHeader.HeaderField.contentType.rawValue
+            )
+        case let .custom(_, contentType):
+            request.setValue(
+                contentType,
+                forHTTPHeaderField: HTTPHeader.HeaderField.contentType.rawValue
+            )
         default:
             break
         }

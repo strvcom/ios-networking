@@ -33,3 +33,10 @@ public extension APIManaging {
             .eraseToAnyPublisher()
     }
 }
+
+// TODO: JK idea about retry approach
+/*
+ apiManager.request(request, retryCount: 5, retryDelay: 3) { error in
+   return true
+ }
+ */

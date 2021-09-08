@@ -12,4 +12,5 @@ import Foundation
 
 public enum RequestDataType {
     case encodable(Encodable, encoder: JSONEncoder = JSONEncoder())
+    case custom(encodedData: Data, contentType: String)
 }
