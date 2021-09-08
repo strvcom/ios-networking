@@ -48,6 +48,8 @@ private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         // create url request
         Just(endpointRequest.endpoint)
+            // TODO: remove print, temporary debug
+            .print()
             // work in background
             .receive(on: backgroundQueue)
             // create request
@@ -69,10 +71,11 @@ private extension APIManager {
             .flatMap { (request, response) -> AnyPublisher<Response, Error> in
                 self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
+            // TODO: remove retry in its current version
             // retry
-            .catch { error -> AnyPublisher<Response, Error> in
-                self.requestRetrier.retry(self.request(endpointRequest), with: error, for: endpointRequest)
-            }
+            //            .catch { error -> AnyPublisher<Response, Error> in
+            //                self.requestRetrier.retry(self.request(endpointRequest), with: error, for: endpointRequest)
+            //            }
             // move to main thread
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

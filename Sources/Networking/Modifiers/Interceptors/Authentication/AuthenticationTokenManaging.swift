@@ -15,9 +15,9 @@ public protocol AuthenticationTokenManaging: AuthenticationManaging {
     var refreshToken: String? { get }
     var refreshExpirationDate: Date? { get }
     var headerField: String { get }
-    var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { get }
-
     var isExpired: Bool { get }
+
+    var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { get }
 }
 
 // MARK: - Default implementation for authentication token managing
@@ -25,6 +25,10 @@ public protocol AuthenticationTokenManaging: AuthenticationManaging {
 public extension AuthenticationTokenManaging {
     var headerField: String {
         "Authorization"
+    }
+
+    var isAuthenticated: Bool {
+        authenticationToken != nil && !isExpired
     }
 
     func authorize(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error> {
@@ -42,8 +46,12 @@ public extension AuthenticationTokenManaging {
         // retry whole flow, do not just add auth header bc it can has unwanted/unexpected impact to other modifiers
         return refreshAuthenticationTokenManager
             .refreshAuthenticationToken()
-            .tryMap { _ -> URLRequest in
-                throw error
+            // TODO: different approach to retry, anyway this will be replaced soon
+            .print()
+            .flatMap { _ -> AnyPublisher<URLRequest, Error> in
+                requestPublisher
+                    .retry(1)
+                    .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }

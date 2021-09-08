@@ -12,13 +12,17 @@ import Foundation
 // MARK: - Defines authentication handling in requests
 
 open class AuthorizationTokenInterceptor: RequestInterceptor {
-    private lazy var cancellables = Set<AnyCancellable>()
+    // MARK: Private properties
 
     private var authenticationManager: AuthenticationManaging
+
+    // MARK: Init
 
     public init(authenticationManager: AuthenticationManaging) {
         self.authenticationManager = authenticationManager
     }
+
+    // MARK: RequestInterceptor
 
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // if is auth token needed

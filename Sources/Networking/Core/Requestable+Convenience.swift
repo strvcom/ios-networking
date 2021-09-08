@@ -47,11 +47,7 @@ public extension Requestable {
         case let .encodable(encodable, jsonEncoder):
             let anyEncodable = AnyEncodable(encodable)
             return try jsonEncoder.encode(anyEncodable)
-        default:
-            break
         }
-
-        return nil
     }
 
     func asRequest() throws -> URLRequest {
