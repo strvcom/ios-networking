@@ -12,5 +12,6 @@ import Foundation
 // MARK: - Defines responsibility for refreshing authentication token
 
 public protocol RefreshAuthenticationTokenManaging {
-    func refreshAuthenticationToken() -> AnyPublisher<String, Error>
+    // refresh authentication token with refresh token, as an Output is any data structure containing token management values
+    func refreshAuthenticationToken(_ refreshToken: String) -> AnyPublisher<AuthenticationTokenData, AuthenticationError>
 }

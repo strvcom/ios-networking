@@ -32,10 +32,13 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
             return requestPublisher
         }
 
-        return authenticationManager.authorize(requestPublisher)
+        return requestPublisher
+
+        // TODO:
+        // return authenticationManager.authorize(requestPublisher)
     }
 
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
         // check if response code 401
         // authenticate
         // recall requests
@@ -51,16 +54,19 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
                     return responsePublisher
                 }
 
-                // Authenticate and throw retrying error to recall whole api manager request flow
-                return self.authenticationManager.authorize(
-                    Just(urlRequest)
-                        .setFailureType(to: Error.self)
-                        .eraseToAnyPublisher()
-                )
-                .tryMap { _ -> Response in
-                    throw AuthenticationError.unauthorized
-                }
-                .eraseToAnyPublisher()
+                // TODO:
+                return responsePublisher
+
+//                // Authenticate and throw retrying error to recall whole api manager request flow
+//                return self.authenticationManager.authorize(
+//                    Just(urlRequest)
+//                        .setFailureType(to: Error.self)
+//                        .eraseToAnyPublisher()
+//                )
+//                .tryMap { _ -> Response in
+//                    throw AuthenticationError.unauthorized
+//                }
+//                .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
     }

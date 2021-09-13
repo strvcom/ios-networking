@@ -1,6 +1,6 @@
 //
 //  SampleUserAuthRequest.swift
-//  ios networking sample app
+//  networking sample app
 //
 //  Created by Tomas Cejka on 11.03.2021.
 //

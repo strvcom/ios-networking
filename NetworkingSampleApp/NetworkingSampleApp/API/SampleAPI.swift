@@ -11,10 +11,10 @@ import Foundation
 import Networking
 
 // MARK: SampleAPI
-// SampleAPI implements authentication managing
+// SampleAPI implements RefreshAuthenticationTokenManaging
 // SampleAPI calls various sample request for authentication, retry or observe reachability
 
-final class SampleAPI: AuthenticationTokenManaging {
+final class SampleAPI {
     // MARK: Constants for sample API calling regres.in
     enum SampleAPIConstants {
         static let validEmail = "eve.holt@reqres.in"
@@ -22,19 +22,6 @@ final class SampleAPI: AuthenticationTokenManaging {
         static let sampleEmail = "email@email.me"
         static let sampleName = "Dummy"
         static let sampleJob = "Foo"
-    }
-
-    // MARK: AuthenticationTokenManaging properties
-    var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { self }
-    var authenticationToken: String?
-    var expirationDate: Date?
-    var refreshToken: String?
-    var refreshExpirationDate: Date?
-    var isExpired: Bool {
-        guard let expirationDate = expirationDate else {
-            return true
-        }
-        return expirationDate <= Date()
     }
 
     // MARK: Private properties
@@ -45,7 +32,11 @@ final class SampleAPI: AuthenticationTokenManaging {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
-            AuthorizationTokenInterceptor(authenticationManager: self),
+            AuthorizationTokenInterceptor(
+                authenticationManager: KeychainAuthenticationTokenManager(
+                    refreshAuthenticationTokenManager: self
+                )
+            ),
             LoggingInterceptor()
         ]
 
@@ -56,7 +47,11 @@ final class SampleAPI: AuthenticationTokenManaging {
 
         return APIManager(
             requestAdapters: [
-                AuthorizationTokenInterceptor(authenticationManager: self),
+                AuthorizationTokenInterceptor(
+                    authenticationManager: KeychainAuthenticationTokenManager(
+                        refreshAuthenticationTokenManager: self
+                    )
+                ),
                 LoggingInterceptor()
             ],
             responseProcessors: responseProcessors

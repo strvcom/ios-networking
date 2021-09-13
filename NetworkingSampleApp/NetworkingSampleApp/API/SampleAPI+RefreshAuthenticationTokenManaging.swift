@@ -12,8 +12,18 @@ import Networking
 // MARK: SampleAPI as refresh authentication token manager
 
 extension SampleAPI: RefreshAuthenticationTokenManaging {
-    func refreshAuthenticationToken() -> AnyPublisher<String, Error> {
-        let accessTokenPublisher: AnyPublisher<SampleUserAuthResponse, Error> = apiManager
+    func refreshAuthenticationToken(_: String) -> AnyPublisher<AuthenticationTokenData, AuthenticationError> {
+        authUserPublisher()
+            .map { $0 as AuthenticationTokenData }
+            .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Wrap request to use request method with proper signature, usually wrapped by service
+
+private extension SampleAPI {
+    func authUserPublisher() -> AnyPublisher<SampleUserAuthResponse, AuthenticationError> {
+        apiManager
             .request(
                 SampleUserRouter.loginUser(
                     SampleUserAuthRequest(
@@ -22,13 +32,7 @@ extension SampleAPI: RefreshAuthenticationTokenManaging {
                     )
                 )
             )
-
-        return accessTokenPublisher
-            .handleEvents(receiveOutput: { [weak self] response in
-                self?.authenticationToken = response.token
-                self?.expirationDate = Date(timeIntervalSinceNow: 3600)
-            })
-            .map(\.token)
+            .mapError { _ in .unauthorized }
             .eraseToAnyPublisher()
     }
 }

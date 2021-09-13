@@ -9,15 +9,20 @@ import Foundation
 
 // MARK: - Defines authentication managing by authentication token
 
-public protocol AuthenticationTokenManaging: AuthenticationManaging {
+public protocol AuthenticationTokenManaging: AnyObject, AuthenticationManaging {
+    // auth token management values
     var authenticationToken: String? { get }
-    var expirationDate: Date? { get }
+    var authenticationTokenExpirationDate: Date? { get }
     var refreshToken: String? { get }
-    var refreshExpirationDate: Date? { get }
+    var refreshTokenExpirationDate: Date? { get }
+
+    // custom header field for authorization
     var headerField: String { get }
     var isExpired: Bool { get }
 
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { get }
+
+    func store(_ authenticationTokenData: AuthenticationTokenData)
 }
 
 // MARK: - Default implementation for authentication token managing
@@ -31,28 +36,46 @@ public extension AuthenticationTokenManaging {
         authenticationToken != nil && !isExpired
     }
 
-    func authorize(_ requestPublisher: AnyPublisher<URLRequest, Error>) -> AnyPublisher<URLRequest, Error> {
-        if let accessToken = authenticationToken, !isExpired {
-            return requestPublisher
-                .map { request -> URLRequest in
-                    var mutableRequest = request
-                    mutableRequest.setValue(accessToken, forHTTPHeaderField: self.headerField)
-                    return mutableRequest
-                }.eraseToAnyPublisher()
+    var isExpired: Bool {
+        guard let authenticationTokenExpirationDate = authenticationTokenExpirationDate else {
+            return true
+        }
+        return authenticationTokenExpirationDate <= Date()
+    }
+
+    func authenticate() -> AnyPublisher<Void, AuthenticationError> {
+        guard let refreshToken = refreshToken else {
+            return Fail(error: .missingRefreshToken).eraseToAnyPublisher()
         }
 
-        let error: AuthenticationError = authenticationToken == nil ? .missingAuthenticationToken : .expiredAuthenticationToken
+        if let authenticationTokenExpirationDate = authenticationTokenExpirationDate,
+           authenticationTokenExpirationDate <= Date()
+        {
+            // swiftlint:disable:previous opening_brace
+            return Fail(error: .expiredRefreshToken).eraseToAnyPublisher()
+        }
 
-        // retry whole flow, do not just add auth header bc it can has unwanted/unexpected impact to other modifiers
         return refreshAuthenticationTokenManager
-            .refreshAuthenticationToken()
-            // TODO: different approach to retry, anyway this will be replaced soon
-            .print()
-            .flatMap { _ -> AnyPublisher<URLRequest, Error> in
-                requestPublisher
-                    .retry(1)
-                    .eraseToAnyPublisher()
-            }
+            .refreshAuthenticationToken(refreshToken)
+            .handleEvents(receiveOutput: { [weak self] authenticationTokenData in
+                self?.store(authenticationTokenData)
+            })
+            .map { _ in }
             .eraseToAnyPublisher()
+    }
+
+    func authorizeRequest(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
+        guard isAuthenticated,
+              let authenticationToken = authenticationToken
+        else {
+            let error: AuthenticationError = authenticationToken == nil ? .missingAuthenticationToken : .expiredAuthenticationToken
+
+            return .failure(error)
+        }
+
+        var authenticatedRequest = request
+        authenticatedRequest.setValue(authenticationToken, forHTTPHeaderField: headerField)
+
+        return .success(authenticatedRequest)
     }
 }
