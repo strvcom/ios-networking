@@ -59,11 +59,11 @@ final class SampleAPI {
     }()
 
     func runSamples() {
-        runReachabilitySample()
+//        runReachabilitySample()
         runDecodableSample()
-        runCustomErrorDecodingSample()
-        runURLParametersSample()
-        runPostBodySample()
+//        runCustomErrorDecodingSample()
+//        runURLParametersSample()
+//        runPostBodySample()
     }
 }
 

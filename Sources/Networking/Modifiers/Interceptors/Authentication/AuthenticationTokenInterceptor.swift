@@ -25,17 +25,28 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
     // MARK: RequestInterceptor
 
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
-        // if is auth token needed
-        // proceed authorization
+        // if endpoint requires auth header add it
 
         guard endpointRequest.endpoint.isAuthenticationRequired else {
             return requestPublisher
         }
 
+        // throw error if not valid authentication token
         return requestPublisher
+            .tryMap { [weak self] request in
+                guard let self = self else {
+                    return request
+                }
 
-        // TODO:
-        // return authenticationManager.authorize(requestPublisher)
+                let authorizedRequestResult = self.authenticationManager.authorizeRequest(request)
+                switch authorizedRequestResult {
+                case let .success(request):
+                    return request
+                case let .failure(error):
+                    throw error
+                }
+            }
+            .eraseToAnyPublisher()
     }
 
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
