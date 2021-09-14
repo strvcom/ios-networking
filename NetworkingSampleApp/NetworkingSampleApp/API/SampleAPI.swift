@@ -27,15 +27,14 @@ final class SampleAPI {
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
+    private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
 
     private(set) lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
             AuthorizationTokenInterceptor(
-                authenticationManager: KeychainAuthenticationTokenManager(
-                    refreshAuthenticationTokenManager: self
-                )
+                authenticationProvider: keychainAuthenticationTokenManager
             ),
             LoggingInterceptor()
         ]
@@ -48,9 +47,7 @@ final class SampleAPI {
         return APIManager(
             requestAdapters: [
                 AuthorizationTokenInterceptor(
-                    authenticationManager: KeychainAuthenticationTokenManager(
-                        refreshAuthenticationTokenManager: self
-                    )
+                    authenticationProvider: keychainAuthenticationTokenManager
                 ),
                 LoggingInterceptor()
             ],
@@ -62,7 +59,10 @@ final class SampleAPI {
 //        runReachabilitySample()
         runDecodableSample()
 //        runCustomErrorDecodingSample()
-//        runURLParametersSample()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.runURLParametersSample()
+        }
+
 //        runPostBodySample()
     }
 }

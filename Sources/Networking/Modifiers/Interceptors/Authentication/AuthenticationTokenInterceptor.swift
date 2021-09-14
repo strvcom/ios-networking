@@ -14,12 +14,12 @@ import Foundation
 open class AuthorizationTokenInterceptor: RequestInterceptor {
     // MARK: Private properties
 
-    private var authenticationManager: AuthenticationManaging
+    private var authenticationProvider: AuthenticationProviding
 
     // MARK: Init
 
-    public init(authenticationManager: AuthenticationManaging) {
-        self.authenticationManager = authenticationManager
+    public init(authenticationProvider: AuthenticationProviding) {
+        self.authenticationProvider = authenticationProvider
     }
 
     // MARK: RequestInterceptor
@@ -38,7 +38,7 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
                     return request
                 }
 
-                let authorizedRequestResult = self.authenticationManager.authorizeRequest(request)
+                let authorizedRequestResult = self.authenticationProvider.authorizeRequest(request)
                 switch authorizedRequestResult {
                 case let .success(request):
                     return request

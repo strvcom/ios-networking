@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import KeychainSwift
 
-open class KeychainAuthenticationTokenManager {
+open class KeychainAuthenticationTokenManager: AuthenticationProviding {
     // MARK: Keychain keys
     enum KeychainKey: String, CaseIterable {
         case authenticationToken = "com.strv.networking.authenticationToken"

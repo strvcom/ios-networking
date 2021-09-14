@@ -34,9 +34,33 @@ public extension APIManaging {
     }
 }
 
+// MARK: - Retry
 // TODO: JK idea about retry approach
 /*
  apiManager.request(request, retryCount: 5, retryDelay: 3) { error in
    return true
  }
  */
+
+public struct RetryConfiguration {
+    let retryCount: Int
+    let retryDelay: TimeInterval
+    let retryHandler: (Error) -> Bool
+
+    public init() {
+        retryCount = 3
+        retryDelay = 0.2
+        retryHandler = { _ in
+            true
+        }
+    }
+}
+
+public extension APIManaging {
+    func request(
+        _ endpoint: Requestable,
+        retry _: RetryConfiguration = RetryConfiguration()
+    ) -> AnyPublisher<Response, Error> {
+        request(endpoint)
+    }
+}

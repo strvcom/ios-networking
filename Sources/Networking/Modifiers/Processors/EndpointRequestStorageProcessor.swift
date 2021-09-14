@@ -123,10 +123,8 @@ private extension EndpointRequestStorageProcessor {
     func createFileUrl(_ endpointRequest: EndpointRequest) -> URL {
         var requestDirectory = responsesDirectory
         var fileName = endpointRequest.endpoint.identifier
-        if let sessionId = endpointRequest.sessionId {
-            requestDirectory = requestDirectory.appendingPathComponent(sessionId)
-            fileName = "\(sessionId)_\(endpointRequest.endpoint.identifier)"
-        }
+        requestDirectory = requestDirectory.appendingPathComponent(endpointRequest.sessionId)
+        fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)"
 
         let count = requestCounter[endpointRequest.endpoint.identifier] ?? 1
         fileName = fileName.appending("_\(count)")

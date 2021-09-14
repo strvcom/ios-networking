@@ -63,7 +63,11 @@ public extension AuthenticationTokenManaging {
             .map { _ in }
             .eraseToAnyPublisher()
     }
+}
 
+// MARK: - AuthenticationManaging & AuthenticationProviding
+
+public extension AuthenticationProviding where Self: AuthenticationTokenManaging {
     func authorizeRequest(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         guard isAuthenticated,
               let authenticationToken = authenticationToken

@@ -12,6 +12,7 @@ import Foundation
 // MARK: - Default implementation for api managing
 
 open class APIManager: APIManaging {
+    // MARK: Private properties
     private lazy var backgroundQueue = DispatchQueue(label: "com.strv.apimanager")
 
     private let network: Networking
@@ -19,6 +20,11 @@ open class APIManager: APIManaging {
     private let requestRetrier: RequestRetrying
     private let responseProcessors: [ResponseProcessing]
     private let sessionId: String
+
+    // private queues for request waiting for authentication
+    private lazy var waitingRequests: [Requestable] = []
+
+    // MARK: Init
 
     public init(
         network: Networking = URLSession(configuration: .default),
@@ -71,6 +77,9 @@ private extension APIManager {
             .flatMap { (request, response) -> AnyPublisher<Response, Error> in
                 self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
+//            .catch { error ->
+//
+//            }
             // TODO: remove retry in its current version
             // retry
             //            .catch { error -> AnyPublisher<Response, Error> in
@@ -80,4 +89,6 @@ private extension APIManager {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
+
+    func refreshToken() {}
 }
