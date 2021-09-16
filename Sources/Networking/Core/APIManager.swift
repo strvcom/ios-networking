@@ -19,15 +19,17 @@ open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let requestRetrier: RequestRetrying
     private let responseProcessors: [ResponseProcessing]
+    private let authenticationManager: AuthenticationManaging?
     private let sessionId: String
 
-    // private queues for request waiting for authentication
-    private lazy var waitingRequests: [Requestable] = []
+    // private publisher which queues other requests waiting for authentication
+    private var authenticationPublisher: AnyPublisher<Void, AuthenticationError>?
 
     // MARK: Init
 
     public init(
         network: Networking = URLSession(configuration: .default),
+        authenticationManager: AuthenticationManaging? = nil,
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [],
         requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration())
@@ -40,6 +42,7 @@ open class APIManager: APIManaging {
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.requestRetrier = requestRetrier
+        self.authenticationManager = authenticationManager
     }
 
     public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
@@ -52,8 +55,12 @@ open class APIManager: APIManaging {
 
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
-        // create url request
-        Just(endpointRequest.endpoint)
+
+        let authenticationRequest = authenticationPublisher ?? Just(())
+            .setFailureType(to: AuthenticationError.self)
+            .eraseToAnyPublisher()
+        return authenticationRequest
+            .map { _ in endpointRequest.endpoint }
             // TODO: remove print, temporary debug
             .print()
             // work in background
@@ -77,18 +84,28 @@ private extension APIManager {
             .flatMap { (request, response) -> AnyPublisher<Response, Error> in
                 self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
-//            .catch { error ->
-//
-//            }
-            // TODO: remove retry in its current version
-            // retry
-            //            .catch { error -> AnyPublisher<Response, Error> in
-            //                self.requestRetrier.retry(self.request(endpointRequest), with: error, for: endpointRequest)
-            //            }
+            .tryCatch { [weak self] error -> AnyPublisher<Response, Error> in
+                guard let self = self else {
+                    throw error
+                }
+                if let authenticationManager = self.authenticationManager,
+                   error is AuthenticationError
+                {
+                    // swiftlint:disable:previous opening_brace
+                    if self.authenticationPublisher == nil {
+                        self.authenticationPublisher = authenticationManager.authenticate()
+                            .map { self.authenticationPublisher = nil }
+                            .share()
+                            .eraseToAnyPublisher()
+                    }
+
+                    return self.request(endpointRequest)
+                }
+
+                throw error
+            }
             // move to main thread
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-
-    func refreshToken() {}
 }

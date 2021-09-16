@@ -9,8 +9,8 @@ import Foundation
 import Networking
 
 struct SampleUserAuthResponse: Decodable, AuthenticationTokenData {
-    let authenticationToken: String?
-    let refreshToken: String?
-    let authenticationTokenExpirationDate: Date?
-    let refreshTokenExpirationDate: Date?
+    var authenticationToken: String?
+    var refreshToken: String?
+    var authenticationTokenExpirationDate: Date?
+    var refreshTokenExpirationDate: Date?
 }

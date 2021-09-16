@@ -19,15 +19,32 @@ open class KeychainAuthenticationTokenManager: AuthenticationProviding {
     }
 
     // MARK: Public properties
-    public private(set) var authenticationToken: String?
-    public private(set) var authenticationTokenExpirationDate: Date?
-    public private(set) var refreshToken: String?
-    public private(set) var refreshTokenExpirationDate: Date?
+    public var authenticationToken: String? {
+        string(key: .authenticationToken)
+    }
+
+    public var authenticationTokenExpirationDate: Date? {
+        date(key: .authenticationTokenExpirationDate)
+    }
+
+    public var refreshToken: String? {
+        string(key: .refreshToken)
+    }
+
+    public var refreshTokenExpirationDate: Date? {
+        date(key: .refreshTokenExpirationDate)
+    }
 
     public let refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging
 
     // MARK: Private properties
     private lazy var keychain = KeychainSwift()
+    private lazy var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .full
+        return dateFormatter
+    }()
 
     // MARK: Init
 
@@ -44,18 +61,29 @@ extension KeychainAuthenticationTokenManager: AuthenticationTokenManaging {
             value: authenticationTokenData.authenticationToken,
             key: .authenticationToken
         )
+
+        if let authenticationTokenExpirationDate = authenticationTokenData.authenticationTokenExpirationDate {
+            setString(
+                value: dateFormatter.string(from: authenticationTokenExpirationDate),
+                key: .authenticationTokenExpirationDate
+            )
+        } else {
+            remove(key: .authenticationTokenExpirationDate)
+        }
+
         setString(
             value: authenticationTokenData.refreshToken,
             key: .refreshToken
         )
-        setString(
-            value: authenticationTokenData.refreshToken,
-            key: .refreshToken
-        )
-        setString(
-            value: authenticationTokenData.refreshToken,
-            key: .refreshToken
-        )
+
+        if let refreshTokenExpirationDate = authenticationTokenData.refreshTokenExpirationDate {
+            setString(
+                value: dateFormatter.string(from: refreshTokenExpirationDate),
+                key: .refreshTokenExpirationDate
+            )
+        } else {
+            remove(key: .refreshTokenExpirationDate)
+        }
     }
 
     public func revoke() {
@@ -83,5 +111,13 @@ private extension KeychainAuthenticationTokenManager {
 
     func remove(key: KeychainKey) {
         keychain.delete(key.rawValue)
+    }
+
+    func date(key: KeychainKey) -> Date? {
+        if let date = string(key: key) {
+            return dateFormatter.date(from: date)
+        }
+
+        return nil
     }
 }

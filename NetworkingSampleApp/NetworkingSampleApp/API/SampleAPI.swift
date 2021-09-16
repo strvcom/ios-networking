@@ -45,6 +45,7 @@ final class SampleAPI {
         #endif
 
         return APIManager(
+            authenticationManager: keychainAuthenticationTokenManager,
             requestAdapters: [
                 AuthorizationTokenInterceptor(
                     authenticationProvider: keychainAuthenticationTokenManager
@@ -55,15 +56,35 @@ final class SampleAPI {
         )
     }()
 
-    func runSamples() {
-//        runReachabilitySample()
-        runDecodableSample()
-//        runCustomErrorDecodingSample()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.runURLParametersSample()
-        }
+    // MARK: Lifecycle
 
-//        runPostBodySample()
+    init() {
+        // set default data for simulation of authentication, like after login
+        let authenticationTokenData = SampleUserAuthResponse(
+            authenticationToken: nil,
+            refreshToken: "",
+            authenticationTokenExpirationDate: nil,
+            refreshTokenExpirationDate: Date(timeIntervalSinceNow: 1_000_000)
+        )
+        keychainAuthenticationTokenManager.store(authenticationTokenData)
+    }
+}
+
+// MARK: - Public methods
+
+extension SampleAPI {
+    func runSamples() {
+        //        runReachabilitySample()
+        runDecodableSample()
+        runPostBodySample()
+        //        runDecodableSample()
+        //        runDecodableSample()
+        //        runCustomErrorDecodingSample()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//            self.runURLParametersSample()
+//        }
+
+        //        runPostBodySample()
     }
 }
 

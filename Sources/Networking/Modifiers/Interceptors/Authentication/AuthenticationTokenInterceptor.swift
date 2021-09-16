@@ -26,7 +26,6 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
 
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // if endpoint requires auth header add it
-
         guard endpointRequest.endpoint.isAuthenticationRequired else {
             return requestPublisher
         }
@@ -50,14 +49,10 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
     }
 
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
-        // check if response code 401
-        // authenticate
-        // recall requests
-
+        // check if response codes for unauthorized codes & map to auth error
         responsePublisher
-            .catch { [weak self] error -> AnyPublisher<Response, Error> in
+            .tryCatch { error -> AnyPublisher<Response, Error> in
                 guard
-                    let self = self,
                     let networkError = error as? NetworkError,
                     case let .unacceptableStatusCode(statusCode, _, _) = networkError,
                     statusCode == 401
@@ -65,19 +60,7 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
                     return responsePublisher
                 }
 
-                // TODO:
-                return responsePublisher
-
-//                // Authenticate and throw retrying error to recall whole api manager request flow
-//                return self.authenticationManager.authorize(
-//                    Just(urlRequest)
-//                        .setFailureType(to: Error.self)
-//                        .eraseToAnyPublisher()
-//                )
-//                .tryMap { _ -> Response in
-//                    throw AuthenticationError.unauthorized
-//                }
-//                .eraseToAnyPublisher()
+                throw AuthenticationError.unauthorized
             }
             .eraseToAnyPublisher()
     }
