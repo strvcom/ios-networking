@@ -74,17 +74,11 @@ final class SampleAPI {
 
 extension SampleAPI {
     func runSamples() {
-        //        runReachabilitySample()
+        runReachabilitySample()
         runDecodableSample()
         runPostBodySample()
-        //        runDecodableSample()
-        //        runDecodableSample()
-        //        runCustomErrorDecodingSample()
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//            self.runURLParametersSample()
-//        }
-
-        //        runPostBodySample()
+        runURLParametersSample()
+        runCustomErrorDecodingSample()
     }
 }
 
@@ -207,3 +201,5 @@ private extension SampleAPI {
         .store(in: &cancellables)
     }
 }
+
+
