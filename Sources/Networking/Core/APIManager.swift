@@ -35,6 +35,7 @@ open class APIManager: APIManaging {
         responseProcessors: [ResponseProcessing] = [],
         requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration())
     ) {
+        // TODO: get rid of this
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMddyyyy_hhmmssa"
         // keep session id in readable format
@@ -102,7 +103,7 @@ private extension APIManager {
                     throw error
                 }
 
-                // if error while authenticating throw it
+                // if error while authenticating throw it, do not cycle
                 if !self.isAuthenticationError.value {
                     self.createAuthenticationPublisher()
                     return self.request(endpointRequest)

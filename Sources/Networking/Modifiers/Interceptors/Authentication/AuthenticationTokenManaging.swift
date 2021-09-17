@@ -22,6 +22,7 @@ public protocol AuthenticationTokenManaging: AnyObject, AuthenticationManaging {
 
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { get }
 
+    // allows set authentication data from outside
     func store(_ authenticationTokenData: AuthenticationTokenData)
 }
 
@@ -65,9 +66,9 @@ public extension AuthenticationTokenManaging {
     }
 }
 
-// MARK: - AuthenticationManaging & AuthenticationProviding
+// MARK: - AuthenticationTokenManaging & AuthenticationProviding
 
-public extension AuthenticationProviding where Self: AuthenticationTokenManaging {
+public extension AuthenticationTokenManaging where Self: AuthenticationProviding {
     func authorizeRequest(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         guard isAuthenticated,
               let authenticationToken = authenticationToken

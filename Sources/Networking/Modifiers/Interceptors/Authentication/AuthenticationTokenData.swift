@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Authentication token data definition
+
 public protocol AuthenticationTokenData {
     var authenticationToken: String? { get }
     var authenticationTokenExpirationDate: Date? { get }

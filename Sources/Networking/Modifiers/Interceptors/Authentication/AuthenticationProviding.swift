@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Mechanism to authorize requests
+
 public protocol AuthenticationProviding {
     func authorizeRequest(_ request: URLRequest) -> Result<URLRequest, AuthenticationError>
 }

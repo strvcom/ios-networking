@@ -201,5 +201,3 @@ private extension SampleAPI {
         .store(in: &cancellables)
     }
 }
-
-

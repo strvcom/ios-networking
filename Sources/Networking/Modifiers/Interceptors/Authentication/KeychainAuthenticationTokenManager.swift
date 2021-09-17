@@ -9,6 +9,9 @@ import Combine
 import Foundation
 import KeychainSwift
 
+// MARK: - Keychain version for authentication token managing
+// stores & reads authentication token data from keychain
+
 open class KeychainAuthenticationTokenManager: AuthenticationProviding {
     // MARK: Keychain keys
     enum KeychainKey: String, CaseIterable {
@@ -62,28 +65,20 @@ extension KeychainAuthenticationTokenManager: AuthenticationTokenManaging {
             key: .authenticationToken
         )
 
-        if let authenticationTokenExpirationDate = authenticationTokenData.authenticationTokenExpirationDate {
-            setString(
-                value: dateFormatter.string(from: authenticationTokenExpirationDate),
-                key: .authenticationTokenExpirationDate
-            )
-        } else {
-            remove(key: .authenticationTokenExpirationDate)
-        }
+        setDate(
+            value: authenticationTokenData.authenticationTokenExpirationDate,
+            key: .authenticationTokenExpirationDate
+        )
 
         setString(
             value: authenticationTokenData.refreshToken,
             key: .refreshToken
         )
 
-        if let refreshTokenExpirationDate = authenticationTokenData.refreshTokenExpirationDate {
-            setString(
-                value: dateFormatter.string(from: refreshTokenExpirationDate),
-                key: .refreshTokenExpirationDate
-            )
-        } else {
-            remove(key: .refreshTokenExpirationDate)
-        }
+        setDate(
+            value: authenticationTokenData.refreshTokenExpirationDate,
+            key: .refreshTokenExpirationDate
+        )
     }
 
     public func revoke() {
@@ -103,6 +98,18 @@ private extension KeychainAuthenticationTokenManager {
             return
         }
         keychain.set(value, forKey: key.rawValue)
+    }
+
+    func setDate(value: Date?, key: KeychainKey) {
+        guard let date = value else {
+            setString(value: nil, key: key)
+            return
+        }
+
+        setString(
+            value: dateFormatter.string(from: date),
+            key: key
+        )
     }
 
     func string(key: KeychainKey) -> String? {
