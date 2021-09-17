@@ -24,6 +24,7 @@ open class APIManager: APIManaging {
 
     // private publisher which queues other requests waiting for authentication
     private var authenticationPublisher: AnyPublisher<Void, AuthenticationError>?
+    private lazy var isAuthenticationError = CurrentValueSubject<Bool, Never>(false)
 
     // MARK: Init
 
@@ -55,12 +56,20 @@ open class APIManager: APIManaging {
 
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
+        // define init upstream
+        let endpointPublisher: AnyPublisher<Requestable, Error>
+        if let authenticationPublisher = authenticationPublisher {
+            endpointPublisher = authenticationPublisher
+                .map { _ in endpointRequest.endpoint }
+                .mapError { $0 }
+                .eraseToAnyPublisher()
+        } else {
+            endpointPublisher = Just(endpointRequest.endpoint)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
 
-        let authenticationRequest = authenticationPublisher ?? Just(())
-            .setFailureType(to: AuthenticationError.self)
-            .eraseToAnyPublisher()
-        return authenticationRequest
-            .map { _ in endpointRequest.endpoint }
+        return endpointPublisher
             // TODO: remove print, temporary debug
             .print()
             // work in background
@@ -85,21 +94,20 @@ private extension APIManager {
                 self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
             .tryCatch { [weak self] error -> AnyPublisher<Response, Error> in
-                guard let self = self else {
+                guard
+                    let self = self,
+                    self.authenticationManager != nil,
+                    error is AuthenticationError
+                else {
                     throw error
                 }
-                if let authenticationManager = self.authenticationManager,
-                   error is AuthenticationError
-                {
-                    // swiftlint:disable:previous opening_brace
-                    if self.authenticationPublisher == nil {
-                        self.authenticationPublisher = authenticationManager.authenticate()
-                            .map { self.authenticationPublisher = nil }
-                            .share()
-                            .eraseToAnyPublisher()
-                    }
 
+                // if error while authenticating throw it
+                if !self.isAuthenticationError.value {
+                    self.createAuthenticationPublisher()
                     return self.request(endpointRequest)
+                } else {
+                    self.isAuthenticationError.value = false
                 }
 
                 throw error
@@ -107,5 +115,27 @@ private extension APIManager {
             // move to main thread
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Create authentication publisher
+
+private extension APIManager {
+    func createAuthenticationPublisher() {
+        if authenticationPublisher == nil {
+            // when authentication completes clean up
+            authenticationPublisher = authenticationManager?.authenticate()
+                .map { [weak self] _ in
+                    self?.authenticationPublisher = nil
+                    self?.isAuthenticationError.value = false
+                }
+                .mapError { [weak self] error in
+                    self?.authenticationPublisher = nil
+                    self?.isAuthenticationError.value = true
+                    return error
+                }
+                .share()
+                .eraseToAnyPublisher()
+        }
     }
 }

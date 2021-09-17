@@ -20,7 +20,7 @@ extension SampleAPI: RefreshAuthenticationTokenManaging {
                 mutableAuthenticationResponse.authenticationToken = "authenticationToken"
                 mutableAuthenticationResponse.authenticationTokenExpirationDate = Date(timeIntervalSinceNow: 1000)
                 mutableAuthenticationResponse.refreshToken = "refreshToken"
-                mutableAuthenticationResponse.refreshTokenExpirationDate = Date(timeIntervalSinceNow: 100000)
+                mutableAuthenticationResponse.refreshTokenExpirationDate = Date(timeIntervalSinceNow: 100_000)
 
                 return mutableAuthenticationResponse
             }
