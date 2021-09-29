@@ -17,7 +17,6 @@ open class APIManager: APIManaging {
 
     private let network: Networking
     private let requestAdapters: [RequestAdapting]
-    private let requestRetrier: RequestRetrying
     private let responseProcessors: [ResponseProcessing]
     private let authenticationManager: AuthenticationManaging?
     private let sessionId: String
@@ -32,8 +31,7 @@ open class APIManager: APIManaging {
         network: Networking = URLSession(configuration: .default),
         authenticationManager: AuthenticationManaging? = nil,
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [],
-        requestRetrier: RequestRetrying = RequestRetrier(RequestRetrier.Configuration())
+        responseProcessors: [ResponseProcessing] = []
     ) {
         // TODO: get rid of this
         let dateFormatter = DateFormatter()
@@ -43,34 +41,33 @@ open class APIManager: APIManaging {
         self.network = network
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
-        self.requestRetrier = requestRetrier
         self.authenticationManager = authenticationManager
     }
 
-    public func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
+    public func request(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<Response, Error> {
         // create identifier of api call
-        request(EndpointRequest(endpoint, sessionId: sessionId))
+        request(EndpointRequest(endpoint, sessionId: sessionId), retry: retry)
     }
 }
 
 // MARK: - Private extension to use same api call for retry
 
 private extension APIManager {
-    func request(_ endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
+    func request(_ endpointRequest: EndpointRequest, retry: RetryConfiguration?) -> AnyPublisher<Response, Error> {
         // define init upstream
-        let endpointPublisher: AnyPublisher<Requestable, Error>
+        let initPublisher: AnyPublisher<Requestable, Error>
         if let authenticationPublisher = authenticationPublisher {
-            endpointPublisher = authenticationPublisher
+            initPublisher = authenticationPublisher
                 .map { _ in endpointRequest.endpoint }
                 .mapError { $0 }
                 .eraseToAnyPublisher()
         } else {
-            endpointPublisher = Just(endpointRequest.endpoint)
+            initPublisher = Just(endpointRequest.endpoint)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
         }
 
-        return endpointPublisher
+        let endpointPublisher = initPublisher
             // TODO: remove print, temporary debug
             .print()
             // work in background
@@ -94,21 +91,37 @@ private extension APIManager {
             .flatMap { (request, response) -> AnyPublisher<Response, Error> in
                 self.responseProcessors.process(response, with: request, for: endpointRequest)
             }
+
+        return endpointPublisher
             .tryCatch { [weak self] error -> AnyPublisher<Response, Error> in
-                guard
-                    let self = self,
-                    self.authenticationManager != nil,
-                    error is AuthenticationError
-                else {
+
+                guard let self = self else {
                     throw error
                 }
 
-                // if error while authenticating throw it, do not cycle
-                if !self.isAuthenticationError.value {
-                    self.createAuthenticationPublisher()
-                    return self.request(endpointRequest)
-                } else {
-                    self.isAuthenticationError.value = false
+                // retry configuration
+                // avoid infinity retries
+                if let retry = retry, retry.retries > 0, retry.retryHandler(error) {
+                    return Publishers.Delay(
+                        upstream: endpointPublisher,
+                        interval: RunLoop.SchedulerTimeType.Stride(retry.delay),
+                        tolerance: 1,
+                        scheduler: RunLoop.main
+                    )
+                    // one upstream already added
+                    .retry(retry.retries - 1)
+                    .eraseToAnyPublisher()
+                }
+
+                // authentication
+                if self.authenticationManager != nil, error is AuthenticationError {
+                    // if error while authenticating throw it, do not cycle
+                    if !self.isAuthenticationError.value {
+                        self.createAuthenticationPublisher()
+                        return self.request(endpointRequest, retry: retry)
+                    } else {
+                        self.isAuthenticationError.value = false
+                    }
                 }
 
                 throw error

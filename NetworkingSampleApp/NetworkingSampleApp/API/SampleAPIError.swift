@@ -10,14 +10,10 @@ import Foundation
 import Networking
 
 // Custom error
-struct SampleAPIError: Decodable, Error, LocalizedError, Retrying {
+struct SampleAPIError: Decodable, Error, LocalizedError {
     let error: String?
 
     var errorDescription: String? {
         "Custom error from api, message: \(error ?? "unknown"))"
-    }
-
-    var shouldRetry: Bool {
-        true
     }
 }

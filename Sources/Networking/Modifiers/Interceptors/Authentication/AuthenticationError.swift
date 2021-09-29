@@ -8,7 +8,7 @@ import Foundation
 
 // MARK: - Defines base authentication errors
 
-public enum AuthenticationError: Error, LocalizedError, Retrying {
+public enum AuthenticationError: Error, LocalizedError {
     case unauthorized
     case missingAuthenticationToken
     case expiredAuthenticationToken
@@ -28,9 +28,5 @@ public enum AuthenticationError: Error, LocalizedError, Retrying {
         case .expiredRefreshToken:
             return NSLocalizedString("Expired refresh token", comment: "")
         }
-    }
-
-    public var shouldRetry: Bool {
-        true
     }
 }

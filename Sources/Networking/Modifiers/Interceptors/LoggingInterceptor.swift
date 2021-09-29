@@ -100,26 +100,17 @@ private extension LoggingInterceptor {
     }
 
     func prettyErrorLog(_ error: Error, from endpoint: Requestable) {
-        // retry error
-        if let retryingError = error as? Retrying, retryingError.shouldRetry {
-            os_log("⏬❎⏬ RETRY ⏬❎⏬", type: .debug)
-            os_log("🔈 %{public}@ %{public}@", type: .debug, endpoint.method.rawValue.uppercased(), endpoint.path)
-            os_log("❌  Error: %{public}@", type: .debug, error.localizedDescription)
-            os_log("⏫❎⏫ RETRY END ⏫❎⏫", type: .debug)
-        } else {
-            // other errors
-            os_log("❌❌❌ ERROR ❌❌❌", type: .error)
-            if let networkError = error as? NetworkError, case let .unacceptableStatusCode(statusCode, _, response) = networkError {
-                os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, statusCode, endpoint.method.rawValue.uppercased(), endpoint.path)
+        os_log("❌❌❌ ERROR ❌❌❌", type: .error)
+        if let networkError = error as? NetworkError, case let .unacceptableStatusCode(statusCode, _, response) = networkError {
+            os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, statusCode, endpoint.method.rawValue.uppercased(), endpoint.path)
 
-                if let body = String(data: response.data, encoding: .utf8) {
-                    os_log("👉 Body: %{public}@", type: .error, body)
-                }
-            } else {
-                os_log("🔈 %{public}@ %{public}@", type: .error, endpoint.method.rawValue.uppercased(), endpoint.path)
-                os_log("❌ %{public}@", type: .error, error.localizedDescription)
+            if let body = String(data: response.data, encoding: .utf8) {
+                os_log("👉 Body: %{public}@", type: .error, body)
             }
-            os_log("❌❌❌ ERROR END ❌❌❌", type: .error)
+        } else {
+            os_log("🔈 %{public}@ %{public}@", type: .error, endpoint.method.rawValue.uppercased(), endpoint.path)
+            os_log("❌ %{public}@", type: .error, error.localizedDescription)
         }
+        os_log("❌❌❌ ERROR END ❌❌❌", type: .error)
     }
 }

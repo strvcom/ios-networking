@@ -12,55 +12,32 @@ import Foundation
 // MARK: - Defines api managing
 
 public protocol APIManaging {
-    func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error>
-    func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<Body, Error>
+    func request(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<Response, Error>
+    func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<Body, Error>
 }
 
-// MARK: - Provide request with default json decoder
+// MARK: - Provide request with default json decoder, retry configuration
 
 public extension APIManaging {
-    func request<Body: Decodable>(_ endpoint: Requestable) -> AnyPublisher<Body, Error> {
-        request(endpoint, decoder: JSONDecoder())
+    func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
+        request(endpoint, retry: RetryConfiguration.default)
+    }
+
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint, decoder: JSONDecoder(), retry: retry)
+    }
+
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint, decoder: JSONDecoder(), retry: RetryConfiguration.default)
     }
 }
 
 // MARK: - Provide request with default decoding
 
 public extension APIManaging {
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error> {
-        request(endpoint)
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint, retry: retry)
             .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
             .eraseToAnyPublisher()
-    }
-}
-
-// MARK: - Retry
-// TODO: JK idea about retry approach
-/*
- apiManager.request(request, retryCount: 5, retryDelay: 3) { error in
-   return true
- }
- */
-
-public struct RetryConfiguration {
-    let retryCount: Int
-    let retryDelay: TimeInterval
-    let retryHandler: (Error) -> Bool
-
-    public init() {
-        retryCount = 3
-        retryDelay = 0.2
-        retryHandler = { _ in
-            true
-        }
-    }
-}
-
-public extension APIManaging {
-    func request(
-        _ endpoint: Requestable,
-        retry _: RetryConfiguration = RetryConfiguration()
-    ) -> AnyPublisher<Response, Error> {
-        request(endpoint)
     }
 }
