@@ -15,11 +15,13 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
     // MARK: Private properties
 
     private var authenticationProvider: AuthenticationProviding
+    private var unauthorizedStatusCodes: [HTTPStatusCode]
 
     // MARK: Init
 
-    public init(authenticationProvider: AuthenticationProviding) {
+    public init(authenticationProvider: AuthenticationProviding, unauthorizedStatusCodes: [HTTPStatusCode] = [401]) {
         self.authenticationProvider = authenticationProvider
+        self.unauthorizedStatusCodes = unauthorizedStatusCodes
     }
 
     // MARK: RequestInterceptor
@@ -55,7 +57,7 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
                 guard
                     let networkError = error as? NetworkError,
                     case let .unacceptableStatusCode(statusCode, _, _) = networkError,
-                    statusCode == 401
+                    self.unauthorizedStatusCodes.contains(statusCode)
                 else {
                     return responsePublisher
                 }

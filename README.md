@@ -1,7 +1,7 @@
 # **WIP**
 
 # Networking
-The lightweight library for api calls management. The library is build upon URL session.  
+The lightweight library for api calls management. The library is built upon URL session.  
 
 **Networking supports**
  * simple definition of API endpoints
