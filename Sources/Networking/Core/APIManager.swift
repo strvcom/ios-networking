@@ -23,7 +23,7 @@ open class APIManager: APIManaging {
 
     // private publisher which queues other requests waiting for authentication
     private var authenticationPublisher: AnyPublisher<Void, AuthenticationError>?
-    private lazy var isAuthenticationError = CurrentValueSubject<Bool, Never>(false)
+    private lazy var isAuthenticationError = false
 
     // MARK: Init
 
@@ -116,11 +116,9 @@ private extension APIManager {
                 // authentication
                 if self.authenticationManager != nil, error is AuthenticationError {
                     // if error while authenticating throw it, do not cycle
-                    if !self.isAuthenticationError.value {
+                    if !self.isAuthenticationError {
                         self.createAuthenticationPublisher()
                         return self.request(endpointRequest, retry: retry)
-                    } else {
-                        self.isAuthenticationError.value = false
                     }
                 }
 
@@ -141,11 +139,11 @@ private extension APIManager {
             authenticationPublisher = authenticationManager?.authenticate()
                 .map { [weak self] _ in
                     self?.authenticationPublisher = nil
-                    self?.isAuthenticationError.value = false
+                    self?.isAuthenticationError = false
                 }
                 .mapError { [weak self] error in
                     self?.authenticationPublisher = nil
-                    self?.isAuthenticationError.value = true
+                    self?.isAuthenticationError = true
                     return error
                 }
                 .share()

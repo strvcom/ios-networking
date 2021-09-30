@@ -13,7 +13,7 @@ import Foundation
 
 public protocol APIManaging {
     func request(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<Response, Error>
-    func request<Body: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<Body, Error>
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error>
 }
 
 // MARK: - Provide request with default json decoder, retry configuration

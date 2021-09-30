@@ -73,9 +73,11 @@ public extension AuthenticationTokenManaging where Self: AuthenticationProviding
         guard isAuthenticated,
               let authenticationToken = authenticationToken
         else {
-            let error: AuthenticationError = authenticationToken == nil ? .missingAuthenticationToken : .expiredAuthenticationToken
+            guard authenticationToken == nil else {
+                return .failure(.expiredAuthenticationToken)
+            }
 
-            return .failure(error)
+            return .failure(.missingAuthenticationToken)
         }
 
         var authenticatedRequest = request

@@ -75,10 +75,11 @@ final class SampleAPI {
 extension SampleAPI {
     func runSamples() {
 //        runReachabilitySample()
-//        runDecodableSample()
+        runDecodableSample()
+        runDecodableSample()
 //        runPostBodySample()
 //        runURLParametersSample()
-        runCustomErrorDecodingSample()
+//        runCustomErrorDecodingSample()
     }
 }
 
