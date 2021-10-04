@@ -36,7 +36,7 @@ private extension SampleAPI {
             .request(
                 SampleUserRouter.loginUser(
                     SampleUserAuthRequest(
-                        email: "", // SampleAPIConstants.validEmail,
+                        email: SampleAPIConstants.validEmail,
                         password: SampleAPIConstants.validPassword
                     )
                 )

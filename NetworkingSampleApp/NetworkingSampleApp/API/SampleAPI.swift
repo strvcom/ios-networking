@@ -33,7 +33,7 @@ final class SampleAPI {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
-            AuthorizationTokenInterceptor(
+            AuthenticationTokenInterceptor(
                 authenticationProvider: keychainAuthenticationTokenManager
             ),
             LoggingInterceptor()
@@ -47,7 +47,7 @@ final class SampleAPI {
         return APIManager(
             authenticationManager: keychainAuthenticationTokenManager,
             requestAdapters: [
-                AuthorizationTokenInterceptor(
+                AuthenticationTokenInterceptor(
                     authenticationProvider: keychainAuthenticationTokenManager
                 ),
                 LoggingInterceptor()
@@ -76,7 +76,7 @@ extension SampleAPI {
     func runSamples() {
 //        runReachabilitySample()
         runDecodableSample()
-        runDecodableSample()
+//        runDecodableSample()
 //        runPostBodySample()
 //        runURLParametersSample()
 //        runCustomErrorDecodingSample()
