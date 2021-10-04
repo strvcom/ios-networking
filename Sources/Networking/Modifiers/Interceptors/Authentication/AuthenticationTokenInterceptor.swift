@@ -1,5 +1,5 @@
 //
-//  AuthorizationTokenProcessing.swift
+//  AuthenticationTokenInterceptor.swift
 //  STRV_template
 //
 //  Created by Tomas Cejka on 09.02.2021.
@@ -9,19 +9,24 @@
 import Combine
 import Foundation
 
-// MARK: - Defines authentication handling in requests
+// MARK: - Defines status code which should throw unauthorized status code
+public typealias UnauthorizedStatusCodeHandler = (HTTPStatusCode) -> Bool
 
-open class AuthorizationTokenInterceptor: RequestInterceptor {
+// MARK: - Defines authentication handling in requests
+open class AuthenticationTokenInterceptor: RequestInterceptor {
     // MARK: Private properties
 
     private var authenticationProvider: AuthenticationProviding
-    private var unauthorizedStatusCodes: [HTTPStatusCode]
+    private var unauthorizedStatusCodeHandler: UnauthorizedStatusCodeHandler?
 
     // MARK: Init
 
-    public init(authenticationProvider: AuthenticationProviding, unauthorizedStatusCodes: [HTTPStatusCode] = [401]) {
+    public init(
+        authenticationProvider: AuthenticationProviding,
+        unauthorizedStatusCodeHandler: UnauthorizedStatusCodeHandler? = nil
+    ) {
         self.authenticationProvider = authenticationProvider
-        self.unauthorizedStatusCodes = unauthorizedStatusCodes
+        self.unauthorizedStatusCodeHandler = unauthorizedStatusCodeHandler
     }
 
     // MARK: RequestInterceptor
@@ -54,15 +59,28 @@ open class AuthorizationTokenInterceptor: RequestInterceptor {
         // check if response codes for unauthorized codes & map to auth error
         responsePublisher
             .tryCatch { error -> AnyPublisher<Response, Error> in
+                // handle only unacceptable status codes
                 guard
                     let networkError = error as? NetworkError,
-                    case let .unacceptableStatusCode(statusCode, _, _) = networkError,
-                    self.unauthorizedStatusCodes.contains(statusCode)
+                    case let .unacceptableStatusCode(statusCode, _, _) = networkError
                 else {
                     return responsePublisher
                 }
 
-                throw AuthenticationError.unauthorized
+                // default check for 401 if not handler
+                guard let handler = self.unauthorizedStatusCodeHandler else {
+                    if statusCode == 401 {
+                        throw AuthenticationError.unauthorized
+                    }
+
+                    return responsePublisher
+                }
+
+                if handler(statusCode) {
+                    throw AuthenticationError.unauthorized
+                }
+
+                return responsePublisher
             }
             .eraseToAnyPublisher()
     }
