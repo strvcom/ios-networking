@@ -49,51 +49,29 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
-            .handleEvents(receiveOutput: { [weak self] output in
-                guard let self = self else {
-                    return
-                }
-                self.backgroundQueue.async {
-                    self.createFolderIfNeeded(endpointRequest.sessionId)
-
-                    // for http responses read headers
-                    var responseHeaders: [String: String]?
-                    var statusCode: Int?
-
-                    if let httpResponse = output.response as? HTTPURLResponse {
-                        responseHeaders = httpResponse.allHeaderFields as? [String: String]
-                        statusCode = httpResponse.statusCode
-                    }
-
-                    // parameters
-                    var parameters: [String: String]?
-                    if let url = urlRequest.url,
-                       let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                       let queryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
-                    {
-                        // swiftlint:disable:previous opening_brace
-                        parameters = queryItems.reduce(into: [String: String]()) { dict, item in
-                            dict[item.name] = item.value
-                        }
-                    }
-
-                    // create data model
-                    let storageModel = EndpointRequestStorageModel(
-                        date: Date(),
-                        path: endpointRequest.endpoint.path,
-                        parameters: parameters,
-                        method: endpointRequest.endpoint.method.rawValue,
-                        statusCode: statusCode,
-                        requestBody: urlRequest.httpBody,
-                        requestBodyString: String(data: urlRequest.httpBody ?? Data(), encoding: .utf8),
-                        responseBody: output.data,
-                        responseBodyString: String(data: output.data, encoding: .utf8),
-                        requestHeaders: urlRequest.allHTTPHeaderFields,
-                        responseHeaders: responseHeaders
-                    )
-                    self.store(storageModel, url: self.createFileUrl(endpointRequest))
-                }
+            .handleEvents(receiveOutput: { [weak self] response in
+                self?.storeResponse(
+                    response,
+                    endpointRequest: endpointRequest,
+                    urlRequest: urlRequest
+                )
             })
+            .tryCatch { [weak self] error -> AnyPublisher<Response, Error> in
+
+                guard let networkError = error as? NetworkError,
+                      case let .unacceptableStatusCode(_, _, response) = networkError
+                else {
+                    throw error
+                }
+
+                self?.storeResponse(
+                    response,
+                    endpointRequest: endpointRequest,
+                    urlRequest: urlRequest
+                )
+
+                throw error
+            }
             .eraseToAnyPublisher()
     }
 }
@@ -101,6 +79,60 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 // MARK: - Private storage extension
 
 private extension EndpointRequestStorageProcessor {
+    func storeResponse(
+        _ response: Response,
+        endpointRequest: EndpointRequest,
+        urlRequest: URLRequest
+    ) {
+        backgroundQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.createFolderIfNeeded(endpointRequest.sessionId)
+
+            // for http responses read headers
+            var responseHeaders: [String: String]?
+            var statusCode: Int?
+
+            if let httpResponse = response.response as? HTTPURLResponse {
+                responseHeaders = httpResponse.allHeaderFields as? [String: String]
+                statusCode = httpResponse.statusCode
+            }
+
+            // parameters
+            var parameters: [String: String]?
+            if let url = urlRequest.url,
+               let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let queryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
+            {
+                // swiftlint:disable:previous opening_brace
+                parameters = queryItems.reduce(into: [String: String]()) { dict, item in
+                    dict[item.name] = item.value
+                }
+            }
+
+            // create data model
+            let storageModel = EndpointRequestStorageModel(
+                date: Date(),
+                path: endpointRequest.endpoint.path,
+                parameters: parameters,
+                method: endpointRequest.endpoint.method.rawValue,
+                statusCode: statusCode,
+                requestBody: urlRequest.httpBody,
+                requestBodyString: String(data: urlRequest.httpBody ?? Data(), encoding: .utf8),
+                responseBody: response.data,
+                responseBodyString: String(data: response.data, encoding: .utf8),
+                requestHeaders: urlRequest.allHTTPHeaderFields,
+                responseHeaders: responseHeaders
+            )
+            self.store(
+                storageModel,
+                url: self.createFileUrl(endpointRequest, statusCode: statusCode ?? 0)
+            )
+        }
+    }
+
     func createFolderIfNeeded(_ sessionId: String?) {
         do {
             // root storage folder
@@ -120,14 +152,16 @@ private extension EndpointRequestStorageProcessor {
         }
     }
 
-    func createFileUrl(_ endpointRequest: EndpointRequest) -> URL {
+    func createFileUrl(_ endpointRequest: EndpointRequest, statusCode: Int) -> URL {
         var requestDirectory = responsesDirectory
         var fileName = endpointRequest.endpoint.identifier
         requestDirectory = requestDirectory.appendingPathComponent(endpointRequest.sessionId)
         fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)"
 
-        let count = requestCounter[endpointRequest.endpoint.identifier] ?? 1
-        fileName = fileName.appending("_\(count)")
+        let requestWithStatusCodeId = "\(endpointRequest.endpoint.identifier)_\(statusCode)"
+
+        let count = requestCounter[requestWithStatusCodeId] ?? 1
+        fileName = fileName.appending("_\(statusCode)_\(count)")
         requestCounter[endpointRequest.endpoint.identifier] = count + 1
 
         return requestDirectory.appendingPathComponent("\(fileName).json")

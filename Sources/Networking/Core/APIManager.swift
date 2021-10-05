@@ -99,6 +99,15 @@ private extension APIManager {
                     throw error
                 }
 
+                // authentication
+                if self.authenticationManager != nil, error is AuthenticationError {
+                    // if error while authenticating throw it, do not cycle
+                    if !self.isAuthenticationError {
+                        self.createAuthenticationPublisher()
+                        return self.request(endpointRequest, retry: retry)
+                    }
+                }
+
                 // retry configuration
                 // avoid infinity retries
                 if let retry = retry, retry.retries > 0, retry.retryHandler(error) {
@@ -111,15 +120,6 @@ private extension APIManager {
                     // one upstream already added
                     .retry(retry.retries - 1)
                     .eraseToAnyPublisher()
-                }
-
-                // authentication
-                if self.authenticationManager != nil, error is AuthenticationError {
-                    // if error while authenticating throw it, do not cycle
-                    if !self.isAuthenticationError {
-                        self.createAuthenticationPublisher()
-                        return self.request(endpointRequest, retry: retry)
-                    }
                 }
 
                 throw error
