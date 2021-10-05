@@ -24,6 +24,9 @@ final class SampleAPI {
         static let sampleJob = "Foo"
     }
 
+    // MARK: Public properties
+    var authenticationToken: String?
+
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
@@ -45,7 +48,9 @@ final class SampleAPI {
         #endif
 
         return APIManager(
-            authenticationManager: keychainAuthenticationTokenManager,
+            // TODO: another sample
+            // authenticationManager: keychainAuthenticationTokenManager,
+            authenticationManager: self,
             requestAdapters: [
                 AuthenticationTokenInterceptor(
                     authenticationProvider: keychainAuthenticationTokenManager
