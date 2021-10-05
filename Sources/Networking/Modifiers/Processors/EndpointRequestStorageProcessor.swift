@@ -128,7 +128,7 @@ private extension EndpointRequestStorageProcessor {
             )
             self.store(
                 storageModel,
-                url: self.createFileUrl(endpointRequest, statusCode: statusCode ?? 0)
+                url: self.createFileUrl(endpointRequest)
             )
         }
     }
@@ -152,16 +152,14 @@ private extension EndpointRequestStorageProcessor {
         }
     }
 
-    func createFileUrl(_ endpointRequest: EndpointRequest, statusCode: Int) -> URL {
+    func createFileUrl(_ endpointRequest: EndpointRequest) -> URL {
         var requestDirectory = responsesDirectory
         var fileName = endpointRequest.endpoint.identifier
         requestDirectory = requestDirectory.appendingPathComponent(endpointRequest.sessionId)
         fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)"
 
-        let requestWithStatusCodeId = "\(endpointRequest.endpoint.identifier)_\(statusCode)"
-
-        let count = requestCounter[requestWithStatusCodeId] ?? 1
-        fileName = fileName.appending("_\(statusCode)_\(count)")
+        let count = requestCounter[endpointRequest.endpoint.identifier] ?? 1
+        fileName = fileName.appending("_\(count)")
         requestCounter[endpointRequest.endpoint.identifier] = count + 1
 
         return requestDirectory.appendingPathComponent("\(fileName).json")
