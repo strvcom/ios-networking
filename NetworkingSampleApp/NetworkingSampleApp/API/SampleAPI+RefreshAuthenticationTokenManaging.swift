@@ -30,7 +30,7 @@ extension SampleAPI: RefreshAuthenticationTokenManaging {
 
 // MARK: - Wrap request to use request method with proper signature, usually wrapped by service
 
-private extension SampleAPI {
+extension SampleAPI {
     func authUserPublisher() -> AnyPublisher<SampleUserAuthResponse, AuthenticationError> {
         apiManager
             .request(

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2305D1E6261E595E003632D9 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2305D1E5261E595E003632D9 /* Networking */; };
 		2309D580261F51BD00C8AEAB /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2309D57F261F51BD00C8AEAB /* SampleData.xcassets */; };
+		231D324C270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */; };
 		2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */; };
 		2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */; };
 		23632CAB26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */; };
@@ -48,6 +49,7 @@
 
 /* Begin PBXFileReference section */
 		2309D57F261F51BD00C8AEAB /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
+		231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+CredentialsAuthenticationManaging.swift"; sourceTree = "<group>"; };
 		2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
 		23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+RefreshAuthenticationTokenManaging.swift"; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				23A5765B25FA0EDE00617551 /* Responses */,
 				23A5765C25FA0EEB00617551 /* Routers */,
 				23A575F525F9699400617551 /* SampleAPI.swift */,
+				231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */,
 				23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */,
 				23A575F725F9699400617551 /* SampleAPIError.swift */,
 				23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */,
@@ -391,6 +394,7 @@
 				23A575B925F8B9DA00617551 /* ViewController.swift in Sources */,
 				23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */,
 				2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */,
+				231D324C270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift in Sources */,
 				23A575F925F9699400617551 /* SampleAPI.swift in Sources */,
 				23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */,
 				23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */,
