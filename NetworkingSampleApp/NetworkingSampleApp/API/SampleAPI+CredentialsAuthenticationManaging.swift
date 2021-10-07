@@ -11,27 +11,7 @@ import Networking
 
 // MARK: SampleAPI as authentication with credentials manager
 
-extension SampleAPI: AuthenticationCredentialsManaging, RefreshAuthenticationCredentialsManaging {
-    var login: String {
-        SampleAPIConstants.validEmail
-    }
-
-    var password: String {
-        SampleAPIConstants.validPassword
-    }
-
-    var refreshAuthenticationCredentialsManager: RefreshAuthenticationCredentialsManaging {
-        self
-    }
-
-    func store(_ authenticationToken: String) {
-        self.authenticationToken = authenticationToken
-    }
-
-    func revoke() {
-        authenticationToken = nil
-    }
-
+extension SampleAPI: RefreshAuthenticationCredentialsManaging {
     func refreshAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError> {
         apiManager
             .request(

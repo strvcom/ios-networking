@@ -31,6 +31,7 @@ final class SampleAPI {
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
     private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
+    private lazy var keychainAuthenticationCredentialsManager = KeychainAuthenticationCredentialsManager(refreshAuthenticationCredentialsManager: self)
 
     private(set) lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
@@ -49,8 +50,8 @@ final class SampleAPI {
 
         return APIManager(
             // TODO: another sample
-            // authenticationManager: keychainAuthenticationTokenManager,
-            authenticationManager: self,
+//            authenticationManager: keychainAuthenticationTokenManager,
+            authenticationManager: keychainAuthenticationCredentialsManager,
             requestAdapters: [
                 AuthenticationTokenInterceptor(
                     authenticationProvider: keychainAuthenticationTokenManager
@@ -72,6 +73,11 @@ final class SampleAPI {
             refreshTokenExpirationDate: Date(timeIntervalSinceNow: 1_000_000)
         )
         keychainAuthenticationTokenManager.store(authenticationTokenData)
+
+        keychainAuthenticationCredentialsManager.store(
+            login: SampleAPIConstants.validEmail,
+            password: SampleAPIConstants.validPassword
+        )
     }
 }
 
