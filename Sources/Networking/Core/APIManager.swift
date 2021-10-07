@@ -33,11 +33,7 @@ open class APIManager: APIManaging {
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = []
     ) {
-        // TODO: get rid of this
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMddyyyy_hhmmssa"
-        // keep session id in readable format
-        sessionId = dateFormatter.string(from: Date())
+        sessionId = SessionIdProvider().sessionId
         self.network = network
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors

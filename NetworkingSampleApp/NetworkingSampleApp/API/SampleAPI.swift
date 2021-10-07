@@ -24,10 +24,14 @@ final class SampleAPI {
         static let sampleJob = "Foo"
     }
 
+    // MARK: Public properties
+    var authenticationToken: String?
+
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
     private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
+    private lazy var keychainAuthenticationCredentialsManager = KeychainAuthenticationCredentialsManager(refreshAuthenticationCredentialsManager: self)
 
     private(set) lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
@@ -45,7 +49,9 @@ final class SampleAPI {
         #endif
 
         return APIManager(
-            authenticationManager: keychainAuthenticationTokenManager,
+            // TODO: another sample
+//            authenticationManager: keychainAuthenticationTokenManager,
+            authenticationManager: keychainAuthenticationCredentialsManager,
             requestAdapters: [
                 AuthenticationTokenInterceptor(
                     authenticationProvider: keychainAuthenticationTokenManager
@@ -67,6 +73,11 @@ final class SampleAPI {
             refreshTokenExpirationDate: Date(timeIntervalSinceNow: 1_000_000)
         )
         keychainAuthenticationTokenManager.store(authenticationTokenData)
+
+        keychainAuthenticationCredentialsManager.store(
+            login: SampleAPIConstants.validEmail,
+            password: SampleAPIConstants.validPassword
+        )
     }
 }
 

@@ -14,8 +14,8 @@ public protocol AuthenticationCredentialsManaging: AnyObject, AuthenticationMana
     // auth token management values
     // for case authentication token is not present app should return encoded login & password string instead of it
     var authenticationToken: String? { get }
-    var login: String { get }
-    var password: String { get }
+    var login: String? { get }
+    var password: String? { get }
 
     // custom header field for authorization
     var headerField: String { get }
@@ -38,7 +38,11 @@ public extension AuthenticationCredentialsManaging {
     }
 
     func authenticate() -> AnyPublisher<Void, AuthenticationError> {
-        refreshAuthenticationCredentialsManager
+        guard let login = login, let password = password else {
+            return Fail(error: .missingCredentials).eraseToAnyPublisher()
+        }
+
+        return refreshAuthenticationCredentialsManager
             .refreshAuthenticationToken(login: login, password: password)
             .handleEvents(receiveOutput: { [weak self] authenticationTokenData in
                 self?.store(authenticationTokenData)
