@@ -16,7 +16,8 @@ import Foundation
     import UIKit
 #endif
 
-// Implementation of networking which reads data from files
+// MARK: - Implementation of networking which reads data from files
+
 open class SampleDataNetworking: Networking {
     private let bundle: Bundle
     private let sessionId: String

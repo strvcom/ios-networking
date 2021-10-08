@@ -9,6 +9,8 @@ import Foundation
 @testable import Networking
 import XCTest
 
+// MARK: - Test identifiers of endpoints
+
 final class EndpointIdentifiableTests: XCTestCase {
     enum MockRouter: Requestable {
         case testPlain

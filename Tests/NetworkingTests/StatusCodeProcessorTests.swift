@@ -3,6 +3,8 @@ import Combine
 import XCTest
 
 final class StatusCodeProcessorTests: XCTestCase {
+    private let sessionId = "sessionId_status_code"
+
     enum MockRouter: Requestable {
         case emptyAcceptStatuses
         case regularAcceptStatuses
@@ -73,7 +75,7 @@ final class StatusCodeProcessorTests: XCTestCase {
     }
 
     func testNotHttpsURLResponse() {
-        let mockEndpointRequest = EndpointRequest(MockRouter.regularAcceptStatuses)
+        let mockEndpointRequest = EndpointRequest(MockRouter.regularAcceptStatuses, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: MockRouter.regularAcceptStatuses.baseURL)
 
         let mockURLResponse = URLResponse(url: MockRouter.regularAcceptStatuses.baseURL, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
@@ -102,7 +104,7 @@ final class StatusCodeProcessorTests: XCTestCase {
 // MARK: - Factory methods to create mock objects
 private extension StatusCodeProcessorTests {
     func createMockResult(_ router: MockRouter, statusCode: HTTPStatusCode) -> Result<[Response], Error> {
-        let mockEndpointRequest = EndpointRequest(router)
+        let mockEndpointRequest = EndpointRequest(router, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: router.baseURL)
         // swiftlint:disable:next force_unwrapping
         let mockURLResponse: URLResponse = HTTPURLResponse(url: router.baseURL, statusCode: statusCode, httpVersion: nil, headerFields: nil)!

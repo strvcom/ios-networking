@@ -2,7 +2,11 @@ import Combine
 @testable import Networking
 import XCTest
 
+// MARK: - Test logging interceptor
+
 final class LoggingInterceptorTests: XCTestCase {
+    private let sessionId = "sessionId_logging_interceptor"
+
     enum MockRouter: Requestable {
         case logging
 
@@ -22,7 +26,7 @@ final class LoggingInterceptorTests: XCTestCase {
     func testNoEffect() {
         // test logging interceptor doesn't effect request or response anyway
 
-        let mockEndpointRequest = EndpointRequest(MockRouter.logging)
+        let mockEndpointRequest = EndpointRequest(MockRouter.logging, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: MockRouter.logging.baseURL)
         // swiftlint:disable:next force_unwrapping
         let mockURLResponse: URLResponse = HTTPURLResponse(url: MockRouter.logging.baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
