@@ -17,8 +17,9 @@ public struct RetryConfiguration {
         retries: 3,
         delay: 2
     ) { error in
-        if let networkError = error as? NetworkError,
-           case let .unacceptableStatusCode(statusCode, _, _) = networkError
+        if
+            let networkError = error as? NetworkError,
+            case let .unacceptableStatusCode(statusCode, _, _) = networkError
         {
             switch statusCode {
             case 404, 500:

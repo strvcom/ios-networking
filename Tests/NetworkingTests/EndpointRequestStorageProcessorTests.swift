@@ -2,7 +2,7 @@ import Combine
 @testable import Networking
 import XCTest
 
-// MARK: -  Test Endpoint request storage processor
+// MARK: - Test Endpoint request storage processor
 
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
