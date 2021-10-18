@@ -1,6 +1,6 @@
 //
 //  SampleAPI.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Jan Pacek on 04.12.2020.
 //  Copyright © 2020 STRV. All rights reserved.
@@ -37,8 +37,8 @@ final class SampleAPI {
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
-            AuthenticationTokenInterceptor(
-                authenticationProvider: keychainAuthenticationTokenManager
+            AuthenticationInterceptor(
+                authorizingRequest: keychainAuthenticationTokenManager
             ),
             LoggingInterceptor()
         ]
@@ -53,8 +53,8 @@ final class SampleAPI {
 //            authenticationManager: keychainAuthenticationTokenManager,
             authenticationManager: keychainAuthenticationCredentialsManager,
             requestAdapters: [
-                AuthenticationTokenInterceptor(
-                    authenticationProvider: keychainAuthenticationTokenManager
+                AuthenticationInterceptor(
+                    authorizingRequest: keychainAuthenticationTokenManager
                 ),
                 LoggingInterceptor()
             ],

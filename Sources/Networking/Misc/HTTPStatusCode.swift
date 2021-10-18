@@ -1,6 +1,6 @@
 //
 //  HTTPStatusCode.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Jan Pacek on 04.12.2020.
 //  Copyright © 2020 STRV. All rights reserved.
@@ -12,7 +12,7 @@ public typealias HTTPStatusCode = Int
 
 // MARK: - HTTP status code ranges
 
-extension HTTPStatusCode {
+public extension HTTPStatusCode {
     static var successCodes: Range<HTTPStatusCode> {
         200..<300
     }

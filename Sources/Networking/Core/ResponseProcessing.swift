@@ -1,6 +1,6 @@
 //
 //  ResponseProcessing.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Tomas Cejka on 09.02.2021.
 //  Copyright © 2021 STRV. All rights reserved.
@@ -18,13 +18,13 @@ public protocol ResponseProcessing {
 // MARK: - Array extension to avoid boilerplate
 
 public extension Array where Element == ResponseProcessing {
-    func process(_ response: Response, with request: URLRequest, for endpoint: EndpointRequest) -> AnyPublisher<Response, Error> {
+    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         let responsePublisher = Just(response)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
 
         return reduce(responsePublisher) { response, responseProcessing in
-            responseProcessing.process(response, with: request, for: endpoint)
+            responseProcessing.process(response, with: request, for: endpointRequest)
         }
     }
 }

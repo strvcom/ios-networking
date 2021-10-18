@@ -1,6 +1,6 @@
 //
 //  StatusCodeProcessor.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Jan Pacek on 04.12.2020.
 //  Copyright © 2020 STRV. All rights reserved.

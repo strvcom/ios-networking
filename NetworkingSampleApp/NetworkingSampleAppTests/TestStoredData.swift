@@ -1,6 +1,6 @@
 //
 //  TestStoredData.swift
-//  STRV_template Tests
+//  Networking Tests
 //
 //  Created by Tomas Cejka on 07.03.2021.
 //  Copyright © 2021 STRV. All rights reserved.
