@@ -9,12 +9,14 @@ import Foundation
 
 // MARK: - Constants for http header
 
-enum HTTPHeader {
-    enum HeaderField: String {
+/// Constants for HTTP header keys or values
+public enum HTTPHeader {
+    /// Constants for http header key
+    public enum HeaderField: String {
         case contentType = "Content-Type"
     }
-
-    enum ContentTypeValue: String {
+    /// Constants for values for http header content type key
+    public enum ContentTypeValue: String {
         case json = "application/json"
     }
 }

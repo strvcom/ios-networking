@@ -8,9 +8,9 @@
 
 import Foundation
 
-/// Wrapper struct for encodable types
-/// Allows to encode any encodable type
+// MARK: - Encodable wrapper
 
+/// Wrapper struct for encodable types which allows to encode any encodable type
 struct AnyEncodable: Encodable {
     private let encodable: Encodable
 

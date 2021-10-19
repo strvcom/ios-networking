@@ -38,31 +38,31 @@ class KeychainManager {
     }()
 
     // MARK: Public properties
-    public var authenticationToken: String? {
+    var authenticationToken: String? {
         string(key: .authenticationToken)
     }
 
-    public var authenticationTokenExpirationDate: Date? {
+    var authenticationTokenExpirationDate: Date? {
         date(key: .authenticationTokenExpirationDate)
     }
 
-    public var refreshToken: String? {
+    var refreshToken: String? {
         string(key: .refreshToken)
     }
 
-    public var refreshTokenExpirationDate: Date? {
+    var refreshTokenExpirationDate: Date? {
         date(key: .refreshTokenExpirationDate)
     }
 
-    public var credentialsAuthenticationToken: String? {
+    var credentialsAuthenticationToken: String? {
         string(key: .credentialsAuthenticationToken)
     }
 
-    public var login: String? {
+    var login: String? {
         string(key: .login)
     }
 
-    public var password: String? {
+    var password: String? {
         string(key: .password)
     }
 }

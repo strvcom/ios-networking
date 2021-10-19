@@ -10,8 +10,12 @@ import Combine
 import Foundation
 
 // MARK: - Defines networking layer which allows to make a request
-// URLSession or some mock class that only reads testing responses
 
+/// Definition of network layer which makes request and receive data
+///
+/// By default Networking library uses `URLSession` to make API calls,
 public protocol Networking {
+    /// Creates publisher for request to stream responses if API call works
+    /// - Returns: Publisher streaming ``Response`` value if networking succeed or ``NetworkError`` if communication failed
     func requestPublisher(for: URLRequest) -> AnyPublisher<Response, NetworkError>
 }

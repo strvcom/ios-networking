@@ -15,6 +15,8 @@ The lightweight library for API calls management. The library is built upon URL 
 
 ### Architecture
 
+
+
 Modifiers - Adapters, processors, interceptors
 APIManaging
 Reachability
@@ -26,6 +28,9 @@ Authentication
 ### Main components
 
 - ``Requestable``
-- ``APIManaging``
 - ``EndpointRequest``
+- ``Networking``
+- ``APIManaging``
+- ``RequestInterceptor``
 - ``Response``
+- ``AuthenticationManaging``

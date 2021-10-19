@@ -15,22 +15,6 @@ import Foundation
     import OSLog
 #endif
 
-// MARK: - Defines data model storing full endpoint request
-
-public struct EndpointRequestStorageModel: Codable {
-    public let date: Date
-    public let path: String
-    public let parameters: [String: String]?
-    public let method: String
-    public let statusCode: Int?
-    public let requestBody: Data?
-    public let requestBodyString: String?
-    public let responseBody: Data?
-    public let responseBodyString: String?
-    public let requestHeaders: [String: String]?
-    public let responseHeaders: [String: String]?
-}
-
 // MARK: - Modifier storing endpoint requests
 
 open class EndpointRequestStorageProcessor: ResponseProcessing {
