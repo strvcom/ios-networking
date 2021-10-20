@@ -16,9 +16,15 @@ import Foundation
 
 // MARK: - Pretty logging modifier
 
+/// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
 open class LoggingInterceptor: RequestInterceptor {
     public init() {}
 
+    /// Adds logging logic to request publisher
+    /// - Parameters:
+    ///   - requestPublisher: original request publisher
+    ///   - endpointRequest: endpoint request wrapper
+    /// - Returns: New publisher which logs `Output` or `Failure` into console
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // log request
         requestPublisher
@@ -32,6 +38,12 @@ open class LoggingInterceptor: RequestInterceptor {
             .eraseToAnyPublisher()
     }
 
+    /// Adds logging logic to response publisher
+    /// - Parameters:
+    ///   - responsePublisher: original response publisher
+    ///   - _:  original URL request
+    ///   - endpointRequest: endpoint request wrapper
+    /// - Returns: New publisher which logs `Output` or `Failure` into console
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         // log response
         responsePublisher

@@ -43,7 +43,7 @@ extension AuthenticationInterceptor: RequestInterceptor {
     /// If the request should be authorized add authorization header
     /// - Parameters:
     ///   - requestPublisher: original publisher with URLRequest
-    ///   - endpointRequest: endpoint definition wrapped in request
+    ///   - endpointRequest: endpoint request wrapper
     /// - Returns: publisher streaming authorized request (or original if no authentication needed) or failure with authentication error in case authorizing request failed
     public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
         // if endpoint requires auth header add it
@@ -73,7 +73,7 @@ extension AuthenticationInterceptor: RequestInterceptor {
     /// - Parameters:
     ///   - responsePublisher: original response publisher
     ///   - _: URLRequest preceded response
-    ///   - endpointRequest: endpoint definition wrapped in request structure
+    ///   - endpointRequest: endpoint request wrapper
     /// - Returns: original publisher if status code is authorized or mapped error as authentication error
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         // check if response codes for unauthorized codes & map to auth error

@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Defines networking errors
 
-/// Error thrown during ``Response`` processing or underlaying ``Networking`` error
+/// Error thrown during ``Response`` processing or underlaying ``Networking/Networking`` error
 public enum NetworkError: Error, LocalizedError {
     /// when received http status code in not accepted as valid
     case unacceptableStatusCode(

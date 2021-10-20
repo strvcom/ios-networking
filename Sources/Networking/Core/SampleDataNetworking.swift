@@ -16,7 +16,8 @@ import Foundation
     import UIKit
 #endif
 
-// Implementation of networking which reads data from files
+// MARK: - SampleDataNetworking which reads data from stored files
+/// ``Networking/Networking`` implementation reading data for request from `NSDataAsset` for injected sessionId
 open class SampleDataNetworking: Networking {
     private let bundle: Bundle
     private let sessionId: String
@@ -24,11 +25,18 @@ open class SampleDataNetworking: Networking {
     private lazy var decoder = JSONDecoder()
 
     // need to inject bundle
+    /// Creates sampleData networking
+    /// - Parameters:
+    ///   - bundle: bundle where is `NSDataAsset` localized
+    ///   - sessionId: sessionId for session which data should be read
     public init(with bundle: Bundle, sessionId: String) {
         self.bundle = bundle
         self.sessionId = sessionId
     }
 
+    /// Creates request publisher which returns ``Response`` loaded from files
+    /// - Parameter request: URL request
+    /// - Returns: publisher streaming ``Response`` for requests and injected sessionId
     public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
         guard let sampleData = try? loadSampleData(for: request) else {
             fatalError("❌ Can't load data")

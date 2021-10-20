@@ -17,6 +17,9 @@ import Foundation
 
 // MARK: - Modifier storing endpoint requests
 
+/// Response processor which stores all responses & related requests data into files
+/// Filename is created from sessionId and request identifier
+/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via ``SampleDataNetworking`` to replay whole session
 open class EndpointRequestStorageProcessor: ResponseProcessing {
     private lazy var fileManager = FileManager.default
     private lazy var jsonEncoder: JSONEncoder = {
@@ -31,6 +34,12 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 
     public init() {}
 
+    /// Process checks if session folder exists and eventually creates new one. Before storing file for response & related request it checks order of the endpoint request in session to allow replaying whole session
+    /// - Parameters:
+    ///   - responsePublisher: original response publisher
+    ///   - urlRequest: related URL request
+    ///   - endpointRequest: endpoint request wrapper
+    /// - Returns: Modified publisher which tries to store data into files
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
             .handleEvents(receiveOutput: { [weak self] output in

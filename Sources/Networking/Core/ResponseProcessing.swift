@@ -25,7 +25,7 @@ public extension Array where Element == ResponseProcessing {
     /// - Parameters:
     ///   - response: response to be processed
     ///   - request: original URL request
-    ///   - endpointRequest: endpoint called in request
+    ///   - endpointRequest: endpoint request wrapper
     /// - Returns: ``Response`` processed by all objects in array in sequence
     func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         let responsePublisher = Just(response)

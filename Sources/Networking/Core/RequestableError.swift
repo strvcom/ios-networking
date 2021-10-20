@@ -12,5 +12,6 @@ import Foundation
 
 /// Errors which can be thrown when creating URL requests from ``Requestable``
 public enum RequestableError: Error {
+    /// Throwing when creation of `URLRequest` from `URLComponents` fails
     case invalidURLComponents
 }

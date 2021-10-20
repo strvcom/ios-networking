@@ -29,7 +29,7 @@ Authentication
 
 - ``Requestable``
 - ``EndpointRequest``
-- ``Networking``
+- ``Networking/Networking``
 - ``APIManaging``
 - ``RequestInterceptor``
 - ``Response``

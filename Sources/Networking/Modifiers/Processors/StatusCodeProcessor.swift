@@ -19,7 +19,7 @@ open class StatusCodeProcessor: ResponseProcessing {
     /// - Parameters:
     ///   - responsePublisher: original response publisher
     ///   - _: URL request
-    ///   - endpointRequest: endpoint request
+    ///   - endpointRequest: endpoint request wrapper
     /// - Returns: Publisher modified with validation of http status code
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher

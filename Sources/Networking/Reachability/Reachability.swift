@@ -98,7 +98,7 @@
             }
         }
 
-        /// Creating reachability with ``SCNetworkReachability`` reference
+        /// Creating reachability with `SCNetworkReachability` reference
         public required init(
             reachabilityRef: SCNetworkReachability,
             queueQoS: DispatchQoS = .default,
@@ -113,7 +113,7 @@
         }
 
         /// Convenience init with default parameters provided
-        /// - Throws: ``ReachabilityError`` in case init failed when creating ``SCNetworkReachability`` with host name
+        /// - Throws: ``ReachabilityError`` in case init failed when creating `SCNetworkReachability` with host name
         public convenience init?(
             hostname: String,
             queueQoS: DispatchQoS = .default,
@@ -126,7 +126,7 @@
         }
 
         /// Convenience init with default parameters provided
-        /// - Throws: ``ReachabilityError`` in case init failed when creating ``SCNetworkReachability`` with address
+        /// - Throws: ``ReachabilityError`` in case init failed when creating `SCNetworkReachability` with address
         public convenience init?(
             queueQoS: DispatchQoS = .default,
             targetQueue: DispatchQueue? = nil

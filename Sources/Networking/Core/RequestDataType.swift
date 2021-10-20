@@ -10,7 +10,10 @@ import Foundation
 
 // MARK: - Defines various request data types to be sent in body
 
+/// Data type of request body
 public enum RequestDataType {
+    /// Encodable data type, sets HTTP header content type to application/json
     case encodable(Encodable, encoder: JSONEncoder = JSONEncoder())
+    /// Custom encoded data for request body with provided content type for HTTP header
     case custom(encodedData: Data, contentType: String)
 }
