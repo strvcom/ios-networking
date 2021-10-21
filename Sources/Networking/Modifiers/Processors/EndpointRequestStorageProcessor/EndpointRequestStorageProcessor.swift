@@ -1,6 +1,6 @@
 //
 //  EndpointRequestStorageProcessor.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Tomas Cejka on 23.02.2021.
 //  Copyright © 2021 STRV. All rights reserved.
@@ -15,24 +15,11 @@ import Foundation
     import OSLog
 #endif
 
-// MARK: - Defines data model storing full endpoint request
-
-public struct EndpointRequestStorageModel: Codable {
-    public let date: Date
-    public let path: String
-    public let parameters: [String: String]?
-    public let method: String
-    public let statusCode: Int?
-    public let requestBody: Data?
-    public let requestBodyString: String?
-    public let responseBody: Data?
-    public let responseBodyString: String?
-    public let requestHeaders: [String: String]?
-    public let responseHeaders: [String: String]?
-}
-
 // MARK: - Modifier storing endpoint requests
 
+/// Response processor which stores all responses & related requests data into files
+/// Filename is created from sessionId and request identifier
+/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via ``SampleDataNetworking`` to replay whole session
 open class EndpointRequestStorageProcessor: ResponseProcessing {
     private lazy var fileManager = FileManager.default
     private lazy var jsonEncoder: JSONEncoder = {
@@ -47,6 +34,12 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
 
     public init() {}
 
+    /// Process checks if session folder exists and eventually creates new one. Before storing file for response & related request it checks order of the endpoint request in session to allow replaying whole session
+    /// - Parameters:
+    ///   - responsePublisher: original response publisher
+    ///   - urlRequest: related URL request
+    ///   - endpointRequest: endpoint request wrapper
+    /// - Returns: Modified publisher which tries to store data into files
     public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
         responsePublisher
             .handleEvents(receiveOutput: { [weak self] output in

@@ -1,6 +1,6 @@
 //
 //  HTTPMethod.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Jan Pacek on 04.12.2020.
 //  Copyright © 2020 STRV. All rights reserved.
@@ -10,6 +10,7 @@ import Foundation
 
 // MARK: - HTTP request methods
 
+/// Request methods for HTTP
 public enum HTTPMethod: String {
     case get = "GET"
     case put = "PUT"
