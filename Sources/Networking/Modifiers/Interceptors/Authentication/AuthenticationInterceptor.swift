@@ -19,7 +19,7 @@ public typealias UnauthorizedResponseHandler = (Requestable, HTTPStatusCode) -> 
 /// Request interceptor which handles authorizing request and validate responses as authenticated
 open class AuthenticationInterceptor {
     // MARK: Private properties
-    private var authorizingRequest: AuthorizingRequest
+    private var authorizingRequest: RequestAuthorizing
     private var unauthorizedResponseHandler: UnauthorizedResponseHandler?
 
     // MARK: Init
@@ -29,7 +29,7 @@ open class AuthenticationInterceptor {
     ///   - authorizingRequest: object responsible for authorizing request headers
     ///   - unauthorizedResponseHandler: handler which can define which status codes for request mean unauthenticated error
     public init(
-        authorizingRequest: AuthorizingRequest,
+        authorizingRequest: RequestAuthorizing,
         unauthorizedResponseHandler: UnauthorizedResponseHandler? = nil
     ) {
         self.authorizingRequest = authorizingRequest

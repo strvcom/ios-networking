@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Keychain version for authentication by credentials
 // stores & reads authentication token, credentials from keychain
 
-open class KeychainAuthenticationCredentialsManager: AuthorizingRequest {
+open class KeychainAuthenticationCredentialsManager: RequestAuthorizing {
     public let refreshAuthenticationCredentialsManager: RefreshAuthenticationCredentialsManaging
 
     // MARK: Private properties

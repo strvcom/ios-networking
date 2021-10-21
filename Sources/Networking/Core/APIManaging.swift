@@ -11,14 +11,24 @@ import Foundation
 
 // MARK: - Defines api managing
 
+/// Protocol APIManaging defines API layer
+/// API layer calls request and returns publisher for response
 public protocol APIManaging {
+    /// Creates publisher streaming ``Response`` for API endpoint defined by ``Requestable``
+    /// - Returns: Publisher streaming response
     func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error>
+
+    /// Creates publisher streaming `Decodable` object  for API endpoint defined by ``Requestable``
+    /// - Returns: Publisher streaming decodable object
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error>
 }
 
 // MARK: - Provide request with default json decoder
 
 public extension APIManaging {
+
+    /// Default implementation using `JSONDecoder`
+    /// - Returns: Publisher streaming decodable object
     func request<Body: Decodable>(_ endpoint: Requestable) -> AnyPublisher<Body, Error> {
         request(endpoint, decoder: JSONDecoder())
     }
@@ -27,6 +37,8 @@ public extension APIManaging {
 // MARK: - Provide request with default decoding
 
 public extension APIManaging {
+    /// Tries to decode `Data` from ``Response`` to decodable object
+    /// - Returns: Publisher streaming decodable object
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder) -> AnyPublisher<DecodableResponse, Error> {
         request(endpoint)
             .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }

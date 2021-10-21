@@ -68,7 +68,7 @@ public extension AuthenticationTokenManaging {
 
 // MARK: - AuthenticationTokenManaging & AuthenticationProviding
 
-public extension AuthenticationTokenManaging where Self: AuthorizingRequest {
+public extension AuthenticationTokenManaging where Self: RequestAuthorizing {
     func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         guard isAuthenticated,
               let authenticationToken = authenticationToken

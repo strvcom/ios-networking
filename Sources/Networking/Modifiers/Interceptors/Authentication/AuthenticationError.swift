@@ -8,6 +8,7 @@ import Foundation
 
 // MARK: - Defines base authentication errors
 
+/// Authentication error indicates failure during whole request flow
 public enum AuthenticationError: Error, LocalizedError, Retrying {
     case unauthorized
     case missingAuthenticationToken
@@ -15,6 +16,7 @@ public enum AuthenticationError: Error, LocalizedError, Retrying {
     case missingRefreshToken
     case missingCredentials
     case expiredRefreshToken
+    case custom(error: Error)
 
     public var errorDescription: String? {
         switch self {
@@ -30,6 +32,8 @@ public enum AuthenticationError: Error, LocalizedError, Retrying {
             return NSLocalizedString("Missing credentials", comment: "")
         case .expiredRefreshToken:
             return NSLocalizedString("Expired refresh token", comment: "")
+        case .custom(let error):
+            return NSLocalizedString("Custom authentication error \(error.localizedDescription)", comment: "")
         }
     }
 

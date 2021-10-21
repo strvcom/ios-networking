@@ -54,7 +54,7 @@ public extension AuthenticationCredentialsManaging {
 
 // MARK: - AuthenticationCredentialsManaging & AuthenticationProviding
 
-public extension AuthenticationCredentialsManaging where Self: AuthorizingRequest {
+public extension AuthenticationCredentialsManaging where Self: RequestAuthorizing {
     func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         guard isAuthenticated,
               let authenticationToken = authenticationToken
