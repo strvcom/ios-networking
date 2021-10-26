@@ -34,3 +34,4 @@ Authentication
 - ``RequestInterceptor``
 - ``Response``
 - ``AuthenticationManaging``
+- ``KeychainAuthenticationTokenManager``

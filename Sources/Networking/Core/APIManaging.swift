@@ -32,7 +32,7 @@ public protocol APIManaging {
 // MARK: - Provide request with default json decoder, retry configuration
 
 public extension APIManaging {
-    /// Simplifies request using  default``RetryConfiguration``
+    /// Simplifies request using  default ``RetryConfiguration``
     /// - Parameter endpoint: API endpoint definition
     /// - Returns: Publisher streaming response
     func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {

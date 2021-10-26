@@ -12,7 +12,7 @@ import Networking
 // MARK: SampleAPI as refresh authentication token manager
 
 extension SampleAPI: RefreshAuthenticationTokenManaging {
-    func refreshAuthenticationToken(_: String) -> AnyPublisher<AuthenticationTokenData, AuthenticationError> {
+    func refreshAuthenticationToken(_: String) -> AnyPublisher<RefreshTokenData, AuthenticationError> {
         // map response data which are just token to full sample authentication data
         authUserPublisher()
             .map { authResponse in

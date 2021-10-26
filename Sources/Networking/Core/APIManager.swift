@@ -32,6 +32,12 @@ open class APIManager: APIManaging {
 
     // MARK: Init
 
+    /// Fully featured API layer providing request API calls, handling authentication issues or solving retries of requests
+    /// - Parameters:
+    ///   - network: Network layer object
+    ///   - authenticationManager: Object managing requirements for authentication
+    ///   - requestAdapters: Before request modifiers, * order in important as they run in sequence *
+    ///   - responseProcessors: After response processors,  * order in important as they run in sequence *
     public init(
         network: Networking = URLSession(configuration: .default),
         authenticationManager: AuthenticationManaging? = nil,
@@ -45,6 +51,11 @@ open class APIManager: APIManaging {
         self.authenticationManager = authenticationManager
     }
 
+    /// Run the API call flow
+    /// - Parameters:
+    ///   - endpoint: API endpoint definition
+    ///   - retry: Retry configuration for request
+    /// - Returns: Publisher streaming response
     public func request(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<Response, Error> {
         // create identifier of api call
         request(EndpointRequest(endpoint, sessionId: sessionId), retry: retry)

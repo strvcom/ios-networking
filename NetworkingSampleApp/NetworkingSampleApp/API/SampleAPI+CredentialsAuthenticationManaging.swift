@@ -11,7 +11,7 @@ import Networking
 
 // MARK: SampleAPI as authentication with credentials manager
 
-extension SampleAPI: RefreshAuthenticationCredentialsManaging {
+extension SampleAPI: RenewAuthenticationByCredentialsManaging {
     func refreshAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError> {
         apiManager
             .request(

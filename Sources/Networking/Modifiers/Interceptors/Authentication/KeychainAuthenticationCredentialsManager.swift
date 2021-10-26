@@ -12,21 +12,21 @@ import Foundation
 // stores & reads authentication token, credentials from keychain
 
 open class KeychainAuthenticationCredentialsManager: RequestAuthorizing {
-    public let refreshAuthenticationCredentialsManager: RefreshAuthenticationCredentialsManaging
+    public let renewAuthenticationByCredentialsManager: RenewAuthenticationByCredentialsManaging
 
     // MARK: Private properties
     private lazy var keychainManager = KeychainManager()
 
     // MARK: Init
 
-    public init(refreshAuthenticationCredentialsManager: RefreshAuthenticationCredentialsManaging) {
-        self.refreshAuthenticationCredentialsManager = refreshAuthenticationCredentialsManager
+    public init(refreshAuthenticationCredentialsManager: RenewAuthenticationByCredentialsManaging) {
+        self.renewAuthenticationByCredentialsManager = refreshAuthenticationCredentialsManager
     }
 }
 
 // MARK: - AuthenticationCredentialsManaging methods
 
-extension KeychainAuthenticationCredentialsManager: AuthenticationCredentialsManaging {
+extension KeychainAuthenticationCredentialsManager: CredentialsManaging {
     public var login: String? {
         keychainManager.login
     }
