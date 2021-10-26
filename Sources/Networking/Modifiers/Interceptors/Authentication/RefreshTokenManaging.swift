@@ -1,5 +1,5 @@
 //
-//  AuthenticationTokenManaging.swift
+//  RefreshTokenManaging.swift
 //
 //  Created by Tomas Cejka on 22.03.2021.
 //
@@ -7,36 +7,44 @@
 import Combine
 import Foundation
 
-// MARK: - Defines authentication managing by authentication token
+// MARK: - Defines authentication managing by refresh token
 
-public protocol AuthenticationTokenManaging: AnyObject, AuthenticationManaging {
-    // auth token management values
+/// Authentication via refresh token to renew authentication token which is used to authorize requests
+public protocol RefreshTokenManaging: AnyObject, AuthenticationManaging {
+
     var authenticationToken: String? { get }
     var authenticationTokenExpirationDate: Date? { get }
     var refreshToken: String? { get }
     var refreshTokenExpirationDate: Date? { get }
 
     // custom header field for authorization
+    /// <#Description#>
     var headerField: String { get }
+    /// <#Description#>
     var isExpired: Bool { get }
 
+    /// <#Description#>
     var refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging { get }
 
     // allows set authentication data from outside
-    func store(_ authenticationTokenData: AuthenticationTokenData)
+    /// <#Description#>
+    func store(_ authenticationTokenData: RefreshTokenData)
 }
 
 // MARK: - Default implementation for authentication token managing
 
-public extension AuthenticationTokenManaging {
+public extension RefreshTokenManaging {
+    /// <#Description#>
     var headerField: String {
         "Authorization"
     }
 
+    /// <#Description#>
     var isAuthenticated: Bool {
         authenticationToken != nil && !isExpired
     }
 
+    /// <#Description#>
     var isExpired: Bool {
         guard let authenticationTokenExpirationDate = authenticationTokenExpirationDate else {
             return true
@@ -44,6 +52,8 @@ public extension AuthenticationTokenManaging {
         return authenticationTokenExpirationDate <= Date()
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     func authenticate() -> AnyPublisher<Void, AuthenticationError> {
         guard let refreshToken = refreshToken else {
             return Fail(error: .missingRefreshToken).eraseToAnyPublisher()
@@ -68,8 +78,11 @@ public extension AuthenticationTokenManaging {
 
 // MARK: - AuthenticationTokenManaging & AuthenticationProviding
 
-public extension AuthenticationTokenManaging where Self: AuthenticationProviding {
-    func authorizeRequest(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
+public extension RefreshTokenManaging where Self: RequestAuthorizing {
+    /// <#Description#>
+    /// - Parameter request: <#request description#>
+    /// - Returns: <#description#>
+    func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         guard isAuthenticated,
               let authenticationToken = authenticationToken
         else {

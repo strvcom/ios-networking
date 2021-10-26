@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Keychain version for authentication token managing
 // stores & reads authentication token data from keychain
 
-open class KeychainAuthenticationTokenManager: AuthenticationProviding {
+open class KeychainAuthenticationTokenManager: RequestAuthorizing {
     public let refreshAuthenticationTokenManager: RefreshAuthenticationTokenManaging
 
     // MARK: Private properties
@@ -26,7 +26,7 @@ open class KeychainAuthenticationTokenManager: AuthenticationProviding {
 
 // MARK: - AuthenticationTokenManaging methods
 
-extension KeychainAuthenticationTokenManager: AuthenticationTokenManaging {
+extension KeychainAuthenticationTokenManager: RefreshTokenManaging {
     public var authenticationToken: String? {
         keychainManager.authenticationToken
     }
@@ -43,7 +43,7 @@ extension KeychainAuthenticationTokenManager: AuthenticationTokenManaging {
         keychainManager.refreshTokenExpirationDate
     }
 
-    public func store(_ authenticationTokenData: AuthenticationTokenData) {
+    public func store(_ authenticationTokenData: RefreshTokenData) {
         keychainManager.setString(
             value: authenticationTokenData.authenticationToken,
             key: .authenticationToken

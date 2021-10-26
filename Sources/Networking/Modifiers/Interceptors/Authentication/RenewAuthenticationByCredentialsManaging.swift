@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Defines responsibility for refreshing authentication token
 
-public protocol RefreshAuthenticationCredentialsManaging {
+public protocol RenewAuthenticationByCredentialsManaging {
     // refresh authentication token with credentials, as an output is authentication token
-    func refreshAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError>
+    func renewAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError>
 }

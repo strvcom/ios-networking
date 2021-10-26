@@ -1,6 +1,6 @@
 //
 //  RefreshAuthenticationTokenManaging.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Tomas Cejka on 01.03.2021.
 //  Copyright © 2021 STRV. All rights reserved.
@@ -13,5 +13,5 @@ import Foundation
 
 public protocol RefreshAuthenticationTokenManaging {
     // refresh authentication token with refresh token, as an output is any data structure containing token management values
-    func refreshAuthenticationToken(_ refreshToken: String) -> AnyPublisher<AuthenticationTokenData, AuthenticationError>
+    func refreshAuthenticationToken(_ refreshToken: String) -> AnyPublisher<RefreshTokenData, AuthenticationError>
 }

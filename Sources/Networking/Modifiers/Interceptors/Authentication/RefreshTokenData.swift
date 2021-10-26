@@ -1,5 +1,5 @@
 //
-//  AuthenticationTokenData.swift
+//  RefreshTokenData.swift
 //
 //
 //  Created by Tomas Cejka on 08.09.2021.
@@ -9,7 +9,8 @@ import Foundation
 
 // MARK: - Authentication token data definition
 
-public protocol AuthenticationTokenData {
+/// Model holding typical values required for refresh token authentication system
+public protocol RefreshTokenData {
     var authenticationToken: String? { get }
     var authenticationTokenExpirationDate: Date? { get }
     var refreshToken: String? { get }

@@ -1,6 +1,6 @@
 //
 //  TestReachability.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Tomas Cejka on 18.02.2021.
 //  Copyright © 2021 STRV. All rights reserved.
@@ -13,22 +13,26 @@
 
     // MARK: - Manages reachability
 
+    /// Combine version of reachability class providing publishers for observing network connection changes
     open class Reachability {
         // network status observable
         private var reachabilityState = CurrentValueSubject<ConnectionType, ReachabilityError>(.unavailable)
         private lazy var cancellables = Set<AnyCancellable>()
 
         // MARK: Public publishers to observe reachability changes
+        /// Publisher streaming current ``ConnectionType``
         public var connection: AnyPublisher<ConnectionType, ReachabilityError> {
             reachabilityState.removeDuplicates().eraseToAnyPublisher()
         }
 
+        /// Publisher streaming boolean whether device is connected to network or not
         public var isReachable: AnyPublisher<Bool, ReachabilityError> {
             reachabilityState
                 .map { $0 != .unavailable }
                 .eraseToAnyPublisher()
         }
 
+        /// Publisher streaming when device is connected
         public var isConnected: AnyPublisher<Void, ReachabilityError> {
             isReachable
                 .filter { $0 }
@@ -36,6 +40,7 @@
                 .eraseToAnyPublisher()
         }
 
+        /// Publisher streaming when device is disconnected
         public var isDisconnected: AnyPublisher<Void, ReachabilityError> {
             isReachable
                 .filter { !$0 }
@@ -57,6 +62,7 @@
         }
 
         // Set to `false` to force Reachability.connection to .none when on cellular connection (default value `true`)
+        /// Available setting for reachability to work with cellular network, set `false` to detect only wi-fi
         public var allowsCellularConnection: Bool
 
         private var isRunningOnDevice: Bool = {
@@ -67,7 +73,7 @@
             #endif
         }()
 
-        var description: String {
+        private var description: String {
             flags?.description ?? "unavailable flags"
         }
 
@@ -92,6 +98,7 @@
             }
         }
 
+        /// Creating reachability with `SCNetworkReachability` reference
         public required init(
             reachabilityRef: SCNetworkReachability,
             queueQoS: DispatchQoS = .default,
@@ -105,6 +112,8 @@
             startObserving()
         }
 
+        /// Convenience init with default parameters provided
+        /// - Throws: ``ReachabilityError`` in case init failed when creating `SCNetworkReachability` with host name
         public convenience init?(
             hostname: String,
             queueQoS: DispatchQoS = .default,
@@ -116,6 +125,8 @@
             self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue)
         }
 
+        /// Convenience init with default parameters provided
+        /// - Throws: ``ReachabilityError`` in case init failed when creating `SCNetworkReachability` with address
         public convenience init?(
             queueQoS: DispatchQoS = .default,
             targetQueue: DispatchQueue? = nil

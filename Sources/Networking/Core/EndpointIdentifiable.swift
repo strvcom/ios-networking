@@ -1,6 +1,6 @@
 //
 //  EndpointIdentifiable.swift
-//  STRV_template
+//  Networking
 //
 //  Created by Tomas Cejka on 08.03.2021.
 //  Copyright © 2021 STRV. All rights reserved.
@@ -10,13 +10,16 @@ import Foundation
 
 // MARK: - Defines attributes identifying endpoint
 
+/// To be able to have unique identifier for both ``Requestable`` and `URLRequest` which is necessary to load correct sample data from file system
 public protocol EndpointIdentifiable: Identifiable {
+    /// All components which are used for unique identifier, typically URL path, HTTP method, GET parameters etc
     var identifiableComponents: [String] { get }
 }
 
 // MARK: - Default implementation for endpoint identifiable
 
 public extension Identifiable where Self: EndpointIdentifiable {
+    /// By default endpointIdentifiable creates its identifier from `identifiableComponents` which are sorted, lowercased and joined by '\_' to avoid any issues matching identifiers
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }
             .map { $0.lowercased() }
@@ -27,6 +30,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
 // MARK: - Default implementation for URLRequest
 
 extension URLRequest: EndpointIdentifiable {
+    /// Identifiable components from `URLRequest`
     public var identifiableComponents: [String] {
         var components: [String] = []
 
@@ -56,6 +60,7 @@ extension URLRequest: EndpointIdentifiable {
 // MARK: - Default implementation identifying endpoint
 
 public extension Requestable {
+    /// Identifiable components from ``Requestable``
     var identifiableComponents: [String] {
         var components: [String] = []
 
