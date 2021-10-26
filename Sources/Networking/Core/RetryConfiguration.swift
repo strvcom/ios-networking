@@ -7,9 +7,13 @@
 
 import Foundation
 
+/// Retry of API calls allows various options wrapped into `RetryConfiguration` struct
 public struct RetryConfiguration {
+    /// Number of retries
     let retries: Int
+    /// Delay between each retry to avoid overwhelming API
     let delay: TimeInterval
+    /// Customization providing error to bool in case error should be retried, by default `404, 500` are not retried
     let retryHandler: (Error) -> Bool
 
     // default configuration ignores
