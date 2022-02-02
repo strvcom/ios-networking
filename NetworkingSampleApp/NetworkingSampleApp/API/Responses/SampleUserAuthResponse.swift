@@ -8,7 +8,7 @@
 import Foundation
 import Networking
 
-struct SampleUserAuthResponse: Decodable, RefreshTokenData {
+struct SampleUserAuthResponse: Decodable {
     var authenticationToken: String?
     var refreshToken: String?
     var authenticationTokenExpirationDate: Date?

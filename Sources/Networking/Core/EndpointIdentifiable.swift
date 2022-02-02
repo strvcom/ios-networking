@@ -22,7 +22,9 @@ public extension Identifiable where Self: EndpointIdentifiable {
     /// By default endpointIdentifiable creates its identifier from `identifiableComponents` which are sorted, lowercased and joined by '\_' to avoid any issues matching identifiers
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }
-            .map { $0.lowercased() }
+            .map {
+                $0.lowercased()
+            }
             .joined(separator: "_")
     }
 }

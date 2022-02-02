@@ -88,7 +88,7 @@ extension AuthenticationInterceptor: RequestInterceptor {
                     return responsePublisher
                 }
 
-                // default check for 401 if not handler
+                // default check for 401 if not custom unauthorized handler
                 guard let handler = self.unauthorizedResponseHandler else {
                     if statusCode == 401 {
                         throw AuthenticationError.unauthorized

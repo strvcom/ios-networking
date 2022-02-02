@@ -8,6 +8,8 @@ import Foundation
 
 // MARK: - Defines base authentication errors
 
+// TODO:
+
 /// Authentication error indicates failure during whole request flow
 public enum AuthenticationError: Error, LocalizedError {
     /// API calls failed as unauthorized
@@ -20,8 +22,6 @@ public enum AuthenticationError: Error, LocalizedError {
     case missingRefreshToken
     /// Authentication manager found refresh token expired
     case expiredRefreshToken
-    /// Authentication manager  haven't found credentials
-    case missingCredentials
     /// For case Networking is working with custom authentication mechanism
     case custom(error: Error)
 
@@ -35,8 +35,6 @@ public enum AuthenticationError: Error, LocalizedError {
             return NSLocalizedString("Authentication token expired", comment: "")
         case .missingRefreshToken:
             return NSLocalizedString("Missing refresh token", comment: "")
-        case .missingCredentials:
-            return NSLocalizedString("Missing credentials", comment: "")
         case .expiredRefreshToken:
             return NSLocalizedString("Expired refresh token", comment: "")
         case let .custom(error):

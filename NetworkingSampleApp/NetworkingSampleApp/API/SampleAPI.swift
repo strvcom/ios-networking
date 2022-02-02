@@ -30,16 +30,18 @@ final class SampleAPI {
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
-    private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
-    private lazy var keychainAuthenticationCredentialsManager = KeychainAuthenticationCredentialsManager(refreshAuthenticationCredentialsManager: self)
+    private lazy var keychainAuthenticationManager = KeychainAuthenticationManager(authenticationProvider: self)
+//    private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
+//    private lazy var keychainAuthenticationCredentialsManager = KeychainAuthenticationCredentialsManager(refreshAuthenticationCredentialsManager: self)
 
     private(set) lazy var apiManager: APIManager = {
+        let authenticationInterceptor = AuthenticationInterceptor(
+            authorizingRequest: keychainAuthenticationManager
+        )
         var responseProcessors: [ResponseProcessing] = [
             StatusCodeProcessor(),
             SampleAPIErrorProcessor(),
-            AuthenticationInterceptor(
-                authorizingRequest: keychainAuthenticationTokenManager
-            ),
+            authenticationInterceptor,
             LoggingInterceptor()
         ]
 
@@ -50,12 +52,9 @@ final class SampleAPI {
 
         return APIManager(
             // TODO: another sample
-//            authenticationManager: keychainAuthenticationTokenManager,
-            authenticationManager: keychainAuthenticationCredentialsManager,
+            authenticationManager: keychainAuthenticationManager,
             requestAdapters: [
-                AuthenticationInterceptor(
-                    authorizingRequest: keychainAuthenticationTokenManager
-                ),
+                authenticationInterceptor,
                 LoggingInterceptor()
             ],
             responseProcessors: responseProcessors
@@ -64,21 +63,7 @@ final class SampleAPI {
 
     // MARK: Lifecycle
 
-    init() {
-        // set default data for simulation of authentication, like after login
-        let authenticationTokenData = SampleUserAuthResponse(
-            authenticationToken: nil,
-            refreshToken: "",
-            authenticationTokenExpirationDate: nil,
-            refreshTokenExpirationDate: Date(timeIntervalSinceNow: 1_000_000)
-        )
-        keychainAuthenticationTokenManager.store(authenticationTokenData)
-
-        keychainAuthenticationCredentialsManager.store(
-            login: SampleAPIConstants.validEmail,
-            password: SampleAPIConstants.validPassword
-        )
-    }
+    init() {}
 }
 
 // MARK: - Public methods

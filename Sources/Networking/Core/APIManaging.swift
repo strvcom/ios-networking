@@ -19,14 +19,14 @@ public protocol APIManaging {
     ///   - endpoint: API endpoint requestable definition
     ///   - retry: configuration for retrying behavior
     /// - Returns: Publisher streaming response
-    func request(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<Response, Error>
+    func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) -> AnyPublisher<Response, Error>
 
     /// Creates publisher streaming `Decodable` object  for API endpoint defined by ``Requestable``
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition
     ///   - retry: configuration for retrying behavior
     /// - Returns: Publisher streaming decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error>
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retryConfiguration: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error>
 }
 
 // MARK: - Provide request with default json decoder, retry configuration
@@ -36,19 +36,19 @@ public extension APIManaging {
     /// - Parameter endpoint: API endpoint definition
     /// - Returns: Publisher streaming response
     func request(_ endpoint: Requestable) -> AnyPublisher<Response, Error> {
-        request(endpoint, retry: RetryConfiguration.default)
+        request(endpoint, retryConfiguration: RetryConfiguration.default)
     }
 
     /// Simplifies request using as default `JSONDecoder`
     /// - Returns: Publisher streaming decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
-        request(endpoint, decoder: JSONDecoder(), retry: retry)
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint, decoder: JSONDecoder(), retryConfiguration: retryConfiguration)
     }
 
     /// Simplifies request using as default `JSONDecoder` and default ``RetryConfiguration``
     /// - Returns: Publisher streaming decodable object
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable) -> AnyPublisher<DecodableResponse, Error> {
-        request(endpoint, decoder: JSONDecoder(), retry: RetryConfiguration.default)
+        request(endpoint, decoder: JSONDecoder(), retryConfiguration: RetryConfiguration.default)
     }
 }
 
@@ -57,9 +57,11 @@ public extension APIManaging {
 public extension APIManaging {
     /// Tries to decode `Data` from ``Response`` to decodable object
     /// - Returns: Publisher streaming decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retry: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
-        request(endpoint, retry: retry)
-            .tryMap { try decoder.decode(DecodableResponse.self, from: $0.data) }
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retryConfiguration: RetryConfiguration?) -> AnyPublisher<DecodableResponse, Error> {
+        request(endpoint, retryConfiguration: retryConfiguration)
+            .tryMap {
+                try decoder.decode(DecodableResponse.self, from: $0.data)
+            }
             .eraseToAnyPublisher()
     }
 }

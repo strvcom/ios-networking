@@ -11,8 +11,8 @@ import Networking
 
 // MARK: SampleAPI as refresh authentication token manager
 
-extension SampleAPI: RefreshAuthenticationTokenManaging {
-    func refreshAuthenticationToken(_: String) -> AnyPublisher<RefreshTokenData, AuthenticationError> {
+extension SampleAPI: AuthenticationProviding {
+    func authenticate() -> AnyPublisher<Void, AuthenticationError> {
         // map response data which are just token to full sample authentication data
         authUserPublisher()
             .map { authResponse in
@@ -22,7 +22,7 @@ extension SampleAPI: RefreshAuthenticationTokenManaging {
                 mutableAuthenticationResponse.refreshToken = "refreshToken"
                 mutableAuthenticationResponse.refreshTokenExpirationDate = Date(timeIntervalSinceNow: 100_000)
 
-                return mutableAuthenticationResponse
+//                return mutableAuthenticationResponse
             }
             .eraseToAnyPublisher()
     }

@@ -11,18 +11,18 @@ import Networking
 
 // MARK: SampleAPI as authentication with credentials manager
 
-extension SampleAPI: RenewAuthenticationByCredentialsManaging {
-    func refreshAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError> {
-        apiManager
-            .request(
-                SampleUserRouter.loginUser(
-                    SampleUserAuthRequest(
-                        email: login,
-                        password: password
-                    )
-                )
-            )
-            .mapError { _ in .unauthorized }
-            .eraseToAnyPublisher()
-    }
-}
+// extension SampleAPI: RenewAuthenticationByCredentialsManaging {
+//    func refreshAuthenticationToken(login: String, password: String) -> AnyPublisher<String, AuthenticationError> {
+//        apiManager
+//            .request(
+//                SampleUserRouter.loginUser(
+//                    SampleUserAuthRequest(
+//                        email: login,
+//                        password: password
+//                    )
+//                )
+//            )
+//            .mapError { _ in .unauthorized }
+//            .eraseToAnyPublisher()
+//    }
+// }

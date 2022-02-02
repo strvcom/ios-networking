@@ -68,6 +68,7 @@
 		23A5766225FA12B000617551 /* SampleUserRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 		23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
+		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
 		23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +106,7 @@
 		23A575A825F8B9DA00617551 = {
 			isa = PBXGroup;
 			children = (
+				23C16B78276B5AFD00C0B4F1 /* Packages */,
 				23A575B325F8B9DA00617551 /* NetworkingSampleApp */,
 				23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */,
 				23D8FA40261DA2F800DE1800 /* NetworkingSampleAppUITests */,
@@ -193,6 +195,14 @@
 				23A5765D25FA120B00617551 /* SampleUserRouter.swift */,
 			);
 			path = Routers;
+			sourceTree = "<group>";
+		};
+		23C16B78276B5AFD00C0B4F1 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				23C16B79276B5AFD00C0B4F1 /* ios-networking */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */ = {
