@@ -15,24 +15,10 @@ import Networking
 // SampleAPI calls various sample request for authentication, retry or observe reachability
 
 final class SampleAPI {
-    // MARK: Constants for sample API calling regres.in
-    enum SampleAPIConstants {
-        static let validEmail = "eve.holt@reqres.in"
-        static let validPassword = "cityslicka"
-        static let sampleEmail = "email@email.me"
-        static let sampleName = "Dummy"
-        static let sampleJob = "Foo"
-    }
-
-    // MARK: Public properties
-    var authenticationToken: String?
-
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
     private lazy var keychainAuthenticationManager = KeychainAuthenticationManager(authenticationProvider: self)
-//    private lazy var keychainAuthenticationTokenManager = KeychainAuthenticationTokenManager(refreshAuthenticationTokenManager: self)
-//    private lazy var keychainAuthenticationCredentialsManager = KeychainAuthenticationCredentialsManager(refreshAuthenticationCredentialsManager: self)
 
     private(set) lazy var apiManager: APIManager = {
         let authenticationInterceptor = AuthenticationInterceptor(
@@ -51,7 +37,6 @@ final class SampleAPI {
         #endif
 
         return APIManager(
-            // TODO: another sample
             authenticationManager: keychainAuthenticationManager,
             requestAdapters: [
                 authenticationInterceptor,

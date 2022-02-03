@@ -1,5 +1,5 @@
 //
-//  SampleAPI+RefreshAuthenticationTokenManaging.swift
+//  SampleAPI+AuthenticationProviding.swift
 //  NetworkingSampleApp
 //
 //  Created by Tomas Cejka on 06.09.2021.
@@ -15,22 +15,30 @@ extension SampleAPI: AuthenticationProviding {
     func authenticate() -> AnyPublisher<Void, AuthenticationError> {
         // map response data which are just token to full sample authentication data
         authUserPublisher()
-            .map { authResponse in
-                var mutableAuthenticationResponse = authResponse
-                mutableAuthenticationResponse.authenticationToken = "authenticationToken"
-                mutableAuthenticationResponse.authenticationTokenExpirationDate = Date(timeIntervalSinceNow: 1000)
-                mutableAuthenticationResponse.refreshToken = "refreshToken"
-                mutableAuthenticationResponse.refreshTokenExpirationDate = Date(timeIntervalSinceNow: 100_000)
+            .map { [weak self] authResponse in
+                let authenticationData = SampleAppAuthenticationTokenData(
+                    authenticationToken: authResponse.token,
+                    authenticationTokenExpirationDate: nil,
+                    refreshToken: nil,
+                    refreshTokenExpirationDate: nil
+                )
 
-//                return mutableAuthenticationResponse
+                // self?.keychainAuthenticationManager.store(authenticationData: authenticationData)
             }
             .eraseToAnyPublisher()
+
+        // TODO:
+//        var mutableAuthenticationResponse = authResponse
+//        mutableAuthenticationResponse.authenticationToken = "authenticationToken"
+//        mutableAuthenticationResponse.authenticationTokenExpirationDate = Date(timeIntervalSinceNow: 1000)
+//        mutableAuthenticationResponse.refreshToken = "refreshToken"
+//        mutableAuthenticationResponse.refreshTokenExpirationDate = Date(timeIntervalSinceNow: 100_000)
     }
 }
 
 // MARK: - Wrap request to use request method with proper signature, usually wrapped by service
 
-extension SampleAPI {
+private extension SampleAPI {
     func authUserPublisher() -> AnyPublisher<SampleUserAuthResponse, AuthenticationError> {
         apiManager
             .request(

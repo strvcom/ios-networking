@@ -9,10 +9,9 @@
 /* Begin PBXBuildFile section */
 		2305D1E6261E595E003632D9 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2305D1E5261E595E003632D9 /* Networking */; };
 		2309D580261F51BD00C8AEAB /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2309D57F261F51BD00C8AEAB /* SampleData.xcassets */; };
-		231D324C270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */; };
 		2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */; };
 		2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */; };
-		23632CAB26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */; };
+		23632CAB26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */; };
 		23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B425F8B9DA00617551 /* AppDelegate.swift */; };
 		23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B625F8B9DA00617551 /* SceneDelegate.swift */; };
 		23A575B925F8B9DA00617551 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B825F8B9DA00617551 /* ViewController.swift */; };
@@ -26,6 +25,8 @@
 		23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766225FA12B000617551 /* SampleUserRequest.swift */; };
 		23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */; };
 		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
+		23D2724C27AC02F800B5F648 /* SampleAPIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */; };
+		23D2724F27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */; };
 		23D8FA42261DA2F800DE1800 /* NetworkingSampleAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */; };
 		23D8FA52261DA56B00DE1800 /* TestStoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA50261DA56B00DE1800 /* TestStoredData.swift */; };
 /* End PBXBuildFile section */
@@ -49,10 +50,9 @@
 
 /* Begin PBXFileReference section */
 		2309D57F261F51BD00C8AEAB /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
-		231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+CredentialsAuthenticationManaging.swift"; sourceTree = "<group>"; };
 		2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
-		23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+RefreshAuthenticationTokenManaging.swift"; sourceTree = "<group>"; };
+		23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+AuthenticationProviding.swift"; sourceTree = "<group>"; };
 		23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkingSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575B425F8B9DA00617551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23A575B625F8B9DA00617551 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +69,8 @@
 		23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
 		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
+		23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAPIConstants.swift; sourceTree = "<group>"; };
+		23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAppAuthenticationTokenData.swift; sourceTree = "<group>"; };
 		23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				23A575F125F8BF1F00617551 /* API */,
+				23D2724D27AC376600B5F648 /* Models */,
 				23A575ED25F8BF0E00617551 /* Scene */,
 				23A575B425F8B9DA00617551 /* AppDelegate.swift */,
 				23A575B625F8B9DA00617551 /* SceneDelegate.swift */,
@@ -162,8 +165,8 @@
 				23A5765B25FA0EDE00617551 /* Responses */,
 				23A5765C25FA0EEB00617551 /* Routers */,
 				23A575F525F9699400617551 /* SampleAPI.swift */,
-				231D324B270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift */,
-				23632CAA26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift */,
+				23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */,
+				23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */,
 				23A575F725F9699400617551 /* SampleAPIError.swift */,
 				23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */,
 			);
@@ -203,6 +206,14 @@
 				23C16B79276B5AFD00C0B4F1 /* ios-networking */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		23D2724D27AC376600B5F648 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */ = {
@@ -404,13 +415,14 @@
 				23A575B925F8B9DA00617551 /* ViewController.swift in Sources */,
 				23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */,
 				2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */,
-				231D324C270C53EE00FAFFFA /* SampleAPI+CredentialsAuthenticationManaging.swift in Sources */,
+				23D2724C27AC02F800B5F648 /* SampleAPIConstants.swift in Sources */,
 				23A575F925F9699400617551 /* SampleAPI.swift in Sources */,
 				23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */,
 				23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */,
 				23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */,
 				2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */,
-				23632CAB26E64C020023F03F /* SampleAPI+RefreshAuthenticationTokenManaging.swift in Sources */,
+				23632CAB26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift in Sources */,
+				23D2724F27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,

@@ -11,7 +11,7 @@ import Foundation
 
 /// Model holding typical values required for refresh authentication token authentication system
 public protocol AuthenticationTokenData {
-    var authenticationToken: String? { get }
+    var authenticationToken: String { get }
     var authenticationTokenExpirationDate: Date? { get }
     var refreshToken: String? { get }
     var refreshTokenExpirationDate: Date? { get }

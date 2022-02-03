@@ -11,7 +11,7 @@ import Foundation
 import Networking
 
 // custom api business logic error solution
-class SampleAPIErrorProcessor: ResponseProcessing {
+final class SampleAPIErrorProcessor: ResponseProcessing {
     private lazy var decoder = JSONDecoder()
 
     // Custom error processing sample, sample api provides custom error on status code 400

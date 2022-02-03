@@ -8,9 +8,7 @@
 import Foundation
 import Networking
 
+/// Data structure of sample API authentication response
 struct SampleUserAuthResponse: Decodable {
-    var authenticationToken: String?
-    var refreshToken: String?
-    var authenticationTokenExpirationDate: Date?
-    var refreshTokenExpirationDate: Date?
+    var token: String
 }
