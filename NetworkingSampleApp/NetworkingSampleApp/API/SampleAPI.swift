@@ -18,7 +18,9 @@ final class SampleAPI {
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
-    private lazy var keychainAuthenticationManager = KeychainAuthenticationManager(authenticationProvider: self)
+    private(set) lazy var keychainAuthenticationManager: KeychainAuthenticationManager = {
+        KeychainAuthenticationManager(authenticationProvider: self)
+    }()
 
     private(set) lazy var apiManager: APIManager = {
         let authenticationInterceptor = AuthenticationInterceptor(
