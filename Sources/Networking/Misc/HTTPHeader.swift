@@ -14,6 +14,7 @@ public enum HTTPHeader {
     /// Constants for http header key
     public enum HeaderField: String {
         case contentType = "Content-Type"
+        case authorization = "Authorization"
     }
 
     /// Constants for values for http header content type key
