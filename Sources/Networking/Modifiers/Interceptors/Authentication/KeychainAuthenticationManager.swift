@@ -57,8 +57,8 @@ open class KeychainAuthenticationManager {
 
 // MARK: - AuthenticationManaging protocol
 extension KeychainAuthenticationManager: AuthenticationManaging {
-    public var authenticationToken: String {
-        authenticationTokenData?.authenticationToken ?? ""
+    public var authenticationToken: String? {
+        authenticationTokenData?.authenticationToken
     }
     
     public var authenticationTokenExpirationDate: Date? {
@@ -74,7 +74,7 @@ extension KeychainAuthenticationManager: AuthenticationManaging {
     }
     
     public var isAuthenticated: Bool {
-       !isExpired
+        authenticationToken != nil && !isExpired
     }
 
     private var authenticationTokenData: AuthenticationTokenData? {
@@ -171,6 +171,10 @@ extension KeychainAuthenticationManager {
 
 extension KeychainAuthenticationManager: RequestAuthorizing {
     public func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
+        // check user's authenticationToken
+        guard let authenticationToken = authenticationToken else {
+            return .failure(.missingAuthenticationToken)
+        }
         // check user's authenticationToken expiration date
         guard !isExpired else {
             return .failure(.expiredAuthenticationToken)

@@ -16,7 +16,7 @@ public protocol AuthenticationManaging: AuthenticationProviding {
     /// Information whether API layer is ready to use authenticated communication
     var isAuthenticated: Bool { get }
 
-    var authenticationToken: String { get }
+    var authenticationToken: String? { get }
     var authenticationTokenExpirationDate: Date? { get }
     var refreshToken: String? { get }
     var refreshTokenExpirationDate: Date? { get }
