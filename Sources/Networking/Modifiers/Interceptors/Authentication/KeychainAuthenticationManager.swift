@@ -9,19 +9,6 @@ import Combine
 import Foundation
 import KeychainSwift
 
-///// <#Description#>
-// var isAuthenticated: Bool {
-//    authenticationToken != nil && !isExpired
-// }
-//
-///// <#Description#>
-// var isExpired: Bool {
-//    guard let authenticationTokenExpirationDate = authenticationTokenExpirationDate else {
-//        return true
-//    }
-//    return authenticationTokenExpirationDate <= Date()
-// }
-
 // TODO: solve multiple instances
 
 // MARK: - KeychainAuthenticationManager
@@ -29,18 +16,26 @@ import KeychainSwift
 /// Implementation of ``AuthenticationManaging`` using `Keychain`
 open class KeychainAuthenticationManager {
     // MARK: Private properties
-    private lazy var keychain = KeychainSwift()
-    private lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .full
-        dateFormatter.timeStyle = .full
-        return dateFormatter
-    }()
 
+    private lazy var keychain = KeychainSwift()
     private lazy var jsonEncoder = JSONEncoder()
     private lazy var jsonDecoder = JSONDecoder()
+
     private let authenticationProvider: AuthenticationProviding
     private let authorizationHeaderKey: String
+    
+    /// Model loaded from Keychain
+    private var authenticationTokenData: AuthenticationTokenData? {
+        getObject(AuthenticationTokenDataModel.self, key: .authenticationModel)
+    }
+    
+    /// User's authenticationToken expiration date
+    private var isExpired: Bool {
+        guard let authenticationTokenExpirationDate = authenticationTokenData?.authenticationTokenExpirationDate else {
+            return true
+        }
+        return authenticationTokenExpirationDate < Date()
+    }
 
     /// Creates an instance of ``KeychainAuthenticationManager`` with injected authentication provider
     /// - Parameter authenticationProvider: Implementation of `AuthenticationProviding`
@@ -55,37 +50,10 @@ open class KeychainAuthenticationManager {
 
 // MARK: - AuthenticationManaging protocol
 extension KeychainAuthenticationManager: AuthenticationManaging {
-    public var authenticationToken: String? {
-        authenticationTokenData?.authenticationToken
-    }
-    
-    public var authenticationTokenExpirationDate: Date? {
-        authenticationTokenData?.authenticationTokenExpirationDate
-    }
-    
-    public var refreshToken: String? {
-        authenticationTokenData?.refreshToken
-    }
-    
-    public var refreshTokenExpirationDate: Date? {
-        authenticationTokenData?.refreshTokenExpirationDate
-    }
-    
     public var isAuthenticated: Bool {
-        authenticationToken != nil && !isExpired
+        authenticationTokenData?.authenticationToken != nil && !isExpired
     }
 
-    private var authenticationTokenData: AuthenticationTokenData? {
-        getObject(AuthenticationTokenDataModel.self, key: .authenticationObject)
-    }
-
-    private var isExpired: Bool {
-        guard let authenticationTokenExpirationDate = authenticationTokenExpirationDate else {
-            return true
-        }
-        return authenticationTokenExpirationDate < Date()
-    }
-    
     public func revoke() {
         // delete all keys
         KeychainKey.allCases.forEach {
@@ -106,28 +74,29 @@ extension KeychainAuthenticationManager: AuthenticationManaging {
             refreshTokenExpirationDate: authenticationTokenData.refreshTokenExpirationDate
         )
         // save to keychain
-        setObject(authenticationModel, key: .authenticationObject)
+        setObject(authenticationModel, key: .authenticationModel)
     }
 }
 
 // MARK: Keychain keys
 
 enum KeychainKey: String, CaseIterable {
-    case authenticationToken = "com.strv.networking.keychain.authenticationToken"
-    case authenticationHeader = "com.strv.networking.keychain.authenticationHeader"
-    case authenticationObject = "com.strv.networking.keychain.authorizationObject"
+    case authenticationModel = "com.strv.networking.keychain.authenticationModel"
 }
 
 // MARK: - Private helper methods
 
 extension KeychainAuthenticationManager {
+    /// Save encodable model to keychain
     func setObject<Object: Encodable>(_ object: Object, key: KeychainKey) {
         guard let data = try? jsonEncoder.encode(object) else {
             return
         }
         keychain.set(data, forKey: key.rawValue)
     }
-
+    
+    /// Load decodable model from keychain
+    /// - Returns: Decodable model
     func getObject<Object: Decodable>(_ object: Object.Type, key: KeychainKey) -> Object? {
         let data = keychain.getData(key.rawValue)
         guard let data = data,
@@ -137,45 +106,20 @@ extension KeychainAuthenticationManager {
         }
         return authenticationTokenData
     }
-
-    func setString(_ value: String?, key: KeychainKey) {
-        guard let value = value else {
-            remove(key: key)
-            return
-        }
-        keychain.set(value, forKey: key.rawValue)
-    }
-
-    func setDate(_ value: Date?, key: KeychainKey) {
-        guard let date = value else {
-            remove(key: key)
-            return
-        }
-
-        setString(dateFormatter.string(from: date), key: key)
-    }
-
-    func string(key: KeychainKey) -> String? {
-        keychain.get(key.rawValue)
-    }
-
-    func date(key: KeychainKey) -> Date? {
-        if let date = string(key: key) {
-            return dateFormatter.date(from: date)
-        }
-
-        return nil
-    }
-
+    
+    /// Delete value in Keychain
+    /// - Parameter key: Key to deleting value
     func remove(key: KeychainKey) {
         keychain.delete(key.rawValue)
     }
 }
 
+// MARK: - RequestAuthorizing
+
 extension KeychainAuthenticationManager: RequestAuthorizing {
     public func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError> {
         // check user's authenticationToken
-        guard let authenticationToken = authenticationToken else {
+        guard let authenticationToken = authenticationTokenData?.authenticationToken else {
             return .failure(.missingAuthenticationToken)
         }
         // check user's authenticationToken expiration date
