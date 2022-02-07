@@ -16,13 +16,8 @@ public protocol AuthenticationManaging: AuthenticationProviding {
     /// Information whether API layer is ready to use authenticated communication
     var isAuthenticated: Bool { get }
 
-    var authenticationToken: String? { get }
-    var authenticationTokenExpirationDate: Date? { get }
-    var refreshToken: String? { get }
-    var refreshTokenExpirationDate: Date? { get }
-
     /// Destroy any stored information related to authentication
     func revoke()
-    // allows set authentication data from outside
+    /// allows set authentication data from outside
     func store(_ authenticationTokenData: AuthenticationTokenData)
 }

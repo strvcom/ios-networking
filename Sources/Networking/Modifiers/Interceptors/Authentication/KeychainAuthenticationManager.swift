@@ -41,7 +41,6 @@ open class KeychainAuthenticationManager {
     private lazy var jsonDecoder = JSONDecoder()
     private let authenticationProvider: AuthenticationProviding
     private let authorizationHeaderKey: String
-    private let authenticationTokenMapper: AuthenticationTokenMapping
 
     /// Creates an instance of ``KeychainAuthenticationManager`` with injected authentication provider
     /// - Parameter authenticationProvider: Implementation of `AuthenticationProviding`
@@ -51,7 +50,6 @@ open class KeychainAuthenticationManager {
     ) {
         self.authenticationProvider = authenticationProvider
         self.authorizationHeaderKey = authorizationHeaderKey
-        self.authenticationTokenMapper = AuthenticationTokenMapper()
     }
 }
 
@@ -101,7 +99,12 @@ extension KeychainAuthenticationManager: AuthenticationManaging {
 
     public func store(_ authenticationTokenData: AuthenticationTokenData) {
         // map protocol to codable model
-        let authenticationModel = authenticationTokenMapper.createModel(authenticationTokenData)
+        let authenticationModel = AuthenticationTokenDataModel(
+            authenticationToken: authenticationTokenData.authenticationToken,
+            refreshToken: authenticationTokenData.refreshToken,
+            authenticationTokenExpirationDate: authenticationTokenData.authenticationTokenExpirationDate,
+            refreshTokenExpirationDate: authenticationTokenData.refreshTokenExpirationDate
+        )
         // save to keychain
         setObject(authenticationModel, key: .authenticationObject)
     }
