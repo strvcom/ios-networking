@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Combine+Convenience.swift
 //
 //
 //  Created by Tomas Cejka on 15.04.2021.

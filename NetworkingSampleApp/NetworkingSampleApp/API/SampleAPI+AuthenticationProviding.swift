@@ -23,7 +23,7 @@ extension SampleAPI: AuthenticationProviding {
                     refreshTokenExpirationDate: nil
                 )
 
-                // self?.keychainAuthenticationManager.store(authenticationData: authenticationData)
+                 self?.keychainAuthenticationManager.store(authenticationData)
             }
             .eraseToAnyPublisher()
 

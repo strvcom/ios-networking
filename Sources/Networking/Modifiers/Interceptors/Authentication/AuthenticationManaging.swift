@@ -18,4 +18,6 @@ public protocol AuthenticationManaging: AuthenticationProviding {
 
     /// Destroy any stored information related to authentication
     func revoke()
+    /// allows set authentication data from outside
+    func store(_ authenticationTokenData: AuthenticationTokenData)
 }
