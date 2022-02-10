@@ -7,9 +7,8 @@
     
     @Section(title: " Creating endpoints") {
         @ContentAndMedia {
-            Firstly, application uses ``Requestable`` protocol for defining endpoints. These can be then easily specified in Business Logic (mostly Services) for more readable network requests.
-            
-            @Image(source: <#file#>, alt: "<#accessible description#>")
+            Firstly, application uses `Requestable` protocol for defining endpoints. These can be then easily specified in Business Logic (mostly Services) for more readable network requests.
+            @Image(source: XcodeTemplate.png, alt: "")
         }
         
         @Steps {
@@ -22,7 +21,7 @@
                 @Code(name: "ExampleRouter.swift", file: Router01.swift)
             }
             @Step {
-                Create enum `ExampleRouter`. It must implements ``Requestable`` protocol.
+                Create enum `ExampleRouter`. It must implements `Requestable` protocol.
                 @Code(name: "ExampleRouter.swift", file: Router02.swift)
             }
             @Step {
@@ -30,7 +29,7 @@
                 @Code(name: "ExampleRouter.swift", file: Router03.swift)
             }
             @Step {
-                Implement required attributes for ``Requestable`` protocol. First is `baseURL` which represents host URL of REST API
+                Implement required attributes for `Requestable` protocol. First is `baseURL` which represents host URL of REST API
                 @Code(name: "ExampleRouter.swift", file: Router04.swift)
             }
             @Step {
@@ -46,11 +45,11 @@
                 @Code(name: "ExampleRouter.swift", file: Router07.swift)
             }
             @Step {
-                Select ``HTTPMethod`` for `URLRequest`.
+                Select `HTTPMethod` for `URLRequest`.
                 @Code(name: "ExampleRouter.swift", file: Router08.swift)
             }
             @Step {
-                Select ``RequestDataType`` if neccessary.
+                Select `RequestDataType` if neccessary.
                 @Code(name: "ExampleRouter.swift", file: Router09.swift)
             }
             @Step {
@@ -60,16 +59,73 @@
         }
     }
 
-    @Section(title: "Calling endpoints") {
-        
+    @Section(title: "Creating Networking Manager") {
         @ContentAndMedia {
-            After creating endpoints, we can easily create class for business logic (mostly Services) for requesting data from endpoints.
+            After creating endpoints, we can easily create class for business logic (mostly Services) for requesting data from endpoints. This can be achieved with `ApiManaging` protocol and `ApiManager` class.
             
             @Image(source: PhoneCommunication.png, alt: "")
         }
         @Steps {
             @Step {
-                
+                Create a new swift file named `ExampleApiLayerManager.swift`
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager00.swift)
+            }
+            @Step {
+                Import Combine, Foundation and Networking
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager01.swift)
+            }
+            @Step {
+                Create APIManager instance. Next steps will be about creating those parameters, so APIManager could be created.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager02.swift)
+            }
+            @Step {
+                Let's start from first one. Networking is defaultly set as `URLSession(configuration: .default)`.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager03.swift)
+            }
+            @Step {
+                Second parameter is `AuthenticationManaging`. Object comforming this protocol is `KeychainAuthenticationManager`. It automatically saves new authorization token.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager04.swift)
+            }
+            @Step {
+                For `KeychainAuthenticationManager` we also need our class `ExampleApiLayerManager` to implement `AuthenticationProviding` protocol.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager05.swift)
+            }
+            @Step {
+                Third parameter for `APIManager` is `[RequestAdapting]`. Those classes adapt `URLRequest` before it is sent to API. Great example of this is adding `authorizationHeader` to requests which needs to be authorized. Protocol `RequestAdapting` is public so application can has its own adapters for modifying `URLRequest`. Be careful, order of adapters MATTERS ⚠️.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager06.swift)
+            }
+            @Step {
+                Last parameter for `APIManager` is `[ResponseProcessing]`. Those classes process `Response` received from API. Great example of this is adding `StatusCodeProcessor` which validates `statusCode` if it is in acceptable status range. Be careful, order of adapters MATTERS ⚠️.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager07.swift)
+            }
+            @Step {
+                Last step is to implement `APIManaging` protocol. This way `ExampleApiLayerManager` encapsulates `APIManager` and only visible functions/properties will be requests.
+                @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager08.swift)
+            }
+        }
+    }
+
+    @Section(title: "Creating Services") {
+        @ContentAndMedia {
+            Last part in application is creating Services.
+        }
+        
+        @Steps {
+            @Step {
+                Create a new swift file named `Service.swift`
+                @Code(name: "Service.swift", file: Service00.swift)
+            }
+            @Step {
+                Import Combine and Networking
+                @Code(name: "Service.swift", file: Service01.swift)
+            }
+            @Step {
+                Inject manager responsible for API layer. Perfect would be to create `ExampleApiLayerManager` at one place and inject it through init.
+                @Code(name: "Service.swift", file: Service02.swift)
+            }
+            @Step {
+                Implement protocol for this service, call decodable objects.
+                @Code(name: "Service.swift", file: Service03.swift)
             }
         }
     }
