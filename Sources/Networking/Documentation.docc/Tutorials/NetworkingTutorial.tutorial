@@ -1,0 +1,15 @@
+@Tutorials(name: "Networking tutorial") {
+    @Intro(title: "Meet swift library for networking") {
+        The lightweight library for API calls management. The library is built upon URL session and provides most common networking features.
+        
+        @Image(source: Swift-Package-Manager.png, alt: "Random description")
+    }
+    
+    @Chapter(name: "Introduction to networking in app") {
+        Tutorial for implementing networking inside your application.
+        
+        @Image(source: HTTPS.png, alt: "Http image description")
+        
+        @TutorialReference(tutorial: "doc:AppChapterTutorial")
+    }
+}
