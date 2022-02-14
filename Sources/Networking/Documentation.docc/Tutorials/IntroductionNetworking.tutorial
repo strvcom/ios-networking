@@ -8,7 +8,7 @@
     @Section(title: " Creating endpoints") {
         @ContentAndMedia {
             Firstly, application uses `Requestable` protocol for defining endpoints. These can be then easily specified in Business Logic (mostly Services) for more readable network requests.
-            @Image(source: XcodeTemplate.png, alt: "")
+            @Image(source: meme3.png, alt: "")
         }
         
         @Steps {
@@ -63,7 +63,7 @@
         @ContentAndMedia {
             After creating endpoints, we can easily create class for business logic (mostly Services) for requesting data from endpoints. This can be achieved with `ApiManaging` protocol and `ApiManager` class.
             
-            @Image(source: PhoneCommunication.png, alt: "")
+            @Image(source: meme4.png, alt: "")
         }
         @Steps {
             @Step {
@@ -95,7 +95,7 @@
                 @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager06.swift)
             }
             @Step {
-                Last parameter for `APIManager` is `[ResponseProcessing]`. Those classes process `Response` received from API. Great example of this is adding `StatusCodeProcessor` which validates `statusCode` if it is in acceptable status range. Be careful, order of adapters MATTERS ⚠️.
+                Last parameter for `APIManager` is `[ResponseProcessing]`. Those classes process `Response` received from API. Great example of this is adding `StatusCodeProcessor` which validates `statusCode` if it is in acceptable status range. Be careful, order of processors MATTERS ⚠️.
                 @Code(name: "ExampleApiLayerManager.swift", file: ExampleApiLayerManager07.swift)
             }
             @Step {
@@ -108,6 +108,7 @@
     @Section(title: "Creating Services") {
         @ContentAndMedia {
             Last part in application is creating Services.
+            @Image(source: meme5.png, alt: "")
         }
         
         @Steps {

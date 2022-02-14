@@ -2,14 +2,25 @@
     @Intro(title: "Meet swift library for networking") {
         The lightweight library for API calls management. The library is built upon URL session and provides most common networking features.
         
-        @Image(source: Swift-Package-Manager.png, alt: "Random description")
+        @Image(source: meme1.png, alt: "")
     }
     
     @Chapter(name: "Introduction to networking in app") {
         Tutorial for implementing networking inside your application.
-        
-        @Image(source: HTTPS.png, alt: "Http image description")
-        
-        @TutorialReference(tutorial: "doc:AppChapterTutorial")
+        @Image(source: meme0.png, alt: "")
+        @TutorialReference(tutorial: "doc:IntroductionNetworking")
+    }
+
+    @Chapter(name: "Introduction to Networking library") {
+        Basic description how Networking library works in article. Short diagrams are used for better understanding.
+        @Image(source: meme6.png, alt: "")
+<!--        reference to article, not tutorial, somehow it works-->
+        @TutorialReference(tutorial: "doc:Library")
+    }
+
+    @Chapter(name: "Advanced customization") {
+        Advanced option, how to customize networking library to application's needs.
+        @Image(source: meme10.png, alt: "")
+        @TutorialReference(tutorial: "doc:AdvancedNetworking")
     }
 }

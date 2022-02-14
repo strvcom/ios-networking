@@ -1,0 +1,69 @@
+@Tutorial(time: 20) {
+    @Intro(title: "Advanced functionality of Networking library") {
+        Library offers some sort of freedom and customization, which can be changed between applications. Imagine you have custom authorization process or you want to handle error data in specific way. This tutorial will show you how to do it.
+        
+        @Image(source: STRV.png, alt: "")
+    }
+    
+    @Section(title: "Modifying request") {
+        @ContentAndMedia {
+            Library offers some sort of customization before sending `URLRequest` to Backend. `RequestAdapting` can adapt request to required way.
+            
+            @Image(source: meme10.png, alt: "")
+        }
+        
+        @Steps {
+            @Step {
+                Create a new swift file named `Adapter.swift`.
+                @Code(name: "Adapter.swift", file: Adapter00.swift)
+            }
+            @Step {
+                Import Foundation, Combine and Networking.
+                @Code(name: "Adapter.swift", file: Adapter01.swift)
+            }
+            @Step {
+                Creating `CustomClass` conforming to `RequestAdapting`.
+                @Code(name: "Adapter.swift", file: Adapter02.swift)
+            }
+            @Step {
+                Add missing functions from protocol.
+                @Code(name: "Adapter.swift", file: Adapter03.swift)
+            }
+            @Step {
+                Implement custom features. Here you can see logging feature, which is already implemented. When `Output` is received, it is nicely printed for human eye. When `Error` is received, it is also printed + it returns original request so it doesn't stop here. 
+                @Code(name: "Adapter.swift", file: Adapter04.swift)
+            }
+        }
+    }
+
+    @Section(title: "Modifying response") {
+        @ContentAndMedia {
+            Library offers some sort of customization after receiving `Response` from Backend. `ResponseProcessing` can process response to required way.
+            
+            @Image(source: meme10.png, alt: "")
+        }
+        
+        @Steps {
+            @Step {
+                Create a new swift file named `Processor.swift`.
+                @Code(name: "Processor.swift", file: Processor00.swift)
+            }
+            @Step {
+                Import Foundation, Combine and Networking.
+                @Code(name: "Processor.swift", file: Processor01.swift)
+            }
+            @Step {
+                Creating `CustomClass` conforming to `ResponseProcessing`.
+                @Code(name: "Processor.swift", file: Processor02.swift)
+            }
+            @Step {
+                Add missing functions from protocol.
+                @Code(name: "Processor.swift", file: Processor03.swift)
+            }
+            @Step {
+                Implement custom features. Here you can see logging feature, which is already implemented. When `Output` is received, it is nicely printed for human eye. When `Error` is received, it is also printed + it returns original request so it doesn't stop here. 
+                @Code(name: "Processor.swift", file: Processor04.swift)
+            }
+        }
+    }
+}
