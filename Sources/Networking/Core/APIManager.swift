@@ -101,14 +101,16 @@ private extension APIManager {
                     throw error
                 }
 
+                
                 // authentication publisher
                 // if error while authenticating throw it, do not cycle
                 if self.authenticationManager != nil,
                    error is AuthenticationError,
-                   !self.isAuthenticationError,
-                   self.authenticationPublisher == nil
+                   !self.isAuthenticationError
                 {
-                    self.authenticationPublisher = self.createAuthenticationPublisher()
+                    if  self.authenticationPublisher == nil {
+                        self.authenticationPublisher = self.createAuthenticationPublisher()
+                    }
                     return self.request(endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
                 }
 
@@ -137,6 +139,7 @@ private extension APIManager {
         authenticationManager?.authenticate()
             .handleEvents(
                 receiveCompletion: { [weak self] _ in
+                    // after authentication, set authenticationPublisher to nil again
                     self?.authenticationPublisher = nil
                     self?.isAuthenticationError = true
                 }
@@ -146,6 +149,7 @@ private extension APIManager {
     }
 
     func createRetryPublisher(originalPublisher: AnyPublisher<Response, Error>, retryConfiguration: RetryConfiguration) -> AnyPublisher<Response, Error> {
+        
         Publishers.Delay(
             upstream: originalPublisher,
             interval: RunLoop.SchedulerTimeType.Stride(retryConfiguration.delay),
@@ -157,6 +161,10 @@ private extension APIManager {
     }
 
     func createInitialRequestPublisher(endpointRequest: EndpointRequest) -> AnyPublisher<Requestable, Error> {
+        /*
+         when there is no authenticationPublisher, or request doesn't need authentication
+         just return Requestable
+         */
         guard let authenticationPublisher = authenticationPublisher,
               endpointRequest.endpoint.isAuthenticationRequired
         else {
