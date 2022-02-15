@@ -2,7 +2,7 @@
     @Intro(title: "Advanced functionality of Networking library") {
         Library offers some sort of freedom and customization, which can be changed between applications. Imagine you have custom authorization process or you want to handle error data in specific way. This tutorial will show you how to do it.
         
-        @Image(source: STRV.png, alt: "")
+        @Image(source: STRVlogo.png, alt: "")
     }
     
     @Section(title: "Modifying request") {

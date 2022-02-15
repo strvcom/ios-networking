@@ -2,7 +2,7 @@
     @Intro(title: "Implement Networking library to your application") {
         ``Networking`` is library inspired by [Moya](https://github.com/Moya/Moya) and [Alamofire](https://github.com/Alamofire/Alamofire). Comparing to the frameworks mentioned before Networking covers just most common REST API networking cases and provides additional features to help developers with writing UI tests or debugging issues.
         
-        @Image(source: XcodeScreenshot1.png, alt: "Networking random description")
+        @Image(source: STRVlogo.png, alt: "Networking random description")
     }
     
     @Section(title: " Creating endpoints") {
