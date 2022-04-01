@@ -24,6 +24,8 @@ public enum NetworkError: Error, LocalizedError {
     case underlying(error: Error)
     /// error with unknown cause
     case unknown
+    
+    case headerIsInvalid
 
     public var errorDescription: String? {
         switch self {
@@ -33,6 +35,8 @@ public enum NetworkError: Error, LocalizedError {
             return NSLocalizedString("Response is missing status code", comment: "")
         case let .underlying(error):
             return NSLocalizedString("Network error \(error.localizedDescription)", comment: "")
+        case .headerIsInvalid:
+            return NSLocalizedString("Header is not valid", comment: "")
         case .unknown:
             return NSLocalizedString("Unknown error", comment: "")
         }

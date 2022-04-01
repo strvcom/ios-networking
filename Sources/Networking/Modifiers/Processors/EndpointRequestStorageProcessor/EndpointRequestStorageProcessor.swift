@@ -40,32 +40,8 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
     ///   - urlRequest: related URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: Modified publisher which tries to store data into files
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> Response {
         responsePublisher
-            .handleEvents(receiveOutput: { [weak self] response in
-                self?.storeResponse(
-                    response,
-                    endpointRequest: endpointRequest,
-                    urlRequest: urlRequest
-                )
-            })
-            .tryCatch { [weak self] error -> AnyPublisher<Response, Error> in
-
-                guard let networkError = error as? NetworkError,
-                      case let .unacceptableStatusCode(_, _, response) = networkError
-                else {
-                    throw error
-                }
-
-                self?.storeResponse(
-                    response,
-                    endpointRequest: endpointRequest,
-                    urlRequest: urlRequest
-                )
-
-                throw error
-            }
-            .eraseToAnyPublisher()
     }
 }
 

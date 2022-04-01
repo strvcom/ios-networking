@@ -5,7 +5,6 @@
 //  Created by Tomas Cejka on 10.12.2021.
 //
 
-import Combine
 import Foundation
 import KeychainSwift
 
@@ -61,7 +60,7 @@ extension KeychainAuthenticationManager: AuthenticationManaging {
         }
     }
 
-    public func authenticate() -> AnyPublisher<Void, AuthenticationError> {
+    public func authenticate() -> Void {
         authenticationProvider.authenticate()
     }
 

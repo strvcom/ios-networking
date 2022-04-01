@@ -11,7 +11,6 @@
 		2309D580261F51BD00C8AEAB /* SampleData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2309D57F261F51BD00C8AEAB /* SampleData.xcassets */; };
 		2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */; };
 		2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */; };
-		23632CAB26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */; };
 		23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B425F8B9DA00617551 /* AppDelegate.swift */; };
 		23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B625F8B9DA00617551 /* SceneDelegate.swift */; };
 		23A575B925F8B9DA00617551 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B825F8B9DA00617551 /* ViewController.swift */; };
@@ -52,7 +51,6 @@
 		2309D57F261F51BD00C8AEAB /* SampleData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SampleData.xcassets; sourceTree = "<group>"; };
 		2327F103261DE2AB0093AD9C /* SampleUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		2327F108261DE2CA0093AD9C /* SampleUsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
-		23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SampleAPI+AuthenticationProviding.swift"; sourceTree = "<group>"; };
 		23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkingSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A575B425F8B9DA00617551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23A575B625F8B9DA00617551 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -166,7 +164,6 @@
 				23A5765C25FA0EEB00617551 /* Routers */,
 				23A575F525F9699400617551 /* SampleAPI.swift */,
 				23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */,
-				23632CAA26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift */,
 				23A575F725F9699400617551 /* SampleAPIError.swift */,
 				23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */,
 			);
@@ -385,7 +382,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mint run realm/SwiftLint@0.40.3\n";
+			shellScript = "# mint run realm/SwiftLint@0.40.3\n";
 		};
 		2309D549261F3E4000C8AEAB /* Run Script - Swiftformat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -403,7 +400,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mint run nicklockwood/SwiftFormat@0.47.13 . ..\n";
+			shellScript = "# mint run nicklockwood/SwiftFormat@0.47.13 . ..\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -421,7 +418,6 @@
 				23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */,
 				23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */,
 				2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */,
-				23632CAB26E64C020023F03F /* SampleAPI+AuthenticationProviding.swift in Sources */,
 				23D2724F27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */,
@@ -603,7 +599,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y35U45R7B5;
+				DEVELOPMENT_TEAM = MFW39VQ977;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

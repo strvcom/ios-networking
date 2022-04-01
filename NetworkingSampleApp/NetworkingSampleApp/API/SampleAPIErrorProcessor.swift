@@ -15,22 +15,7 @@ final class SampleAPIErrorProcessor: ResponseProcessing {
     private lazy var decoder = JSONDecoder()
 
     // Custom error processing sample, sample api provides custom error on status code 400
-    func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for _: EndpointRequest) -> AnyPublisher<Response, Error> {
+    func process(_ responsePublisher: Response, with _: URLRequest, for _: EndpointRequest) -> Response {
         responsePublisher
-            .tryCatch { error -> AnyPublisher<Response, Error> in
-                guard let networkError = error as? NetworkError,
-                      case let .unacceptableStatusCode(statusCode, _, response) = networkError,
-                      statusCode == 400
-                else {
-                    return responsePublisher
-                }
-
-                if let apiError = try? self.decoder.decode(SampleAPIError.self, from: response.data) {
-                    throw apiError
-                }
-
-                throw error
-            }
-            .eraseToAnyPublisher()
     }
 }

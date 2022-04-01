@@ -6,7 +6,6 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 // MARK: - Defines modifying the response after it's been received
@@ -15,7 +14,7 @@ import Foundation
 public protocol ResponseProcessing {
     /// Modifier which processes response
     /// - Returns: New publisher which processes ``Response``
-    func process(_ responsePublisher: AnyPublisher<Response, Error>, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error>
+    func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -27,13 +26,9 @@ public extension Array where Element == ResponseProcessing {
     ///   - request: original URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: ``Response`` processed by all objects in array in sequence
-    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
-        let responsePublisher = Just(response)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-
-        return reduce(responsePublisher) { response, responseProcessing in
-            responseProcessing.process(response, with: request, for: endpointRequest)
+    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
+        try reduce(response) { response, responseProcessing in
+            try responseProcessing.process(response, with: request, for: endpointRequest)
         }
     }
 }

@@ -6,7 +6,6 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 // For NSDataAsset import
@@ -37,7 +36,7 @@ open class SampleDataNetworking: Networking {
     /// Creates request publisher which returns ``Response`` loaded from files
     /// - Parameter request: URL request
     /// - Returns: publisher streaming ``Response`` for requests and injected sessionId
-    public func requestPublisher(for request: URLRequest) -> AnyPublisher<Response, NetworkError> {
+    public func requestPublisher(for request: URLRequest) throws -> Response {
         guard let sampleData = try? loadSampleData(for: request) else {
             fatalError("❌ Can't load data")
         }
@@ -46,8 +45,7 @@ open class SampleDataNetworking: Networking {
             let statusCode = sampleData.statusCode,
             let url = request.url
         else {
-            return Fail(error: NetworkError.unknown)
-                .eraseToAnyPublisher()
+            throw NetworkError.unknown
         }
 
         guard
@@ -58,13 +56,11 @@ open class SampleDataNetworking: Networking {
                 headerFields: sampleData.responseHeaders
             )
         else {
-            return Fail(error: NetworkError.unknown)
-                .eraseToAnyPublisher()
+            throw NetworkError.headerIsInvalid
         }
 
-        return Just((sampleData.responseBody ?? Data(), httpResponse))
-            .setFailureType(to: NetworkError.self)
-            .eraseToAnyPublisher()
+        return (sampleData.responseBody ?? Data(), httpResponse)
+         
     }
 }
 

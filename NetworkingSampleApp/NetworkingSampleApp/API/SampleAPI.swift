@@ -14,40 +14,16 @@ import Networking
 // SampleAPI implements RefreshAuthenticationTokenManaging
 // SampleAPI calls various sample request for authentication, retry or observe reachability
 
-final class SampleAPI {
+final class SampleAPI: AuthenticationProviding {
+    func authenticate() {}
+    
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
     private(set) lazy var keychainAuthenticationManager: KeychainAuthenticationManager = {
         KeychainAuthenticationManager(authenticationProvider: self)
     }()
-
-    private(set) lazy var apiManager: APIManager = {
-        let authenticationInterceptor = AuthenticationInterceptor(
-            authorizingRequest: keychainAuthenticationManager
-        )
-        var responseProcessors: [ResponseProcessing] = [
-            StatusCodeProcessor(),
-            SampleAPIErrorProcessor(),
-            authenticationInterceptor,
-            LoggingInterceptor()
-        ]
-
-        #if DEBUG
-            // stores the whole API call to a local file
-            responseProcessors.append(EndpointRequestStorageProcessor())
-        #endif
-
-        return APIManager(
-            authenticationManager: keychainAuthenticationManager,
-            requestAdapters: [
-                authenticationInterceptor,
-                LoggingInterceptor()
-            ],
-            responseProcessors: responseProcessors
-        )
-    }()
-
+    
     // MARK: Lifecycle
 
     init() {}
@@ -57,8 +33,8 @@ final class SampleAPI {
 
 extension SampleAPI {
     func runSamples() {
-//        runReachabilitySample()
-        runDecodableSample()
+        runReachabilitySample()
+//        runDecodableSample()
 //        runDecodableSample()
 //        runPostBodySample()
 //        runURLParametersSample()
@@ -87,101 +63,5 @@ private extension SampleAPI {
                 print(value)
             }
             .store(in: &cancellables)
-    }
-}
-
-// MARK: - Run decodable sample
-
-private extension SampleAPI {
-    func runDecodableSample() {
-        // success expected, decode data model
-        // publisher to set right return type from request, usually defined by service
-        let userPublisher: AnyPublisher<SampleUsersResponse, Error> = apiManager
-            .request(
-                SampleUserRouter.users(page: 2)
-            )
-
-        userPublisher
-            .sink(
-                receiveCompletion: { completion in
-                    print(completion)
-                },
-                receiveValue: { value in
-                    print(value)
-                }
-            )
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Run custom error decoding sample
-
-private extension SampleAPI {
-    func runCustomErrorDecodingSample() {
-        // fail expected, decode server error response to custom error
-        apiManager
-            .request(
-                SampleUserRouter.registerUser(
-                    SampleUserAuthRequest(
-                        email: SampleAPIConstants.sampleEmail,
-                        password: nil
-                    )
-                )
-            )
-            .sink(
-                receiveCompletion: { completion in
-                    print(completion)
-                },
-                receiveValue: { value in
-                    print(value)
-                }
-            )
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Run sample request with url parameters
-
-private extension SampleAPI {
-    func runURLParametersSample() {
-        // success expected, url params testing
-        apiManager
-            .request(
-                SampleUserRouter.users(page: 2)
-            )
-            .sink(
-                receiveCompletion: { completion in
-                    print(completion)
-                },
-                receiveValue: { value in
-                    print(value)
-                }
-            )
-            .store(in: &cancellables)
-    }
-}
-
-// MARK: - Run sample request post body
-
-private extension SampleAPI {
-    func runPostBodySample() {
-        // success expected, post body encoding test
-        apiManager.request(
-            SampleUserRouter.createUser(
-                SampleUserRequest(
-                    name: SampleAPIConstants.sampleName,
-                    job: SampleAPIConstants.sampleJob
-                )
-            )
-        )
-        .sink(
-            receiveCompletion: { completion in
-                print(completion)
-            },
-            receiveValue: { value in
-                print(value)
-            }
-        )
-        .store(in: &cancellables)
     }
 }

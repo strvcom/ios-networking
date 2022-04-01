@@ -17,5 +17,5 @@ import Foundation
 public protocol Networking {
     /// Creates publisher for request to stream responses if API call works
     /// - Returns: Publisher streaming ``Response`` value if networking succeed or ``NetworkError`` if communication failed
-    func requestPublisher(for: URLRequest) -> AnyPublisher<Response, NetworkError>
+    func requestPublisher(for: URLRequest) throws -> Response
 }

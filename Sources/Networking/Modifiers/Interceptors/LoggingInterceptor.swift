@@ -6,7 +6,6 @@
 //  Copyright © 2020 STRV. All rights reserved.
 //
 
-import Combine
 import Foundation
 #if os(watchOS)
     import os
@@ -25,17 +24,9 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - requestPublisher: original request publisher
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: New publisher which logs `Output` or `Failure` into console
-    public func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
+    public func adapt(_ requestPublisher: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
         // log request
         requestPublisher
-            .handleEvents(receiveOutput: { request in
-                self.prettyRequestLog(request)
-            })
-            .catch { error -> AnyPublisher<URLRequest, Error> in
-                self.prettyErrorLog(error, from: endpointRequest.endpoint)
-                return requestPublisher
-            }
-            .eraseToAnyPublisher()
     }
 
     /// Adds logging logic to response publisher
@@ -44,17 +35,9 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - _:  original URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: New publisher which logs `Output` or `Failure` into console
-    public func process(_ responsePublisher: AnyPublisher<Response, Error>, with _: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<Response, Error> {
+    public func process(_ responsePublisher: Response, with _: URLRequest, for endpointRequest: EndpointRequest) -> Response {
         // log response
         responsePublisher
-            .handleEvents(receiveOutput: { response in
-                self.prettyResponseLog(response, from: endpointRequest.endpoint)
-            })
-            .catch { error -> AnyPublisher<Response, Error> in
-                self.prettyErrorLog(error, from: endpointRequest.endpoint)
-                return responsePublisher
-            }
-            .eraseToAnyPublisher()
     }
 }
 

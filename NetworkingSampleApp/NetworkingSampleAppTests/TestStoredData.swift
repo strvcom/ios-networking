@@ -16,15 +16,7 @@ class TestStoredData: XCTestCase {
     private lazy var cancellables = Set<AnyCancellable>()
 
     override func setUpWithError() throws {
-        apiManager = APIManager(
-            network: SampleDataNetworking(with: Bundle(for: Self.self), sessionId: "04162021_103805AM"),
-            requestAdapters: [LoggingInterceptor()],
-            responseProcessors: [
-                StatusCodeProcessor(),
-                SampleAPIErrorProcessor(),
-                LoggingInterceptor()
-            ]
-        )
+       
     }
 
     override func tearDownWithError() throws {

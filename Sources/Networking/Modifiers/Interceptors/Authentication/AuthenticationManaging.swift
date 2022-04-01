@@ -6,7 +6,6 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 // MARK: - Authentication managing

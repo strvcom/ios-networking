@@ -6,7 +6,6 @@
 //  Copyright © 2021 STRV. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 // MARK: - Modifying the request before it's sent
@@ -15,7 +14,7 @@ import Foundation
 public protocol RequestAdapting {
     /// Modifier which adapts request
     /// - Returns: New publisher which adapts `URLRequest`
-    func adapt(_ requestPublisher: AnyPublisher<URLRequest, Error>, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error>
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -26,12 +25,8 @@ public extension Array where Element == RequestAdapting {
     ///   - request: request to be adapted
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: `URLRequest` adapted by all object in array in sequence
-    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> AnyPublisher<URLRequest, Error> {
-        let requestPublisher = Just(request)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-
-        return reduce(requestPublisher) { request, requestAdapting in
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) throws -> URLRequest {
+        return reduce(request) { request, requestAdapting in
             requestAdapting.adapt(request, for: endpointRequest)
         }
     }
