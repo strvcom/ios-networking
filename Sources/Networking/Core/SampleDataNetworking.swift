@@ -36,7 +36,7 @@ open class SampleDataNetworking: Networking {
     /// Creates request publisher which returns ``Response`` loaded from files
     /// - Parameter request: URL request
     /// - Returns: publisher streaming ``Response`` for requests and injected sessionId
-    public func requestPublisher(for request: URLRequest) throws -> Response {
+    public func request(for request: URLRequest) throws -> Response {
         guard let sampleData = try? loadSampleData(for: request) else {
             fatalError("❌ Can't load data")
         }

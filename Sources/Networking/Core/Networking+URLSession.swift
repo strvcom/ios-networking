@@ -10,23 +10,11 @@ import Foundation
 
 // MARK: - Implementation of networking for URLSession
 /// Extension of URLSession to provide request publisher running upon URL session
-extension URLSession: Networking {
+extension URLSession: Networking {    
     /// Creates request publisher using dataTaskPublisher and mapping error
     /// - Parameter request: URL request which is called
     /// - Returns: publisher streaming ``Response`` or throwing ``NetworkError``
-    public func requestPublisher(for request: URLRequest) throws -> Response {
-       // try dataTaskPublisher(for: request)
-       //     .map { (data: $0.data, response: $0.response) }
-        // TODO:
-        return (data: .init(), response: URLResponse.init())
-            
-    }
-}
-
-// MARK: - Map URLError to NetworkError
-
-private extension URLSession {
-    func mapToNetworkError(_ error: URLError) -> NetworkError {
-        .underlying(error: error)
+    public func request(for request: URLRequest) async throws -> Response {
+        try await URLSession.shared.data(for: request, delegate: nil)
     }
 }

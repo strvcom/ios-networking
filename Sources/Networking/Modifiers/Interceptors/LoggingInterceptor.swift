@@ -21,7 +21,7 @@ open class LoggingInterceptor: RequestInterceptor {
 
     /// Adds logging logic to request publisher
     /// - Parameters:
-    ///   - requestPublisher: original request publisher
+    ///   - request: original request publisher
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: New publisher which logs `Output` or `Failure` into console
     public func adapt(_ requestPublisher: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {

@@ -41,7 +41,7 @@ open class AuthenticationInterceptor {
 extension AuthenticationInterceptor: RequestInterceptor {
     /// If the request should be authorized add authorization header
     /// - Parameters:
-    ///   - requestPublisher: original publisher with URLRequest
+    ///   - request: original publisher with URLRequest
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: publisher streaming authorized request (or original if no authentication needed) or failure with authentication error in case authorizing request failed
     public func adapt(_ requestPublisher: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
