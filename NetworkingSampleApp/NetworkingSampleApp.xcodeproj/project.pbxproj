@@ -239,11 +239,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 23A575DB25F8B9DC00617551 /* Build configuration list for PBXNativeTarget "NetworkingSampleApp" */;
 			buildPhases = (
-				2309D549261F3E4000C8AEAB /* Run Script - Swiftformat */,
 				23A575AD25F8B9DA00617551 /* Sources */,
 				23A575AE25F8B9DA00617551 /* Frameworks */,
 				23A575AF25F8B9DA00617551 /* Resources */,
-				2309D53F261F392200C8AEAB /* Run Script - Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -364,45 +362,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		2309D53F261F392200C8AEAB /* Run Script - Swiftlint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script - Swiftlint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# mint run realm/SwiftLint@0.40.3\n";
-		};
-		2309D549261F3E4000C8AEAB /* Run Script - Swiftformat */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script - Swiftformat";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# mint run nicklockwood/SwiftFormat@0.47.13 . ..\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		23A575AD25F8B9DA00617551 /* Sources */ = {
