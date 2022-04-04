@@ -43,6 +43,7 @@ public extension Requestable {
 }
 
 // MARK: - Default implementation for requestable
+
 /// Default methods implementation for convenience
 public extension Requestable {
     /// Depending on data type encodes body

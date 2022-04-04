@@ -12,7 +12,7 @@ final class SampleDataNetworkingTests: XCTestCase {
 
         // call request multiple times, 5 testing data files
         // test reading correct file
-        for index in 1...10 {
+        for index in 1 ... 10 {
             let result = awaitCompletion(for: sampleDataNetworking.requestPublisher(for: urlRequest))
             XCTAssertNoThrow(try result.get())
 

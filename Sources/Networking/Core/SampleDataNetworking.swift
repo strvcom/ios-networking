@@ -16,6 +16,7 @@ import Foundation
 #endif
 
 // MARK: - SampleDataNetworking which reads data from stored files
+
 /// ``Networking/Networking`` implementation reading data for request from `NSDataAsset` for injected sessionId
 open class SampleDataNetworking: Networking {
     private let bundle: Bundle
@@ -60,7 +61,6 @@ open class SampleDataNetworking: Networking {
         }
 
         return (sampleData.responseBody ?? Data(), httpResponse)
-         
     }
 }
 

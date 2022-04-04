@@ -24,7 +24,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - request: original request publisher
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: New publisher which logs `Output` or `Failure` into console
-    public func adapt(_ requestPublisher: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
+    public func adapt(_ requestPublisher: URLRequest, for _: EndpointRequest) -> URLRequest {
         // log request
         requestPublisher
     }
@@ -35,7 +35,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - _:  original URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: New publisher which logs `Output` or `Failure` into console
-    public func process(_ responsePublisher: Response, with _: URLRequest, for endpointRequest: EndpointRequest) -> Response {
+    public func process(_ responsePublisher: Response, with _: URLRequest, for _: EndpointRequest) -> Response {
         // log response
         responsePublisher
     }

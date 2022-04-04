@@ -21,7 +21,7 @@ open class StatusCodeProcessor: ResponseProcessing {
     ///   - _: URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: Publisher modified with validation of http status code
-    public func process(_ responsePublisher: Response, with _: URLRequest, for endpointRequest: EndpointRequest) -> Response {
+    public func process(_ responsePublisher: Response, with _: URLRequest, for _: EndpointRequest) -> Response {
         responsePublisher
     }
 }

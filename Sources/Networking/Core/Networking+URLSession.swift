@@ -9,8 +9,9 @@
 import Foundation
 
 // MARK: - Implementation of networking for URLSession
+
 /// Extension of URLSession to provide request publisher running upon URL session
-extension URLSession: Networking {    
+extension URLSession: Networking {
     /// Creates request publisher using dataTaskPublisher and mapping error
     /// - Parameter request: URL request which is called
     /// - Returns: publisher streaming ``Response`` or throwing ``NetworkError``

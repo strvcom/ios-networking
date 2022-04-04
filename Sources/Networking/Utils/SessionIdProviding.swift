@@ -15,6 +15,7 @@ protocol SessionIdProviding {
 }
 
 // MARK: - Default implementation for session id provider
+
 /// Default implementation works with readable data format for session id
 extension SessionIdProviding {
     /// Default session id from current date in `"MMddyyyy_hhmmssa"` format

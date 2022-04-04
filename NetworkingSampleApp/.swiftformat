@@ -9,9 +9,10 @@
 
 # format options
 --allman false
+--commas inline
 
 # file options
 --exclude vendor,Pods,**/*generated.swift,**/fastlane
 
 # rules
---disable blankLinesAroundMark,spaceAroundOperators,trailingCommas,strongOutlets
+--disable blankLinesAroundMark,spaceAroundOperators,strongOutlets

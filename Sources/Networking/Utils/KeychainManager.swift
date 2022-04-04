@@ -11,6 +11,7 @@ import Foundation
 // MARK: - Convenience methods & wrapper for KeychainSwift
 
 // MARK: Keychain keys
+
 // enum KeychainKey: String, CaseIterable {
 //    case authenticationToken = "com.strv.networking.authenticationToken"
 //    case authenticationTokenExpirationDate = "com.strv.networking.authenticationTokenExpirationDate"

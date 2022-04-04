@@ -1,6 +1,6 @@
 //
 //  AuthenticationTokenDataModel.swift
-//  
+//
 //
 //  Created by Martin Vidovic on 03.02.2022.
 //

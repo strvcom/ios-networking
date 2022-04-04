@@ -22,12 +22,12 @@ open class KeychainAuthenticationManager {
 
     private let authenticationProvider: AuthenticationProviding
     private let authorizationHeaderKey: String
-    
+
     /// Model loaded from Keychain
     private var authenticationTokenData: AuthenticationTokenData? {
         getObject(AuthenticationTokenDataModel.self, key: .authenticationModel)
     }
-    
+
     /// User's authenticationToken expiration date
     private var isExpired: Bool {
         guard let authenticationTokenExpirationDate = authenticationTokenData?.authenticationTokenExpirationDate else {
@@ -48,6 +48,7 @@ open class KeychainAuthenticationManager {
 }
 
 // MARK: - AuthenticationManaging protocol
+
 extension KeychainAuthenticationManager: AuthenticationManaging {
     public var isAuthenticated: Bool {
         authenticationTokenData?.authenticationToken != nil && !isExpired
@@ -60,7 +61,7 @@ extension KeychainAuthenticationManager: AuthenticationManaging {
         }
     }
 
-    public func authenticate() -> Void {
+    public func authenticate() {
         authenticationProvider.authenticate()
     }
 
@@ -93,10 +94,10 @@ extension KeychainAuthenticationManager {
         }
         keychain.set(data, forKey: key.rawValue)
     }
-    
+
     /// Load decodable model from keychain
     /// - Returns: Decodable model
-    func getObject<Object: Decodable>(_ object: Object.Type, key: KeychainKey) -> Object? {
+    func getObject<Object: Decodable>(_: Object.Type, key: KeychainKey) -> Object? {
         let data = keychain.getData(key.rawValue)
         guard let data = data,
               let authenticationTokenData = try? jsonDecoder.decode(Object.self, from: data)
@@ -105,7 +106,7 @@ extension KeychainAuthenticationManager {
         }
         return authenticationTokenData
     }
-    
+
     /// Delete value in Keychain
     /// - Parameter key: Key to deleting value
     func remove(key: KeychainKey) {

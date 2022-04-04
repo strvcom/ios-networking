@@ -18,6 +18,7 @@ public typealias UnauthorizedResponseHandler = (Requestable, HTTPStatusCode) -> 
 /// Request interceptor which handles authorizing request and validate responses as authenticated
 open class AuthenticationInterceptor {
     // MARK: Private properties
+
     private var authorizingRequest: RequestAuthorizing
     private var unauthorizedResponseHandler: UnauthorizedResponseHandler?
 
@@ -60,7 +61,7 @@ extension AuthenticationInterceptor: RequestInterceptor {
     ///   - _: URLRequest preceded response
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: original publisher if status code is authorized or mapped error as authentication error
-    public func process(_ responsePublisher: Response, with _: URLRequest, for endpointRequest: EndpointRequest) -> Response {
+    public func process(_ responsePublisher: Response, with _: URLRequest, for _: EndpointRequest) -> Response {
         // check if response codes for unauthorized codes & map to auth error
         responsePublisher
     }

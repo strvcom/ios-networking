@@ -33,7 +33,7 @@ final class StatusCodeProcessorTests: XCTestCase {
             case .regularAcceptStatuses:
                 return HTTPStatusCode.successAndRedirectCodes
             case .iregularAcceptStatuses:
-                return 400..<500
+                return 400 ..< 500
             }
         }
     }
@@ -102,6 +102,7 @@ final class StatusCodeProcessorTests: XCTestCase {
 }
 
 // MARK: - Factory methods to create mock objects
+
 private extension StatusCodeProcessorTests {
     func createMockResult(_ router: MockRouter, statusCode: HTTPStatusCode) -> Result<[Response], Error> {
         let mockEndpointRequest = EndpointRequest(router, sessionId: sessionId)

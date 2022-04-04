@@ -15,16 +15,14 @@ class TestStoredData: XCTestCase {
     private var apiManager: APIManaging?
     private lazy var cancellables = Set<AnyCancellable>()
 
-    override func setUpWithError() throws {
-       
-    }
+    override func setUpWithError() throws {}
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
     func testSampleDataNetworking() throws {
-        let expectation = self.expectation(description: "Sample networking - get users request")
+        let expectation = expectation(description: "Sample networking - get users request")
 
         // success expected, decode data model
         // swiftlint:disable:next force_unwrapping

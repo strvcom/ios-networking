@@ -20,6 +20,7 @@
         private lazy var cancellables = Set<AnyCancellable>()
 
         // MARK: Public publishers to observe reachability changes
+
         /// Publisher streaming current ``ConnectionType``
         public var connection: AnyPublisher<ConnectionType, ReachabilityError> {
             reachabilityState.removeDuplicates().eraseToAnyPublisher()
@@ -203,7 +204,7 @@
                     _ = unmanagedWeakifiedReachability.retain()
                     return UnsafeRawPointer(unmanagedWeakifiedReachability.toOpaque())
                 },
-                release: { (info: UnsafeRawPointer) -> Void in
+                release: { (info: UnsafeRawPointer) in
                     let unmanagedWeakifiedReachability = Unmanaged<ReachabilityWeakifier>.fromOpaque(info)
                     unmanagedWeakifiedReachability.release()
                 },

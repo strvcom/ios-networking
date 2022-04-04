@@ -16,14 +16,12 @@ import Networking
 
 final class SampleAPI: AuthenticationProviding {
     func authenticate() {}
-    
+
     // MARK: Private properties
     private lazy var cancellables = Set<AnyCancellable>()
     private lazy var reachability: Reachability? = try? Reachability()
-    private(set) lazy var keychainAuthenticationManager: KeychainAuthenticationManager = {
-        KeychainAuthenticationManager(authenticationProvider: self)
-    }()
-    
+    private(set) lazy var keychainAuthenticationManager: KeychainAuthenticationManager = .init(authenticationProvider: self)
+
     // MARK: Lifecycle
 
     init() {}

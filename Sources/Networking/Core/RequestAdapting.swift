@@ -26,7 +26,7 @@ public extension Array where Element == RequestAdapting {
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: `URLRequest` adapted by all object in array in sequence
     func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) throws -> URLRequest {
-        return reduce(request) { request, requestAdapting in
+        reduce(request) { request, requestAdapting in
             requestAdapting.adapt(request, for: endpointRequest)
         }
     }

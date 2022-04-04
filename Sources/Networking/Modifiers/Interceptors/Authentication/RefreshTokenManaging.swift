@@ -8,6 +8,7 @@ import Combine
 import Foundation
 
 // MARK: - Defines authentication managing by refresh token
+
 /*
  /// Authentication via refresh token to renew authentication token which is used to authorize requests
  public protocol RefreshTokenManaging: AnyObject, AuthenticationManaging {

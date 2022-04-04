@@ -24,7 +24,7 @@ public enum NetworkError: Error, LocalizedError {
     case underlying(error: Error)
     /// error with unknown cause
     case unknown
-    
+
     case headerIsInvalid
 
     public var errorDescription: String? {

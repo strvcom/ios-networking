@@ -40,7 +40,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing {
     ///   - urlRequest: related URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: Modified publisher which tries to store data into files
-    public func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) -> Response {
+    public func process(_ responsePublisher: Response, with _: URLRequest, for _: EndpointRequest) -> Response {
         responsePublisher
     }
 }
