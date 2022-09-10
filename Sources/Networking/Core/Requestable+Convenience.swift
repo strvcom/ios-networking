@@ -61,9 +61,9 @@ public extension Requestable {
         }
     }
 
-    /// Creates URLRequest from endpoint definition
-    /// - Returns: URLRequest created from endpoint. Depending on type request has headers, get parameters or body data set.
-    func asRequest() throws -> URLRequest {
+    /// Creates URLComponents from endpoint definition
+    /// - Returns: URLComponents created from endpoint. Depending on baseURL, path and urlParameters.
+    func urlComponents() throws -> URLComponents {
         // url creation
         let urlPath = baseURL.appendingPathComponent(path)
         guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
@@ -74,8 +74,14 @@ public extension Requestable {
         if let urlParameters = urlParameters {
             urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
         }
-
-        guard let url = urlComponents.url else {
+        
+        return urlComponents
+    }
+    
+    /// Creates URLRequest from endpoint definition
+    /// - Returns: URLRequest created from endpoint. Depending on type request has headers, get parameters or body data set.
+    func asRequest() throws -> URLRequest {
+        guard let url = try urlComponents().url else {
             throw RequestableError.invalidURLComponents
         }
 

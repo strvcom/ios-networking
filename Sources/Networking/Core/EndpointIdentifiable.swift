@@ -34,28 +34,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
 extension URLRequest: EndpointIdentifiable {
     /// Identifiable components from `URLRequest`
     public var identifiableComponents: [String] {
-        var components: [String] = []
-
-        if let url = url, let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-            // add path parts
-            let pathComponents = urlComponents.path
-                .split(separator: "/")
-                .filter { !$0.isEmpty }
-                .map { String($0) }
-            components.append(contentsOf: pathComponents)
-
-            let sortedQueryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
-            // add query items
-            if let queryItems = sortedQueryItems {
-                let mappedQueryItems = queryItems.flatMap { [$0.name, $0.value ?? ""] }
-                components.append(contentsOf: mappedQueryItems)
-            }
-
-            // add method
-            components.append(httpMethod ?? "")
-        }
-
-        return components
+        identifiableComponents(from: url, httpMethod: httpMethod)
     }
 }
 
@@ -64,25 +43,41 @@ extension URLRequest: EndpointIdentifiable {
 public extension Requestable {
     /// Identifiable components from ``Requestable``
     var identifiableComponents: [String] {
-        var components: [String] = []
+        identifiableComponents(from: try? urlComponents().url, httpMethod: method.rawValue)
+    }
+}
 
+// MARK: - Helper function for identifiable components
+private extension EndpointIdentifiable {
+    /// Creates an array of identifiable components from URL path, query items and HTTP method.
+    func identifiableComponents(from url: URL?, httpMethod: String?) -> [String] {
+        guard
+            let url = url,
+            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            return []
+        }
+        
+        var components: [String] = []
+        
         // add path parts
-        let pathComponents = path
+        let pathComponents = urlComponents.path
             .split(separator: "/")
             .filter { !$0.isEmpty }
             .map { String($0) }
         components.append(contentsOf: pathComponents)
 
-        let sortedParameters = urlParameters?.sorted(by: { $0.key < $1.key })
-        // add parameters
-        if let urlParameters = sortedParameters {
-            let mappedParameters = urlParameters.flatMap { [$0.key, "\($0.value)"] }
-            components.append(contentsOf: mappedParameters)
+        let sortedQueryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
+        // add query items
+        if let queryItems = sortedQueryItems {
+            let mappedQueryItems = queryItems.flatMap { [$0.name, $0.value ?? ""] }
+            components.append(contentsOf: mappedQueryItems)
         }
 
         // add method
-        components.append(method.rawValue)
+        components.append(httpMethod ?? "")
 
         return components
     }
 }
+
