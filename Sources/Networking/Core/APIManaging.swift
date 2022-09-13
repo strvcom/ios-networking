@@ -49,10 +49,4 @@ public extension APIManaging {
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable) async throws -> DecodableResponse {
         try await request(endpoint, decoder: JSONDecoder(), retryConfiguration: RetryConfiguration.default)
     }
-
-    /// Tries to decode `Data` from ``Response`` to decodable object
-    /// - Returns: decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder _: JSONDecoder, retryConfiguration: RetryConfiguration?) async throws -> DecodableResponse {
-        try await request(endpoint, retryConfiguration: retryConfiguration)
-    }
 }
