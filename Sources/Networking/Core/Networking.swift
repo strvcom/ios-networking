@@ -10,10 +10,13 @@ import Foundation
 
 // MARK: - Defines networking layer which allows to make a request
 
-/// Definition of network layer which makes request and receive data
+/// A definition of a Network layer which makes a request and receives data.
+///
+/// By default Networking library uses `URLSession` to make API calls.
 public protocol Networking {
-    /// Creates publisher for request to stream responses if API call works
-    /// - Parameter for: request for URLSession
-    /// - Returns: received data
+    /// Creates a network request for a `URLRequest`.
+    /// - Parameter for: URL request which is called.
+    /// - Returns: ``Response``.
+    /// - Throws: ``NetworkError``.
     func request(for: URLRequest) async throws -> Response
 }

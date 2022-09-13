@@ -10,12 +10,11 @@ import Foundation
 
 // MARK: - Implementation of networking for URLSession
 
-/// Extension of URLSession providing networking layer
 extension URLSession: Networking {
-    /// Creates request  using data task
-    /// - Parameter request: URL request which is called
-    /// - Returns: received data
-    /// - Throws: ``NetworkError``
+    /// Creates a network request for a `URLRequest`.
+    /// - Parameter for: URL request which is called.
+    /// - Returns: ``Response``.
+    /// - Throws: ``NetworkError``.
     public func request(for request: URLRequest) async throws -> Response {
         try await URLSession.shared.data(for: request, delegate: nil)
     }

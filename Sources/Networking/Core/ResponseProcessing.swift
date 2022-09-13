@@ -10,25 +10,29 @@ import Foundation
 
 // MARK: - Defines modifying the response after it's been received
 
-/// When ``Response`` comes from network layer it is processed by response processing object
+/// A type that is able to modify a ``Response`` when it's received from the network layer.
 public protocol ResponseProcessing {
-    /// Modifier which processes response
-    /// - Returns: processed ``Response``
-    func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response
+    /// Modifies a given ``Response``.
+    /// - Parameters:
+    ///   - response: The response to be processed.
+    ///   - request: The original URL request.
+    ///   - endpointRequest: An endpoint request wrapper.
+    /// - Returns: The processed ``Response``.
+    func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response
 }
 
 // MARK: - Array extension to avoid boilerplate
 
 public extension Array where Element == ResponseProcessing {
-    /// Allows array with ``ResponseProcessing`` objects to apply one after each other in sequence
+    /// Applies the process method to all objects in a sequence.
     /// - Parameters:
-    ///   - response: response to be processed
-    ///   - request: original URL request
-    ///   - endpointRequest: endpoint request wrapper
-    /// - Returns: ``Response`` processed by all objects in array in sequence
-    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
-        try await asyncReduce(response) { response, requestProcessing in
-            try await requestProcessing.process(response, with: request, for: endpointRequest)
+    ///   - response: The response to be processed.
+    ///   - request: The original URL request.
+    ///   - endpointRequest: An endpoint request wrapper.
+    /// - Returns: ``Response`` processed by all objects in a sequence.
+    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
+        try reduce(response) { response, responseProcessing in
+            try responseProcessing.process(response, with: request, for: endpointRequest)
         }
     }
 }
