@@ -10,16 +10,20 @@ import Foundation
 
 // MARK: - Defines attributes identifying endpoint
 
-/// To be able to have unique identifier for both ``Requestable`` and `URLRequest` which is necessary to load correct sample data from file system
+/// A type that has a unique identifier made up of an array of components.
+///
+/// The main purpose for this protocol is to be able to compare ``Requestable`` and `URLRequest`
+/// typically based on their URL path, query items and HTTP method.
+/// This functionality is necessary to load correct sample data from file system.
 public protocol EndpointIdentifiable: Identifiable {
-    /// All components which are used for unique identifier, typically URL path, HTTP method, GET parameters etc
+    /// All components which are used for unique identifier, typically URL path, query items and HTTP method.
     var identifiableComponents: [String] { get }
 }
 
 // MARK: - Default implementation for endpoint identifiable
 
 public extension Identifiable where Self: EndpointIdentifiable {
-    /// By default endpointIdentifiable creates its identifier from `identifiableComponents` which are sorted, lowercased and joined by '\_' to avoid any issues matching identifiers
+    /// By default endpointIdentifiable creates its identifier from `identifiableComponents` which are sorted, lowercased and joined by '\_' to avoid any issues matching identifiers.
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }
             .map {
@@ -32,7 +36,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
 // MARK: - Default implementation for URLRequest
 
 extension URLRequest: EndpointIdentifiable {
-    /// Identifiable components from `URLRequest`
+    /// Identifiable components from `URLRequest`.
     public var identifiableComponents: [String] {
         identifiableComponents(from: url, httpMethod: httpMethod)
     }
@@ -41,7 +45,7 @@ extension URLRequest: EndpointIdentifiable {
 // MARK: - Default implementation identifying endpoint
 
 public extension Requestable {
-    /// Identifiable components from ``Requestable``
+    /// Identifiable components from ``Requestable``.
     var identifiableComponents: [String] {
         identifiableComponents(from: try? urlComponents().url, httpMethod: method.rawValue)
     }
@@ -50,6 +54,10 @@ public extension Requestable {
 // MARK: - Helper function for identifiable components
 private extension EndpointIdentifiable {
     /// Creates an array of identifiable components from URL path, query items and HTTP method.
+    /// - Parameters:
+    ///   - url: the full URL of a request.
+    ///   - httpMethod: request HTTP method.
+    /// - Returns: array of identifiable components.
     func identifiableComponents(from url: URL?, httpMethod: String?) -> [String] {
         guard
             let url = url,

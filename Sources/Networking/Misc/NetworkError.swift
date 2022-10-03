@@ -10,22 +10,22 @@ import Foundation
 
 // MARK: - Defines networking errors
 
-/// Error thrown during ``Response`` processing or underlaying ``Networking/Networking`` error
+/// An error that occurs during ``Response`` processing or an underlaying ``Networking/Networking`` error.
 public enum NetworkError: Error, LocalizedError {
-    /// when received http status code in not accepted as valid
+    /// An indication that the received HTTP status code in not accepted as valid.
     case unacceptableStatusCode(
         statusCode: HTTPStatusCode,
         acceptedStatusCodes: Range<HTTPStatusCode>,
         response: Response
     )
-    /// when response misses http status code
+    /// An indication that the response misses an HTTP status code.
     case noStatusCode(response: Response)
-    /// underlaying network layer error
+    /// An indication of an underlaying network layer error.
     case underlying(error: Error)
-    /// error with unknown cause
-    case unknown
-
+    /// An indication of an invalid response header.
     case headerIsInvalid
+    /// An indication of an unknown cause.
+    case unknown
 
     public var errorDescription: String? {
         switch self {

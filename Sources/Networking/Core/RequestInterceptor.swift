@@ -10,5 +10,5 @@ import Foundation
 
 // MARK: - Define modifiers working before & after request
 
-/// Interceptors are modifiers which adapt request and process response
+/// A modifier which adapts a request and also processes a response.
 public typealias RequestInterceptor = RequestAdapting & ResponseProcessing

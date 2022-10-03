@@ -11,32 +11,32 @@ import Foundation
 
 /// Default values for convenience
 public extension Requestable {
-    /// Default value is ``HTTPMethod/get``
+    /// The default value is ``HTTPMethod/get``.
     var method: HTTPMethod {
         .get
     }
 
-    /// By default is requestable API endpoint unauthenticated, default value is `value`
+    /// By default the requestable API endpoint is unauthenticated.
     var isAuthenticationRequired: Bool {
         false
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var headers: [String: String]? {
         nil
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var urlParameters: [String: Any]? {
         nil
     }
 
-    /// Default value is success & redirect http codes 200-399
+    /// The default value is success & redirect http codes 200-399.
     var acceptableStatusCodes: Range<HTTPStatusCode>? {
         HTTPStatusCode.successAndRedirectCodes
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var dataType: RequestDataType? {
         nil
     }
@@ -46,23 +46,6 @@ public extension Requestable {
 
 /// Default methods implementation for convenience
 public extension Requestable {
-    /// Depending on data type encodes body
-    /// - Returns: Encoded body data
-    func encodeBody() throws -> Data? {
-        guard let dataType = dataType else {
-            return nil
-        }
-        switch dataType {
-        case let .encodable(encodable, jsonEncoder):
-            let anyEncodable = AnyEncodable(encodable)
-            return try jsonEncoder.encode(anyEncodable)
-        case let .custom(data, _):
-            return data
-        }
-    }
-
-    /// Creates URLComponents from endpoint definition
-    /// - Returns: URLComponents created from endpoint. Depending on baseURL, path and urlParameters.
     func urlComponents() throws -> URLComponents {
         // url creation
         let urlPath = baseURL.appendingPathComponent(path)
@@ -78,8 +61,19 @@ public extension Requestable {
         return urlComponents
     }
     
-    /// Creates URLRequest from endpoint definition
-    /// - Returns: URLRequest created from endpoint. Depending on type request has headers, get parameters or body data set.
+    func encodeBody() throws -> Data? {
+        guard let dataType = dataType else {
+            return nil
+        }
+        switch dataType {
+        case let .encodable(encodable, jsonEncoder):
+            let anyEncodable = AnyEncodable(encodable)
+            return try jsonEncoder.encode(anyEncodable)
+        case let .custom(data, _):
+            return data
+        }
+    }
+    
     func asRequest() throws -> URLRequest {
         guard let url = try urlComponents().url else {
             throw RequestableError.invalidURLComponents

@@ -10,39 +10,44 @@ import Foundation
 
 // MARK: - Endpoint definition
 
-/// API endpoint definition
+/// A type that represents an API endpoint.
 public protocol Requestable: EndpointIdentifiable {
-    /// Host URL of REST API
+    /// The host URL of REST API.
     var baseURL: URL { get }
 
-    /// URL request path
+    /// The URL request path.
     var path: String { get }
 
-    /// Request HTTP method
+    /// The request HTTP method.
     var method: HTTPMethod { get }
 
-    /// GET url parameters which are encoded into url
+    /// The GET url parameters which are encoded into url.
     var urlParameters: [String: Any]? { get }
 
-    /// HTTP  request headers
+    /// The HTTP request headers.
     var headers: [String: String]? { get }
 
-    /// HTTP status codes which are allowed as acceptable for request
+    /// The HTTP status codes which are allowed as acceptable for request.
     var acceptableStatusCodes: Range<HTTPStatusCode>? { get }
 
-    /// HTTP request body data type
+    /// The HTTP request body data type.
     var dataType: RequestDataType? { get }
 
-    /// Boolean flag whether the request to the endpoint requires any type of authentication
+    /// A Boolean flag indicating whether the request to the endpoint requires any type of authentication.
     var isAuthenticationRequired: Bool { get }
 
-    /// Method encodes request body depending on requestable data type
-    /// - Returns: Encoded http body
-    /// - Throws: An error if encoding fails
+    /// Encodes request body depending on requestable data type.
+    /// - Returns: Encoded HTTP body.
+    /// - Throws: An error if encoding fails.
     func encodeBody() throws -> Data?
 
-    /// Method creates URL request upon requestable variables
-    /// - Returns: URL request with all necessary info for successful response
-    /// - Throws: ``RequestableError`` in case creating URL from API endpoint fails
+    /// Creates `URLComponents` from endpoint definition.
+    /// - Returns: URL components created based on baseURL, path and urlParameters.
+    /// - Throws: ``RequestableError/invalidURLComponents``.
+    func urlComponents() throws -> URLComponents
+    
+    /// Creates a `URLRequest` from endpoint definition.
+    /// - Returns: URL request with all necessary info for successful response.
+    /// - Throws: ``RequestableError`` in case the creating of URL from API endpoint fails.
     func asRequest() throws -> URLRequest
 }

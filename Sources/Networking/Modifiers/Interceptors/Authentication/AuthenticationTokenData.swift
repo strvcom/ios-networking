@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Authentication token data definition
 
-/// Model holding typical values required for refresh authentication token authentication system
+/// A type that holds typical values required for OAuth authentication.
 public protocol AuthenticationTokenData {
     var authenticationToken: String { get }
     var authenticationTokenExpirationDate: Date? { get }

@@ -10,13 +10,13 @@ import Foundation
 
 // MARK: - Authentication managing
 
-/// Protocol defines basic behavior of authentication manager
+/// A type that manages authentication with an API service using an OAuth protocol.
 public protocol AuthenticationManaging: AuthenticationProviding {
-    /// Information whether API layer is ready to use authenticated communication
+    /// A Boolean flag indicating whether the API layer is ready to use authenticated communication.
     var isAuthenticated: Bool { get }
 
-    /// Destroy any stored information related to authentication
+    /// Destroys any stored information related to authentication.
     func revoke()
-    /// allows set authentication data from outside
+    /// Stores authentication data from the API.
     func store(_ authenticationTokenData: AuthenticationTokenData)
 }

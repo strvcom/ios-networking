@@ -9,9 +9,11 @@ import Foundation
 
 // MARK: - RequestAuthorizing
 
-/// Defines mechanism to authorize URL request
+/// A type that is able to authorize a URL request.
 public protocol RequestAuthorizing {
-    /// Depending on authentication type object conforming this protocol is responsible for proper authorization of requests
-    /// - Returns: Result with success containing authorized URL request or failure as a ``AuthenticationError``
+    /// Authorizes a given `URLRequest`.
+    /// - Parameters:
+    ///   - request: The request to be authorized.
+    /// - Returns: A `Result` with success containing authorized URL request or failure as a ``AuthenticationError``.
     func authorize(_ request: URLRequest) -> Result<URLRequest, AuthenticationError>
 }
