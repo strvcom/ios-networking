@@ -71,11 +71,15 @@ private extension EndpointIdentifiable {
         // add path parts
         let pathComponents = urlComponents.path
             .split(separator: "/")
+        // filter is needed in case the last path component is empty
             .filter { !$0.isEmpty }
             .map { String($0) }
+        
         components.append(contentsOf: pathComponents)
 
+        // the items need to be sorted because the final identifier should be the same no matter the order of query items in the URL
         let sortedQueryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
+        
         // add query items
         if let queryItems = sortedQueryItems {
             let mappedQueryItems = queryItems.flatMap { [$0.name, $0.value ?? ""] }
