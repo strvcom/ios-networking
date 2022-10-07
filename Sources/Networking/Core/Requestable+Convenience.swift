@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Default values for requestable
 
-/// Default values for convenience
+/// Default values for convenience.
 public extension Requestable {
     /// The default value is ``HTTPMethod/get``.
     var method: HTTPMethod {
@@ -44,7 +44,7 @@ public extension Requestable {
 
 // MARK: - Default implementation for requestable
 
-/// Default methods implementation for convenience
+/// Default methods implementation for convenience.
 public extension Requestable {
     func urlComponents() throws -> URLComponents {
         // url creation

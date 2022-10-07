@@ -12,7 +12,7 @@ import Foundation
 
 /// A type that is able to modify a request before sending it to an API.
 public protocol RequestAdapting {
-    /// Modifies a given `URLRequest`
+    /// Modifies a given `URLRequest`.
     /// - Parameters:
     ///   - request: The request to be adapted.
     ///   - endpointRequest: An endpoint request wrapper.

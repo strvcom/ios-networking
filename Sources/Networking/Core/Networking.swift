@@ -17,7 +17,7 @@ import Foundation
 public protocol Networking {
     /// Creates a network request for a `URLRequest`.
     /// - Parameter for: URL request which is called.
-    /// - Returns: response.
-    /// - Throws: ``NetworkError``
+    /// - Returns: ``Response``.
+    /// - Throws: ``NetworkError``.
     func request(for: URLRequest) async throws -> Response
 }

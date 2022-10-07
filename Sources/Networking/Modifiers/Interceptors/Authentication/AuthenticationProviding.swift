@@ -9,6 +9,6 @@ import Foundation
 
 /// A type that is able to authenticate with an API service.
 public protocol AuthenticationProviding {
-    /// Authenticate with an API service
+    /// Authenticate with an API service.
     func authenticate() -> Void
 }

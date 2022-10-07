@@ -12,7 +12,7 @@ import Foundation
 
 /// A type that has a unique identifier made up of an array of components.
 ///
-/// The main purpose for this protocol is to be able to compare ``Requestable`` and `URLRequest`
+/// The main purpose for this protocol is to be able to compare ``Requestable`` and `URLRequest`.
 /// typically based on their URL path, query items and HTTP method.
 /// This functionality is necessary to load correct sample data from file system.
 public protocol EndpointIdentifiable: Identifiable {

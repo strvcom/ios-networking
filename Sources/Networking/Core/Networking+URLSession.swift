@@ -13,7 +13,7 @@ import Foundation
 extension URLSession: Networking {
     /// Creates a network request for a `URLRequest`.
     /// - Parameter for: URL request which is called.
-    /// - Returns: response.
+    /// - Returns: ``Response``.
     /// - Throws: ``NetworkError``.
     public func request(for request: URLRequest) async throws -> Response {
         try await URLSession.shared.data(for: request, delegate: nil)
