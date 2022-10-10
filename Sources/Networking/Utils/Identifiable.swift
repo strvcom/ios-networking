@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Object needs to be identified by its identifier
+/// A type that has a unique identifier.
 public protocol Identifiable {
     var identifier: String { get }
 }

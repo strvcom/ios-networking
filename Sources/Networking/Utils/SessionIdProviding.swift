@@ -9,16 +9,16 @@ import Foundation
 
 // MARK: - Generates session id
 
-/// Defines provider of id for network sessions
+/// A type that provides an identifier for network sessions.
 protocol SessionIdProviding {
     var sessionId: String { get }
 }
 
 // MARK: - Default implementation for session id provider
 
-/// Default implementation works with readable data format for session id
+/// Default implementation that works with readable data format for session id.
 extension SessionIdProviding {
-    /// Default session id from current date in `"MMddyyyy_hhmmssa"` format
+    /// A default session id created from current date in `"MMddyyyy_hhmmssa"` format.
     var sessionId: String {
         let dateFormatter = DateFormatter()
         // keep session id in readable format
@@ -29,5 +29,5 @@ extension SessionIdProviding {
 
 // MARK: - Session id provider
 
-/// Default session id provider
+/// A default implementation of ``SessionIdProviding``.
 struct SessionIdProvider: SessionIdProviding {}

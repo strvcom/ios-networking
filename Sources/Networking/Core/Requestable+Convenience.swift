@@ -9,34 +9,34 @@ import Foundation
 
 // MARK: - Default values for requestable
 
-/// Default values for convenience
+/// Default values for convenience.
 public extension Requestable {
-    /// Default value is ``HTTPMethod/get``
+    /// The default value is ``HTTPMethod/get``.
     var method: HTTPMethod {
         .get
     }
 
-    /// By default is requestable API endpoint unauthenticated, default value is `value`
+    /// By default the requestable API endpoint is unauthenticated.
     var isAuthenticationRequired: Bool {
         false
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var headers: [String: String]? {
         nil
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var urlParameters: [String: Any]? {
         nil
     }
 
-    /// Default value is success & redirect http codes 200-399
+    /// The default value is success & redirect http codes 200-399.
     var acceptableStatusCodes: Range<HTTPStatusCode>? {
         HTTPStatusCode.successAndRedirectCodes
     }
 
-    /// Default value is `nil`
+    /// The default value is `nil`.
     var dataType: RequestDataType? {
         nil
     }
@@ -44,10 +44,23 @@ public extension Requestable {
 
 // MARK: - Default implementation for requestable
 
-/// Default methods implementation for convenience
+/// Default methods implementation for convenience.
 public extension Requestable {
-    /// Depending on data type encodes body
-    /// - Returns: Encoded body data
+    func urlComponents() throws -> URLComponents {
+        // url creation
+        let urlPath = baseURL.appendingPathComponent(path)
+        guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
+            throw RequestableError.invalidURLComponents
+        }
+
+        // encode url parameters
+        if let urlParameters = urlParameters {
+            urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
+        }
+        
+        return urlComponents
+    }
+    
     func encodeBody() throws -> Data? {
         guard let dataType = dataType else {
             return nil
@@ -60,22 +73,9 @@ public extension Requestable {
             return data
         }
     }
-
-    /// Creates URLRequest from endpoint definition
-    /// - Returns: URLRequest created from endpoint. Depending on type request has headers, get parameters or body data set.
+    
     func asRequest() throws -> URLRequest {
-        // url creation
-        let urlPath = baseURL.appendingPathComponent(path)
-        guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
-            throw RequestableError.invalidURLComponents
-        }
-
-        // encode url parameters
-        if let urlParameters = urlParameters {
-            urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
-        }
-
-        guard let url = urlComponents.url else {
+        guard let url = try urlComponents().url else {
             throw RequestableError.invalidURLComponents
         }
 

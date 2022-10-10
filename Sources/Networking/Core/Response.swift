@@ -8,5 +8,5 @@ import Foundation
 
 // MARK: - Defines complete response
 
-/// Renaming `URLSession dataTaskPublisher` output type
+/// A default `URLSession` response tuple.
 public typealias Response = (data: Data, response: URLResponse)

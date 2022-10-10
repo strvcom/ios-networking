@@ -8,7 +8,7 @@ import Foundation
 
 // MARK: - Defines reachability errors
 
-/// Errors which can be thrown when creating `SCNetworkReachability`
+/// An error that occurs during `SCNetworkReachability` creation.
 public enum ReachabilityError: Error {
     case failedToCreateWithAddress(sockaddr, Int32)
     case failedToCreateWithHostname(String, Int32)

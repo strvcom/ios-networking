@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Struct wrapping endpoint request with its identifier
 
-/// Wrapper structure which contains API endpoint with additional info about session within it's being called or API call identifier
+/// A wrapper structure which contains API endpoint with additional info about the session within which it's being called and an API call identifier.
 public struct EndpointRequest: Identifiable {
     public let identifier: String
     public let sessionId: String

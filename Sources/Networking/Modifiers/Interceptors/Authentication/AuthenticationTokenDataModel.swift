@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Authentication token data model
 
-/// Model holding typical values required for refresh authentication token authentication system
+/// A default model that implements ``AuthenticationTokenData``, it holds typical values required for OAuth authentication.
 struct AuthenticationTokenDataModel: Codable, AuthenticationTokenData {
     let authenticationToken: String
     let refreshToken: String?
