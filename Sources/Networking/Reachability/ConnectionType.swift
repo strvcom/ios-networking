@@ -8,7 +8,7 @@ import Foundation
 
 // MARK: - Defines connection types
 
-/// A network connection type.
+/// Enum of network connection types
 public enum ConnectionType: CustomStringConvertible {
     case unavailable, wifi, cellular
 

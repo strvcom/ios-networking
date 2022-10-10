@@ -7,8 +7,9 @@
 
 import Foundation
 
-/// A type that is able to authenticate with an API service.
+/// Protocol defines object which can return authentication publisher
 public protocol AuthenticationProviding {
-    /// Authenticate with an API service.
+    /// Authenticate to API service
+    /// - Returns: Publisher streaming events that authentication is done
     func authenticate() -> Void
 }

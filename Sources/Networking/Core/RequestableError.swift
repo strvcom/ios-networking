@@ -10,8 +10,8 @@ import Foundation
 
 // MARK: - Defines errors for endpoints composing URL request
 
-/// An Error that occurs during the creation of `URLRequest` from ``Requestable``.
+/// Errors which can be thrown when creating URL requests from ``Requestable``
 public enum RequestableError: Error {
-    /// An indication that the properties in ``Requestable`` cannot form valid `URLComponents`.
+    /// Throwing when creation of `URLRequest` from `URLComponents` fails
     case invalidURLComponents
 }

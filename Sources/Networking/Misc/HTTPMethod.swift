@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - HTTP request methods
 
-/// An HTTP request method.
+/// Request methods for HTTP
 public enum HTTPMethod: String {
     case get = "GET"
     case put = "PUT"

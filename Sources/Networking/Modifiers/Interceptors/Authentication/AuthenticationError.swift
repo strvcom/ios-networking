@@ -10,19 +10,19 @@ import Foundation
 
 // TODO:
 
-/// An error that indicates an authentication failure and occurs during the whole request flow.
+/// Authentication error indicates failure during whole request flow
 public enum AuthenticationError: Error, LocalizedError {
-    /// An indication that the API request failed to authorise.
+    /// API calls failed as unauthorized
     case unauthorized
-    /// An indication that a required authentication token for HTTP header is missing.
+    /// Authentication manager haven't found authentication token for HTTP header
     case missingAuthenticationToken
-    /// An indication that the required authentication token for HTTP header is expired.
+    /// Authentication manager found authentication token expired
     case expiredAuthenticationToken
-    /// An indication that a required refresh token for HTTP header is missing.
+    /// Authentication manager haven't found refresh token
     case missingRefreshToken
-    /// An indication that the required refresh token for HTTP header is expired.
+    /// Authentication manager found refresh token expired
     case expiredRefreshToken
-    /// An indication of an underlaying custom error. For a case where Networking is working with custom authentication mechanism.
+    /// For case Networking is working with custom authentication mechanism
     case custom(error: Error)
 
     public var errorDescription: String? {

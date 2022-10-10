@@ -9,15 +9,15 @@ import Foundation
 
 // MARK: - Constants for http header
 
-/// A namespace for constants of HTTP header keys or values.
+/// Constants for HTTP header keys or values
 public enum HTTPHeader {
-    /// Constants that describe HTTP header keys.
+    /// Constants for http header key
     public enum HeaderField: String {
         case contentType = "Content-Type"
         case authorization = "Authorization"
     }
 
-    /// Constants that describe values for HTTP header content type keys.
+    /// Constants for values for http header content type key
     public enum ContentTypeValue: String {
         case json = "application/json"
     }
