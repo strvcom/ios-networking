@@ -1,6 +1,6 @@
 //
 //  NetworkingSampleAppUITests.swift
-//  networking sample appUITests
+//  Networking sample appUITests
 //
 //  Created by Tomas Cejka on 07.04.2021.
 //

@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  networking sample app
+//  Networking sample app
 //
 //  Created by Tomas Cejka on 10.03.2021.
 //

@@ -17,7 +17,6 @@
 		23A575BC25F8B9DA00617551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BA25F8B9DA00617551 /* Main.storyboard */; };
 		23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BD25F8B9DB00617551 /* Assets.xcassets */; };
 		23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */; };
-		23A575F925F9699400617551 /* SampleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F525F9699400617551 /* SampleAPI.swift */; };
 		23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F725F9699400617551 /* SampleAPIError.swift */; };
 		23A575FC25F9699400617551 /* SampleAPIErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */; };
 		23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5765D25FA120B00617551 /* SampleUserRouter.swift */; };
@@ -25,7 +24,6 @@
 		23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766725FA14DF00617551 /* SampleUserAuthRequest.swift */; };
 		23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */; };
 		23D2724C27AC02F800B5F648 /* SampleAPIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */; };
-		23D2724F27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */; };
 		23D8FA42261DA2F800DE1800 /* NetworkingSampleAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA41261DA2F800DE1800 /* NetworkingSampleAppUITests.swift */; };
 		23D8FA52261DA56B00DE1800 /* TestStoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8FA50261DA56B00DE1800 /* TestStoredData.swift */; };
 /* End PBXBuildFile section */
@@ -59,7 +57,6 @@
 		23A575BD25F8B9DB00617551 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		23A575C025F8B9DB00617551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23A575C225F8B9DB00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23A575F525F9699400617551 /* SampleAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPI.swift; sourceTree = "<group>"; };
 		23A575F725F9699400617551 /* SampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIError.swift; sourceTree = "<group>"; };
 		23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIErrorProcessor.swift; sourceTree = "<group>"; };
 		23A5765D25FA120B00617551 /* SampleUserRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserRouter.swift; sourceTree = "<group>"; };
@@ -68,7 +65,6 @@
 		23A5766C25FA163A00617551 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
 		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
 		23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAPIConstants.swift; sourceTree = "<group>"; };
-		23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAppAuthenticationTokenData.swift; sourceTree = "<group>"; };
 		23D8FA29261DA21200DE1800 /* NetworkingSampleAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D8FA3F261DA2F800DE1800 /* NetworkingSampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingSampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -162,7 +158,6 @@
 				23A5765A25FA0ED500617551 /* Requests */,
 				23A5765B25FA0EDE00617551 /* Responses */,
 				23A5765C25FA0EEB00617551 /* Routers */,
-				23A575F525F9699400617551 /* SampleAPI.swift */,
 				23D2724B27AC02F800B5F648 /* SampleAPIConstants.swift */,
 				23A575F725F9699400617551 /* SampleAPIError.swift */,
 				23A575F825F9699400617551 /* SampleAPIErrorProcessor.swift */,
@@ -208,7 +203,6 @@
 		23D2724D27AC376600B5F648 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				23D2724E27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -372,12 +366,10 @@
 				23A5766325FA12B000617551 /* SampleUserRequest.swift in Sources */,
 				2327F104261DE2AB0093AD9C /* SampleUserResponse.swift in Sources */,
 				23D2724C27AC02F800B5F648 /* SampleAPIConstants.swift in Sources */,
-				23A575F925F9699400617551 /* SampleAPI.swift in Sources */,
 				23A575FB25F9699400617551 /* SampleAPIError.swift in Sources */,
 				23A5765E25FA120B00617551 /* SampleUserRouter.swift in Sources */,
 				23A5766825FA14DF00617551 /* SampleUserAuthRequest.swift in Sources */,
 				2327F109261DE2CA0093AD9C /* SampleUsersResponse.swift in Sources */,
-				23D2724F27AC377C00B5F648 /* SampleAppAuthenticationTokenData.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				23A5766D25FA163A00617551 /* SampleUserAuthResponse.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
@@ -487,7 +479,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -542,7 +534,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -560,7 +552,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MFW39VQ977;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -580,7 +572,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Y35U45R7B5;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
