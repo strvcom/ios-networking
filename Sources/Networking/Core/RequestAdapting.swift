@@ -13,7 +13,7 @@ import Foundation
 /// Protocol defines mechanism to adapt request before being sent to API
 public protocol RequestAdapting {
     /// Modifier which adapts request
-    /// - Returns: New publisher which adapts `URLRequest`
+    /// - Returns: adapted `URLRequest`
     func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest
 }
 

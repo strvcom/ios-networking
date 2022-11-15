@@ -13,8 +13,8 @@ import Foundation
 /// When ``Response`` comes from network layer it is processed by response processing object
 public protocol ResponseProcessing {
     /// Modifier which processes response
-    /// - Returns: New publisher which processes ``Response``
-    func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response
+    /// - Returns: processed ``Response``
+    func process(_ responsePublisher: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -26,9 +26,9 @@ public extension Array where Element == ResponseProcessing {
     ///   - request: original URL request
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: ``Response`` processed by all objects in array in sequence
-    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
-        try reduce(response) { response, responseProcessing in
-            try responseProcessing.process(response, with: request, for: endpointRequest)
+    func process(_ response: Response, with request: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
+        try await asyncReduce(response) { response, requestProcessing in
+            try await requestProcessing.process(response, with: request, for: endpointRequest)
         }
     }
 }
