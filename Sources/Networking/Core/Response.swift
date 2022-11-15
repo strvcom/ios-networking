@@ -8,5 +8,5 @@ import Foundation
 
 // MARK: - Defines complete response
 
-/// Renaming `URLSession dataTaskPublisher` output type
+/// Renaming `URLSession.shared.data` task output type
 public typealias Response = (data: Data, response: URLResponse)

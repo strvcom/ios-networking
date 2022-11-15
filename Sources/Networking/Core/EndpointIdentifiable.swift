@@ -33,6 +33,7 @@ public extension Identifiable where Self: EndpointIdentifiable {
 
 extension URLRequest: EndpointIdentifiable {
     /// Identifiable components from `URLRequest`
+    /// Example result ["api", "users","page","2","get"]
     public var identifiableComponents: [String] {
         var components: [String] = []
 
@@ -63,6 +64,7 @@ extension URLRequest: EndpointIdentifiable {
 
 public extension Requestable {
     /// Identifiable components from ``Requestable``
+    /// Example result ["api", "users","page","2","get"]
     var identifiableComponents: [String] {
         var components: [String] = []
 

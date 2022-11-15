@@ -8,13 +8,13 @@
 
 import Foundation
 
-// MARK: - Modifying the request before it's sent
+// MARK: - Modifying the request before it's been sent
 
 /// Protocol defines mechanism to adapt request before being sent to API
 public protocol RequestAdapting {
     /// Modifier which adapts request
     /// - Returns: New publisher which adapts `URLRequest`
-    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -25,9 +25,9 @@ public extension Array where Element == RequestAdapting {
     ///   - request: request to be adapted
     ///   - endpointRequest: endpoint request wrapper
     /// - Returns: `URLRequest` adapted by all object in array in sequence
-    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) throws -> URLRequest {
-        reduce(request) { request, requestAdapting in
-            requestAdapting.adapt(request, for: endpointRequest)
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest {
+        try await asyncReduce(request) { request, requestAdapting in
+            try await requestAdapting.adapt(request, for: endpointRequest)
         }
     }
 }

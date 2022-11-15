@@ -8,21 +8,22 @@
 
 import Foundation
 
-// MARK: - Defines api managing
+// MARK: - Defines API managing
 
 /// Protocol APIManaging defines API layer
 /// API layer calls request and returns response
 public protocol APIManaging {
-    /// Creates publisher streaming ``Response`` for API endpoint defined by ``Requestable``
+    /// Creates request for API endpoint defined by ``Requestable`` and returns  ``Response``
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition
     ///   - retry: configuration for retrying behavior
-    /// - Returns: Publisher streaming response
+    /// - Returns: data and URLResponse
     func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response
 
     /// Creates publisher streaming `Decodable` object  for API endpoint defined by ``Requestable``
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition
+    ///   - decoder: provided JSONDecoder
     ///   - retry: configuration for retrying behavior
     /// - Returns: decodable object
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder: JSONDecoder, retryConfiguration: RetryConfiguration?) async throws -> DecodableResponse
@@ -37,22 +38,20 @@ public extension APIManaging {
     func request(_ endpoint: Requestable) async throws -> Response {
         try await request(endpoint, retryConfiguration: RetryConfiguration.default)
     }
-
-    /// Simplifies request using as default `JSONDecoder`
-    /// - Returns: decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> DecodableResponse {
-        try await request(endpoint, decoder: JSONDecoder(), retryConfiguration: retryConfiguration)
-    }
-
-    /// Simplifies request using as default `JSONDecoder` and default ``RetryConfiguration``
+    
+    /// Simplifies request using default `JSONDecoder` and default ``RetryConfiguration``
+    /// - Parameter endpoint: API endpoint definition
     /// - Returns: decodable object
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable) async throws -> DecodableResponse {
         try await request(endpoint, decoder: JSONDecoder(), retryConfiguration: RetryConfiguration.default)
     }
 
-    /// Tries to decode `Data` from ``Response`` to decodable object
+    /// Simplifies request using default `JSONDecoder`
+    /// - Parameters:
+    ///   - endpoint: API endpoint requestable definition
+    ///   - retry: configuration for retrying behavior
     /// - Returns: decodable object
-    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, decoder _: JSONDecoder, retryConfiguration: RetryConfiguration?) async throws -> DecodableResponse {
-        try await request(endpoint, retryConfiguration: retryConfiguration)
+    func request<DecodableResponse: Decodable>(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> DecodableResponse {
+        try await request(endpoint, decoder: JSONDecoder(), retryConfiguration: retryConfiguration)
     }
 }

@@ -16,7 +16,7 @@ public extension Requestable {
         .get
     }
 
-    /// By default is requestable API endpoint unauthenticated, default value is `value`
+    /// By default is requestable API endpoint unauthenticated, default value is `false`
     var isAuthenticationRequired: Bool {
         false
     }
@@ -62,7 +62,7 @@ public extension Requestable {
     }
 
     /// Creates URLRequest from endpoint definition
-    /// - Returns: URLRequest created from endpoint. Depending on type request has headers, get parameters or body data set.
+    /// - Returns: URLRequest created from endpoint. Depending on type of request, method sets headers, get parameters or body data set.
     func asRequest() throws -> URLRequest {
         // url creation
         let urlPath = baseURL.appendingPathComponent(path)
