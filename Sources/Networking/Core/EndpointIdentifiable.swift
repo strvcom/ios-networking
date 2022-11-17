@@ -80,12 +80,11 @@ private extension EndpointIdentifiable {
         components.append(contentsOf: pathComponents)
 
         // the items need to be sorted because the final identifier should be the same no matter the order of query items in the URL
-        let sortedQueryItems = urlComponents.queryItems?.sorted(by: { $0.name < $1.name })
-        
-        // add query items
-        if let queryItems = sortedQueryItems {
-            let mappedQueryItems = queryItems.flatMap { [$0.name, $0.value ?? ""] }
-            components.append(contentsOf: mappedQueryItems)
+        if let queryItems = urlComponents.queryItems?
+            .sorted(by: { $0.name < $1.name })
+            .flatMap({ [$0.name, $0.value ?? ""] })
+        {
+            components.append(contentsOf: queryItems)
         }
 
         // add method
