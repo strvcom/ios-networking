@@ -49,7 +49,7 @@ public extension Requestable {
     func urlComponents() throws -> URLComponents {
         // url creation
         let urlPath = baseURL.appendingPathComponent(path)
-        guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: false) else {
+        guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: true) else {
             throw RequestableError.invalidURLComponents
         }
 

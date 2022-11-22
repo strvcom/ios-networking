@@ -15,14 +15,14 @@ import Foundation
 /// The main purpose for this protocol is to be able to compare ``Requestable`` and `URLRequest`.
 /// typically based on their URL path, query items and HTTP method.
 /// This functionality is necessary to load correct sample data from file system.
-public protocol EndpointIdentifiable: Identifiable {
+public protocol EndpointIdentifiable {
     /// All components which are used for unique identifier, typically URL path, query items and HTTP method.
     var identifiableComponents: [String] { get }
 }
 
 // MARK: - Default implementation for endpoint identifiable
 
-public extension Identifiable where Self: EndpointIdentifiable {
+public extension EndpointIdentifiable {
     /// By default endpointIdentifiable creates its identifier from `identifiableComponents` which are sorted, lowercased and joined by '\_' to avoid any issues matching identifiers.
     var identifier: String {
         identifiableComponents.filter { !$0.isEmpty }

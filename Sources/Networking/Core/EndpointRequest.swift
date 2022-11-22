@@ -12,12 +12,12 @@ import Foundation
 
 /// A wrapper structure which contains API endpoint with additional info about the session within which it's being called and an API call identifier.
 public struct EndpointRequest: Identifiable {
-    public let identifier: String
+    public let id: String
     public let sessionId: String
     public let endpoint: Requestable
 
     init(_ endpoint: Requestable, sessionId: String) {
-        identifier = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
+        id = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
         self.endpoint = endpoint
         self.sessionId = sessionId
     }
