@@ -17,6 +17,7 @@ public protocol APIManaging {
     ///   - endpoint: API endpoint requestable definition.
     ///   - retryConfiguration: configuration for retrying behavior.
     /// - Returns: ``Response``.
+    @discardableResult
     func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response
 
     /// Creates a network request for an API endpoint defined by ``Requestable``.
@@ -38,6 +39,7 @@ public extension APIManaging {
     /// Simplifies request using a default ``RetryConfiguration``.
     /// - Parameter endpoint: API endpoint requestable definition.
     /// - Returns: ``Response``.
+    @discardableResult
     func request(_ endpoint: Requestable) async throws -> Response {
         try await request(endpoint, retryConfiguration: RetryConfiguration.default)
     }
