@@ -63,12 +63,15 @@ private extension EndpointIdentifiable {
     func identifiableComponents(from url: URL?, httpMethod: String?) -> [String] {
         guard
             let url = url,
-            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
         else {
             return []
         }
         
         var components: [String] = []
+        
+        // add host
+        components.append(urlComponents.host ?? "")
         
         // add path parts
         let pathComponents = urlComponents.path
