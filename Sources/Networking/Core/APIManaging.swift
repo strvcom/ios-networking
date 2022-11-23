@@ -41,7 +41,7 @@ public protocol APIManaging {
 public extension APIManaging {
     /// Default JSONDecoder implementation.
     var defaultDecoder: JSONDecoder {
-        JSONDecoder()
+        JSONDecoder.default
     }
     
     /// Simplifies request using a default ``RetryConfiguration``.
@@ -67,4 +67,11 @@ public extension APIManaging {
     func request<DecodableResponse: Decodable>(_ endpoint: Requestable) async throws -> DecodableResponse {
         try await request(endpoint, decoder: defaultDecoder, retryConfiguration: RetryConfiguration.default)
     }
+}
+
+// MARK: - JSONDecoder static extension
+
+private extension JSONDecoder {
+    /// A static JSONDecoder instance used by default implementation of APIManaging
+    static let `default` = JSONDecoder()
 }
