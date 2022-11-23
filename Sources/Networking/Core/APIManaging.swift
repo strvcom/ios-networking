@@ -12,7 +12,7 @@ import Foundation
 
 /// A definition of an API layer with methods for handling API requests.
 public protocol APIManaging {
-    /// A default JSONDecoder used for all requests
+    /// A default JSONDecoder used for all requests.
     var defaultDecoder: JSONDecoder { get }
     
     /// Creates a network request for an API endpoint defined by ``Requestable``.
@@ -39,7 +39,7 @@ public protocol APIManaging {
 // MARK: - Provide request with default json decoder, retry configuration
 
 public extension APIManaging {
-    /// Default JSONDecoder implementation
+    /// Default JSONDecoder implementation.
     var defaultDecoder: JSONDecoder {
         JSONDecoder()
     }

@@ -35,9 +35,9 @@ public struct RetryConfiguration {
 extension RetryConfiguration {
     /// A type that defines the delay strategy for retry logic.
     enum DelayConfiguration {
-        /// The delay cumulatively increases after each retry
+        /// The delay cumulatively increases after each retry.
         case progressive(TimeInterval)
-        /// The delay is the same after each retry
+        /// The delay is the same after each retry.
         case constant(TimeInterval)
     }
 }
