@@ -14,6 +14,14 @@
 		23A575BC25F8B9DA00617551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BA25F8B9DA00617551 /* Main.storyboard */; };
 		23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BD25F8B9DB00617551 /* Assets.xcassets */; };
 		23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */; };
+		23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */; };
+		23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */; };
+		23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */; };
+		23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */; };
+		23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */; };
+		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
+		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
+		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +35,14 @@
 		23A575C225F8B9DB00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
 		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRouter.swift; sourceTree = "<group>"; };
+		23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIConstants.swift; sourceTree = "<group>"; };
+		23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIError.swift; sourceTree = "<group>"; };
+		23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
+		23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
+		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
+		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
+		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +79,7 @@
 		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				23EA9CE7292FB70A00B8E418 /* API */,
 				23A575ED25F8BF0E00617551 /* Scene */,
 				23A575B425F8B9DA00617551 /* AppDelegate.swift */,
 				23A575B625F8B9DA00617551 /* SceneDelegate.swift */,
@@ -103,6 +120,45 @@
 				23D8FA2D261DA21200DE1800 /* Info.plist */,
 			);
 			path = NetworkingSampleAppTests;
+			sourceTree = "<group>";
+		};
+		23EA9CE7292FB70A00B8E418 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */,
+				23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */,
+				23EA9CEC292FB70A00B8E418 /* Responses */,
+				23EA9CF0292FB70A00B8E418 /* Requests */,
+				23EA9CE8292FB70A00B8E418 /* Routers */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		23EA9CE8292FB70A00B8E418 /* Routers */ = {
+			isa = PBXGroup;
+			children = (
+				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
+			);
+			path = Routers;
+			sourceTree = "<group>";
+		};
+		23EA9CEC292FB70A00B8E418 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */,
+				23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */,
+				23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		23EA9CF0292FB70A00B8E418 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */,
+				23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,8 +237,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A575B925F8B9DA00617551 /* SampleViewController.swift in Sources */,
+				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
+				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
+				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
+				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
+				23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */,
+				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
+				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
+				23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
