@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Model for sample user creation request
+/// Model for sample API user creation request
 struct SampleUserRequest: Encodable {
     let name: String
     let job: String
