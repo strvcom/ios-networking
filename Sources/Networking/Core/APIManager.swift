@@ -18,8 +18,8 @@ open class APIManager {
     // set identifier to URLSession if nil
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
-        requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = []
+        requestAdapters: [RequestAdapting] = [LoggingInterceptor()],
+        responseProcessors: [ResponseProcessing] = [LoggingInterceptor()]
     ) {
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
