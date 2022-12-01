@@ -29,10 +29,6 @@ open class APIManager {
 extension APIManager: APIManaging {
     public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
         
-        print(Date())
-        print(endpoint)
-        print(retryConfiguration)
-        
         do {
             /// create request
             let endpointRequest = EndpointRequest(endpoint, sessionId: "")
