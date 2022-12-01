@@ -45,13 +45,13 @@ private extension APIManager {
             var request = try endpointRequest.endpoint.asRequest()
             
             /// adapt request with all adapters
-            request = try requestAdapters.adapt(request, for: endpointRequest)
+            request = try await requestAdapters.adapt(request, for: endpointRequest)
             
             /// call request on url session
             var response = try await urlSession.data(for: request)
             
             /// process request
-            response = try responseProcessors.process(response, with: request, for: endpointRequest)
+            response = try await responseProcessors.process(response, with: request, for: endpointRequest)
             
             /// reset retry count
             retryCountDict[endpointRequest.id] = 0
