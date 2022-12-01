@@ -81,7 +81,3 @@ extension APIManager: APIManaging {
         }
     }
 }
-
-private extension APIManager {
-    
-}
