@@ -12,6 +12,7 @@ open class APIManager {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let urlSession: URLSession
+    private let sessionId: String
     private var retryCountDict = [String: Int]()
     
     // set identifier to URLSession if nil
@@ -23,6 +24,7 @@ open class APIManager {
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
+        sessionId = Date().ISO8601Format()
     }
 }
 
@@ -31,7 +33,7 @@ extension APIManager: APIManaging {
         
         do {
             /// create request
-            let endpointRequest = EndpointRequest(endpoint, sessionId: "")
+            let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
             var request = try endpoint.asRequest()
             
             /// adapt request
