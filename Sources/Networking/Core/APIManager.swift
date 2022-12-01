@@ -59,15 +59,13 @@ private extension APIManager {
             return response
         } catch {
             
-            let sleepDuration = try retrySleepDuration(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
-            try await Task.sleep(nanoseconds: sleepDuration)
-    
+            try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
     }
     
     /// Handle if error triggers retry mechanism and return delay for next attempt
-    private func retrySleepDuration(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) throws -> UInt64 {
+    private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
         var retryCount = retryCountDict[endpointRequest.id] ?? 0
         
         guard
@@ -84,11 +82,14 @@ private extension APIManager {
         retryCount += 1
         retryCountDict[endpointRequest.id] = retryCount
         
+        var sleepDuration: UInt64
         switch retryConfiguration.delay {
         case .constant(let timeInterval):
-            return UInt64(timeInterval) * 1000000000
+            sleepDuration = UInt64(timeInterval) * 1000000000
         case .progressive(let timeInterval):
-            return UInt64(timeInterval) * UInt64(retryCount) * 1000000000
+            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1000000000
         }
+        
+        try await Task.sleep(nanoseconds: sleepDuration)
     }
 }
