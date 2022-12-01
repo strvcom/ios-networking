@@ -20,7 +20,7 @@ open class StatusCodeProcessor: ResponseProcessing {
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The original response after status code validation.
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
-        guard let httpResponse = response.1 as? HTTPURLResponse else {
+        guard let httpResponse = response.response as? HTTPURLResponse else {
              throw NetworkError.noStatusCode(response: response)
          }
 
