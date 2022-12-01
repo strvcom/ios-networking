@@ -42,20 +42,6 @@ extension APIManager: APIManaging {
             /// call request
             var response = try await urlSession.data(for: endpoint.asRequest())
             
-            guard let httpResponse = response.1 as? HTTPURLResponse else {
-                throw NetworkError.noStatusCode(response: response)
-            }
-            
-            if
-                let acceptableStatusCodes = endpoint.acceptableStatusCodes,
-                !acceptableStatusCodes.contains(httpResponse.statusCode)
-            {
-                throw NetworkError.unacceptableStatusCode(
-                    statusCode: httpResponse.statusCode,
-                    acceptedStatusCodes: acceptableStatusCodes,
-                    response: response)
-            }
-            
             /// process request
             response = try responseProcessors.process(response, with: request, for: endpointRequest)
             
