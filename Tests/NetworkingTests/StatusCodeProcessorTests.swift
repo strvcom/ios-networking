@@ -64,13 +64,13 @@ final class StatusCodeProcessorTests: XCTestCase {
         do {
             let mock = createMockResponseParams(MockRouter.regularAcceptStatuses, statusCode: 404)
             try _ = StatusCodeProcessor().process(mock.response, with: mock.urlRequest, for: mock.endpointRequest)
-            XCTAssert(false)
+            XCTAssert(false, "function didn't throw an error even though it should have")
         } catch {
             var correctError = false
             if case NetworkError.unacceptableStatusCode = error {
                 correctError = true
             }
-            XCTAssert(correctError)
+            XCTAssert(correctError, "function threw an incorrect error")
         }
     }
     
@@ -79,13 +79,13 @@ final class StatusCodeProcessorTests: XCTestCase {
         do {
             let mock = createMockResponseParams(MockRouter.irregularAcceptStatuses, statusCode: 200)
             try _ = StatusCodeProcessor().process(mock.response, with: mock.urlRequest, for: mock.endpointRequest)
-            XCTAssert(false)
+            XCTAssert(false, "function didn't throw an error even though it should have")
         } catch {
             var correctError = false
             if case NetworkError.unacceptableStatusCode = error {
                 correctError = true
             }
-            XCTAssert(correctError)
+            XCTAssert(correctError, "function threw an incorrect error")
         }
     }
 
@@ -99,13 +99,13 @@ final class StatusCodeProcessorTests: XCTestCase {
 
         do {
             _ = try statusProcessor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-            XCTAssert(false)
+            XCTAssert(false, "function didn't throw an error even though it should have")
         } catch {
             var correctError = false
             if case NetworkError.noStatusCode = error {
                 correctError = true
             }
-            XCTAssert(correctError)
+            XCTAssert(correctError, "function threw an incorrect error")
         }
     }
 
