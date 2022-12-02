@@ -21,18 +21,19 @@ open class StatusCodeProcessor: ResponseProcessing {
     /// - Returns: The original response after status code validation.
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
         guard let httpResponse = response.response as? HTTPURLResponse else {
-             throw NetworkError.noStatusCode(response: response)
-         }
-
-         if
+            throw NetworkError.noStatusCode(response: response)
+        }
+        
+        if
             let acceptableStatusCodes = endpointRequest.endpoint.acceptableStatusCodes,
             !acceptableStatusCodes.contains(httpResponse.statusCode)
-         {
-             throw NetworkError.unacceptableStatusCode(
-                 statusCode: httpResponse.statusCode,
-                 acceptedStatusCodes: acceptableStatusCodes,
-                 response: response)
-         }
+        {
+            throw NetworkError.unacceptableStatusCode(
+                statusCode: httpResponse.statusCode,
+                acceptedStatusCodes: acceptableStatusCodes,
+                response: response
+            )
+        }
         
         return response
     }
