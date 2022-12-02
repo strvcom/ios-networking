@@ -44,29 +44,41 @@ final class StatusCodeProcessorTests: XCTestCase {
         }
     }
 
-    func testEmptyAcceptableStatuses() async throws {
+    func testEmptyAcceptableStatuses() throws {
         // no error when empty acceptableStatusCodes
-        try await createMockResult(MockRouter.emptyAcceptStatuses, statusCode: 404)
-        try await createMockResult(MockRouter.emptyAcceptStatuses, statusCode: 400)
-        try await createMockResult(MockRouter.emptyAcceptStatuses, statusCode: 200)
-    }
-
-    func testNotInAcceptableStatuses() async {
-        // error when status code not in acceptable statuses
-        do {
-            try await createMockResult(MockRouter.regularAcceptStatuses, statusCode: 404)
-            XCTAssert(false)
-        } catch {
-            var correctError = false
-            if case NetworkError.unacceptableStatusCode = error {
-                correctError = true
-            }
-            XCTAssert(correctError)
-        }
+        let processor = StatusCodeProcessor()
         
+        let mock1 = createMockResponseParams(MockRouter.emptyAcceptStatuses, statusCode: 404)
+        try _ = processor.process(mock1.response, with: mock1.urlRequest, for: mock1.endpointRequest)
+        
+        
+        let mock2 = createMockResponseParams(MockRouter.emptyAcceptStatuses, statusCode: 400)
+        try _ = processor.process(mock2.response, with: mock2.urlRequest, for: mock2.endpointRequest)
+        
+        let mock3 = createMockResponseParams(MockRouter.emptyAcceptStatuses, statusCode: 200)
+        try _ = processor.process(mock3.response, with: mock3.urlRequest, for: mock3.endpointRequest)
+    }
+
+    func testUnacceptableStatus1() {
         // error when status code not in acceptable statuses
         do {
-            try await createMockResult(MockRouter.irregularAcceptStatuses, statusCode: 200)
+            let mock = createMockResponseParams(MockRouter.regularAcceptStatuses, statusCode: 404)
+            try _ = StatusCodeProcessor().process(mock.response, with: mock.urlRequest, for: mock.endpointRequest)
+            XCTAssert(false)
+        } catch {
+            var correctError = false
+            if case NetworkError.unacceptableStatusCode = error {
+                correctError = true
+            }
+            XCTAssert(correctError)
+        }
+    }
+    
+    func testUnacceptableStatus2() {
+        // error when status code not in acceptable statuses
+        do {
+            let mock = createMockResponseParams(MockRouter.irregularAcceptStatuses, statusCode: 200)
+            try _ = StatusCodeProcessor().process(mock.response, with: mock.urlRequest, for: mock.endpointRequest)
             XCTAssert(false)
         } catch {
             var correctError = false
@@ -77,7 +89,7 @@ final class StatusCodeProcessorTests: XCTestCase {
         }
     }
 
-    func testNotHttpsURLResponse() async {
+    func testNotHttpsURLResponse() {
         let mockEndpointRequest = EndpointRequest(MockRouter.regularAcceptStatuses, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: MockRouter.regularAcceptStatuses.baseURL)
 
@@ -99,7 +111,8 @@ final class StatusCodeProcessorTests: XCTestCase {
 
     static var allTests = [
         ("testEmptyAcceptableStatuses", testEmptyAcceptableStatuses),
-        ("testNotInAcceptableStatuses", testNotInAcceptableStatuses),
+        ("testUnacceptableStatus1", testUnacceptableStatus1),
+        ("testUnacceptableStatus2", testUnacceptableStatus2),
         ("testNotHttpsURLResponse", testNotHttpsURLResponse)
     ]
 }
@@ -107,14 +120,16 @@ final class StatusCodeProcessorTests: XCTestCase {
 // MARK: - Factory methods to create mock objects
 
 private extension StatusCodeProcessorTests {
-    @discardableResult
-    func createMockResult(_ router: MockRouter, statusCode: HTTPStatusCode) async throws -> Response {
+    func createMockResponseParams(
+        _ router: MockRouter,
+        statusCode: HTTPStatusCode
+    ) -> (response: Response, urlRequest: URLRequest, endpointRequest: EndpointRequest) {
         let mockEndpointRequest = EndpointRequest(router, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: router.baseURL)
         // swiftlint:disable:next force_unwrapping
         let mockURLResponse: URLResponse = HTTPURLResponse(url: router.baseURL, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
         let mockResponse = (Data(), mockURLResponse)
 
-        return try StatusCodeProcessor().process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+        return (mockResponse, mockURLRequest, mockEndpointRequest)
     }
 }
