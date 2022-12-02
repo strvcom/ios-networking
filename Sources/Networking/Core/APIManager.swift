@@ -13,7 +13,7 @@ open class APIManager {
     private let responseProcessors: [ResponseProcessing]
     private let urlSession: URLSession
     private let sessionId: String
-    private var retryCountDict = [String: Int]()
+    private var retryCountCache = RetryCountCache()
     
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
@@ -52,7 +52,7 @@ private extension APIManager {
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
             
             /// reset retry count
-            retryCountDict[endpointRequest.id] = 0
+            await retryCountCache.reset(for: endpointRequest.id)
             
             return response
         } catch {
@@ -63,7 +63,7 @@ private extension APIManager {
     
     /// Handle if error triggers retry mechanism and return delay for next attempt
     private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
-        var retryCount = retryCountDict[endpointRequest.id] ?? 0
+        let retryCount = await retryCountCache.value(for: endpointRequest.id)
         
         guard
             let retryConfiguration = retryConfiguration,
@@ -71,13 +71,12 @@ private extension APIManager {
             retryConfiguration.retries > retryCount
         else {
             /// reset retry count
-            retryCountDict[endpointRequest.id] = 0
+            await retryCountCache.reset(for: endpointRequest.id)
             throw error
         }
         
         /// count the delay for retry
-        retryCount += 1
-        retryCountDict[endpointRequest.id] = retryCount
+        await retryCountCache.increment(for: endpointRequest.id)
         
         var sleepDuration: UInt64
         switch retryConfiguration.delay {
@@ -88,5 +87,24 @@ private extension APIManager {
         }
         
         try await Task.sleep(nanoseconds: sleepDuration)
+    }
+}
+
+private extension APIManager {
+    /// A thread safe wrapper for retry count dictionary.
+    actor RetryCountCache {
+        private var dict = [String: Int]()
+        
+        func value(for id: String) -> Int {
+            dict[id] ?? 0
+        }
+        
+        func increment(for id: String) {
+            dict[id] = (dict[id] ?? 0) + 1
+        }
+        
+        func reset(for id: String) {
+            dict.removeValue(forKey: id)
+        }
     }
 }
