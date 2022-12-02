@@ -8,18 +8,18 @@
 import Foundation
 import Networking
 
-/// Sample implementation of API router
+/// Implementation of sample API router
 enum SampleUserRouter: Requestable {
     case users(page: Int)
     case user(userId: Int)
-    case createUser(SampleUserRequest)
-    case registerUser(SampleUserAuthRequest)
-    case loginUser(SampleUserAuthRequest)
+    case createUser(user: SampleUserRequest)
+    case registerUser(user: SampleUserAuthRequest)
+    case loginUser(user: SampleUserAuthRequest)
     
     var baseURL: URL {
-        /// test API host
+        /// sample API host
         // swiftlint:disable:next force_unwrapping
-        URL(string: "https://reqres.in/api")!
+        URL(string: SampleAPIConstants.host)!
     }
 
     var path: String {

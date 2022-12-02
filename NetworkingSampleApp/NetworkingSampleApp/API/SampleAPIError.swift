@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Networking
 
-/// Sample API error to show how to handle custom errors
+/// Sample API custom error to show how to handle custom errors
 struct SampleAPIError: Decodable, Error, LocalizedError {
     let error: String?
 

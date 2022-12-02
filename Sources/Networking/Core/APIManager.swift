@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Default API manager
 open class APIManager {
     
     private let requestAdapters: [RequestAdapting]
@@ -15,69 +16,80 @@ open class APIManager {
     private let sessionId: String
     private var retryCountDict = [String: Int]()
     
-    // set identifier to URLSession if nil
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()]
     ) {
+        /// generate session id in readable format
+        sessionId = Date().ISO8601Format()
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
-        sessionId = Date().ISO8601Format()
     }
 }
 
 extension APIManager: APIManaging {
     public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
         
+        /// create identifiable request from endpoint
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+        return try await request(endpointRequest, retryConfiguration: retryConfiguration)
+    }
+}
+
+private extension APIManager {
+    func request(_ endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws -> Response {
         do {
-            /// create request
-            let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-            var request = try endpoint.asRequest()
+            /// create original url request
+            var request = try endpointRequest.endpoint.asRequest()
             
-            /// adapt request
-            request = try requestAdapters.adapt(request, for: endpointRequest)
+            /// adapt request with all adapters
+            request = try await requestAdapters.adapt(request, for: endpointRequest)
             
-            /// call request
-            var response = try await urlSession.data(for: endpoint.asRequest())
+            /// call request on url session
+            var response = try await urlSession.data(for: request)
             
             /// process request
-            response = try responseProcessors.process(response, with: request, for: endpointRequest)
+            response = try await responseProcessors.process(response, with: request, for: endpointRequest)
             
             /// reset retry count
-            retryCountDict[endpoint.identifier] = 0
+            retryCountDict[endpointRequest.id] = 0
             
             return response
         } catch {
-            var retryCount = retryCountDict[endpoint.identifier] ?? 0
             
-            guard
-                let retryConfiguration = retryConfiguration,
-                retryConfiguration.retryHandler(error),
-                retryConfiguration.retries > retryCount
-            else {
-                /// reset retry count
-                retryCountDict[endpoint.identifier] = 0
-                throw error
-            }
-            
-            /// retry request after delay
-            retryCount += 1
-            retryCountDict[endpoint.identifier] = retryCount
-            
-            let sleepDuration: UInt64 = {
-                switch retryConfiguration.delay {
-                case .constant(let timeInterval):
-                    return UInt64(timeInterval) * 1000000000
-                case .progressive(let timeInterval):
-                    return UInt64(timeInterval) * UInt64(retryCount) * 1000000000
-                }
-            }()
-            
-            try await Task.sleep(nanoseconds: sleepDuration)
-            
-            return try await request(endpoint, retryConfiguration: retryConfiguration)
+            try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+            return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
+    }
+    
+    /// Handle if error triggers retry mechanism and return delay for next attempt
+    private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
+        var retryCount = retryCountDict[endpointRequest.id] ?? 0
+        
+        guard
+            let retryConfiguration = retryConfiguration,
+            retryConfiguration.retryHandler(error),
+            retryConfiguration.retries > retryCount
+        else {
+            /// reset retry count
+            retryCountDict[endpointRequest.id] = 0
+            throw error
+        }
+        
+        /// count the delay for retry
+        retryCount += 1
+        retryCountDict[endpointRequest.id] = retryCount
+        
+        var sleepDuration: UInt64
+        switch retryConfiguration.delay {
+        case .constant(let timeInterval):
+            sleepDuration = UInt64(timeInterval) * 1000000000
+        case .progressive(let timeInterval):
+            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1000000000
+        }
+        
+        try await Task.sleep(nanoseconds: sleepDuration)
     }
 }

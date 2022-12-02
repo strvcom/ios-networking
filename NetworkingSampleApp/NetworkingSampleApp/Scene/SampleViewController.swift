@@ -15,14 +15,29 @@ final class SampleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        runNetworkingExamples()
+    }
+}
+
+
+// MARK: Networking examples using sample API
+private extension SampleViewController {
+    func runNetworkingExamples() {
+        
         Task {
             do {
-                let response: SampleUsersResponse = try await apiManager.request(
-                    SampleUserRouter.users(page: 2)
-                )
+                try await loadUserList()
                 
-                print(response)
+            } catch {
+                print(error)
             }
         }
+    }
+    
+    func loadUserList() async throws {
+        let response: SampleUsersResponse = try await apiManager.request(
+            SampleUserRouter.users(page: 2)
+        )
+        print(response)
     }
 }

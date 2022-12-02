@@ -7,10 +7,9 @@
 
 import Foundation
 
-// MARK: - SampleAPIConstants
-
 /// Constants for sample API calling regres.in
 enum SampleAPIConstants {
+    static let host = "https://reqres.in/api"
     static let validEmail = "eve.holt@reqres.in"
     static let validPassword = "cityslicka"
     static let sampleEmail = "email@email.me"
