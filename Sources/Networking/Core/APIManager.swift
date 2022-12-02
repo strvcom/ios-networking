@@ -9,7 +9,6 @@ import Foundation
 
 /// Default API manager
 open class APIManager {
-    
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let urlSession: URLSession
@@ -31,7 +30,6 @@ open class APIManager {
 
 extension APIManager: APIManaging {
     public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
-        
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await request(endpointRequest, retryConfiguration: retryConfiguration)
@@ -58,7 +56,6 @@ private extension APIManager {
             
             return response
         } catch {
-            
             try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
