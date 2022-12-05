@@ -69,6 +69,27 @@ public extension APIManaging {
     }
 }
 
+// MARK: - Provide request with default decoding
+
+public extension APIManaging {
+    /// Creates a network request for an API endpoint defined by ``Requestable``.
+    /// Default implementation trying to decode data from response.
+    /// - Parameters:
+    ///   - endpoint: API endpoint requestable definition.
+    ///   - decoder: a JSONDecoder used for decoding the response data.
+    ///   - retryConfiguration: configuration for retrying behavior.
+    /// - Returns: an object decoded from the response data.
+    func request<DecodableResponse: Decodable>(
+        _ endpoint: Requestable,
+        decoder: JSONDecoder,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> DecodableResponse {
+        let response = try await request(endpoint, retryConfiguration: retryConfiguration)
+        return try decoder.decode(DecodableResponse.self, from: response.data)
+    }
+}
+
+
 // MARK: - JSONDecoder static extension
 
 private extension JSONDecoder {
