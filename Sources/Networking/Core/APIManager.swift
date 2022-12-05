@@ -19,7 +19,7 @@ open class APIManager {
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
