@@ -23,8 +23,7 @@ private extension SampleViewController {
     func runNetworkingExamples() {
         Task {
             do {
-                try await loadUserList()
-                
+                try await loadUserList()                
             } catch {
                 print(error)
             }

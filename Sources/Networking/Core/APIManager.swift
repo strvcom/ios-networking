@@ -11,6 +11,7 @@ import Foundation
 open class APIManager {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
+    private let errorProcessors: [ErrorProcessing]
     private let urlSession: URLSession
     private let sessionId: String
     private var retryCountCache = RetryCountCache()
@@ -18,13 +19,15 @@ open class APIManager {
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = []
+        responseProcessors: [ResponseProcessing] = [],
+        errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
         sessionId = Date().ISO8601Format()
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
+        self.errorProcessors = errorProcessors
     }
 }
 
@@ -56,7 +59,12 @@ private extension APIManager {
             
             return response
         } catch {
-            try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+            do {
+                try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+            } catch {
+                /// error processing
+                throw errorProcessors.process(error)
+            }
             return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
     }
