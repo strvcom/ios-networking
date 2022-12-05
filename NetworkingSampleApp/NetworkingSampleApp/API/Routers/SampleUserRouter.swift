@@ -39,7 +39,7 @@ enum SampleUserRouter: Requestable {
         switch self {
         case let .users(page):
             return ["page": page]
-        default:
+        case .createUser, .loginUser, .registerUser, .user:
             return nil
         }
     }
@@ -48,7 +48,7 @@ enum SampleUserRouter: Requestable {
         switch self {
         case .createUser, .registerUser, .loginUser:
             return .post
-        default:
+        case .users, .user:
             return .get
         }
     }
@@ -59,7 +59,7 @@ enum SampleUserRouter: Requestable {
             return .encodable(user)
         case let .registerUser(user), let .loginUser(user):
             return .encodable(user)
-        default:
+        case .users, .user:
             return nil
         }
     }

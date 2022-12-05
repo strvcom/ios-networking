@@ -9,5 +9,5 @@ import Foundation
 
 /// Data structure of sample API authentication response
 struct SampleUserAuthResponse: Decodable {
-    var token: String
+    let token: String
 }

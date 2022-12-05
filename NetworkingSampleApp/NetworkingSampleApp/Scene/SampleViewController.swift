@@ -9,7 +9,6 @@ import UIKit
 import Networking
 
 final class SampleViewController: UIViewController {
-    
     private let apiManager = APIManager(urlSession: URLSession.shared)
     
     override func viewDidLoad() {
@@ -19,11 +18,9 @@ final class SampleViewController: UIViewController {
     }
 }
 
-
 // MARK: Networking examples using sample API
 private extension SampleViewController {
     func runNetworkingExamples() {
-        
         Task {
             do {
                 try await loadUserList()
