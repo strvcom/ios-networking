@@ -7,7 +7,7 @@
 
 import Networking
 
-// Maps all NetworkError's unacceptableStatusCode errors to a sad smiley face.
+/// Maps all NetworkError's unacceptableStatusCode errors to a sad smiley emoji with status code info.
 struct SampleErrorProcessor: ErrorProcessing {
     enum SampleSadError: Error {
         case sad(emoji: String)

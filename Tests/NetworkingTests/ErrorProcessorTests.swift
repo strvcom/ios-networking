@@ -87,17 +87,6 @@ private extension ErrorProcessorTests {
         case simpleError(statusCode: Int)
         case notSoSimpleError(data: Data)
         case underlying(error: NetworkError)
-        
-        static func ==(lhs: MockSimpleError, rhs: MockSimpleError) -> Bool {
-            switch (lhs, rhs) {
-            case (.simpleError, .simpleError),
-                (.notSoSimpleError, .notSoSimpleError),
-                (.underlying, .underlying):
-                return true
-            default:
-                return false
-            }
-        }
     }
     
     enum MockUnrelatedError: Error {
