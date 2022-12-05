@@ -62,6 +62,18 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
+    func test_errorProcessing_process_noProcessorsShouldReturnOriginalError() {
+        let processors: [ErrorProcessing] = []
+        let invalidHeaderError = NetworkError.headerIsInvalid
+        let resultError = processors.process(invalidHeaderError)
+        
+        if case NetworkError.headerIsInvalid = resultError {
+            XCTAssert(true)
+        } else {
+            XCTFail("❌ No mappings should have occured, but they did!.")
+        }
+    }
+    
     static var allTests = [
         ("test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed),
         ("test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
