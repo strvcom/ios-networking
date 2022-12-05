@@ -16,17 +16,15 @@ final class ErrorProcessorTests: XCTestCase {
         URL(string: "http://sometesturl.com")!
     }
     
-    func test_errorProcessing_process_mappingToSingleSimpleErrorShouldSucceed() {
+    func test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed() {
         let processor = MockSimpleErrorProcessor()
-                
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
             statusCode: 404,
             acceptedStatusCodes: 200..<300,
             response: mockResponse
         )
-        
-        let resultError = processor.process(error: notFoundError)
+        let resultError = processor.process(notFoundError)
         
         if case MockSimpleError.simpleError(let statusCode) = resultError {
             XCTAssertEqual(statusCode, 404)
@@ -35,46 +33,87 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_errorProcessing_process_mappingThroughMultipleShouldSucceed() {
+    func test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() {
         let processors: [ErrorProcessing] = [MockSimpleErrorProcessor(), MockUnrelatedErrorProcessor()]
-        
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
             statusCode: 404,
             acceptedStatusCodes: 200..<300,
             response: mockResponse
         )
-        
         let resultError = processors.process(notFoundError)
         
-        if case MockUnrelatedError.unrelatedError(let message) = resultError {            
+        if case MockUnrelatedError.unrelatedError(let message) = resultError {
             XCTAssertEqual(message, "Failed with statusCode: 404")
         } else {
             XCTFail("❌ Mapping to UnrelatedError failed.")
         }
     }
+    
+    func test_errorProcessing_process_undefinedCaseShouldReturnOriginalError() {
+        let processor = MockSimpleErrorProcessor()
+        let totallyUnrelated = MockUnrelatedError.totallyUnrelated
+        let resultError = processor.process(totallyUnrelated)
+
+        if case MockUnrelatedError.totallyUnrelated = resultError {
+            XCTAssert(true)
+        } else {
+            XCTFail("❌ Mapping to SimpleError should fail.")
+        }
+    }
+    
+    static var allTests = [
+        ("test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed),
+        ("test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
+        ("test_errorProcessing_process_undefinedCaseShouldReturnOriginalError", test_errorProcessing_process_undefinedCaseShouldReturnOriginalError),
+    ]
 }
 
-// MARK: Custom Error Processors
+// MARK: Mock Errors
 private extension ErrorProcessorTests {
     enum MockSimpleError: Error {
         case simpleError(statusCode: Int)
+        case notSoSimpleError(data: Data)
+        case underlying(error: NetworkError)
+        
+        static func ==(lhs: MockSimpleError, rhs: MockSimpleError) -> Bool {
+            switch (lhs, rhs) {
+            case (.simpleError, .simpleError),
+                (.notSoSimpleError, .notSoSimpleError),
+                (.underlying, .underlying):
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     enum MockUnrelatedError: Error {
         case unrelatedError(message: String)
+        case totallyUnrelated
     }
-    
+}
+
+// MARK: Custom Error Processors
+private extension ErrorProcessorTests {
     // Maps NetworkError to SimpleError
     struct MockSimpleErrorProcessor: ErrorProcessing {
-        func process(error: Error) -> Error {
+        func process(_ error: Error) -> Error {
             if case NetworkError.unacceptableStatusCode(let statusCode, _, _) = error {
                 return MockSimpleError.simpleError(statusCode: statusCode)
+            }
+            
+            if case NetworkError.noStatusCode(let response) = error {
+                return MockSimpleError.notSoSimpleError(data: response.data)
             }
             
             // ...
             // more cases for each NetworkError
             // ...
+            
+            if let error = error as? NetworkError {
+                return MockSimpleError.underlying(error: error)
+            }
             
             // otherwise return unprocessed original error
             return error
@@ -82,7 +121,7 @@ private extension ErrorProcessorTests {
     }
     
     struct MockUnrelatedErrorProcessor: ErrorProcessing {
-        func process(error: Error) -> Error {
+        func process(_ error: Error) -> Error {
             if case MockSimpleError.simpleError(let statusCode) = error {
                 return MockUnrelatedError.unrelatedError(message: "Failed with statusCode: \(statusCode)")
             }
@@ -103,7 +142,6 @@ private extension ErrorProcessorTests {
         url: URL,
         statusCode: HTTPStatusCode
     ) -> Response {
-        let mockURLRequest = URLRequest(url: url)
         // swiftlint:disable:next force_unwrapping
         let mockURLResponse: URLResponse = HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
         let mockResponse = (Data(), mockURLResponse)
