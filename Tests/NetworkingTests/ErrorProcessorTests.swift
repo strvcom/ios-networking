@@ -107,16 +107,11 @@ private extension ErrorProcessorTests {
             if case NetworkError.noStatusCode(let response) = error {
                 return MockSimpleError.notSoSimpleError(data: response.data)
             }
-            
-            // ...
-            // more cases for each NetworkError
-            // ...
-            
+
             if let error = error as? NetworkError {
                 return MockSimpleError.underlying(error: error)
             }
             
-            // otherwise return unprocessed original error
             return error
         }
     }
@@ -127,11 +122,6 @@ private extension ErrorProcessorTests {
                 return MockUnrelatedError.unrelatedError(message: "Failed with statusCode: \(statusCode)")
             }
             
-            // ...
-            // more cases for each NetworkError
-            // ...
-            
-            // otherwise return unprocessed original error
             return error
         }
     }
