@@ -16,7 +16,7 @@ final class ErrorProcessorTests: XCTestCase {
         URL(string: "http://sometesturl.com")!
     }
     
-    func test_process_mappingUnacceptableToSimpleErrorShouldSucceed() {
+    func test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed() {
         let processor = MockSimpleErrorProcessor()
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
@@ -27,13 +27,13 @@ final class ErrorProcessorTests: XCTestCase {
         let resultError = processor.process(notFoundError)
         
         if case MockSimpleError.simpleError(let statusCode) = resultError {
-            XCTAssertEqual(statusCode, 404)
+            XCTAssertEqual(statusCode, 404, "Expected status code 404 but received \(statusCode) instead.")
         } else {
             XCTFail("❌ Mapping to SimpleError failed.")
         }
     }
     
-    func test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() async {
+    func test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() async {
         let processors: [ErrorProcessing] = [MockSimpleErrorProcessor(), MockUnrelatedErrorProcessor()]
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
@@ -44,42 +44,73 @@ final class ErrorProcessorTests: XCTestCase {
         let resultError = await processors.process(notFoundError)
         
         if case MockUnrelatedError.unrelatedError(let message) = resultError {
-            XCTAssertEqual(message, "Failed with statusCode: 404")
+            XCTAssertEqual(message, "Failed with statusCode: 404", "Expected a different error message.")
         } else {
             XCTFail("❌ Mapping to UnrelatedError failed.")
         }
     }
     
-    func test_process_undefinedCaseShouldReturnOriginalError() {
+    func test_errorProcessing_process_undefinedCaseShouldReturnOriginalError() {
         let processor = MockSimpleErrorProcessor()
         let totallyUnrelated = MockUnrelatedError.totallyUnrelated
         let resultError = processor.process(totallyUnrelated)
 
-        if case MockUnrelatedError.totallyUnrelated = resultError {
-            XCTAssert(true)
-        } else {
+        guard case MockUnrelatedError.totallyUnrelated = resultError else {
             XCTFail("❌ Mapping to SimpleError should fail.")
+            return
         }
     }
     
-    func test_process_noProcessorsShouldReturnOriginalError() async {
+    func test_errorProcessing_process_noProcessorsShouldReturnOriginalError() async {
         let processors: [ErrorProcessing] = []
         let invalidHeaderError = NetworkError.headerIsInvalid
         let resultError = await processors.process(invalidHeaderError)
         
-        if case NetworkError.headerIsInvalid = resultError {
-            XCTAssert(true)
-        } else {
+        guard case NetworkError.headerIsInvalid = resultError else {
             XCTFail("❌ No mappings should have occured, but they did!.")
+            return
         }
     }
     
     static var allTests = [
-        ("test_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_process_mappingUnacceptableToSimpleErrorShouldSucceed),
-        ("test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
-        ("test_process_undefinedCaseShouldReturnOriginalError",
-         test_process_undefinedCaseShouldReturnOriginalError),
+        ("test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed),
+        ("test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
+        ("test_errorProcessing_process_undefinedCaseShouldReturnOriginalError",
+         test_errorProcessing_process_undefinedCaseShouldReturnOriginalError),
+        ("test_apiManager_request_errorShouldBeMappedToExpected",
+         test_apiManager_request_errorShouldBeMappedToExpected)
     ]
+}
+
+// MARK: Api Manager Integration test
+extension ErrorProcessorTests {
+    enum MockRouter: Requestable {
+        case notFoundRequest
+
+        var baseURL: URL {
+            // swiftlint:disable:next force_unwrapping
+            URL(string: "https://reqres.in/api")!
+        }
+
+        var path: String { "/users/0" }
+        var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
+    }
+    
+    func test_apiManager_request_errorShouldBeMappedToExpected() async {
+        let apiManager = APIManager(
+            urlSession: URLSession.shared,
+            errorProcessors: [MockSimpleErrorProcessor()]
+        )
+        
+        do {
+            try await apiManager.request(MockRouter.notFoundRequest)
+            XCTFail("Expected to receive a network error but succeeded instead.")
+        } catch MockSimpleError.simpleError {
+            // Expected
+        } catch {
+            XCTFail("Expected to receive error of type MockSimpleError.")
+        }
+    }
 }
 
 // MARK: Mock Errors
