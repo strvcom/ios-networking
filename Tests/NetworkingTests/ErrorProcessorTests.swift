@@ -16,7 +16,7 @@ final class ErrorProcessorTests: XCTestCase {
         URL(string: "http://sometesturl.com")!
     }
     
-    func test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed() {
+    func test_process_mappingUnacceptableToSimpleErrorShouldSucceed() {
         let processor = MockSimpleErrorProcessor()
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
@@ -33,7 +33,7 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() {
+    func test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() {
         let processors: [ErrorProcessing] = [MockSimpleErrorProcessor(), MockUnrelatedErrorProcessor()]
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
@@ -50,7 +50,7 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_errorProcessing_process_undefinedCaseShouldReturnOriginalError() {
+    func test_process_undefinedCaseShouldReturnOriginalError() {
         let processor = MockSimpleErrorProcessor()
         let totallyUnrelated = MockUnrelatedError.totallyUnrelated
         let resultError = processor.process(totallyUnrelated)
@@ -62,7 +62,7 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_errorProcessing_process_noProcessorsShouldReturnOriginalError() {
+    func test_process_noProcessorsShouldReturnOriginalError() {
         let processors: [ErrorProcessing] = []
         let invalidHeaderError = NetworkError.headerIsInvalid
         let resultError = processors.process(invalidHeaderError)
@@ -75,9 +75,10 @@ final class ErrorProcessorTests: XCTestCase {
     }
     
     static var allTests = [
-        ("test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed),
-        ("test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
-        ("test_errorProcessing_process_undefinedCaseShouldReturnOriginalError", test_errorProcessing_process_undefinedCaseShouldReturnOriginalError),
+        ("test_process_mappingUnacceptableToSimpleErrorShouldSucceed", test_process_mappingUnacceptableToSimpleErrorShouldSucceed),
+        ("test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
+        ("test_process_undefinedCaseShouldReturnOriginalError",
+         test_process_undefinedCaseShouldReturnOriginalError),
     ]
 }
 

@@ -31,15 +31,14 @@ final class SampleViewModel {
     }
     
     func loadUserList() async throws {
-        let response: SampleUsersResponse = try await apiManager.request(
+        _ = try await apiManager.request(
             SampleUserRouter.users(page: 2)
         )
-        print(response)
     }
     
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
-        let response: SampleUserAuthResponse = try await apiManager.request(
+        _ = try await apiManager.request(
             SampleUserRouter.loginUser(user: request)
         )
     }
