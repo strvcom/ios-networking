@@ -7,6 +7,7 @@
 
 @testable import Networking
 import XCTest
+import Foundation
 
 final class ErrorProcessorTests: XCTestCase {
     private let sessionId = "sessionId_error_process"
@@ -77,8 +78,10 @@ final class ErrorProcessorTests: XCTestCase {
         ("test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed", test_errorProcessing_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed),
         ("test_errorProcessing_process_undefinedCaseShouldReturnOriginalError",
          test_errorProcessing_process_undefinedCaseShouldReturnOriginalError),
-        ("test_apiManager_request_errorShouldBeMappedToExpected",
-         test_apiManager_request_errorShouldBeMappedToExpected)
+        ("test_apiManager_request_errorShouldBeMappedToSimpleError",
+         test_apiManager_request_errorShouldBeMappedToSimpleError),
+        ("test_apiManager_request_originalErrorShouldRemain",
+         test_apiManager_request_originalErrorShouldRemain)
     ]
 }
 
@@ -86,17 +89,24 @@ final class ErrorProcessorTests: XCTestCase {
 extension ErrorProcessorTests {
     enum MockRouter: Requestable {
         case notFoundRequest
+        case networkError
 
         var baseURL: URL {
-            // swiftlint:disable:next force_unwrapping
-            URL(string: "https://reqres.in/api")!
+            switch self {
+            case .notFoundRequest:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://reqres.in/api")!
+            case .networkError:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://nonexistenturladdress")!
+            }
         }
 
         var path: String { "/users/0" }
         var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
     }
     
-    func test_apiManager_request_errorShouldBeMappedToExpected() async {
+    func test_apiManager_request_errorShouldBeMappedToSimpleError() async {
         let apiManager = APIManager(
             urlSession: URLSession.shared,
             errorProcessors: [MockSimpleErrorProcessor()]
@@ -109,6 +119,24 @@ extension ErrorProcessorTests {
             // Expected
         } catch {
             XCTFail("Expected to receive error of type MockSimpleError.")
+        }
+    }
+    
+    func test_apiManager_request_originalErrorShouldRemain() async {
+        let apiManager = APIManager(
+            urlSession: URLSession.shared,
+            errorProcessors: [MockSimpleErrorProcessor()]
+        )
+        
+        do {
+            try await apiManager.request(MockRouter.networkError)
+            XCTFail("Expected to receive a network error but succeeded instead.")
+        } catch MockSimpleError.simpleError {
+            XCTFail("Expected to receive error of type URLError.")
+        } catch is URLError {
+            // Expected
+        } catch {
+            XCTFail("Expected to receive error of type URLError.")
         }
     }
 }
