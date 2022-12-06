@@ -60,6 +60,7 @@ private extension APIManager {
             return response
         } catch {
             do {
+                /// If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.
                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 /// error processing

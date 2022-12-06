@@ -7,10 +7,12 @@
 
 import Foundation
 import Networking
+import OSLog
 
 final class SampleViewModel {
     private let apiManager = APIManager(
         urlSession: URLSession.shared,
+        responseProcessors: [StatusCodeProcessor()],
         errorProcessors: [SampleErrorProcessor()]
     )
     
@@ -21,25 +23,30 @@ final class SampleViewModel {
                 try await loadUserList()
                 
                 // HTTP 400
-                try await login(email: "email@strv.com", password: nil)
+                try await login(
+                    email: SampleAPIConstants.validEmail,
+                    password: SampleAPIConstants.noPassword
+                )
             } catch let error as SampleAPIError {
-                print(error.error ?? "Unknown")
+                os_log("❌ Custom error thrown: \(error)")
             } catch {
-                print(error)
+                os_log("❌ Error while getting data: \(error)")
             }
         }
     }
     
     func loadUserList() async throws {
-        _ = try await apiManager.request(
+        let response: SampleUsersResponse = try await apiManager.request(
             SampleUserRouter.users(page: 2)
         )
+        os_log("Data: %{public}@, Page: %d", log: OSLog.default, type: .info, response.data, response.page)
     }
     
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
-        _ = try await apiManager.request(
+        let response: SampleUserResponse = try await apiManager.request(
             SampleUserRouter.loginUser(user: request)
         )
+        os_log("Id: %{public}@, Email: %{public}@", log: OSLog.default, type: .info, response.id, response.email ?? "Unknown email")
     }
 }
