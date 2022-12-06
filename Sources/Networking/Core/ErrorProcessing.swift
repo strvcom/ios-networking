@@ -9,7 +9,7 @@ import Foundation
 
 /// A type that is able to customize error returned after failed network request.
 public protocol ErrorProcessing {
-    func process(_ error: Error) -> Error
+    func process(_ error: Error) async -> Error
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -18,9 +18,9 @@ public extension Array where Element == ErrorProcessing {
     /// - Parameters:
     ///   - error: The error to be procesed.
     /// - Returns:An `Error` processed by all objects in a sequence.
-    func process(_ error: Error) -> Error {
-        reduce(error) { errorResult, errorProcessing in
-            errorProcessing.process(errorResult)
+    func process(_ error: Error) async -> Error {
+        await asyncReduce(error) { errorResult, errorProcessing in
+            await errorProcessing.process(errorResult)
         }
     }
 }

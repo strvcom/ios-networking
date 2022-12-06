@@ -63,7 +63,7 @@ private extension APIManager {
                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 /// error processing
-                throw errorProcessors.process(error)
+                throw await errorProcessors.process(error)
             }
             return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }

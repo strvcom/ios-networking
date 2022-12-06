@@ -33,7 +33,7 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() {
+    func test_process_mappingUnacceptableToUnrelatedThroughSimpleShouldSucceed() async {
         let processors: [ErrorProcessing] = [MockSimpleErrorProcessor(), MockUnrelatedErrorProcessor()]
         let mockResponse = createMockResponseParams(url: testUrl, statusCode: 404)
         let notFoundError = NetworkError.unacceptableStatusCode(
@@ -41,7 +41,7 @@ final class ErrorProcessorTests: XCTestCase {
             acceptedStatusCodes: 200..<300,
             response: mockResponse
         )
-        let resultError = processors.process(notFoundError)
+        let resultError = await processors.process(notFoundError)
         
         if case MockUnrelatedError.unrelatedError(let message) = resultError {
             XCTAssertEqual(message, "Failed with statusCode: 404")
@@ -62,10 +62,10 @@ final class ErrorProcessorTests: XCTestCase {
         }
     }
     
-    func test_process_noProcessorsShouldReturnOriginalError() {
+    func test_process_noProcessorsShouldReturnOriginalError() async {
         let processors: [ErrorProcessing] = []
         let invalidHeaderError = NetworkError.headerIsInvalid
-        let resultError = processors.process(invalidHeaderError)
+        let resultError = await processors.process(invalidHeaderError)
         
         if case NetworkError.headerIsInvalid = resultError {
             XCTAssert(true)
