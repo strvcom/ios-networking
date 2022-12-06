@@ -6,19 +6,24 @@
 //
 
 import Networking
+import Foundation
 
-/// Maps all NetworkError's unacceptableStatusCode errors to a sad smiley emoji with status code info.
-struct SampleErrorProcessor: ErrorProcessing {
-    enum SampleSadError: Error {
-        case sad(emoji: String)
-    }
+/// Maps NetworkError's unacceptableStatusCode 400 error to SampleAPIError.
+final class SampleErrorProcessor: ErrorProcessing {
+    private lazy var decoder = JSONDecoder()
     
     func process(_ error: Error) -> Error {
-        if case NetworkError.unacceptableStatusCode(let statusCode, _, _) = error {
-            return SampleSadError.sad(emoji: "So so sad \(statusCode) 😭")
+        guard let networkError = error as? NetworkError,
+              case let .unacceptableStatusCode(statusCode, _, response) = networkError,
+              statusCode == 400
+        else {
+            return error
         }
         
-        // otherwise return unprocessed original error
+        if let apiError = try? decoder.decode(SampleAPIError.self, from: response.data) {
+            return apiError
+        }
+
         return error
     }
 }
