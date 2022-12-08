@@ -14,7 +14,7 @@ public struct RetryConfiguration {
     /// The delay between each retry to avoid overwhelming API.
     let delay: DelayConfiguration
     /// A handler which determines wether a request should be retried or not based on an error.
-    /// By default errors with status codes `404, 500` are not being retried.
+    /// By default errors with status codes `400 ... 499` are not being retried.
     let retryHandler: (Error) -> Bool
 
     // default configuration ignores
@@ -28,7 +28,8 @@ public struct RetryConfiguration {
             return true
         }
 
-        return statusCode != 404 && statusCode != 500
+        let nonRetriableStatusCodes = 400...499
+        return !(nonRetriableStatusCodes ~= statusCode)
     }
 }
 
