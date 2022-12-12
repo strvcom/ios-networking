@@ -16,6 +16,7 @@ import Foundation
 
 /// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
 open class LoggingInterceptor: RequestInterceptor {
+    
     public init() {}
 
     /// Logs a given `URLRequest` into console.
@@ -37,6 +38,16 @@ open class LoggingInterceptor: RequestInterceptor {
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
         prettyResponseLog(response, from: endpointRequest.endpoint)
         return response
+    }
+    
+    /// Logs a given `Error` into console.
+    /// - Parameters:
+    ///   - error: The error to be logged.
+    ///   - endpointRequest: An endpoint request wrapper.
+    /// - Returns: The original `Error`.
+    public func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
+        prettyErrorLog(error, from: endpointRequest.endpoint)
+        return error
     }
 }
 
@@ -96,7 +107,7 @@ private extension LoggingInterceptor {
     func prettyErrorLog(_ error: Error, from endpoint: Requestable) {
         os_log("❌❌❌ ERROR ❌❌❌", type: .error)
         if let networkError = error as? NetworkError, case let .unacceptableStatusCode(statusCode, _, response) = networkError {
-            os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, statusCode, endpoint.method.rawValue.uppercased(), endpoint.path)
+            os_log("🔈 %{public}@ %{public}@ %{public}@", type: .error, String(statusCode), endpoint.method.rawValue.uppercased(), endpoint.path)
 
             if let body = String(data: response.data, encoding: .utf8) {
                 os_log("👉 Body: %{public}@", type: .error, body)

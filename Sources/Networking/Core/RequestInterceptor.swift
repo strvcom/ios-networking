@@ -11,4 +11,4 @@ import Foundation
 // MARK: - Define modifiers working before & after request
 
 /// A modifier which adapts a request and also processes a response.
-public typealias RequestInterceptor = RequestAdapting & ResponseProcessing
+public typealias RequestInterceptor = RequestAdapting & ResponseProcessing & ErrorProcessing

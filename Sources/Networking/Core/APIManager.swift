@@ -32,6 +32,7 @@ open class APIManager {
 }
 
 extension APIManager: APIManaging {
+    @discardableResult
     public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
@@ -64,7 +65,7 @@ private extension APIManager {
                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 /// error processing
-                throw await errorProcessors.process(error)
+                throw await errorProcessors.process(error, for: endpointRequest)
             }
             return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
