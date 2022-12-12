@@ -12,7 +12,7 @@ import OSLog
 final class SampleViewModel {
     private let apiManager = APIManager(
         urlSession: URLSession.shared,
-        responseProcessors: [StatusCodeProcessor()],
+        responseProcessors: [StatusCodeProcessor(), EndpointRequestStorageProcessor()],
         errorProcessors: [SampleErrorProcessor()]
     )
     
