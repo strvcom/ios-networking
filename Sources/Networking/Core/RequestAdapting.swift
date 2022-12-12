@@ -17,7 +17,7 @@ public protocol RequestAdapting {
     ///   - request: The request to be adapted.
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The adapted `URLRequest`.
-    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest
 }
 
 // MARK: - Array extension to avoid boilerplate
@@ -28,9 +28,9 @@ public extension Array where Element == RequestAdapting {
     ///   - request: The request to be adapted.
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: A `URLRequest` adapted by all objects in a sequence.
-    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) throws -> URLRequest {
-        reduce(request) { request, requestAdapting in
-            requestAdapting.adapt(request, for: endpointRequest)
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest {
+        try await asyncReduce(request) { request, requestAdapting in
+            try await requestAdapting.adapt(request, for: endpointRequest)
         }
     }
 }

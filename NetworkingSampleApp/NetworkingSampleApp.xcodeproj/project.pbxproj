@@ -22,6 +22,8 @@
 		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
+		DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */; };
+		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
+		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewModel.swift; sourceTree = "<group>"; };
+		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +104,7 @@
 		23A575ED25F8BF0E00617551 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
-				23A575B825F8B9DA00617551 /* SampleViewController.swift */,
+				DD410D6D293F2E62006D8E31 /* SampleViewScene */,
 				23A575BA25F8B9DA00617551 /* Main.storyboard */,
 			);
 			path = Scene;
@@ -138,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
+				DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */,
 			);
 			path = Routers;
 			sourceTree = "<group>";
@@ -159,6 +164,15 @@
 				23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */,
 			);
 			path = Requests;
+			sourceTree = "<group>";
+		};
+		DD410D6D293F2E62006D8E31 /* SampleViewScene */ = {
+			isa = PBXGroup;
+			children = (
+				23A575B825F8B9DA00617551 /* SampleViewController.swift */,
+				DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */,
+			);
+			path = SampleViewScene;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,11 +255,13 @@
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
+				DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
 				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
 				23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */,
 				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
+				DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */,
 				23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,7 +410,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MFW39VQ977;
+				DEVELOPMENT_TEAM = J8L663CT57;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -414,7 +430,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y35U45R7B5;
+				DEVELOPMENT_TEAM = J8L663CT57;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (

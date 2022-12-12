@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Model for sample authentication request via credentials
+/// Model for sample API authentication request using credentials
 struct SampleUserAuthRequest: Encodable {
     let email: String?
     let password: String?

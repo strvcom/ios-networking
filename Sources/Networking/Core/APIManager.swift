@@ -7,77 +7,113 @@
 
 import Foundation
 
+/// Default API manager
 open class APIManager {
-    
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
+    private let errorProcessors: [ErrorProcessing]
     private let urlSession: URLSession
     private let sessionId: String
-    private var retryCountDict = [String: Int]()
+    private var retryCountCache = RetryCountCache()
     
-    // set identifier to URLSession if nil
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
-        requestAdapters: [RequestAdapting] = [LoggingInterceptor()],
-        responseProcessors: [ResponseProcessing] = [LoggingInterceptor()]
+        requestAdapters: [RequestAdapting] = [],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        errorProcessors: [ErrorProcessing] = []
     ) {
+        /// generate session id in readable format
+        sessionId = Date().ISO8601Format()
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
-        sessionId = Date().ISO8601Format()
+        self.errorProcessors = errorProcessors
     }
 }
 
 extension APIManager: APIManaging {
     public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
-        
+        /// create identifiable request from endpoint
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+        return try await request(endpointRequest, retryConfiguration: retryConfiguration)
+    }
+}
+
+private extension APIManager {
+    func request(_ endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws -> Response {
         do {
-            /// create request
-            let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-            var request = try endpoint.asRequest()
+            /// create original url request
+            var request = try endpointRequest.endpoint.asRequest()
             
-            /// adapt request
-            request = try requestAdapters.adapt(request, for: endpointRequest)
+            /// adapt request with all adapters
+            request = try await requestAdapters.adapt(request, for: endpointRequest)
             
-            /// call request
-            var response = try await urlSession.data(for: endpoint.asRequest())
+            /// call request on url session
+            var response = try await urlSession.data(for: request)
             
             /// process request
-            response = try responseProcessors.process(response, with: request, for: endpointRequest)
+            response = try await responseProcessors.process(response, with: request, for: endpointRequest)
             
             /// reset retry count
-            retryCountDict[endpoint.identifier] = 0
+            await retryCountCache.reset(for: endpointRequest.id)
             
             return response
         } catch {
-            var retryCount = retryCountDict[endpoint.identifier] ?? 0
-            
-            guard
-                let retryConfiguration = retryConfiguration,
-                retryConfiguration.retryHandler(error),
-                retryConfiguration.retries > retryCount
-            else {
-                /// reset retry count
-                retryCountDict[endpoint.identifier] = 0
-                throw error
+            do {
+                /// If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.
+                try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+            } catch {
+                /// error processing
+                throw await errorProcessors.process(error)
             }
-            
-            /// retry request after delay
-            retryCount += 1
-            retryCountDict[endpoint.identifier] = retryCount
-            
-            let sleepDuration: UInt64 = {
-                switch retryConfiguration.delay {
-                case .constant(let timeInterval):
-                    return UInt64(timeInterval) * 1000000000
-                case .progressive(let timeInterval):
-                    return UInt64(timeInterval) * UInt64(retryCount) * 1000000000
-                }
-            }()
-            
-            try await Task.sleep(nanoseconds: sleepDuration)
-            
-            return try await request(endpoint, retryConfiguration: retryConfiguration)
+            return try await request(endpointRequest, retryConfiguration: retryConfiguration)
+        }
+    }
+    
+    /// Handle if error triggers retry mechanism and return delay for next attempt
+    private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
+        let retryCount = await retryCountCache.value(for: endpointRequest.id)
+        
+        guard
+            let retryConfiguration = retryConfiguration,
+            retryConfiguration.retryHandler(error),
+            retryConfiguration.retries > retryCount
+        else {
+            /// reset retry count
+            await retryCountCache.reset(for: endpointRequest.id)
+            throw error
+        }
+        
+        /// count the delay for retry
+        await retryCountCache.increment(for: endpointRequest.id)
+        
+        var sleepDuration: UInt64
+        switch retryConfiguration.delay {
+        case .constant(let timeInterval):
+            sleepDuration = UInt64(timeInterval) * 1000000000
+        case .progressive(let timeInterval):
+            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1000000000
+        }
+        
+        try await Task.sleep(nanoseconds: sleepDuration)
+    }
+}
+
+private extension APIManager {
+    /// A thread safe wrapper for retry count dictionary.
+    actor RetryCountCache {
+        private var dict = [String: Int]()
+        
+        func value(for id: String) -> Int {
+            dict[id] ?? 0
+        }
+        
+        func increment(for id: String) {
+            dict[id] = (dict[id] ?? 0) + 1
+        }
+        
+        func reset(for id: String) {
+            dict.removeValue(forKey: id)
         }
     }
 }
