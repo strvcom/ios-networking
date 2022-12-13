@@ -24,6 +24,9 @@
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
 		DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
+		DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */; };
+		DDE8884929476DAE00DD3BFF /* SampleSongResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE8884829476DAE00DD3BFF /* SampleSongResponse.swift */; };
+		DDE8884B29476E1900DD3BFF /* SampleSongRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE8884A29476E1900DD3BFF /* SampleSongRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +50,9 @@
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewModel.swift; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
+		DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleRefreshTokenRequest.swift; sourceTree = "<group>"; };
+		DDE8884829476DAE00DD3BFF /* SampleSongResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSongResponse.swift; sourceTree = "<group>"; };
+		DDE8884A29476E1900DD3BFF /* SampleSongRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleSongRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +149,7 @@
 			children = (
 				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
 				DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */,
+				DDE8884A29476E1900DD3BFF /* SampleSongRouter.swift */,
 			);
 			path = Routers;
 			sourceTree = "<group>";
@@ -153,6 +160,7 @@
 				23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */,
 				23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */,
 				23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */,
+				DDE8884829476DAE00DD3BFF /* SampleSongResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -162,6 +170,7 @@
 			children = (
 				23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */,
 				23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */,
+				DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -251,14 +260,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				23A575B925F8B9DA00617551 /* SampleViewController.swift in Sources */,
+				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
+				DDE8884929476DAE00DD3BFF /* SampleSongResponse.swift in Sources */,
 				DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */,
 				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
 				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
 				23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */,
+				DDE8884B29476E1900DD3BFF /* SampleSongRouter.swift in Sources */,
 				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
 				DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */,

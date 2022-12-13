@@ -10,23 +10,34 @@ import Networking
 import OSLog
 
 final class SampleViewModel {
-    private let apiManager = APIManager(
+    private lazy var apiManager = APIManager(
         urlSession: URLSession.shared,
-        responseProcessors: [StatusCodeProcessor()],
-        errorProcessors: [SampleErrorProcessor()]
+        requestAdapters: [
+            // AuthorizationTokenInterceptor(authorizationManager: self)
+        ],
+        responseProcessors: [
+            // AuthorizationTokenInterceptor(authorizationManager: self)
+        ],
+        errorProcessors: [
+            SampleErrorProcessor()
+        ]
     )
     
     func runNetworkingExamples() {
         Task {
             do {
                 //HTTP 200
-                try await loadUserList()
+                // try await loadUserList()
                 
                 // HTTP 400
-                try await login(
-                    email: SampleAPIConstants.validEmail,
-                    password: SampleAPIConstants.noPassword
-                )
+//                try await login(
+//                    email: SampleAPIConstants.validEmail,
+//                    password: SampleAPIConstants.noPassword
+//                )
+                
+                // HTTP 200/401
+                try await loadSongList()
+                
             } catch let error as SampleAPIError {
                 os_log("❌ Custom error thrown: \(error)")
             } catch {
@@ -45,8 +56,33 @@ final class SampleViewModel {
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
         let response: SampleUserResponse = try await apiManager.request(
-            SampleUserRouter.loginUser(user: request)
+            SampleSongRouter.loginUser(user: request)
         )
         os_log("Id: %{public}@, Email: %{public}@", log: OSLog.default, type: .info, response.id, response.email ?? "Unknown email")
+    }
+
+    func loadSongList() async throws {
+        let response: SampleSongsResponse = try await apiManager.request(
+            SampleSongRouter.songs
+        )
+        
+        for song in response {
+            os_log("Title: %{public}@, Artist: %{public}@", log: OSLog.default, type: .info, song.title, song.artist)
+        }
+    }
+}
+
+// MARK: AuthorizationManaging
+extension SampleViewModel: AuthorizationManaging {
+    var storage: any AuthorizationStorageManaging {
+        AuthorizationInMemoryStorage()
+    }
+    
+    func authorize(_ urlRequest: URLRequest) async throws -> URLRequest {
+        urlRequest
+    }
+    
+    func refreshToken(_ token: String) async throws {
+        
     }
 }
