@@ -11,7 +11,7 @@ import Foundation
 
 final class ErrorProcessorTests: XCTestCase {
     // Our mocked error processors don't utilise the endpointRequest parameter so we can use the same mocked endpointRequest for all tests
-    private let mockEndpointRequest = EndpointRequest(MockRouter.networkError, sessionId: "sessionId_error_process")
+    private let mockEndpointRequest = EndpointRequest(MockRouter.sample, sessionId: "sessionId_error_process")
     
     // swiftlint:disable:next force_unwrapping
     private var testUrl: URL {
@@ -91,7 +91,8 @@ extension ErrorProcessorTests {
     enum MockRouter: Requestable {
         case notFoundRequest
         case networkError
-
+        case sample
+        
         var baseURL: URL {
             switch self {
             case .notFoundRequest:
@@ -100,6 +101,9 @@ extension ErrorProcessorTests {
             case .networkError:
                 // swiftlint:disable:next force_unwrapping
                 return URL(string: "https://nonexistenturladdress")!
+            case .sample:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://sample.com")!
             }
         }
 
