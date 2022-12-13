@@ -8,7 +8,7 @@
 import Foundation
 
 /// Default API manager
-open class APIManager {
+open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
@@ -29,11 +29,9 @@ open class APIManager {
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
     }
-}
-
-extension APIManager: APIManaging {
+    
     @discardableResult
-    public func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
+    open func request(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> Response {
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await request(endpointRequest, retryConfiguration: retryConfiguration)

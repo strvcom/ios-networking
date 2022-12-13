@@ -24,7 +24,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - request: The request to be logged.
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The the original `URLRequest`.
-    public func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
+    open func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
         prettyRequestLog(request)
         return request
     }
@@ -35,7 +35,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - request: The original URL request.
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The original ``Response``.
-    public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
+    open func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) throws -> Response {
         prettyResponseLog(response, from: endpointRequest.endpoint)
         return response
     }
@@ -45,7 +45,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - error: The error to be logged.
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The original `Error`.
-    public func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
+    open func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
         prettyErrorLog(error, from: endpointRequest.endpoint)
         return error
     }
