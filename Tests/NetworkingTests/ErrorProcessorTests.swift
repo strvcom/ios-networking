@@ -10,8 +10,31 @@ import XCTest
 import Foundation
 
 final class ErrorProcessorTests: XCTestCase {
+    enum MockRouter: Requestable {
+        case testMockSimpleError
+        case testURLError
+        case testErrorProcessing
+        
+        var baseURL: URL {
+            switch self {
+            case .testMockSimpleError:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://reqres.in/api")!
+            case .testURLError:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://nonexistenturladdress")!
+            case .testErrorProcessing:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://sample.com")!
+            }
+        }
+
+        var path: String { "/users/0" }
+        var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
+    }
+    
     // Our mocked error processors don't utilise the endpointRequest parameter so we can use the same mocked endpointRequest for all tests
-    private let mockEndpointRequest = EndpointRequest(MockRouter.sample, sessionId: "sessionId_error_process")
+    private let mockEndpointRequest = EndpointRequest(MockRouter.testErrorProcessing, sessionId: "sessionId_error_process")
     
     // swiftlint:disable:next force_unwrapping
     private var testUrl: URL {
@@ -88,29 +111,6 @@ final class ErrorProcessorTests: XCTestCase {
 
 // MARK: Api Manager Integration test
 extension ErrorProcessorTests {
-    enum MockRouter: Requestable {
-        case notFoundRequest
-        case networkError
-        case sample
-        
-        var baseURL: URL {
-            switch self {
-            case .notFoundRequest:
-                // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://reqres.in/api")!
-            case .networkError:
-                // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://nonexistenturladdress")!
-            case .sample:
-                // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://sample.com")!
-            }
-        }
-
-        var path: String { "/users/0" }
-        var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
-    }
-    
     func test_apiManager_request_errorShouldBeMappedToSimpleError() async {
         let apiManager = APIManager(
             urlSession: URLSession.shared,
@@ -118,7 +118,7 @@ extension ErrorProcessorTests {
         )
         
         do {
-            try await apiManager.request(MockRouter.notFoundRequest)
+            try await apiManager.request(MockRouter.testMockSimpleError)
             XCTFail("Expected to receive a network error but succeeded instead.")
         } catch MockSimpleError.simpleError {
             // Expected
@@ -134,7 +134,7 @@ extension ErrorProcessorTests {
         )
         
         do {
-            try await apiManager.request(MockRouter.networkError)
+            try await apiManager.request(MockRouter.testURLError)
             XCTFail("Expected to receive a network error but succeeded instead.")
         } catch MockSimpleError.simpleError {
             XCTFail("Expected to receive error of type URLError.")
