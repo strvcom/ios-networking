@@ -12,7 +12,7 @@ import Foundation
 final class SampleErrorProcessor: ErrorProcessing {
     private lazy var decoder = JSONDecoder()
     
-    func process(_ error: Error) -> Error {
+    func process(_ error: Error, for endpointRequest: EndpointRequest) -> Error {
         guard let networkError = error as? NetworkError,
               case let .unacceptableStatusCode(statusCode, _, response) = networkError,
               statusCode == 400
