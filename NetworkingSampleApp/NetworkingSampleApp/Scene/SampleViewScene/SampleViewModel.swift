@@ -10,13 +10,23 @@ import Networking
 import OSLog
 
 final class SampleViewModel {
-    private let apiManager = APIManager(
-        urlSession: URLSession.shared,
-        responseProcessors: [StatusCodeProcessor(), EndpointRequestStorageProcessor()],
-        errorProcessors: [SampleErrorProcessor()]
-    )
+    private let apiManager: APIManager = {
+        var responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()]
+        
+        #if DEBUG
+        responseProcessors.append(EndpointRequestStorageProcessor())
+        #endif
+        
+        return APIManager(
+            urlSession: URLSession.shared,
+            responseProcessors: responseProcessors,
+            errorProcessors: [SampleErrorProcessor()]
+        )
+    }()
+
     
     func runNetworkingExamples() {
+        
         Task {
             do {
                 //HTTP 200
