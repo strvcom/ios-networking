@@ -16,7 +16,7 @@ public struct EndpointRequest: Identifiable {
     public let sessionId: String
     public let endpoint: Requestable
 
-    init(_ endpoint: Requestable, sessionId: String) {
+    public init(_ endpoint: Requestable, sessionId: String) {
         id = "\(endpoint.identifier)_\(Date().timeIntervalSince1970)"
         self.endpoint = endpoint
         self.sessionId = sessionId
