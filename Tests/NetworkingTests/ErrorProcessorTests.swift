@@ -10,7 +10,31 @@ import XCTest
 import Foundation
 
 final class ErrorProcessorTests: XCTestCase {
-    private let sessionId = "sessionId_error_process"
+    enum MockRouter: Requestable {
+        case testMockSimpleError
+        case testURLError
+        case testErrorProcessing
+        
+        var baseURL: URL {
+            switch self {
+            case .testMockSimpleError:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://reqres.in/api")!
+            case .testURLError:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://nonexistenturladdress")!
+            case .testErrorProcessing:
+                // swiftlint:disable:next force_unwrapping
+                return URL(string: "https://sample.com")!
+            }
+        }
+
+        var path: String { "/users/0" }
+        var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
+    }
+    
+    // Our mocked error processors don't utilise the endpointRequest parameter so we can use the same mocked endpointRequest for all tests
+    private let mockEndpointRequest = EndpointRequest(MockRouter.testErrorProcessing, sessionId: "sessionId_error_process")
     
     // swiftlint:disable:next force_unwrapping
     private var testUrl: URL {
@@ -25,7 +49,7 @@ final class ErrorProcessorTests: XCTestCase {
             acceptedStatusCodes: 200..<300,
             response: mockResponse
         )
-        let resultError = processor.process(notFoundError)
+        let resultError = processor.process(notFoundError, for: mockEndpointRequest)
         
         if case MockSimpleError.simpleError(let statusCode) = resultError {
             XCTAssertEqual(statusCode, 404, "Expected status code 404 but received \(statusCode) instead.")
@@ -42,7 +66,7 @@ final class ErrorProcessorTests: XCTestCase {
             acceptedStatusCodes: 200..<300,
             response: mockResponse
         )
-        let resultError = await processors.process(notFoundError)
+        let resultError = await processors.process(notFoundError, for: mockEndpointRequest)
         
         if case MockUnrelatedError.unrelatedError(let message) = resultError {
             XCTAssertEqual(message, "Failed with statusCode: 404", "Expected a different error message.")
@@ -54,7 +78,7 @@ final class ErrorProcessorTests: XCTestCase {
     func test_errorProcessing_process_undefinedCaseShouldReturnOriginalError() {
         let processor = MockSimpleErrorProcessor()
         let totallyUnrelated = MockUnrelatedError.totallyUnrelated
-        let resultError = processor.process(totallyUnrelated)
+        let resultError = processor.process(totallyUnrelated, for: mockEndpointRequest)
 
         guard case MockUnrelatedError.totallyUnrelated = resultError else {
             XCTFail("❌ Mapping to SimpleError should fail.")
@@ -65,7 +89,7 @@ final class ErrorProcessorTests: XCTestCase {
     func test_errorProcessing_process_noProcessorsShouldReturnOriginalError() async {
         let processors: [ErrorProcessing] = []
         let invalidHeaderError = NetworkError.headerIsInvalid
-        let resultError = await processors.process(invalidHeaderError)
+        let resultError = await processors.process(invalidHeaderError, for: mockEndpointRequest)
         
         guard case NetworkError.headerIsInvalid = resultError else {
             XCTFail("❌ No mappings should have occured, but they did!.")
@@ -87,25 +111,6 @@ final class ErrorProcessorTests: XCTestCase {
 
 // MARK: Api Manager Integration test
 extension ErrorProcessorTests {
-    enum MockRouter: Requestable {
-        case notFoundRequest
-        case networkError
-
-        var baseURL: URL {
-            switch self {
-            case .notFoundRequest:
-                // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://reqres.in/api")!
-            case .networkError:
-                // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://nonexistenturladdress")!
-            }
-        }
-
-        var path: String { "/users/0" }
-        var acceptableStatusCodes: Range<HTTPStatusCode>? { 200..<300 }
-    }
-    
     func test_apiManager_request_errorShouldBeMappedToSimpleError() async {
         let apiManager = APIManager(
             urlSession: URLSession.shared,
@@ -113,7 +118,7 @@ extension ErrorProcessorTests {
         )
         
         do {
-            try await apiManager.request(MockRouter.notFoundRequest)
+            try await apiManager.request(MockRouter.testMockSimpleError)
             XCTFail("Expected to receive a network error but succeeded instead.")
         } catch MockSimpleError.simpleError {
             // Expected
@@ -129,7 +134,7 @@ extension ErrorProcessorTests {
         )
         
         do {
-            try await apiManager.request(MockRouter.networkError)
+            try await apiManager.request(MockRouter.testURLError)
             XCTFail("Expected to receive a network error but succeeded instead.")
         } catch MockSimpleError.simpleError {
             XCTFail("Expected to receive error of type URLError.")
@@ -159,7 +164,7 @@ private extension ErrorProcessorTests {
 private extension ErrorProcessorTests {
     // Maps NetworkError to SimpleError
     struct MockSimpleErrorProcessor: ErrorProcessing {
-        func process(_ error: Error) -> Error {
+        func process(_ error: Error, for endpointRequest: EndpointRequest) -> Error {
             if case NetworkError.unacceptableStatusCode(let statusCode, _, _) = error {
                 return MockSimpleError.simpleError(statusCode: statusCode)
             }
@@ -177,7 +182,7 @@ private extension ErrorProcessorTests {
     }
     
     struct MockUnrelatedErrorProcessor: ErrorProcessing {
-        func process(_ error: Error) -> Error {
+        func process(_ error: Error, for endpointRequest: EndpointRequest) -> Error {
             if case MockSimpleError.simpleError(let statusCode) = error {
                 return MockUnrelatedError.unrelatedError(message: "Failed with statusCode: \(statusCode)")
             }

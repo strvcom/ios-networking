@@ -9,18 +9,23 @@ import Foundation
 
 /// A type that is able to customize error returned after failed network request.
 public protocol ErrorProcessing {
-    func process(_ error: Error) async -> Error
+    /// Modifies a given `Error`.
+    /// - Parameters:
+    ///   - error: The error to be processed.
+    ///   - endpointRequest: An endpoint request wrapper.
+    /// - Returns: The processed `Error`.
+    func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error
 }
 
 // MARK: - Array extension to avoid boilerplate
 public extension Array where Element == ErrorProcessing {
     /// Applies the process method to all objects in a sequence.
     /// - Parameters:
-    ///   - error: The error to be procesed.
-    /// - Returns:An `Error` processed by all objects in a sequence.
-    func process(_ error: Error) async -> Error {
+    ///   - error: The error to be processed.
+    /// - Returns: An `Error` processed by all objects in a sequence.
+    func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
         await asyncReduce(error) { errorResult, errorProcessing in
-            await errorProcessing.process(errorResult)
+            await errorProcessing.process(errorResult, for: endpointRequest)
         }
     }
 }
