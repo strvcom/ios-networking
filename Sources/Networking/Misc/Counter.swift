@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Counter.swift
 //  
 //
 //  Created by Matej Molnár on 14.12.2022.
