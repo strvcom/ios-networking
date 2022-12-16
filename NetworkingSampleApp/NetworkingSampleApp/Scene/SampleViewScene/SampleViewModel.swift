@@ -27,7 +27,6 @@ final class SampleViewModel {
     }()
     
     func runNetworkingExamples() {
-        
         Task {
             do {
                 //HTTP 200
