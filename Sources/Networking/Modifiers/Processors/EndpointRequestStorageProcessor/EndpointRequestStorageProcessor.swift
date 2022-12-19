@@ -95,7 +95,7 @@ private extension EndpointRequestStorageProcessor {
             )
             await self.store(
                 storageModel,
-                url: self.createFileUrl(endpointRequest)
+                fileUrl: self.createFileUrl(endpointRequest)
             )
         }
     }
@@ -124,11 +124,11 @@ private extension EndpointRequestStorageProcessor {
             .appendingPathComponent("\(fileName).json")
     }
 
-    func store(_ model: EndpointRequestStorageModel, url: URL) {
+    func store(_ model: EndpointRequestStorageModel, fileUrl: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
-            try jsonData.write(to: url)
-            os_log("🎈 Response saved %{public}@ bytes at %{public}@", type: .info, "\(jsonData.count)", url.path)
+            try jsonData.write(to: fileUrl)
+            os_log("🎈 Response saved %{public}@ bytes at %{public}@", type: .info, "\(jsonData.count)", fileUrl.path)
         } catch {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
         }
