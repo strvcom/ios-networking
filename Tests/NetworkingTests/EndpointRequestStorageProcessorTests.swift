@@ -14,6 +14,7 @@ import XCTest
 
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
+    private let fileManager = FileManager.default
     
     struct MockBody: Codable {
         let parameter: String
@@ -22,7 +23,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
     enum MockRouter: Requestable {
         case testStoringGet
         case testStoringPost
-
+        case testStoringImage
+        
         var baseURL: URL {
             URL(string: "https://endpointRequestStorageProcessor.tests")!
         }
@@ -33,12 +35,14 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
                 return "storing"
             case .testStoringPost:
                 return "storing"
+            case .testStoringImage:
+                return "image"
             }
         }
         
         var method: HTTPMethod {
             switch self {
-            case .testStoringGet:
+            case .testStoringGet, .testStoringImage:
                 return .get
             case .testStoringPost:
                 return .post
@@ -46,25 +50,21 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         }
         var urlParameters: [String : Any]? {
             switch self {
-            case .testStoringGet:
-                return ["query": "mock"]
-            case .testStoringPost:
+            case .testStoringGet, .testStoringPost, .testStoringImage:
                 return ["query": "mock"]
             }
         }
         
         var headers: [String : String]? {
             switch self {
-            case .testStoringGet:
-                return ["mockRequestHeader": "mock"]
-            case .testStoringPost:
+            case .testStoringGet, .testStoringPost, .testStoringImage:
                 return ["mockRequestHeader": "mock"]
             }
         }
         
         var dataType: RequestDataType? {
             switch self {
-            case .testStoringGet:
+            case .testStoringGet, .testStoringImage:
                 return nil
             case .testStoringPost:
                 return .encodable(MockBody(parameter: "mock"))
@@ -84,7 +84,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         XCTAssert(response.data == mockResponse.0 && response.response == mockResponse.1)
     }
 
-    func testStoredDataForGetRequest() async throws {
+    func testStoredDataForGetRequestWithJSONResponse() async throws {
         let mockEndpointRequest = EndpointRequest(MockRouter.testStoringGet, sessionId: sessionId)
         let mockURLRequest = try mockEndpointRequest.endpoint.asRequest()
         let mockURLResponse: URLResponse = HTTPURLResponse(
@@ -96,23 +96,62 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let mockResponseData = "Mock data".data(using: .utf8)!
         let mockResponse = (mockResponseData, mockURLResponse)
         
-        let fileManager = FileManager.default
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         
         let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-
+        
         // The storing runs on background thread so we need to wait before reading the file
         try await Task.sleep(nanoseconds: 1000000000)
         
-        let responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
-        let fileName = "\(mockEndpointRequest.sessionId)_\(mockEndpointRequest.endpoint.identifier)_0"
-        let filePath = responsesDirectory
-            .appendingPathComponent(mockEndpointRequest.sessionId)
-            .appendingPathComponent("\(fileName).json")
+        let fileUrl = fileUrl(for: mockEndpointRequest)
 
-        guard let data = fileManager.contents(atPath: filePath.path) else {
+        guard let data = fileManager.contents(atPath: fileUrl.path) else {
+            XCTAssert(false, "File doesn't exist")
+            return
+        }
+        
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
+        
+        XCTAssert(
+            model.statusCode == 200 &&
+            model.method == "GET" &&
+            model.path == mockEndpointRequest.endpoint.path &&
+            model.parameters == ["query": "mock"] &&
+            model.requestBody == nil &&
+            model.requestBodyString == nil &&
+            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
+            model.responseBody == mockResponseData &&
+            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
+            model.responseHeaders == ["mockResponseHeader": "mock"]
+        )
+    }
+    
+    func testStoredDataForGetRequestWithImageResponse() async throws {
+        let mockEndpointRequest = EndpointRequest(MockRouter.testStoringGet, sessionId: sessionId)
+        let mockURLRequest = try mockEndpointRequest.endpoint.asRequest()
+        let mockURLResponse: URLResponse = HTTPURLResponse(
+            url: mockEndpointRequest.endpoint.baseURL,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: ["mockResponseHeader": "mock"]
+        )!
+        let mockResponseData = UIImage(systemName: "pencil")!.pngData()!
+        let mockResponse = (mockResponseData, mockURLResponse)
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
+        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+        
+        // The storing runs on background thread so we need to wait before reading the file
+        try await Task.sleep(nanoseconds: 1000000000)
+        
+        let fileUrl = fileUrl(for: mockEndpointRequest)
+
+        guard let data = fileManager.contents(atPath: fileUrl.path) else {
             XCTAssert(false, "File doesn't exist")
             return
         }
@@ -145,7 +184,6 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let mockResponseData = "Mock data".data(using: .utf8)!
         let mockResponse = (mockResponseData, mockURLResponse)
         
-        let fileManager = FileManager.default
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         
@@ -155,13 +193,9 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         // The storing runs on background thread so we need to wait before reading the file
         try await Task.sleep(nanoseconds: 1000000000)
         
-        let responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
-        let fileName = "\(mockEndpointRequest.sessionId)_\(mockEndpointRequest.endpoint.identifier)_0"
-        let filePath = responsesDirectory
-            .appendingPathComponent(mockEndpointRequest.sessionId)
-            .appendingPathComponent("\(fileName).json")
+        let fileUrl = fileUrl(for: mockEndpointRequest)
 
-        guard let data = fileManager.contents(atPath: filePath.path) else {
+        guard let data = fileManager.contents(atPath: fileUrl.path) else {
             XCTAssert(false, "File doesn't exist")
             return
         }
@@ -185,7 +219,18 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
     
     static var allTests = [
         ("testResponseStaysTheSameAfterStoringData", testResponseStaysTheSameAfterStoringData),
-        ("testStoredDataForGetRequest", testStoredDataForGetRequest),
+        ("testStoredDataForGetRequestWithJSONResponse", testStoredDataForGetRequestWithJSONResponse),
+        ("testStoredDataForGetRequestWithImageResponse", testStoredDataForGetRequestWithImageResponse),
         ("testStoredDataForPostRequest", testStoredDataForPostRequest)
     ]
+}
+
+private extension EndpointRequestStorageProcessorTests {
+    func fileUrl(for endpointRequest: EndpointRequest) -> URL {
+        let responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
+        let fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)_0"
+        return responsesDirectory
+            .appendingPathComponent(endpointRequest.sessionId)
+            .appendingPathComponent("\(fileName).json")
+    }
 }
