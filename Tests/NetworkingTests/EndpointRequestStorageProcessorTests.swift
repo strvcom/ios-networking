@@ -125,7 +125,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             model.path == mockEndpointRequest.endpoint.path &&
             model.parameters == ["query": "mock"] &&
             model.requestBody == nil &&
-            model.requestBodyString == "" &&
+            model.requestBodyString == nil &&
             model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
             model.responseBody == mockResponseData &&
             model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&

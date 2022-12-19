@@ -17,9 +17,23 @@ public struct EndpointRequestStorageModel: Codable {
     public let method: String
     public let statusCode: Int?
     public let requestBody: Data?
-    public let requestBodyString: String?
     public let responseBody: Data?
-    public let responseBodyString: String?
     public let requestHeaders: [String: String]?
     public let responseHeaders: [String: String]?
+    
+    public var requestBodyString: String? {
+        guard let requestBody else {
+            return nil
+        }
+        
+        return String(data: requestBody, encoding: .utf8)
+    }
+    
+    public var responseBodyString: String? {
+        guard let responseBody else {
+            return nil
+        }
+        
+        return String(data: responseBody, encoding: .utf8)
+    }
 }

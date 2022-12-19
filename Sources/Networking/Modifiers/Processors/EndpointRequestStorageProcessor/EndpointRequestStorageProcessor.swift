@@ -89,9 +89,7 @@ private extension EndpointRequestStorageProcessor {
                 method: endpointRequest.endpoint.method.rawValue,
                 statusCode: statusCode,
                 requestBody: urlRequest.httpBody,
-                requestBodyString: String(data: urlRequest.httpBody ?? Data(), encoding: .utf8),
                 responseBody: response.data,
-                responseBodyString: String(data: response.data, encoding: .utf8),
                 requestHeaders: urlRequest.allHTTPHeaderFields,
                 responseHeaders: responseHeaders
             )
