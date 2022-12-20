@@ -24,6 +24,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         case testStoringGet
         case testStoringPost
         case testStoringImage
+        case testStoringError
         
         var baseURL: URL {
             URL(string: "https://endpointRequestStorageProcessor.tests")!
@@ -37,12 +38,14 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
                 return "storing"
             case .testStoringImage:
                 return "image"
+            case .testStoringError:
+                return "error"
             }
         }
         
         var method: HTTPMethod {
             switch self {
-            case .testStoringGet, .testStoringImage:
+            case .testStoringGet, .testStoringImage, .testStoringError:
                 return .get
             case .testStoringPost:
                 return .post
@@ -50,21 +53,21 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         }
         var urlParameters: [String : Any]? {
             switch self {
-            case .testStoringGet, .testStoringPost, .testStoringImage:
+            case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
                 return ["query": "mock"]
             }
         }
         
         var headers: [String : String]? {
             switch self {
-            case .testStoringGet, .testStoringPost, .testStoringImage:
+            case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
                 return ["mockRequestHeader": "mock"]
             }
         }
         
         var dataType: RequestDataType? {
             switch self {
-            case .testStoringGet, .testStoringImage:
+            case .testStoringGet, .testStoringImage, .testStoringError:
                 return nil
             case .testStoringPost:
                 return .encodable(MockBody(parameter: "mock"))
@@ -172,6 +175,55 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
     }
     
+    func testStoredDataForGetRequestWithErrorResponse() async throws {
+        let mockEndpointRequest = EndpointRequest(MockRouter.testStoringError, sessionId: sessionId)
+        let mockURLRequest = try mockEndpointRequest.endpoint.asRequest()
+        let mockURLResponse: URLResponse = HTTPURLResponse(
+            url: mockEndpointRequest.endpoint.baseURL,
+            statusCode: 404,
+            httpVersion: nil,
+            headerFields: ["mockResponseHeader": "mock"]
+        )!
+        let mockResponseData = "Not found".data(using: .utf8)!
+        let mockResponse = (mockResponseData, mockURLResponse)
+        let mockError = NetworkError.unacceptableStatusCode(
+            statusCode: 404,
+            acceptedStatusCodes: HTTPStatusCode.successCodes,
+            response: mockResponse
+        )
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
+        _ = await processor.process(mockError, for: mockEndpointRequest)
+        
+        // The storing runs on background thread so we need to wait before reading the file
+        try await Task.sleep(nanoseconds: 1000000000)
+        
+        let fileUrl = fileUrl(for: mockEndpointRequest)
+
+        guard let data = fileManager.contents(atPath: fileUrl.path) else {
+            XCTAssert(false, "File doesn't exist")
+            return
+        }
+        
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
+        
+        XCTAssert(
+            model.statusCode == 404 &&
+            model.method == "GET" &&
+            model.path == mockEndpointRequest.endpoint.path &&
+            model.parameters == ["query": "mock"] &&
+            model.requestBody == nil &&
+            model.requestBodyString == nil &&
+            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
+            model.responseBody == mockResponseData &&
+            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
+            model.responseHeaders == ["mockResponseHeader": "mock"]
+        )
+    }
+    
     func testStoredDataForPostRequest() async throws {
         let mockEndpointRequest = EndpointRequest(MockRouter.testStoringPost, sessionId: sessionId)
         let mockURLRequest = try mockEndpointRequest.endpoint.asRequest()
@@ -221,7 +273,9 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         ("testResponseStaysTheSameAfterStoringData", testResponseStaysTheSameAfterStoringData),
         ("testStoredDataForGetRequestWithJSONResponse", testStoredDataForGetRequestWithJSONResponse),
         ("testStoredDataForGetRequestWithImageResponse", testStoredDataForGetRequestWithImageResponse),
-        ("testStoredDataForPostRequest", testStoredDataForPostRequest)
+        ("testStoredDataForGetRequestWithErrorResponse", testStoredDataForGetRequestWithErrorResponse),
+        ("testStoredDataForPostRequest", testStoredDataForPostRequest),
+        
     ]
 }
 
