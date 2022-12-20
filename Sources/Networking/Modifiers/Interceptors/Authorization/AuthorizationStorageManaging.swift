@@ -7,9 +7,7 @@
 
 import Foundation
 
-public protocol AuthorizationStorageManaging {
-    associatedtype AuthorizationData = AuthorizationToken
-    
+public protocol AuthorizationStorageManaging {    
     func save(data: AuthorizationData) async
     func get() async -> AuthorizationData?
     func delete(data: AuthorizationData) async

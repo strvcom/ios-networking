@@ -28,8 +28,8 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
             throw NetworkError.noStatusCode(response: response)
         }
         
-        if httpResponse.statusCode == 401 {
-            print("UNAUTHORIZED")
+        guard httpResponse.statusCode == 401 else {
+            return response
         }
         
         return response

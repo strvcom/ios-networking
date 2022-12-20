@@ -7,12 +7,16 @@
 
 import Foundation
 
-public struct AuthorizationToken: AuthorizationData {
+public struct AuthorizationData {
     public let accessToken: String
     public let refreshToken: String
     public let expiryDate: Date?
     
     public var header: String {
         "Bearer \(accessToken)"
+    }
+    
+    public var isExpired: Bool {
+        true
     }
 }

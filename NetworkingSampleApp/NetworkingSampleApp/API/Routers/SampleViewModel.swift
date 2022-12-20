@@ -70,15 +70,6 @@ final class SampleViewModel {
 
 // MARK: AuthorizationManaging
 extension SampleViewModel: AuthorizationManaging {
-    var storage: any AuthorizationStorageManaging {
-        AuthorizationInMemoryStorage()
-    }
-    
-    func authorize(_ urlRequest: URLRequest) async throws -> URLRequest {
-        print("Authorizing...")
-        return urlRequest
-    }
-    
     func refreshToken(_ token: String) async throws {
         print("Refreshing...")
     }
