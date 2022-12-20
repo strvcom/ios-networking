@@ -34,7 +34,7 @@ private extension SampleViewController {
     @objc func refresh() {
         Task {
             do {
-                try await viewModel.loadSongList()
+                try await viewModel.checkAuthorizationStatus()
             } catch {
                 os_log("%{public}@", log: OSLog.default, type: .info, error.localizedDescription)
             }

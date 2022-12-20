@@ -19,14 +19,14 @@ open class APIManager: APIManaging {
     public init(
         urlSession: URLSession = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
         sessionId = Date().ISO8601Format()
         self.urlSession = urlSession
         self.requestAdapters = requestAdapters
-        self.responseProcessors = [StatusCodeProcessor()] + responseProcessors
+        self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
     }
     
@@ -40,7 +40,6 @@ open class APIManager: APIManaging {
 
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws -> Response {
-        // Here check if refreshing is happening, if it is, enqueue endpointRequest
         do {
             /// create original url request
             var request = try endpointRequest.endpoint.asRequest()
@@ -58,13 +57,6 @@ private extension APIManager {
             await retryCountCache.reset(for: endpointRequest.id)
             
             return response
-        } catch NetworkError.unacceptableStatusCode(let statusCode, let codes, let response) {
-            print("UNAUTHORIZED!!! \(statusCode)")
-            throw NetworkError.unacceptableStatusCode(
-                statusCode: statusCode,
-                acceptedStatusCodes: codes,
-                response: response
-            )
         } catch {
             do {
                 /// If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.

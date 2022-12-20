@@ -9,9 +9,9 @@ import Foundation
 import Networking
 
 /// Implementation of sample API router
-enum SampleSongRouter: Requestable {
+enum SampleAuthRouter: Requestable {
     case loginUser(user: SampleUserAuthRequest)
-    case songs
+    case status
     
     var baseURL: URL {
         /// sample API host
@@ -23,8 +23,8 @@ enum SampleSongRouter: Requestable {
         switch self {
         case .loginUser:
             return "auth/authorize"
-        case .songs:
-            return "songs"
+        case .status:
+            return "auth/status"
         }
     }
 
@@ -52,7 +52,7 @@ enum SampleSongRouter: Requestable {
 
     var isAuthenticationRequired: Bool {
         switch self {
-        case .songs:
+        case .status:
             return true
         default:
             return false

@@ -10,20 +10,20 @@ import Networking
 import OSLog
 
 final class SampleViewModel {
-    private let apiManager: APIManager = {
+    private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
         
         return APIManager(
             urlSession: URLSession.shared,
             requestAdapters: [
-                    loggingInterceptor,
-                    AuthorizationTokenInterceptor(authorizationManager: self)
-                ],
+                loggingInterceptor,
+                AuthorizationTokenInterceptor(authorizationManager: self)
+            ],
             responseProcessors: [
-                    StatusCodeProcessor(), 
-                    loggingInterceptor,
-                    AuthorizationTokenInterceptor(authorizationManager: self)
-                ],
+                loggingInterceptor,
+                AuthorizationTokenInterceptor(authorizationManager: self),
+                StatusCodeProcessor(),
+            ],
             errorProcessors: [loggingInterceptor]
         )
     }()
@@ -41,7 +41,7 @@ final class SampleViewModel {
 //                )
                 
                 // HTTP 200/401
-                try await loadSongList()                
+                try await checkAuthorizationStatus()              
             } catch {
                 os_log("❌ Error while getting data: \(error)")                
             }
@@ -57,18 +57,14 @@ final class SampleViewModel {
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
         try await apiManager.request(
-            SampleUserRouter.loginUser(user: request)
+            SampleAuthRouter.loginUser(user: request)
         )
     }
 
-    func loadSongList() async throws {
-        let response: SampleSongsResponse = try await apiManager.request(
-            SampleSongRouter.songs
+    func checkAuthorizationStatus() async throws {
+        try await apiManager.request(
+            SampleAuthRouter.status
         )
-        
-        for song in response {
-            os_log("Title: %{public}@, Artist: %{public}@", log: OSLog.default, type: .info, song.title, song.artist)
-        }
     }
 }
 
@@ -79,10 +75,11 @@ extension SampleViewModel: AuthorizationManaging {
     }
     
     func authorize(_ urlRequest: URLRequest) async throws -> URLRequest {
-        urlRequest
+        print("Authorizing...")
+        return urlRequest
     }
     
     func refreshToken(_ token: String) async throws {
-        
+        print("Refreshing...")
     }
 }
