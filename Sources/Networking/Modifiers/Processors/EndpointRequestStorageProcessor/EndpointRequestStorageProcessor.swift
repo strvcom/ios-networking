@@ -118,10 +118,13 @@ private extension EndpointRequestStorageProcessor {
                 requestHeaders: urlRequest.allHTTPHeaderFields,
                 responseHeaders: responseHeaders
             )
+            
             await self.store(
                 storageModel,
                 fileUrl: self.createFileUrl(endpointRequest)
             )
+            
+            MultipeerConnectivityManager.shared.send(model: storageModel)
         }
     }
 
