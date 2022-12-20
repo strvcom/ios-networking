@@ -106,7 +106,6 @@ private extension EndpointRequestStorageProcessor {
                 }
             }()
 
-
             // create data model
             let storageModel = EndpointRequestStorageModel(
                 date: Date(),
