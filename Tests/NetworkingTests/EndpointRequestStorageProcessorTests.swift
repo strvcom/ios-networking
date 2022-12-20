@@ -140,7 +140,16 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             httpVersion: nil,
             headerFields: ["mockResponseHeader": "mock"]
         )!
+        
+        #if os(macOS)
+        let nsImage = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)!
+        let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil)!
+        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+        let mockResponseData = bitmapRep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [:])!
+        #else
         let mockResponseData = UIImage(systemName: "pencil")!.pngData()!
+        #endif
+        
         let mockResponse = (mockResponseData, mockURLResponse)
         
         let encoder = JSONEncoder()
