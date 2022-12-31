@@ -25,7 +25,8 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
-
+    private lazy var multipeerConnectivityManager = MultipeerConnectivityManager(buffer: getAllStoredModels())
+    
     public init(
         fileManager: FileManager = .default,
         jsonEncoder: JSONEncoder? = nil
@@ -108,6 +109,7 @@ private extension EndpointRequestStorageProcessor {
 
             // create data model
             let storageModel = EndpointRequestStorageModel(
+                sessionId: endpointRequest.sessionId,
                 date: Date(),
                 path: endpointRequest.endpoint.path,
                 parameters: parameters,
@@ -124,7 +126,7 @@ private extension EndpointRequestStorageProcessor {
                 fileUrl: self.createFileUrl(endpointRequest)
             )
             
-            MultipeerConnectivityManager.shared.send(model: storageModel)
+            multipeerConnectivityManager.send(model: storageModel)
         }
     }
 
@@ -160,6 +162,35 @@ private extension EndpointRequestStorageProcessor {
         } catch {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
         }
+    }
+    
+    func getAllStoredModels() -> [EndpointRequestStorageModel] {
+        guard let sessionNames = try? fileManager.contentsOfDirectory(atPath: responsesDirectory.path) else {
+            return []
+        }
+
+        var models = [EndpointRequestStorageModel]()
+        
+        for sessionName in sessionNames {
+            let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
+            
+            guard let fileNames = try? fileManager.contentsOfDirectory(atPath: sessionDirectory.path) else {
+                continue
+            }
+            
+            for fileName in fileNames {
+                guard
+                    let data = try? Data(contentsOf: sessionDirectory.appendingPathComponent(fileName)),
+                    let model = try? JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
+                else {
+                    continue
+                }
+                
+                models.append(model)
+            }
+        }
+        
+        return models
     }
 }
 

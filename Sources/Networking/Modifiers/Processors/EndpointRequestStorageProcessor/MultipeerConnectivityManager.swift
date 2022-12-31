@@ -16,55 +16,64 @@ import Combine
 import MultipeerConnectivity
 
 public class MultipeerConnectivityManager: NSObject, ObservableObject {
-    public static let shared = MultipeerConnectivityManager()
-    
     private static let service = "networking-jobs"
     private static let macOSAppDisplayName = "networking-macos-app"
     
     private var peers = Set<MCPeerID>()
     private let myPeerId: MCPeerID = {
         #if targetEnvironment(simulator)
-        return MCPeerID(displayName: UIDevice.current.name + "(Simulator)")
+        return MCPeerID(displayName: "Simulator - " + UIDevice.current.name)
         #else
         return MCPeerID(displayName: UIDevice.current.name)
         #endif
     }()
     
-    private lazy var session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .none)
+    private lazy var session = MCSession(
+        peer: myPeerId,
+        securityIdentity: nil,
+        encryptionPreference: .none
+    )
     private lazy var nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(
         peer: myPeerId,
         discoveryInfo: nil,
         serviceType: MultipeerConnectivityManager.service
     )
     
-    private var buffer: [EndpointRequestStorageModel] = .init()
+    private var buffer: [EndpointRequestStorageModel]
     
-    private override init() {
+    init(buffer: [EndpointRequestStorageModel]) {
+        self.buffer = buffer
+        
         super.init()
+         
         session.delegate = self
         nearbyServiceAdvertiser.delegate = self
         nearbyServiceAdvertiser.startAdvertisingPeer()
     }
 
     func send(model: EndpointRequestStorageModel) {
+        buffer.append(model)
+        
         guard let peerId = peers.first(where: { $0.displayName ==  Self.macOSAppDisplayName }) else {
-            buffer.append(model)
             return
         }
         
-        do {
-            try send([model], to: peerId)
-        } catch {
-            os_log("❌ Failed to send request data via multipeer connection")
-            buffer.append(model)
-        }
+        sendBuffer(to: peerId)
     }
 }
 
 private extension MultipeerConnectivityManager {
-    func send(_ model: [EndpointRequestStorageModel], to peer: MCPeerID) throws {
+    func sendBuffer(to peerId: MCPeerID) {
+        do {
+            try send(buffer, to: peerId)
+        } catch {
+            os_log("❌ Failed to send request data via multipeer connection \(error)")
+        }
+    }
+    
+    func send(_ model: [EndpointRequestStorageModel], to peerId: MCPeerID) throws {
         let data = try JSONEncoder().encode(model)
-        try session.send(data, toPeers: [peer], with: .reliable)
+        try session.send(data, toPeers: [peerId], with: .reliable)
         buffer.removeAll()
         os_log("🎈 Request data were successfully sent via multipeer connection")
     }
@@ -87,15 +96,12 @@ extension MultipeerConnectivityManager: MCSessionDelegate {
         case .connected:
             peers.insert(peerID)
             if !buffer.isEmpty {
-                try? send(buffer, to: peerID)
+                sendBuffer(to: peerID)
             }
-            print("Connected")
-        case .notConnected:
-            print("Not connected: \(peerID.displayName)")
-        case .connecting:
-            print("Connecting to: \(peerID.displayName)")
+        case .notConnected, .connecting:
+            peers.remove(peerID)
         @unknown default:
-            print("Unknown state: \(state)")
+            break
         }
     }
     
