@@ -10,6 +10,8 @@ import Networking
 import OSLog
 
 final class SampleViewModel {
+    private lazy var authManager = SampleAuthorizationManager()
+    
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
         
@@ -17,11 +19,11 @@ final class SampleViewModel {
             urlSession: URLSession.shared,
             requestAdapters: [
                 loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: self)
+                AuthorizationTokenInterceptor(authorizationManager: authManager)
             ],
             responseProcessors: [
                 loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: self),
+                AuthorizationTokenInterceptor(authorizationManager: authManager),
                 StatusCodeProcessor(),
             ],
             errorProcessors: [loggingInterceptor]
@@ -41,7 +43,7 @@ final class SampleViewModel {
 //                )
                 
                 // HTTP 200/401
-                try await checkAuthorizationStatus()              
+                try await checkAuthorizationStatus()
             } catch {
                 os_log("❌ Error while getting data: \(error)")                
             }
@@ -56,21 +58,22 @@ final class SampleViewModel {
     
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
-        try await apiManager.request(
+        let response: SampleUserAuthResponse = try await apiManager.request(
             SampleAuthRouter.loginUser(user: request)
         )
+        
+        let data = AuthorizationData(
+            accessToken: response.accessToken,
+            refreshToken: response.refreshToken,
+            expiresIn: response.expiresIn
+        )
+        // Save login token data to auth storage.
+        try await authManager.storage.save(data: data)
     }
 
     func checkAuthorizationStatus() async throws {
         try await apiManager.request(
             SampleAuthRouter.status
         )
-    }
-}
-
-// MARK: AuthorizationManaging
-extension SampleViewModel: AuthorizationManaging {
-    func refreshToken(_ token: String) async throws {
-        print("Refreshing...")
     }
 }

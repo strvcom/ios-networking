@@ -25,6 +25,7 @@
 		DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
+		DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */; };
 		DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewModel.swift; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
+		DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationManager.swift; sourceTree = "<group>"; };
 		DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleRefreshTokenRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,6 +140,7 @@
 				23EA9CEC292FB70A00B8E418 /* Responses */,
 				23EA9CF0292FB70A00B8E418 /* Requests */,
 				23EA9CE8292FB70A00B8E418 /* Routers */,
+				DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			files = (
 				23A575B925F8B9DA00617551 /* SampleViewController.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
+				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,

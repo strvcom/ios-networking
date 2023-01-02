@@ -14,19 +14,17 @@ public protocol AuthorizationManaging {
 }
 
 extension AuthorizationManaging {
-    public var storage: any AuthorizationStorageManaging {
-        // Default storage, there will be a keychain solution as default.
-        AuthorizationInMemoryStorage()
-    }
-    
     // Default authorize implementation.
     public func authorize(_ urlRequest: URLRequest) async throws -> URLRequest {
         if let authData = await storage.get(), !authData.isExpired {
             // append authentication header to request and return it
-            return urlRequest
-        }
-        
-        
+            var mutableRequest = urlRequest
+            mutableRequest.setValue(
+                authData.header,
+                forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
+            )
+            return mutableRequest
+        }        
         
         return urlRequest
     }
