@@ -11,14 +11,13 @@
     import OSLog
 #endif
 
-import Foundation
-import Combine
 import MultipeerConnectivity
 
-public class MultipeerConnectivityManager: NSObject, ObservableObject {
+public class MultipeerConnectivityManager: NSObject {
     private static let service = "networking-jobs"
     private static let macOSAppDisplayName = "networking-macos-app"
     
+    private var buffer: [EndpointRequestStorageModel]
     private var peers = Set<MCPeerID>()
     private let myPeerId: MCPeerID = {
         #if targetEnvironment(simulator)
@@ -39,8 +38,6 @@ public class MultipeerConnectivityManager: NSObject, ObservableObject {
         serviceType: MultipeerConnectivityManager.service
     )
     
-    private var buffer: [EndpointRequestStorageModel]
-    
     init(buffer: [EndpointRequestStorageModel]) {
         self.buffer = buffer
         
@@ -50,7 +47,10 @@ public class MultipeerConnectivityManager: NSObject, ObservableObject {
         nearbyServiceAdvertiser.delegate = self
         nearbyServiceAdvertiser.startAdvertisingPeer()
     }
+}
 
+// MARK: - Public functions
+extension MultipeerConnectivityManager {
     func send(model: EndpointRequestStorageModel) {
         buffer.append(model)
         
@@ -62,12 +62,13 @@ public class MultipeerConnectivityManager: NSObject, ObservableObject {
     }
 }
 
+// MARK: - Private functions
 private extension MultipeerConnectivityManager {
     func sendBuffer(to peerId: MCPeerID) {
         do {
             try send(buffer, to: peerId)
         } catch {
-            os_log("❌ Failed to send request data via multipeer connection \(error)")
+            os_log("❌ Failed to send requests data via multipeer connection \(error)")
         }
     }
     
@@ -79,6 +80,7 @@ private extension MultipeerConnectivityManager {
     }
 }
 
+// MARK: - MCNearbyServiceAdvertiserDelegate
 extension MultipeerConnectivityManager: MCNearbyServiceAdvertiserDelegate {
     public func advertiser(
         _ advertiser: MCNearbyServiceAdvertiser,
@@ -90,6 +92,7 @@ extension MultipeerConnectivityManager: MCNearbyServiceAdvertiserDelegate {
     }
 }
 
+// MARK: - MCSessionDelegate
 extension MultipeerConnectivityManager: MCSessionDelegate {
     public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
