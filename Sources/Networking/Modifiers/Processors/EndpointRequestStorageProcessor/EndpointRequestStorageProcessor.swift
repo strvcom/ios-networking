@@ -25,7 +25,14 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
-    private lazy var multipeerConnectivityManager = MultipeerConnectivityManager(buffer: getAllStoredModels())
+    private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
+        #if DEBUG
+        // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
+        return .init(buffer: getAllStoredModels())
+        #else
+        return nil
+        #endif
+    }()
     
     public init(
         fileManager: FileManager = .default,
@@ -126,7 +133,7 @@ private extension EndpointRequestStorageProcessor {
                 fileUrl: self.createFileUrl(endpointRequest)
             )
             
-            multipeerConnectivityManager.send(model: storageModel)
+            multipeerConnectivityManager?.send(model: storageModel)
         }
     }
 
