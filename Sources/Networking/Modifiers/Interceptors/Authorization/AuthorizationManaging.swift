@@ -20,7 +20,7 @@ extension AuthorizationManaging {
                         
         /// If there is no authData (but authorization is required), refresh should not happen.
         guard let authData else {
-            throw AuthenticationError.missingAccessToken
+            throw AuthorizationError.missingAccessToken
         }
         
         /// Append authentication header to request and return it.
