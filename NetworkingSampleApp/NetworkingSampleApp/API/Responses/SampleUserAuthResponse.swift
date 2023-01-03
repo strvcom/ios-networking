@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 
 /// Data structure of sample API authentication response
 struct SampleUserAuthResponse {
@@ -27,5 +28,16 @@ extension SampleUserAuthResponse: Decodable {
         
         let expiresInEpoch = try container.decode(Double.self, forKey: .expiresIn)
         expiresIn = Date(timeIntervalSince1970: expiresInEpoch)
+    }
+}
+
+// MARK: Mapping to AuthorizationData
+extension SampleUserAuthResponse {
+    var authData: AuthorizationData {
+        AuthorizationData(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresIn: expiresIn
+        )
     }
 }

@@ -10,7 +10,8 @@ import Networking
 
 /// Implementation of sample API router
 enum SampleAuthRouter: Requestable {
-    case loginUser(user: SampleUserAuthRequest)
+    case loginUser(SampleUserAuthRequest)
+    case refreshToken(SampleRefreshTokenRequest)
     case status
     
     var baseURL: URL {
@@ -23,6 +24,8 @@ enum SampleAuthRouter: Requestable {
         switch self {
         case .loginUser:
             return "auth/authorize"
+        case .refreshToken:
+            return "auth/refresh"
         case .status:
             return "auth/status"
         }
@@ -34,7 +37,7 @@ enum SampleAuthRouter: Requestable {
 
     var method: HTTPMethod {
         switch self {
-        case .loginUser:
+        case .loginUser, .refreshToken:
             return .post
         default:
             return .get
@@ -45,6 +48,8 @@ enum SampleAuthRouter: Requestable {
         switch self {
         case let .loginUser(user):
             return .encodable(user)
+        case let .refreshToken(token):
+            return .encodable(token)
         default:
             return nil
         }
@@ -52,7 +57,16 @@ enum SampleAuthRouter: Requestable {
 
     var isAuthenticationRequired: Bool {
         switch self {
-        case .status:
+        case .status, .refreshToken:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var isRefreshTokenRequest: Bool {
+        switch self {
+        case .refreshToken:
             return true
         default:
             return false

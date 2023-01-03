@@ -20,7 +20,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
             return request
         }
         
-        return try await authorizationManager.authorize(request)
+        return try await authorizationManager.authorize(request, for: endpointRequest)
     }
     
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {

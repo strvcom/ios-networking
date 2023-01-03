@@ -11,7 +11,6 @@ import OSLog
 
 final class SampleViewModel {
     private lazy var authManager = SampleAuthorizationManager()
-    
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
         
@@ -59,14 +58,10 @@ final class SampleViewModel {
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
         let response: SampleUserAuthResponse = try await apiManager.request(
-            SampleAuthRouter.loginUser(user: request)
+            SampleAuthRouter.loginUser(request)
         )
         
-        let data = AuthorizationData(
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
-            expiresIn: response.expiresIn
-        )
+        let data = response.authData
         // Save login token data to auth storage.
         try await authManager.storage.save(data: data)
     }

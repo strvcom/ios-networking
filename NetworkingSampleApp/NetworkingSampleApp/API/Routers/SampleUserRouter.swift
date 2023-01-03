@@ -9,7 +9,7 @@ import Foundation
 import Networking
 
 /// Implementation of sample API router
-enum SampleUserRouter: Requestable {
+enum SampleUserRouter: Requestable {        
     case users(page: Int)
     case user(userId: Int)
     case createUser(user: SampleUserRequest)

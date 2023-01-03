@@ -9,23 +9,39 @@ import Foundation
 
 public protocol AuthorizationManaging {
     var storage: any AuthorizationStorageManaging { get }
-    func authorize(_ urlRequest: URLRequest) async throws -> URLRequest
-    func refreshToken(_ token: String) async throws
+    func authorize(_ urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest
+    func refreshToken(_ token: String) async throws -> AuthorizationData
 }
 
 extension AuthorizationManaging {
-    // Default authorize implementation.
-    public func authorize(_ urlRequest: URLRequest) async throws -> URLRequest {
-        if let authData = await storage.get(), !authData.isExpired {
-            // append authentication header to request and return it
-            var mutableRequest = urlRequest
-            mutableRequest.setValue(
-                authData.header,
-                forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
-            )
-            return mutableRequest
-        }        
+    /// Default authorize implementation.
+    public func authorize(_ urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest {
+        let authData = await storage.get()
+                        
+        /// If there is no authData (but authorization is required), refresh should not happen.
+        guard let authData else {
+            throw AuthenticationError.missingAccessToken
+        }
         
-        return urlRequest
+        /// Append authentication header to request and return it.
+        guard authData.isExpired, !endpointRequest.endpoint.isRefreshTokenRequest else {
+            return urlRequest.withAuthorizationHeader(authData.header)
+        }
+        
+        /// Otherwise try refreshing the token and retrying the request.
+        let refreshedAuthData = try await refreshToken(authData.refreshToken)
+        return urlRequest.withAuthorizationHeader(refreshedAuthData.header)
+    }
+}
+
+// MARK: - URLRequest helper
+extension URLRequest {
+    func withAuthorizationHeader(_ value: String) -> URLRequest {
+        var mutableRequest = self
+        mutableRequest.setValue(
+            value,
+            forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
+        )
+        return mutableRequest
     }
 }
