@@ -171,7 +171,9 @@ private extension EndpointRequestStorageProcessor {
         }
     }
     
+    /// Browses through the whole responseDirectory and maps every saved file to `EndpointRequestStorageModel`.
     func getAllStoredModels() -> [EndpointRequestStorageModel] {
+        // Get names of all subdirectories of responsesDirectory.
         guard let sessionNames = try? fileManager.contentsOfDirectory(atPath: responsesDirectory.path) else {
             return []
         }
@@ -181,10 +183,12 @@ private extension EndpointRequestStorageProcessor {
         for sessionName in sessionNames {
             let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
             
+            // Get names of all files inside sessionDirectory.
             guard let fileNames = try? fileManager.contentsOfDirectory(atPath: sessionDirectory.path) else {
                 continue
             }
             
+            // Map all files to models.
             for fileName in fileNames {
                 guard
                     let data = try? Data(contentsOf: sessionDirectory.appendingPathComponent(fileName)),
@@ -204,7 +208,7 @@ private extension EndpointRequestStorageProcessor {
 // MARK: - JSONDecoder static extension
 
 private extension JSONEncoder {
-    /// A static JSONEncoder instance used by default implementation of APIManaging
+    /// A static JSONEncoder instance used by default implementation of APIManaging.
     static let `default`: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
