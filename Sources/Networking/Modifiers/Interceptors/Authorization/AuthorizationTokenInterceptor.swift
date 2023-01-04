@@ -36,7 +36,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         /// Refresh token is invalid, user should be logged out.
         if endpointRequest.endpoint.isRefreshTokenRequest {
             throw AuthorizationError.expiredRefreshToken
-        }                
+        }
         
         return response
     }

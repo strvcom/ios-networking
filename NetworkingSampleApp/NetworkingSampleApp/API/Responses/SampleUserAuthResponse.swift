@@ -37,7 +37,8 @@ extension SampleUserAuthResponse {
         AuthorizationData(
             accessToken: accessToken,
             refreshToken: refreshToken,
-            expiresIn: expiresIn
+            expiresIn: expiresIn,
+            offset: 0
         )
     }
 }
