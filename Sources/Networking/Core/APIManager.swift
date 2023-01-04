@@ -12,19 +12,19 @@ open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
-    private let urlSession: URLSession
+    private let responseProvider: ResponseProviding
     private let sessionId: String
     private var retryCounter = Counter()
     
     public init(
-        urlSession: URLSession = URLSession(configuration: .default),
+        responseProvider: ResponseProviding = URLSession(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
         sessionId = Date().ISO8601Format()
-        self.urlSession = urlSession
+        self.responseProvider = responseProvider
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -48,7 +48,7 @@ private extension APIManager {
             request = try await requestAdapters.adapt(request, for: endpointRequest)
             
             /// call request on url session
-            var response = try await urlSession.data(for: request)
+            var response = try await responseProvider.response(for: request)
             
             /// process request
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
