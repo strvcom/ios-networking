@@ -7,48 +7,41 @@
 
 import Foundation
 
-// For NSDataAsset import
+// necessary for NSDataAsset import
 #if os(macOS)
     import AppKit
 #else
     import UIKit
 #endif
 
-// MARK: - SampleDataNetworking which reads data from stored files
-/// ``Networking/Networking`` implementation reading data for request from `NSDataAsset` for injected sessionId
+// MARK: - SampleResponseProvider definition
+
+/// A response provider which reads data for requests from Assets for injected sessionId.
 public class SampleResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
-    private var requestCounter = Counter()
+    private let requestCounter = Counter()
     private lazy var decoder = JSONDecoder()
 
-    // need to inject bundle
-    /// Creates sampleData networking
+    /// Creates SampleResponseProvider instance.
     /// - Parameters:
-    ///   - bundle: bundle where is `NSDataAsset` localized
-    ///   - sessionId: sessionId for session which data should be read
+    ///   - bundle: A bundle which includes the assets file.
+    ///   - sessionId: An ID of a session, which data should be read.
     public init(with bundle: Bundle, sessionId: String) {
         self.bundle = bundle
         self.sessionId = sessionId
     }
 
-    /// Creates request publisher which returns ``Response`` loaded from files
-    /// - Parameter request: URL request
-    /// - Returns: publisher streaming ``Response`` for requests and injected sessionId
-    ///
+    /// Creates a `Response` based on data from Assets for a given ``URLRequest``.
+    /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
         guard let model = try? await loadModel(for: request) else {
-            fatalError("❌ Can't load data")
+            throw NetworkError.underlying(error: SampleResponseProviderError.unableToLoadAssetData)
         }
 
         guard
             let statusCode = model.statusCode,
-            let url = request.url
-        else {
-            throw NetworkError.unknown//noStatusCode(response: <#T##Response#>)
-        }
-
-        guard
+            let url = request.url,
             let httpResponse = HTTPURLResponse(
                 url: url,
                 statusCode: statusCode,
@@ -56,18 +49,19 @@ public class SampleResponseProvider: ResponseProviding {
                 headerFields: model.responseHeaders
             )
         else {
-            throw NetworkError.unknown
+            throw NetworkError.underlying(error: SampleResponseProviderError.unableToConstructResponse)
         }
-
+        
         return Response(model.responseBody ?? Data(), httpResponse)
     }
 }
 
-// MARK: Read data from assets
+// MARK: Private helper functions
 
 private extension SampleResponseProvider {
+    /// Loads file from Assets based on given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
-        // counting from 1, check storage request processing
+        // counting from 0, check storage request processing
         let count = await requestCounter.count(for: request.identifier)
 
         if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {

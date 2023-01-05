@@ -47,7 +47,7 @@ private extension APIManager {
             /// adapt request with all adapters
             request = try await requestAdapters.adapt(request, for: endpointRequest)
             
-            /// call request on url session
+            /// get response for given request (usually fires a network request via URLSession)
             var response = try await responseProvider.response(for: request)
             
             /// process request
