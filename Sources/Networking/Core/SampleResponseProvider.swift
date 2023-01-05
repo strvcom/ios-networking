@@ -16,7 +16,7 @@ import Foundation
 
 // MARK: - SampleResponseProvider definition
 
-/// A response provider which reads data for requests from Assets for injected sessionId.
+/// A response provider which creates responses for requests from corresponding data files stored in Assets.
 public class SampleResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
@@ -32,7 +32,7 @@ public class SampleResponseProvider: ResponseProviding {
         self.sessionId = sessionId
     }
 
-    /// Creates a `Response` based on data from Assets for a given ``URLRequest``.
+    /// Creates a ``Response`` for a given `URLRequest` based on data from a corresponding file stored in Assets.
     /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
         guard let model = try? await loadModel(for: request) else {
@@ -59,7 +59,7 @@ public class SampleResponseProvider: ResponseProviding {
 // MARK: Private helper functions
 
 private extension SampleResponseProvider {
-    /// Loads file from Assets based on given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
+    /// Loads a corresponding file from Assets for a given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
         // counting from 0, check storage request processing
         let count = await requestCounter.count(for: request.identifier)
