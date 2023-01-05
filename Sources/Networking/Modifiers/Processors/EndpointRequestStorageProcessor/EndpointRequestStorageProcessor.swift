@@ -48,6 +48,8 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         self.fileManager = fileManager
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
+        
+        deleteStoredSessionsExceedingLimit()
     }
     
     /// Stores the `Response` in file system on background thread and returns unmodified response.
@@ -93,14 +95,23 @@ public extension EndpointRequestStorageProcessor {
     struct Config {
         public static let `default` = Config()
         
+        /// If `nil` the MultiPeerConnectivity session won't get initialised.
         let multiPeerSharing: MultiPeerSharingConfig?
+        /// The maximum limit for how many sessions can be stored in the file system. All sessions exceeding the limit will be deleted.
+        let storedSessionsLimit: Int
         
-        public init(multiPeerSharing: MultiPeerSharingConfig? = nil) {
+        public init(
+            multiPeerSharing: MultiPeerSharingConfig? = nil,
+            storedSessionsLimit: Int = 0
+        ) {
             self.multiPeerSharing = multiPeerSharing
+            self.storedSessionsLimit = storedSessionsLimit
         }
     }
     
     struct MultiPeerSharingConfig {
+        /// If `true` it loads all stored responses and shares them at the start.
+        /// If `false` it only shares the responses from this session
         let shareHistory: Bool
         
         public init(shareHistory: Bool) {
@@ -203,14 +214,9 @@ private extension EndpointRequestStorageProcessor {
     
     /// Browses through the whole responseDirectory and maps every saved file to `EndpointRequestStorageModel`.
     func getAllStoredModels() -> [EndpointRequestStorageModel] {
-        // Get names of all subdirectories of responsesDirectory.
-        guard let sessionNames = try? fileManager.contentsOfDirectory(atPath: responsesDirectory.path) else {
-            return []
-        }
-
         var models = [EndpointRequestStorageModel]()
         
-        for sessionName in sessionNames {
+        for sessionName in getAllStoredSessionNames() {
             let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
             
             // Get names of all files inside sessionDirectory.
@@ -232,6 +238,33 @@ private extension EndpointRequestStorageProcessor {
         }
         
         return models
+    }
+    
+    /// Get names of all subdirectories of responsesDirectory.
+    func getAllStoredSessionNames() -> [String] {
+        (try? fileManager.contentsOfDirectory(atPath: responsesDirectory.path)) ?? []
+    }
+    
+    /// In case the number of stored sessions exceeds the maximum limit (from config) the function deletes the oldest stored sessions that don't fit into the limit.
+    func deleteStoredSessionsExceedingLimit() {
+        guard config.storedSessionsLimit > 0 else {
+            return
+        }
+        
+        let sessionNames = getAllStoredSessionNames()
+        
+        guard sessionNames.count > config.storedSessionsLimit else {
+            return
+        }
+        
+        let sessionNamesForDeletion = sessionNames
+            .sorted { $0 > $1 }
+            .dropFirst(config.storedSessionsLimit)
+        
+        for sessionName in sessionNamesForDeletion {
+            let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
+            try? fileManager.removeItem(atPath: sessionDirectory.path)
+        }
     }
 }
 

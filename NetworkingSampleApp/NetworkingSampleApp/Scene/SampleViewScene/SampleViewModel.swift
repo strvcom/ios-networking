@@ -18,7 +18,10 @@ final class SampleViewModel {
         
         #if DEBUG
         let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
-            config: .init(multiPeerSharing: .init(shareHistory: true))
+            config: .init(
+                multiPeerSharing: .init(shareHistory: true),
+                storedSessionsLimit: 5
+            )
         )
         responseProcessors.append(endpointRequestStorageProcessor)
         errorProcessors.append(endpointRequestStorageProcessor)
