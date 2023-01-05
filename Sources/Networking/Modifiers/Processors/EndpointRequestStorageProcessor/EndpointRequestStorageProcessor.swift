@@ -22,13 +22,19 @@ import Foundation
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
-
+    private let config: Config
+    
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
     private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
         #if DEBUG
         // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
-        return .init(buffer: getAllStoredModels())
+        guard let multiPeerSharingConfig = config.multiPeerSharing else {
+            return nil
+        }
+        
+        let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
+        return .init(buffer: initialBuffer)
         #else
         return nil
         #endif
@@ -36,10 +42,12 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     public init(
         fileManager: FileManager = .default,
-        jsonEncoder: JSONEncoder? = nil
+        jsonEncoder: JSONEncoder? = nil,
+        config: Config = .default
     ) {
         self.fileManager = fileManager
         self.jsonEncoder = jsonEncoder ?? .default
+        self.config = config
     }
     
     /// Stores the `Response` in file system on background thread and returns unmodified response.
@@ -76,6 +84,28 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         }
         
         return error
+    }
+}
+
+// MARK: - Config
+
+public extension EndpointRequestStorageProcessor {
+    struct Config {
+        public static let `default` = Config()
+        
+        let multiPeerSharing: MultiPeerSharingConfig?
+        
+        public init(multiPeerSharing: MultiPeerSharingConfig? = nil) {
+            self.multiPeerSharing = multiPeerSharing
+        }
+    }
+    
+    struct MultiPeerSharingConfig {
+        let shareHistory: Bool
+        
+        public init(shareHistory: Bool) {
+            self.shareHistory = shareHistory
+        }
     }
 }
 
