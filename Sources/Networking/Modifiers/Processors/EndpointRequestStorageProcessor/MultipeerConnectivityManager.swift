@@ -19,11 +19,17 @@ public class MultipeerConnectivityManager: NSObject {
     
     private var buffer: [EndpointRequestStorageModel]
     private var peers = Set<MCPeerID>()
-    private let myPeerId: MCPeerID = {
-        #if targetEnvironment(simulator)
-        return MCPeerID(displayName: "Simulator - " + UIDevice.current.name)
+    private lazy var myPeerId: MCPeerID = {
+        #if os(macOS)
+        let deviceName = Host.current().localizedName ?? "macOS"
         #else
-        return MCPeerID(displayName: UIDevice.current.name)
+        let deviceName = UIDevice.current.name
+        #endif
+        
+        #if targetEnvironment(simulator)
+        return MCPeerID(displayName: "Simulator - " + deviceName)
+        #else
+        return MCPeerID(displayName: deviceName)
         #endif
     }()
     
