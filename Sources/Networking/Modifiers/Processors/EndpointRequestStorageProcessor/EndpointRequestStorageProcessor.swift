@@ -258,6 +258,7 @@ private extension EndpointRequestStorageProcessor {
         }
         
         let sessionNamesForDeletion = sessionNames
+            // We can sort sessions from latest to oldest by the file names since the names are timestamps.
             .sorted { $0 > $1 }
             .dropFirst(config.storedSessionsLimit)
         
