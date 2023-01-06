@@ -11,18 +11,18 @@ import Foundation
 
 /// A model containing all necessary info about request and related response to be replayed as mocked data.
 public struct EndpointRequestStorageModel: Codable {
-    public let sessionId: String
-    public let date: Date
-    public let path: String
-    public let parameters: [String: String]?
-    public let method: String
-    public let statusCode: Int?
-    public let requestBody: Data?
-    public let responseBody: Data?
-    public let requestHeaders: [String: String]?
-    public let responseHeaders: [String: String]?
+    let sessionId: String
+    let date: Date
+    let path: String
+    let parameters: [String: String]?
+    let method: String
+    let statusCode: Int?
+    let requestBody: Data?
+    let responseBody: Data?
+    let requestHeaders: [String: String]?
+    let responseHeaders: [String: String]?
     
-    public var requestBodyString: String? {
+    var requestBodyString: String? {
         guard let requestBody else {
             return nil
         }
@@ -30,7 +30,7 @@ public struct EndpointRequestStorageModel: Codable {
         return String(data: requestBody, encoding: .utf8)
     }
     
-    public var responseBodyString: String? {
+    var responseBodyString: String? {
         guard let responseBody else {
             return nil
         }
