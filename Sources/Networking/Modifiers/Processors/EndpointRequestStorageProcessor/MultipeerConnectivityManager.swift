@@ -13,7 +13,7 @@
 
 import MultipeerConnectivity
 
-public class MultipeerConnectivityManager: NSObject {
+open class MultipeerConnectivityManager: NSObject {
     private static let service = "networking-jobs"
     private static let macOSAppDisplayName = "networking-macos-app"
     
