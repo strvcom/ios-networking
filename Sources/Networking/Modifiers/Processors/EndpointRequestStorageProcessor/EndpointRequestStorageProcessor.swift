@@ -111,7 +111,7 @@ public extension EndpointRequestStorageProcessor {
     
     struct MultiPeerSharingConfig {
         /// If `true` it loads all stored responses and shares them at the start.
-        /// If `false` it only shares the responses from this session
+        /// If `false` it only shares the responses from the current session.
         let shareHistory: Bool
         
         public init(shareHistory: Bool) {
