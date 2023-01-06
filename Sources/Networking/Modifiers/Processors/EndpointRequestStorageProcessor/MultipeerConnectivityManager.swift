@@ -14,8 +14,8 @@
 import MultipeerConnectivity
 
 open class MultipeerConnectivityManager: NSObject {
-    private static let service = "networking-jobs"
-    private static let macOSAppDisplayName = "networking-macos-app"
+    static let service = "networking-jobs"
+    static let macOSAppDisplayName = "networking-macos-app"
     
     private var buffer: [EndpointRequestStorageModel]
     private var peers = Set<MCPeerID>()
