@@ -57,7 +57,7 @@ enum SampleAuthRouter: Requestable {
 
     var isAuthenticationRequired: Bool {
         switch self {
-        case .status, .refreshToken:
+        case .status:
             return true
         default:
             return false

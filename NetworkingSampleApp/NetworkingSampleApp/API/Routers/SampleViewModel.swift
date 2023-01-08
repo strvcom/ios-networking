@@ -13,41 +13,21 @@ final class SampleViewModel {
     private lazy var authManager = SampleAuthorizationManager()
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
-        
+        let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         return APIManager(
             urlSession: URLSession.shared,
             requestAdapters: [
                 loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: authManager)
+                authorizationInterceptor
             ],
             responseProcessors: [
                 loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: authManager),
+                authorizationInterceptor,
                 StatusCodeProcessor(),
             ],
             errorProcessors: [loggingInterceptor]
         )
     }()
-    
-    func runNetworkingExamples() {
-        Task {
-            do {
-                //HTTP 200
-                // try await loadUserList()
-                
-                // HTTP 400
-//                try await login(
-//                    email: SampleAPIConstants.validEmail,
-//                    password: SampleAPIConstants.noPassword
-//                )
-                
-                // HTTP 200/401
-                try await checkAuthorizationStatus()
-            } catch {
-                os_log("❌ Error while getting data: \(error)")                
-            }
-        }
-    }
     
     func loadUserList() async throws {
         try await apiManager.request(
@@ -67,8 +47,14 @@ final class SampleViewModel {
     }
 
     func checkAuthorizationStatus() async throws {
-        try await apiManager.request(
-            SampleAuthRouter.status
-        )
+        await withThrowingTaskGroup(of: Void.self, body: { taskGroup in
+            for _ in 0..<5 {
+                taskGroup.addTask { [weak self] in
+                    try await self?.apiManager.request(
+                        SampleAuthRouter.status
+                    )
+                }
+            }
+        })
     }
 }

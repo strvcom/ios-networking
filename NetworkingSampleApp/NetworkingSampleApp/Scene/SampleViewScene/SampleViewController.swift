@@ -16,9 +16,7 @@ final class SampleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
-        
-        viewModel.runNetworkingExamples()
+        setup()                
     }
 }
 

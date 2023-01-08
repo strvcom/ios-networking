@@ -16,13 +16,9 @@ final class SampleAuthorizationManager: AuthorizationManaging {
         
         return APIManager(
             urlSession: URLSession.shared,
-            requestAdapters: [
-                loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: self)
-            ],
+            requestAdapters: [loggingInterceptor],
             responseProcessors: [
                 loggingInterceptor,
-                AuthorizationTokenInterceptor(authorizationManager: self),
                 StatusCodeProcessor(),
             ],
             errorProcessors: [loggingInterceptor]
