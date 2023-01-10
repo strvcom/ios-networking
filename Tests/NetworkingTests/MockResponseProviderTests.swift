@@ -49,7 +49,7 @@ final class MockResponseProviderTests: XCTestCase {
                 XCTAssert(false, "Wrong response header fields type")
                 return
             }
-            
+             
             XCTAssertEqual(headerFields, mockHeaderFields)
             
             switch index {
@@ -65,7 +65,37 @@ final class MockResponseProviderTests: XCTestCase {
             }
         }
     }
-
+    
+    func testUnableToLoadAssetError() async {
+        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: "NonexistentSessionId")
+        
+        do {
+            _ = try await mockResponseProvider.response(for: mockUrlRequest)
+            XCTAssert(false, "function didn't throw an error even though it should have")
+        } catch {
+            var correctError = false
+            if case NetworkError.underlying(error: MockResponseProviderError.unableToLoadAssetData) = error {
+                correctError = true
+            }
+            XCTAssert(correctError, "function threw an incorrect error")
+        }
+    }
+    
+    func testUnableToConstructResponseError() async {
+        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: "2023-01-04T16:15:29Z(corrupted)")
+        
+        do {
+            _ = try await mockResponseProvider.response(for: mockUrlRequest)
+            XCTAssert(false, "function didn't throw an error even though it should have")
+        } catch {
+            var correctError = false
+            if case NetworkError.underlying(error: MockResponseProviderError.unableToConstructResponse) = error {
+                correctError = true
+            }
+            XCTAssert(correctError, "function threw an incorrect error")
+        }
+    }
+    
     static var allTests = [
         ("testLoadingData", testLoadingData)
     ]
