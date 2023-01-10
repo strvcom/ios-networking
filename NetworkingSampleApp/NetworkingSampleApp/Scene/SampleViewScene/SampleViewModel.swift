@@ -13,11 +13,25 @@ final class SampleViewModel {
     private let apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
         
+        var responseProcessors: [ResponseProcessing] = [StatusCodeProcessor(), loggingInterceptor]
+        var errorProcessors: [ErrorProcessing] = [loggingInterceptor]
+        
+        #if DEBUG
+        let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
+            config: .init(
+                multiPeerSharing: .init(shareHistory: true),
+                storedSessionsLimit: 5
+            )
+        )
+        responseProcessors.append(endpointRequestStorageProcessor)
+        errorProcessors.append(endpointRequestStorageProcessor)
+        #endif
+        
         return APIManager(
             urlSession: URLSession.shared,
             requestAdapters: [loggingInterceptor],
-            responseProcessors: [StatusCodeProcessor(), loggingInterceptor],
-            errorProcessors: [loggingInterceptor]
+            responseProcessors: responseProcessors,
+            errorProcessors: errorProcessors
         )
     }()
     
