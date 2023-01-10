@@ -18,7 +18,7 @@ import Foundation
 /// A response processor which stores all responses & related requests data into files.
 ///
 /// The filename is created from a sessionId and a corresponding request identifier.
-/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via ``SampleDataNetworking`` to replay whole session.
+/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder

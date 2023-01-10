@@ -12,19 +12,33 @@ open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
-    private let urlSession: URLSession
+    private let responseProvider: ResponseProviding
     private let sessionId: String
     private var retryCounter = Counter()
     
     public init(
-        urlSession: URLSession = URLSession(configuration: .default),
+        urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
         sessionId = Date().ISO8601Format()
-        self.urlSession = urlSession
+        self.responseProvider = urlSession
+        self.requestAdapters = requestAdapters
+        self.responseProcessors = responseProcessors
+        self.errorProcessors = errorProcessors
+    }
+    
+    public init(
+        responseProvider: ResponseProviding,
+        requestAdapters: [RequestAdapting] = [],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        errorProcessors: [ErrorProcessing] = []
+    ) {
+        /// generate session id in readable format
+        sessionId = Date().ISO8601Format()
+        self.responseProvider = responseProvider
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -47,8 +61,8 @@ private extension APIManager {
             /// adapt request with all adapters
             request = try await requestAdapters.adapt(request, for: endpointRequest)
             
-            /// call request on url session
-            var response = try await urlSession.data(for: request)
+            /// get response for given request (usually fires a network request via URLSession)
+            var response = try await responseProvider.response(for: request)
             
             /// process request
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
