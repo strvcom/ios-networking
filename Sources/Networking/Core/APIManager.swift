@@ -17,7 +17,21 @@ open class APIManager: APIManaging {
     private var retryCounter = Counter()
     
     public init(
-        responseProvider: ResponseProviding = URLSession(configuration: .default),
+        urlSession: URLSession = .init(configuration: .default),
+        requestAdapters: [RequestAdapting] = [],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        errorProcessors: [ErrorProcessing] = []
+    ) {
+        /// generate session id in readable format
+        sessionId = Date().ISO8601Format()
+        self.responseProvider = urlSession
+        self.requestAdapters = requestAdapters
+        self.responseProcessors = responseProcessors
+        self.errorProcessors = errorProcessors
+    }
+    
+    public init(
+        responseProvider: ResponseProviding,
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []

@@ -113,7 +113,7 @@ final class ErrorProcessorTests: XCTestCase {
 extension ErrorProcessorTests {
     func test_apiManager_request_errorShouldBeMappedToSimpleError() async {
         let apiManager = APIManager(
-            responseProvider: URLSession.shared,
+            urlSession: URLSession.shared,
             errorProcessors: [MockSimpleErrorProcessor()]
         )
         
@@ -129,7 +129,7 @@ extension ErrorProcessorTests {
     
     func test_apiManager_request_originalErrorShouldRemain() async {
         let apiManager = APIManager(
-            responseProvider: URLSession.shared,
+            urlSession: URLSession.shared,
             errorProcessors: [MockSimpleErrorProcessor()]
         )
         

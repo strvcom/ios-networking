@@ -23,7 +23,7 @@ final class SampleViewModel {
         #endif
         
         return APIManager(
-            responseProvider: URLSession.shared,
+            urlSession: URLSession.shared,
             requestAdapters: [loggingInterceptor],
             responseProcessors: responseProcessors,
             errorProcessors: errorProcessors
