@@ -1,5 +1,5 @@
 //
-//  SampleResponseProviderTests.swift
+//  MockResponseProviderTests.swift
 //  
 //
 //  Created by Matej Molnár on 05.01.2023.
@@ -8,7 +8,7 @@
 @testable import Networking
 import XCTest
 
-final class SampleResponseProviderTests: XCTestCase {
+final class MockResponseProviderTests: XCTestCase {
     // swiftlint:disable:next force_unwrapping
     private lazy var mockUrlRequest = URLRequest(url: URL(string: "https://reqres.in/api/users?page=2")!)
     private let mockSessionId = "2023-01-04T16:15:29Z"
@@ -31,7 +31,7 @@ final class SampleResponseProviderTests: XCTestCase {
     ]
     
     func testLoadingData() async throws {
-        let mockResponseProvider = SampleResponseProvider(with: Bundle.module, sessionId: mockSessionId)
+        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: mockSessionId)
         
         // call request multiple times, 6 testing data files
         // test reading correct file

@@ -1,5 +1,5 @@
 //
-//  SampleResponseProvider.swift
+//  MockResponseProvider.swift
 //  
 //
 //  Created by Matej Molnár on 04.01.2023.
@@ -14,16 +14,16 @@ import Foundation
     import UIKit
 #endif
 
-// MARK: - SampleResponseProvider definition
+// MARK: - MockResponseProvider definition
 
 /// A response provider which creates responses for requests from corresponding data files stored in Assets.
-public class SampleResponseProvider: ResponseProviding {
+open class MockResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
     private let requestCounter = Counter()
     private lazy var decoder = JSONDecoder()
 
-    /// Creates SampleResponseProvider instance.
+    /// Creates MockResponseProvider instance.
     /// - Parameters:
     ///   - bundle: A bundle which includes the assets file.
     ///   - sessionId: An ID of a session, which data should be read.
@@ -36,7 +36,7 @@ public class SampleResponseProvider: ResponseProviding {
     /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
         guard let model = try? await loadModel(for: request) else {
-            throw NetworkError.underlying(error: SampleResponseProviderError.unableToLoadAssetData)
+            throw NetworkError.underlying(error: MockResponseProviderError.unableToLoadAssetData)
         }
 
         guard
@@ -49,7 +49,7 @@ public class SampleResponseProvider: ResponseProviding {
                 headerFields: model.responseHeaders
             )
         else {
-            throw NetworkError.underlying(error: SampleResponseProviderError.unableToConstructResponse)
+            throw NetworkError.underlying(error: MockResponseProviderError.unableToConstructResponse)
         }
         
         return Response(model.responseBody ?? Data(), httpResponse)
@@ -58,7 +58,7 @@ public class SampleResponseProvider: ResponseProviding {
 
 // MARK: Private helper functions
 
-private extension SampleResponseProvider {
+private extension MockResponseProvider {
     /// Loads a corresponding file from Assets for a given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
         // counting from 0, check storage request processing
