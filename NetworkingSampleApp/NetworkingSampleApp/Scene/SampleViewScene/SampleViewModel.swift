@@ -17,7 +17,12 @@ final class SampleViewModel {
         var errorProcessors: [ErrorProcessing] = [loggingInterceptor]
         
         #if DEBUG
-        let endpointRequestStorageProcessor = EndpointRequestStorageProcessor()
+        let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
+            config: .init(
+                multiPeerSharing: .init(shareHistory: true),
+                storedSessionsLimit: 5
+            )
+        )
         responseProcessors.append(endpointRequestStorageProcessor)
         errorProcessors.append(endpointRequestStorageProcessor)
         #endif

@@ -22,16 +22,34 @@ import Foundation
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
-
+    private let config: Config
+    
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
-
+    private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
+        #if DEBUG
+        // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
+        guard let multiPeerSharingConfig = config.multiPeerSharing else {
+            return nil
+        }
+        
+        let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
+        return .init(buffer: initialBuffer)
+        #else
+        return nil
+        #endif
+    }()
+    
     public init(
         fileManager: FileManager = .default,
-        jsonEncoder: JSONEncoder? = nil
+        jsonEncoder: JSONEncoder? = nil,
+        config: Config = .default
     ) {
         self.fileManager = fileManager
         self.jsonEncoder = jsonEncoder ?? .default
+        self.config = config
+        
+        deleteStoredSessionsExceedingLimit()
     }
     
     /// Stores the `Response` in file system on background thread and returns unmodified response.
@@ -68,6 +86,37 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         }
         
         return error
+    }
+}
+
+// MARK: - Config
+
+public extension EndpointRequestStorageProcessor {
+    struct Config {
+        public static let `default` = Config()
+        
+        /// If `nil` the MultiPeerConnectivity session won't get initialised.
+        let multiPeerSharing: MultiPeerSharingConfig?
+        /// The maximum limit for how many sessions can be stored in the file system. All sessions exceeding the limit will be deleted.
+        let storedSessionsLimit: Int
+        
+        public init(
+            multiPeerSharing: MultiPeerSharingConfig? = nil,
+            storedSessionsLimit: Int = 0
+        ) {
+            self.multiPeerSharing = multiPeerSharing
+            self.storedSessionsLimit = storedSessionsLimit
+        }
+    }
+    
+    struct MultiPeerSharingConfig {
+        /// If `true` it loads all stored responses and shares them at the start.
+        /// If `false` it only shares the responses from the current session.
+        let shareHistory: Bool
+        
+        public init(shareHistory: Bool) {
+            self.shareHistory = shareHistory
+        }
     }
 }
 
@@ -108,6 +157,7 @@ private extension EndpointRequestStorageProcessor {
 
             // create data model
             let storageModel = EndpointRequestStorageModel(
+                sessionId: endpointRequest.sessionId,
                 date: Date(),
                 path: endpointRequest.endpoint.path,
                 parameters: parameters,
@@ -118,10 +168,13 @@ private extension EndpointRequestStorageProcessor {
                 requestHeaders: urlRequest.allHTTPHeaderFields,
                 responseHeaders: responseHeaders
             )
+            
             await self.store(
                 storageModel,
                 fileUrl: self.createFileUrl(endpointRequest)
             )
+            
+            multipeerConnectivityManager?.send(model: storageModel)
         }
     }
 
@@ -158,12 +211,68 @@ private extension EndpointRequestStorageProcessor {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
         }
     }
+    
+    /// Browses through the whole responseDirectory and maps every saved file to `EndpointRequestStorageModel`.
+    func getAllStoredModels() -> [EndpointRequestStorageModel] {
+        var models = [EndpointRequestStorageModel]()
+        
+        for sessionName in getAllStoredSessionNames() {
+            let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
+            
+            // Get names of all files inside sessionDirectory.
+            guard let fileNames = try? fileManager.contentsOfDirectory(atPath: sessionDirectory.path) else {
+                continue
+            }
+            
+            // Map all files to models.
+            for fileName in fileNames {
+                guard
+                    let data = try? Data(contentsOf: sessionDirectory.appendingPathComponent(fileName)),
+                    let model = try? JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
+                else {
+                    continue
+                }
+                
+                models.append(model)
+            }
+        }
+        
+        return models
+    }
+    
+    /// Get names of all subdirectories of responsesDirectory.
+    func getAllStoredSessionNames() -> [String] {
+        (try? fileManager.contentsOfDirectory(atPath: responsesDirectory.path)) ?? []
+    }
+    
+    /// In case the number of stored sessions exceeds the maximum limit (from config) the function deletes the oldest stored sessions that don't fit into the limit.
+    func deleteStoredSessionsExceedingLimit() {
+        guard config.storedSessionsLimit > 0 else {
+            return
+        }
+        
+        let sessionNames = getAllStoredSessionNames()
+        
+        guard sessionNames.count > config.storedSessionsLimit else {
+            return
+        }
+        
+        let sessionNamesForDeletion = sessionNames
+            // We can sort sessions from latest to oldest by the file names since the names are timestamps.
+            .sorted { $0 > $1 }
+            .dropFirst(config.storedSessionsLimit)
+        
+        for sessionName in sessionNamesForDeletion {
+            let sessionDirectory = responsesDirectory.appendingPathComponent(sessionName)
+            try? fileManager.removeItem(atPath: sessionDirectory.path)
+        }
+    }
 }
 
 // MARK: - JSONDecoder static extension
 
 private extension JSONEncoder {
-    /// A static JSONEncoder instance used by default implementation of APIManaging
+    /// A static JSONEncoder instance used by default implementation of APIManaging.
     static let `default`: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
