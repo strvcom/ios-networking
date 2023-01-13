@@ -14,18 +14,33 @@ final class SampleViewModel {
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
         let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
+        
+        var responseProcessors: [ResponseProcessing] = [
+            loggingInterceptor,
+            authorizationInterceptor,
+            StatusCodeProcessor()
+        ]
+        var errorProcessors: [ErrorProcessing] = [loggingInterceptor]
+        
+        #if DEBUG
+        let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
+            config: .init(
+                multiPeerSharing: .init(shareHistory: true),
+                storedSessionsLimit: 5
+            )
+        )
+        responseProcessors.append(endpointRequestStorageProcessor)
+        errorProcessors.append(endpointRequestStorageProcessor)
+        #endif
+        
         return APIManager(
             urlSession: URLSession.shared,
             requestAdapters: [
                 loggingInterceptor,
                 authorizationInterceptor
             ],
-            responseProcessors: [
-                loggingInterceptor,
-                authorizationInterceptor,
-                StatusCodeProcessor(),
-            ],
-            errorProcessors: [loggingInterceptor]
+            responseProcessors: responseProcessors,
+            errorProcessors: errorProcessors
         )
     }()
     
