@@ -12,19 +12,33 @@ open class APIManager: APIManaging {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
-    private let urlSession: URLSession
+    private let responseProvider: ResponseProviding
     private let sessionId: String
-    private var retryCountCache = RetryCountCache()
+    private var retryCounter = Counter()
     
     public init(
-        urlSession: URLSession = URLSession(configuration: .default),
+        urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
         sessionId = Date().ISO8601Format()
-        self.urlSession = urlSession
+        self.responseProvider = urlSession
+        self.requestAdapters = requestAdapters
+        self.responseProcessors = responseProcessors
+        self.errorProcessors = errorProcessors
+    }
+    
+    public init(
+        responseProvider: ResponseProviding,
+        requestAdapters: [RequestAdapting] = [],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        errorProcessors: [ErrorProcessing] = []
+    ) {
+        /// generate session id in readable format
+        sessionId = Date().ISO8601Format()
+        self.responseProvider = responseProvider
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -46,15 +60,15 @@ private extension APIManager {
             
             /// adapt request with all adapters
             request = try await requestAdapters.adapt(request, for: endpointRequest)
-
-            /// call request on url session
-            var response = try await urlSession.data(for: request)
+            
+            /// get response for given request (usually fires a network request via URLSession)
+            var response = try await responseProvider.response(for: request)
             
             /// process request
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
                         
             /// reset retry count
-            await retryCountCache.reset(for: endpointRequest.id)
+            await retryCounter.reset(for: endpointRequest.id)
             
             return response
         } catch {
@@ -71,7 +85,7 @@ private extension APIManager {
     
     /// Handle if error triggers retry mechanism and return delay for next attempt
     private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
-        let retryCount = await retryCountCache.value(for: endpointRequest.id)
+        let retryCount = await retryCounter.count(for: endpointRequest.id)
         
         guard
             let retryConfiguration = retryConfiguration,
@@ -79,12 +93,12 @@ private extension APIManager {
             retryConfiguration.retries > retryCount
         else {
             /// reset retry count
-            await retryCountCache.reset(for: endpointRequest.id)
+            await retryCounter.reset(for: endpointRequest.id)
             throw error
         }
                 
         /// count the delay for retry
-        await retryCountCache.increment(for: endpointRequest.id)
+        await retryCounter.increment(for: endpointRequest.id)
         
         var sleepDuration: UInt64
         switch retryConfiguration.delay {
@@ -95,24 +109,5 @@ private extension APIManager {
         }
         
         try await Task.sleep(nanoseconds: sleepDuration)
-    }
-}
-
-private extension APIManager {
-    /// A thread safe wrapper for retry count dictionary.
-    actor RetryCountCache {
-        private var dict = [String: Int]()
-        
-        func value(for id: String) -> Int {
-            dict[id] ?? 0
-        }
-        
-        func increment(for id: String) {
-            dict[id] = (dict[id] ?? 0) + 1
-        }
-        
-        func reset(for id: String) {
-            dict.removeValue(forKey: id)
-        }
     }
 }

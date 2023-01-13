@@ -88,7 +88,7 @@ public extension Requestable {
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers
         request.httpBody = try encodeBody()
-
+        
         // content type
         switch dataType {
         case .encodable:
