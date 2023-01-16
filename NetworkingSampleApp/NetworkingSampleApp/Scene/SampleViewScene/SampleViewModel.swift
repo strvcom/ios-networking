@@ -38,15 +38,23 @@ final class SampleViewModel {
     func runNetworkingExamples() {
         Task {
             do {
-                //HTTP 200
-                try await loadUserList()
-                
-                // HTTP 400
-                try await login(
-                    email: SampleAPIConstants.validEmail,
-                    password: SampleAPIConstants.noPassword
-                )
+                try await downloadMedia()
+            } catch {
+                print(error)
             }
+        }
+    }
+    
+    func downloadMedia() async throws {
+        let videoString = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        
+        let downloadStream = try await apiManager.downloadStream(
+            SampleUserRouter.media(url: URL(string: videoString)!),
+            retryConfiguration: nil
+        )
+        
+        for try await status in downloadStream {
+            print(status)
         }
     }
     

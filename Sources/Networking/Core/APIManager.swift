@@ -50,6 +50,61 @@ open class APIManager: APIManaging {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await request(endpointRequest, retryConfiguration: retryConfiguration)
     }
+    
+    @discardableResult
+    open func downloadStream(_ endpoint: Requestable, retryConfiguration: RetryConfiguration?) async throws -> AsyncThrowingStream<DownloadState, Error> {
+        do {
+            /// create identifiable request from endpoint
+            let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+            
+            /// create original url request
+            let originalRequest = try endpointRequest.endpoint.asRequest()
+            
+            /// adapt request with all adapters
+            let request = try await requestAdapters.adapt(originalRequest, for: endpointRequest)
+
+            let downloadTask = URLSession.shared.downloadTask(with: request)
+            let downloadObserver = DownloadObserver()
+            downloadTask.delegate = downloadObserver
+            downloadTask.resume()
+            
+            let response = try await downloadObserver.response()
+            
+            do {
+                _ = try await responseProcessors.process((Data(), response), with: request, for: endpointRequest)
+            } catch {
+                downloadTask.cancel()
+                throw error
+            }
+            
+            return AsyncThrowingStream { continuation in
+                downloadObserver.progressHandler = { (downloaded, total) in
+                    continuation.yield(.progress(downloadedBytes: Double(downloaded), totalBytes: Double(total)))
+                }
+
+                downloadObserver.errorHandler = { error in
+                    if let resumableData = (error as? URLError)?.userInfo[NSURLSessionDownloadTaskResumeData] as? Data {
+                        continuation.yield(.terminated(resumableData: resumableData))
+                    }
+                    
+                    // TODO: Handle error processing and retry logic
+                    continuation.finish(throwing: error)
+                }
+                
+                downloadObserver.completionHandler = { data in
+                    continuation.yield(.completed(data))
+                    continuation.finish()
+                }
+                
+                continuation.onTermination = { [downloadTask] _ in
+                    downloadTask.cancel()
+                }
+            }
+        } catch {
+            // TODO: Handle error processing and retry logic
+            throw error
+        }
+    }
 }
 
 private extension APIManager {
@@ -60,7 +115,7 @@ private extension APIManager {
             
             /// adapt request with all adapters
             request = try await requestAdapters.adapt(request, for: endpointRequest)
-            
+
             /// get response for given request (usually fires a network request via URLSession)
             var response = try await responseProvider.response(for: request)
             
@@ -73,7 +128,7 @@ private extension APIManager {
             return response
         } catch {
             do {
-                /// If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.
+                /// If retry fails (retryCount is 0 or Task.sleep thrown), catch the error and process it with `ErrorProcessing` plugins.
                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 /// error processing
