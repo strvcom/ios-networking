@@ -27,8 +27,11 @@ final class SampleViewModel {
         errorProcessors.append(endpointRequestStorageProcessor)
         #endif
         
+        let config = URLSessionConfiguration.background(withIdentifier: "my.background.task")
+        config.isDiscretionary = false
+        
         return APIManager(
-            urlSession: URLSession.shared,
+            urlSession: URLSession(configuration: config),
             requestAdapters: [loggingInterceptor],
             responseProcessors: responseProcessors,
             errorProcessors: errorProcessors
@@ -50,11 +53,49 @@ final class SampleViewModel {
         
         let downloadStream = try await apiManager.downloadStream(
             SampleUserRouter.media(url: URL(string: videoString)!),
-            retryConfiguration: nil
+            retryConfiguration: RetryConfiguration(retries: 3, delay: .constant(2), retryHandler: { _ in true })
         )
         
-        for try await status in downloadStream {
-            print(status)
+        var resumableData: Data?
+        
+        do {
+            for try await status in downloadStream {
+                switch status {
+                case .progress(let downloadedBytes, _):
+                    os_log("progress %{public}@", type: .info, String(downloadedBytes))
+                case .terminated(let data):
+                    resumableData = data
+                    os_log("terminated %{public}@", type: .info, String(data.count))
+                case .completed(let data):
+                    os_log("completed %{public}@", type: .info, String(data?.count ?? 0))
+                }
+            }
+        } catch {
+            
+        }
+
+        if #available(iOS 16.0, *) {
+            try? await Task.sleep(for: .seconds(2))
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        
+        let downloadStream2 = try await apiManager.downloadStream(
+            SampleUserRouter.media(url: URL(string: videoString)!),
+            resumableData: resumableData,
+            retryConfiguration: RetryConfiguration(retries: 3, delay: .constant(2), retryHandler: { _ in true })
+        )
+        
+        for try await status in downloadStream2 {
+            switch status {
+            case .progress(let downloadedBytes, _):
+                os_log("progress %{public}@", type: .info, String(downloadedBytes))
+            case .terminated(let data):
+                os_log("terminated %{public}@", type: .info, String(data.count))
+            case .completed(let data):
+                os_log("completed %{public}@", type: .info, String(data?.count ?? 0))
+            }
         }
     }
     

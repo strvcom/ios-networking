@@ -11,13 +11,13 @@ enum DownloadObserverError: Error {
     case missingResponse
 }
 
+/// A helper object which wraps URLSessionDownloadDelegate method callbacks into completion blocks/async functions.
 open class DownloadObserver: NSObject {
     public var progressHandler: ((_ totalBytesWritten: Int64, _ totalBytesExpectedToWrite: Int64) -> ())?
     public var errorHandler: ((Error) -> ())?
     public var completionHandler: ((Data?) -> ())?
     
     private var responseHandler: ((URLResponse?, Error?) -> ())?
-    private var isResponseHandled = false
 }
 
 extension DownloadObserver {

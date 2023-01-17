@@ -17,7 +17,17 @@ public struct RetryConfiguration {
     /// By default errors with status codes `404, 500` are not being retried.
     let retryHandler: (Error) -> Bool
 
-    // default configuration ignores
+    public init(
+        retries: Int,
+        delay: DelayConfiguration,
+        retryHandler: @escaping (Error) -> Bool
+    ) {
+        self.retries = retries
+        self.delay = delay
+        self.retryHandler = retryHandler
+    }
+    
+    /// Default configuration ignores 404 and 500 status codes
     static var `default` = RetryConfiguration(
         retries: 3,
         delay: .constant(2)
@@ -34,7 +44,7 @@ public struct RetryConfiguration {
 
 extension RetryConfiguration {
     /// A type that defines the delay strategy for retry logic.
-    enum DelayConfiguration {
+    public enum DelayConfiguration {
         /// The delay cumulatively increases after each retry.
         case progressive(TimeInterval)
         /// The delay is the same after each retry.
