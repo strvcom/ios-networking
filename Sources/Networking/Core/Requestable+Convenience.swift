@@ -20,11 +20,6 @@ public extension Requestable {
     var isAuthenticationRequired: Bool {
         false
     }
-    
-    /// By default the request is not a refresh token request, unless stated otherwise.
-    var isRefreshTokenRequest: Bool {
-        false
-    }
 
     /// The default value is `nil`.
     var headers: [String: String]? {

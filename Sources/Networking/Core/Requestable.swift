@@ -35,9 +35,6 @@ public protocol Requestable: EndpointIdentifiable {
 
     /// A Boolean flag indicating whether the request to the endpoint requires any type of authentication.
     var isAuthenticationRequired: Bool { get }
-    
-    /// A Boolean flag indicating whether the request provides token refreshing.
-    var isRefreshTokenRequest: Bool { get }
 
     /// Encodes request body depending on requestable data type.
     /// - Returns: Encoded HTTP body.

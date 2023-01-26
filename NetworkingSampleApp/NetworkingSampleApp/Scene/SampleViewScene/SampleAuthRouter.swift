@@ -63,13 +63,4 @@ enum SampleAuthRouter: Requestable {
             return false
         }
     }
-    
-    var isRefreshTokenRequest: Bool {
-        switch self {
-        case .refreshToken:
-            return true
-        default:
-            return false
-        }
-    }
 }

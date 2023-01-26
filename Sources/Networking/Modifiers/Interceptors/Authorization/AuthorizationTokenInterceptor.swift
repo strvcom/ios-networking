@@ -29,7 +29,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         }
         
         /// Append authentication header to request and return it.
-        guard authData.isExpired, !endpointRequest.endpoint.isRefreshTokenRequest else {
+        guard authData.isExpired else {
             return request.withAuthorizationHeader(authData.header)
         }
         
@@ -44,11 +44,6 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         /// Request was unauthorized but required valid authorization.
         guard httpResponse.statusCode == 401, endpointRequest.endpoint.isAuthenticationRequired else {
             return response
-        }
-        
-        /// Refresh token is invalid, user should be logged out.
-        if endpointRequest.endpoint.isRefreshTokenRequest {
-            throw AuthorizationError.expiredRefreshToken
         }
         
         return response
