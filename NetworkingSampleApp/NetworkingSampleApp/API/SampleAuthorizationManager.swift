@@ -9,7 +9,7 @@ import Networking
 import Foundation
 
 final class SampleAuthorizationManager: AuthorizationManaging {
-    let storage: AuthorizationStorageManaging = AuthorizationInMemoryStorage()
+    let storage: AuthorizationStorageManaging = SampleAuthorizationStorageManager()
     
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()

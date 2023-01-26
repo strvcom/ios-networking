@@ -1,13 +1,13 @@
 //
-//  AuthorizationInMemoryStorage.swift
-//  
+//  SampleAuthorizationStorageManager.swift
+//
 //
 //  Created by Dominika Gajdová on 20.12.2022.
 //
 
-import Foundation
+import Networking
 
-public actor AuthorizationInMemoryStorage: AuthorizationStorageManaging {
+public actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
     public init() { }

@@ -22,6 +22,7 @@
 		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
+		58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */; };
 		DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
@@ -48,7 +49,8 @@
 		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
-		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewModel.swift; sourceTree = "<group>"; };
+		58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationStorageManager.swift; sourceTree = "<group>"; };
+		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SampleViewModel.swift; path = ../../API/Routers/SampleViewModel.swift; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
 		DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationManager.swift; sourceTree = "<group>"; };
@@ -137,10 +139,11 @@
 			children = (
 				23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */,
 				23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */,
+				DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */,
+				58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */,
 				23EA9CEC292FB70A00B8E418 /* Responses */,
 				23EA9CF0292FB70A00B8E418 /* Requests */,
 				23EA9CE8292FB70A00B8E418 /* Routers */,
-				DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -148,7 +151,7 @@
 		23EA9CE8292FB70A00B8E418 /* Routers */ = {
 			isa = PBXGroup;
 			children = (
-				DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */,
+				DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */,
 				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
 				DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */,
 			);
@@ -178,7 +181,7 @@
 		DD410D6D293F2E62006D8E31 /* SampleViewScene */ = {
 			isa = PBXGroup;
 			children = (
-				DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */,
+				DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */,
 				23A575B825F8B9DA00617551 /* SampleViewController.swift */,
 			);
 			path = SampleViewScene;
@@ -263,6 +266,7 @@
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
+				58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
 				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
