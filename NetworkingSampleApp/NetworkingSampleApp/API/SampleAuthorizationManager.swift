@@ -25,16 +25,11 @@ final class SampleAuthorizationManager: AuthorizationManaging {
         )
     }()
     
-    func refreshToken(_ token: String) async throws -> AuthorizationData {
-        let request = SampleRefreshTokenRequest(refreshToken: token)
+    func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
+        let request = SampleRefreshTokenRequest(refreshToken: refreshToken)
         let response: SampleUserAuthResponse = try await apiManager.request(
             SampleAuthRouter.refreshToken(request)
         )
-        
-        let data = response.authData
-        
-        // Save login token data to auth storage.
-        try await storage.save(data: data)
-        return data
+        return response.authData
     }
 }

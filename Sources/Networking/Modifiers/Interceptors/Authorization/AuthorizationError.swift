@@ -11,6 +11,7 @@ import Foundation
 public enum AuthorizationError: Error, LocalizedError {
     case unauthorized
     case missingAccessToken
+    case missingRefreshToken
     case expiredAccessToken
     case expiredRefreshToken
 
@@ -20,6 +21,8 @@ public enum AuthorizationError: Error, LocalizedError {
             return NSLocalizedString("Unauthorized access", comment: "")
         case .missingAccessToken:
             return NSLocalizedString("Missing access token", comment: "")
+        case .missingRefreshToken:
+            return NSLocalizedString("Missing refresh token", comment: "")
         case .expiredAccessToken:
             return NSLocalizedString("Access token expired", comment: "")
         case .expiredRefreshToken:

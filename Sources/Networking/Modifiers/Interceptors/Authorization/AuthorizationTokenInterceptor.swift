@@ -21,19 +21,18 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
             return request
         }
         
-        let authData = await authorizationManager.storage.get()
-                        
-        /// If there is no authData (but authorization is required), refresh should not happen.
-        guard let authData else {
-            throw AuthorizationError.missingAccessToken
+        do {
+            return try await authorizationManager.authorizeRequest(request)
+        } catch {
+            /// If authorization fails due to expiredAccessToken we should perform refresh and then retry the request adaptation again.
+            guard case AuthorizationError.expiredAccessToken = error else {
+                throw error
+            }
+            
+            try await performRefresh()
+            
+            return try await adapt(request, for: endpointRequest)
         }
-        
-        /// Append authentication header to request and return it.
-        guard authData.isExpired else {
-            return request.withAuthorizationHeader(authData.header)
-        }
-        
-        return try await performRefresh(request, authData: authData)
     }
     
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
@@ -42,7 +41,10 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         }
         
         /// Request was unauthorized but required valid authorization.
-        guard httpResponse.statusCode == 401, endpointRequest.endpoint.isAuthenticationRequired else {
+        guard
+            httpResponse.statusCode == 401,
+            endpointRequest.endpoint.isAuthenticationRequired
+        else {
             return response
         }
         
@@ -56,33 +58,24 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
 
 // MARK: Private methods
 private extension AuthorizationTokenInterceptor {
-    func performRefresh(_ request: URLRequest, authData: AuthorizationData) async throws -> URLRequest {
+    func performRefresh() async throws {
         /// If some thread is already refreshing:
         if await refreshingState.getIsRefreshing() {
             defer {
                 Task { await refreshingState.signal() }
             }
             
-            /// 1. Wait for signal to continue.
+            /// Wait for signal to continue.
             await refreshingState.wait()
-            /// 2. fetch authData again
-            if let authData = await authorizationManager.storage.get() {
-                /// 3. skip refreshing and return request with new access token
-                return request.withAuthorizationHeader(authData.header)
-            } else {
-                throw AuthorizationError.missingAccessToken
-            }
         }
-                
+        
         /// Lock refreshing state to prevent other threads from trying to refresh as well.
         await refreshingState.setIsRefreshing(true)
-        /// Otherwise try refreshing the token and retrying the request.
-        let refreshedAuthData = try await authorizationManager.refreshToken(authData.refreshToken)
-        /// Signal threads that refreshing is done.
+        /// Try refreshing authorization data.
+        try await authorizationManager.refreshAuthorizationData()
+        /// Unlock refreshing state and signal other threads that refreshing is done.
         await refreshingState.setIsRefreshing(false)
         await refreshingState.signal()
-        /// Some server implementations might require authorized refresh token requests.
-        return request.withAuthorizationHeader(refreshedAuthData.header)
     }
 }
 
@@ -107,17 +100,5 @@ private extension AuthorizationTokenInterceptor {
         func signal() {
             semaphore.signal()
         }
-    }
-}
-
-// MARK: - URLRequest helper
-extension URLRequest {
-    func withAuthorizationHeader(_ value: String) -> URLRequest {
-        var mutableRequest = self
-        mutableRequest.setValue(
-            value,
-            forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
-        )
-        return mutableRequest
     }
 }
