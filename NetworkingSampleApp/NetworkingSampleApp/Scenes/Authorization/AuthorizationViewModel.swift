@@ -1,5 +1,5 @@
 //
-//  SampleViewModel.swift
+//  AuthorizationViewModel.swift
 //  NetworkingSampleApp
 //
 //  Created by Dominika Gajdová on 06.12.2022.
@@ -9,7 +9,7 @@ import Foundation
 import Networking
 import OSLog
 
-final class SampleViewModel {
+final class AuthorizationViewModel: ObservableObject {
     private lazy var authManager = SampleAuthorizationManager()
     private lazy var apiManager: APIManager = {
         let loggingInterceptor = LoggingInterceptor()
@@ -22,7 +22,7 @@ final class SampleViewModel {
         ]
         var errorProcessors: [ErrorProcessing] = [loggingInterceptor]
         
-        #if DEBUG
+#if DEBUG
         let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
             config: .init(
                 multiPeerSharing: .init(shareHistory: true),
@@ -31,7 +31,7 @@ final class SampleViewModel {
         )
         responseProcessors.append(endpointRequestStorageProcessor)
         errorProcessors.append(endpointRequestStorageProcessor)
-        #endif
+#endif
         
         return APIManager(
             urlSession: URLSession.shared,
@@ -43,7 +43,9 @@ final class SampleViewModel {
             errorProcessors: errorProcessors
         )
     }()
-    
+}
+
+extension AuthorizationViewModel {
     func loadUserList() async throws {
         try await apiManager.request(
             SampleUserRouter.users(page: 2)

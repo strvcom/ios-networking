@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2305D1E6261E595E003632D9 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 2305D1E5261E595E003632D9 /* Networking */; };
-		23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B425F8B9DA00617551 /* AppDelegate.swift */; };
-		23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B625F8B9DA00617551 /* SceneDelegate.swift */; };
-		23A575B925F8B9DA00617551 /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A575B825F8B9DA00617551 /* SampleViewController.swift */; };
-		23A575BC25F8B9DA00617551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BA25F8B9DA00617551 /* Main.storyboard */; };
 		23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BD25F8B9DB00617551 /* Assets.xcassets */; };
 		23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */; };
 		23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */; };
@@ -23,7 +19,10 @@
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
 		58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */; };
-		DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */; };
+		58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */; };
+		58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0F029850E86000ACBC0 /* ContentView.swift */; };
+		58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FB80C6298521FF0031FC59 /* AuthorizationView.swift */; };
+		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
 		DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */; };
@@ -32,10 +31,6 @@
 
 /* Begin PBXFileReference section */
 		23A575B125F8B9DA00617551 /* NetworkingSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkingSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		23A575B425F8B9DA00617551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		23A575B625F8B9DA00617551 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		23A575B825F8B9DA00617551 /* SampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewController.swift; sourceTree = "<group>"; };
-		23A575BB25F8B9DA00617551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		23A575BD25F8B9DB00617551 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		23A575C025F8B9DB00617551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23A575C225F8B9DB00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -50,7 +45,10 @@
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
 		58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationStorageManager.swift; sourceTree = "<group>"; };
-		DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SampleViewModel.swift; path = ../../API/Routers/SampleViewModel.swift; sourceTree = "<group>"; };
+		58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleApp.swift; sourceTree = "<group>"; };
+		58E4E0F029850E86000ACBC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		58FB80C6298521FF0031FC59 /* AuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationView.swift; sourceTree = "<group>"; };
+		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
 		DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationManager.swift; sourceTree = "<group>"; };
@@ -92,9 +90,9 @@
 			isa = PBXGroup;
 			children = (
 				23EA9CE7292FB70A00B8E418 /* API */,
-				23A575ED25F8BF0E00617551 /* Scene */,
-				23A575B425F8B9DA00617551 /* AppDelegate.swift */,
-				23A575B625F8B9DA00617551 /* SceneDelegate.swift */,
+				23A575ED25F8BF0E00617551 /* Scenes */,
+				58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */,
+				58E4E0F029850E86000ACBC0 /* ContentView.swift */,
 				23A575BD25F8B9DB00617551 /* Assets.xcassets */,
 				23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */,
 				23A575C225F8B9DB00617551 /* Info.plist */,
@@ -109,13 +107,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		23A575ED25F8BF0E00617551 /* Scene */ = {
+		23A575ED25F8BF0E00617551 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				DD410D6D293F2E62006D8E31 /* SampleViewScene */,
-				23A575BA25F8B9DA00617551 /* Main.storyboard */,
+				58FB80C5298521DA0031FC59 /* Authorization */,
 			);
-			path = Scene;
+			path = Scenes;
 			sourceTree = "<group>";
 		};
 		23C16B78276B5AFD00C0B4F1 /* Packages */ = {
@@ -178,13 +175,13 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
-		DD410D6D293F2E62006D8E31 /* SampleViewScene */ = {
+		58FB80C5298521DA0031FC59 /* Authorization */ = {
 			isa = PBXGroup;
 			children = (
-				DD410D6E293F2E6E006D8E31 /* SampleViewModel.swift */,
-				23A575B825F8B9DA00617551 /* SampleViewController.swift */,
+				DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */,
+				58FB80C6298521FF0031FC59 /* AuthorizationView.swift */,
 			);
-			path = SampleViewScene;
+			path = Authorization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,7 +248,6 @@
 			files = (
 				23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */,
 				23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */,
-				23A575BC25F8B9DA00617551 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,22 +258,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23A575B925F8B9DA00617551 /* SampleViewController.swift in Sources */,
+				58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
 				58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
+				58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
-				23A575B525F8B9DA00617551 /* AppDelegate.swift in Sources */,
 				DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */,
 				DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */,
-				23A575B725F8B9DA00617551 /* SceneDelegate.swift in Sources */,
 				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
 				23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */,
 				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
-				DD410D6F293F2E6E006D8E31 /* SampleViewModel.swift in Sources */,
+				58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */,
+				DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */,
 				23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,14 +281,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		23A575BA25F8B9DA00617551 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				23A575BB25F8B9DA00617551 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -428,7 +416,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J8L663CT57;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -448,7 +436,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J8L663CT57;
 				INFOPLIST_FILE = "$(SRCROOT)/networkingSampleApp/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
