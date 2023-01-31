@@ -12,15 +12,15 @@ public actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
     
     public init() { }
     
-    public func save(data: AuthorizationData) {
+    public func save(data: AuthorizationData) async throws {
         storage = data
     }
     
-    public func delete(data: AuthorizationData) {
+    public func delete(data: AuthorizationData) async throws {
         storage = nil
     }
     
-    public func get() -> AuthorizationData? {
+    public func get() async -> AuthorizationData? {
         storage
     }
 }
