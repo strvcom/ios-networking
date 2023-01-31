@@ -11,17 +11,15 @@ import Foundation
 final class SampleAuthorizationManager: AuthorizationManaging {
     let storage: AuthorizationStorageManaging = SampleAuthorizationStorageManager()
     
-    private lazy var apiManager: APIManager = {
-        let loggingInterceptor = LoggingInterceptor()
-        
+    private let apiManager: APIManager = {
         return APIManager(
-            urlSession: URLSession.shared,
-            requestAdapters: [loggingInterceptor],
+            responseProvider: MockResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
+            requestAdapters: [LoggingInterceptor.shared],
             responseProcessors: [
-                loggingInterceptor,
-                StatusCodeProcessor(),
+                LoggingInterceptor.shared,
+                StatusCodeProcessor.shared
             ],
-            errorProcessors: [loggingInterceptor]
+            errorProcessors: [LoggingInterceptor.shared]
         )
     }()
     

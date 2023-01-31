@@ -26,8 +26,8 @@ extension SampleUserAuthResponse: Decodable {
         self.accessToken = try container.decode(String.self, forKey: .accessToken)
         self.refreshToken = try container.decode(String.self, forKey: .refreshToken)
         
-        let expiresInEpoch = try container.decode(Double.self, forKey: .expiresIn)
-        expiresIn = Date(timeIntervalSince1970: expiresInEpoch)
+        let expiresInInterval = try container.decode(Double.self, forKey: .expiresIn)
+        expiresIn = Date(timeIntervalSinceNow: expiresInInterval)
     }
 }
 
@@ -38,7 +38,7 @@ extension SampleUserAuthResponse {
             accessToken: accessToken,
             refreshToken: refreshToken,
             expiresIn: expiresIn,
-            offset: 0
+            expirationOffset: 30
         )
     }
 }

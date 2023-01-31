@@ -22,6 +22,7 @@
 		58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */; };
 		58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0F029850E86000ACBC0 /* ContentView.swift */; };
 		58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FB80C6298521FF0031FC59 /* AuthorizationView.swift */; };
+		58FB80CE29895ABF0031FC59 /* TestData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58FB80CD29895ABF0031FC59 /* TestData.xcassets */; };
 		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
@@ -48,6 +49,7 @@
 		58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleApp.swift; sourceTree = "<group>"; };
 		58E4E0F029850E86000ACBC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		58FB80C6298521FF0031FC59 /* AuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationView.swift; sourceTree = "<group>"; };
+		58FB80CD29895ABF0031FC59 /* TestData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestData.xcassets; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				58FB80CC29895A8D0031FC59 /* Resources */,
 				23EA9CE7292FB70A00B8E418 /* API */,
 				23A575ED25F8BF0E00617551 /* Scenes */,
 				58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */,
@@ -184,6 +187,14 @@
 			path = Authorization;
 			sourceTree = "<group>";
 		};
+		58FB80CC29895A8D0031FC59 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				58FB80CD29895ABF0031FC59 /* TestData.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -246,6 +257,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58FB80CE29895ABF0031FC59 /* TestData.xcassets in Resources */,
 				23A575C125F8B9DB00617551 /* LaunchScreen.storyboard in Resources */,
 				23A575BE25F8B9DB00617551 /* Assets.xcassets in Resources */,
 			);

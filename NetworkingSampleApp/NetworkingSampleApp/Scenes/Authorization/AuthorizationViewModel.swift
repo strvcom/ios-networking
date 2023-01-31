@@ -9,34 +9,45 @@ import Foundation
 import Networking
 import OSLog
 
+// TODO: - Either move these extensions to ios-networking package or to a different file in NetworkingSampleApp
+extension EndpointRequestStorageProcessor {
+    static let shared = EndpointRequestStorageProcessor(
+        config: .init(
+            multiPeerSharing: .init(shareHistory: true),
+            storedSessionsLimit: 5
+        )
+    )
+}
+
+extension LoggingInterceptor {
+    static let shared = LoggingInterceptor()
+}
+
+extension StatusCodeProcessor {
+    static let shared = StatusCodeProcessor()
+}
+
 final class AuthorizationViewModel: ObservableObject {
     private lazy var authManager = SampleAuthorizationManager()
     private lazy var apiManager: APIManager = {
-        let loggingInterceptor = LoggingInterceptor()
         let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         
         var responseProcessors: [ResponseProcessing] = [
-            loggingInterceptor,
+            LoggingInterceptor.shared,
             authorizationInterceptor,
-            StatusCodeProcessor()
+            StatusCodeProcessor.shared
         ]
-        var errorProcessors: [ErrorProcessing] = [loggingInterceptor]
+        var errorProcessors: [ErrorProcessing] = [LoggingInterceptor.shared]
         
 #if DEBUG
-        let endpointRequestStorageProcessor = EndpointRequestStorageProcessor(
-            config: .init(
-                multiPeerSharing: .init(shareHistory: true),
-                storedSessionsLimit: 5
-            )
-        )
-        responseProcessors.append(endpointRequestStorageProcessor)
-        errorProcessors.append(endpointRequestStorageProcessor)
+        responseProcessors.append(EndpointRequestStorageProcessor.shared)
+        errorProcessors.append(EndpointRequestStorageProcessor.shared)
 #endif
         
         return APIManager(
-            urlSession: URLSession.shared,
+            responseProvider: MockResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
             requestAdapters: [
-                loggingInterceptor,
+                LoggingInterceptor.shared,
                 authorizationInterceptor
             ],
             responseProcessors: responseProcessors,
@@ -64,14 +75,8 @@ extension AuthorizationViewModel {
     }
 
     func checkAuthorizationStatus() async throws {
-        await withThrowingTaskGroup(of: Void.self, body: { taskGroup in
-            for _ in 0..<5 {
-                taskGroup.addTask { [weak self] in
-                    try await self?.apiManager.request(
-                        SampleAuthRouter.status
-                    )
-                }
-            }
-        })
+        try await apiManager.request(
+            SampleAuthRouter.status
+        )
     }
 }

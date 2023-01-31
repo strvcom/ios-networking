@@ -14,11 +14,11 @@ public struct AuthorizationData {
     /// Offset indicates how soon before expiration should access token be refreshed to avoid group requests failures.
     public let expirationOffset: TimeInterval
     
-    public init(accessToken: String, refreshToken: String, expiresIn: Date?, offset: TimeInterval = 60) {
+    public init(accessToken: String, refreshToken: String, expiresIn: Date?, expirationOffset: TimeInterval = 60) {
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.expiresIn = expiresIn
-        self.expirationOffset = offset
+        self.expirationOffset = expirationOffset
     }
 }
 

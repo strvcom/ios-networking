@@ -9,12 +9,8 @@ import Foundation
 
 /// Constants for sample API calling regres.in
 enum SampleAPIConstants {
-    static let host = "https://reqres.in/api"
-    static let songsHost = "http://domca.local:8080/api"
+    static let userHost = "https://reqres.in/api"
+    static let authHost = "https://nonexistentmockauth.com/api"
     static let validEmail = "eve.holt@reqres.in"
     static let validPassword = "cityslicka"
-    static let noPassword: String? = nil
-    static let sampleEmail = "email@email.me"
-    static let sampleName = "Dummy"
-    static let sampleJob = "Foo"
 }

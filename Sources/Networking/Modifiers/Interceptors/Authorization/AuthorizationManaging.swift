@@ -15,6 +15,18 @@ public protocol AuthorizationManaging {
 }
 
 public extension AuthorizationManaging {
+    func authorizeRequest(_ request: URLRequest) async throws -> URLRequest {
+        let accessToken = try await getValidAccessToken()
+        
+        /// Append authentication header to request and return it.
+        var mutableRequest = request
+        mutableRequest.setValue(
+            "Bearer \(accessToken)",
+            forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
+        )
+        return mutableRequest
+    }
+    
     func refreshAuthorizationData() async throws {
         guard let refreshToken = await storage.get()?.refreshToken else {
             throw AuthorizationError.missingRefreshToken
@@ -25,7 +37,7 @@ public extension AuthorizationManaging {
         try await storage.save(data: authData)
     }
     
-    func authorizeRequest(_ request: URLRequest) async throws -> URLRequest {
+    func getValidAccessToken() async throws -> String {
         guard let authData = await storage.get() else {
             throw AuthorizationError.missingAccessToken
         }
@@ -34,12 +46,6 @@ public extension AuthorizationManaging {
             throw AuthorizationError.expiredAccessToken
         }
         
-        /// Append authentication header to request and return it.
-        var mutableRequest = request
-        mutableRequest.setValue(
-            "Bearer \(authData.accessToken)",
-            forHTTPHeaderField: HTTPHeader.HeaderField.authorization.rawValue
-        )
-        return mutableRequest
+        return authData.accessToken
     }
 }

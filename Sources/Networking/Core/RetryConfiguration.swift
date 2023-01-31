@@ -17,6 +17,16 @@ public struct RetryConfiguration {
     /// By default errors with status codes `400 ... 499` are not being retried.
     let retryHandler: (Error) -> Bool
 
+    public init(
+        retries: Int,
+        delay: DelayConfiguration,
+        retryHandler: @escaping (Error) -> Bool)
+    {
+        self.retries = retries
+        self.delay = delay
+        self.retryHandler = retryHandler
+    }
+    
     // default configuration ignores
     static var `default` = RetryConfiguration(
         retries: 3,
@@ -39,7 +49,7 @@ public struct RetryConfiguration {
     }
 }
 
-extension RetryConfiguration {
+public extension RetryConfiguration {
     /// A type that defines the delay strategy for retry logic.
     enum DelayConfiguration {
         /// The delay cumulatively increases after each retry.
