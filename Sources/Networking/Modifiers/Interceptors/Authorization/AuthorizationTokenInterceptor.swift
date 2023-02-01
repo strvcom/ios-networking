@@ -60,34 +60,40 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
 private extension AuthorizationTokenInterceptor {
     func performRefresh() async throws {
         /// If some thread is already refreshing:
-        if await refreshingState.getIsRefreshing() {
+        if await refreshingState.isRefreshing {
             defer {
                 Task { await refreshingState.signal() }
             }
             
             /// Wait for signal to continue.
             await refreshingState.wait()
+            return
         }
         
         /// Lock refreshing state to prevent other threads from trying to refresh as well.
         await refreshingState.setIsRefreshing(true)
+        
         /// Try refreshing authorization data.
-        try await authorizationManager.refreshAuthorizationData()
-        /// Unlock refreshing state and signal other threads that refreshing is done.
-        await refreshingState.setIsRefreshing(false)
-        await refreshingState.signal()
+        do {
+            try await authorizationManager.refreshAuthorizationData()
+            /// Unlock refreshing state and signal other threads that refreshing is done.
+            await refreshingState.setIsRefreshing(false)
+            await refreshingState.signal()
+        } catch {
+            /// Even if refreshing fails we need to unlock refreshing state and signal other threads that refreshing is done.
+            await refreshingState.setIsRefreshing(false)
+            await refreshingState.signal()
+            throw error
+        }
     }
 }
 
 // MARK: Private actor
 private extension AuthorizationTokenInterceptor {
     actor RefreshingState {
-        private var isRefreshing = false
         private let semaphore = AsyncSemaphore(value: 0)
         
-        func getIsRefreshing() -> Bool {
-            isRefreshing
-        }
+        var isRefreshing = false
         
         func setIsRefreshing(_ value: Bool) {
             isRefreshing = value
