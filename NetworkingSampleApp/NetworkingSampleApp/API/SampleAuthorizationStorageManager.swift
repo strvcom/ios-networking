@@ -14,7 +14,7 @@ actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
         storage = data
     }
     
-    func delete(data: AuthorizationData) async throws {
+    func deleteData() async throws {
         storage = nil
     }
     
