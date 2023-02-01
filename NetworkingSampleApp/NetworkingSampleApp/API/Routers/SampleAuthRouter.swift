@@ -31,10 +31,6 @@ enum SampleAuthRouter: Requestable {
         }
     }
 
-    var urlParameters: [String: Any]? {
-        nil
-    }
-
     var method: HTTPMethod {
         switch self {
         case .loginUser, .refreshToken:
