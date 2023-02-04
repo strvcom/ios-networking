@@ -1,0 +1,18 @@
+{
+  "method" : "POST",
+  "requestBody" : "eyJyZWZyZXNoVG9rZW4iOiJBREYxM0JGMS01RkY1LTQxNzItOEJEMy01MDBBNjQ2ODlBN0UifQ==",
+  "statusCode" : 200,
+  "responseBody" : "eyJyZWZyZXNoVG9rZW4iOiI4MjQzNzY4Mi0yN0M4LTREMEYtOTBDMC0wRkYwM0REMDA1MzAiLCJ0b2tlblR5cGUiOiJCZWFyZXIiLCJhY2Nlc3NUb2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUp6ZFdJaU9pSjJZWEJ2Y2lJc0ltVjRjQ0k2TVRZM05URTNOemczTUM0NU1UY3dPRGs1ZlEuOUQ5NjNMdXlpT0xhU09xUGFjNlREczc2NnZ2QUVxWFhYXzV4dEhuMjdIMCIsImV4cGlyZXNJbiI6NjB9",
+  "sessionId" : "2023-01-31T15:08:08Z",
+  "date" : 696870550.92149603,
+  "requestHeaders" : {
+    "Content-Type" : "application\/json"
+  },
+  "responseHeaders" : {
+    "Connection" : "keep-alive",
+    "Date" : "Tue, 31 Jan 2023 15:09:10 GMT",
+    "Content-Length" : "243",
+    "Content-Type" : "application\/json; charset=utf-8"
+  },
+  "path" : "auth\/refresh"
+}
