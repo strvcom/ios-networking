@@ -31,7 +31,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
             
             try await performRefresh()
             
-            return try await adapt(request, for: endpointRequest)
+            return try await authorizationManager.authorizeRequest(request)
         }
     }
     
@@ -60,31 +60,26 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
 private extension AuthorizationTokenInterceptor {
     func performRefresh() async throws {
         /// If some thread is already refreshing:
-        if await refreshingState.isRefreshing {
-            defer {
-                Task { await refreshingState.signal() }
-            }
-            
+        guard await refreshingState.isRefreshing == false else {
             /// Wait for signal to continue.
             await refreshingState.wait()
+            await refreshingState.signal()
             return
+        }
+        
+        defer {
+            Task {
+                /// Unlock refreshing state and signals other threads that refreshing is done.
+                await refreshingState.setIsRefreshing(false)
+                await refreshingState.signal()
+            }
         }
         
         /// Lock refreshing state to prevent other threads from trying to refresh as well.
         await refreshingState.setIsRefreshing(true)
         
-        /// Try refreshing authorization data.
-        do {
-            try await authorizationManager.refreshAuthorizationData()
-            /// Unlock refreshing state and signal other threads that refreshing is done.
-            await refreshingState.setIsRefreshing(false)
-            await refreshingState.signal()
-        } catch {
-            /// Even if refreshing fails we need to unlock refreshing state and signal other threads that refreshing is done.
-            await refreshingState.setIsRefreshing(false)
-            await refreshingState.signal()
-            throw error
-        }
+        /// Try refreshing authorization data and then unlock refreshing state.
+        try await authorizationManager.refreshAuthorizationData()
     }
 }
 
