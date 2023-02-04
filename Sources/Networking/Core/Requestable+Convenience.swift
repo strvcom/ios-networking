@@ -66,7 +66,7 @@ public extension Requestable {
             return nil
         }
         switch dataType {
-        case let .encodable(encodable, jsonEncoder):
+        case let .encodable(encodable, jsonEncoder, _):
             return try jsonEncoder.encode(encodable)
         case let .custom(data, _):
             return data

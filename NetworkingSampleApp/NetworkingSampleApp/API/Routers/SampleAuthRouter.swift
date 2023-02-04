@@ -43,7 +43,7 @@ enum SampleAuthRouter: Requestable {
     var dataType: RequestDataType? {
         switch self {
         case let .loginUser(user):
-            return .encodable(user)
+            return .encodable(user, hideFromLogs: true)
         case let .refreshToken(token):
             return .encodable(token)
         default:
