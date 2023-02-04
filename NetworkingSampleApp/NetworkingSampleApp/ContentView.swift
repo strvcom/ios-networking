@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Sample: String, Hashable, CaseIterable {
+enum Example: String, Hashable, CaseIterable {
     case authorization
 }
 
@@ -15,12 +15,12 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(Sample.allCases, id: \.self) { screen in
-                    NavigationLink(screen.rawValue.capitalized, value: Sample.authorization)
+                ForEach(Example.allCases, id: \.self) { screen in
+                    NavigationLink(screen.rawValue.capitalized, value: Example.authorization)
                 }
             }
-            .navigationTitle("Samples")
-            .navigationDestination(for: Sample.self) { screen in
+            .navigationTitle("Examples")
+            .navigationDestination(for: Example.self) { screen in
                 switch screen {
                 case .authorization: AuthorizationView()
                 }
