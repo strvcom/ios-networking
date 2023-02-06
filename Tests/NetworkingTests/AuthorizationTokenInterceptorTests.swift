@@ -183,7 +183,6 @@ private class MockAuthorizationManager: AuthorizationManaging {
     var refreshedAuthorizationData: AuthorizationData?
     
     func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
-        print("refresh token")
         try await Task.sleep(nanoseconds: sleepNanoseconds)
         
         if let refreshedAuthorizationData = refreshedAuthorizationData {
