@@ -1,5 +1,5 @@
 //
-//  SampleSongRouter.swift
+//  SampleAuthRouter.swift
 //  NetworkingSampleApp
 //
 //  Created by Dominika Gajdová on 12.12.2022.
