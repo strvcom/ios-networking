@@ -24,7 +24,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         do {
             return try await authorizationManager.authorizeRequest(request)
         } catch {
-            /// If authorization fails due to expiredAccessToken we should perform refresh and then retry the request adaptation again.
+            /// If authorization fails due to expiredAccessToken we should perform refresh and then retry the request authorization again.
             guard case AuthorizationError.expiredAccessToken = error else {
                 throw error
             }
@@ -40,13 +40,15 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
             throw NetworkError.noStatusCode(response: response)
         }
         
-        /// Request was unauthorized but required valid authorization.
+        /// If request fails due to unauthorized but required valid authorization perform refresh before returning the response.
         guard
             httpResponse.statusCode == 401,
             endpointRequest.endpoint.isAuthenticationRequired
         else {
             return response
         }
+        
+        try await performRefresh()
         
         return response
     }
@@ -69,7 +71,7 @@ private extension AuthorizationTokenInterceptor {
         
         defer {
             Task {
-                /// Unlock refreshing state and signals other threads that refreshing is done.
+                /// Unlock refreshing state and signal other threads that refreshing is done.
                 await refreshingState.setIsRefreshing(false)
                 await refreshingState.signal()
             }
@@ -78,7 +80,7 @@ private extension AuthorizationTokenInterceptor {
         /// Lock refreshing state to prevent other threads from trying to refresh as well.
         await refreshingState.setIsRefreshing(true)
         
-        /// Try refreshing authorization data and then unlock refreshing state.
+        /// Try refreshing authorization data.
         try await authorizationManager.refreshAuthorizationData()
     }
 }
