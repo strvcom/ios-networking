@@ -9,6 +9,6 @@ import Foundation
 
 public protocol AuthorizationStorageManaging {    
     func save(data: AuthorizationData) async throws
-    func get() async -> AuthorizationData?
+    func get() async throws -> AuthorizationData
     func deleteData() async throws
 }

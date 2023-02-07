@@ -40,7 +40,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         do {
             _ = try await authTokenInterceptor.adapt(request, for: endpointRequest)
         } catch {
-            XCTAssertEqual(error as! AuthorizationError, AuthorizationError.missingAccessToken)
+            XCTAssertEqual(error as! AuthorizationError, AuthorizationError.missingAuthorizationData)
         }
     }
     
@@ -171,8 +171,12 @@ private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
         storage = nil
     }
     
-    func get() async -> AuthorizationData? {
-        storage
+    func get() async throws -> AuthorizationData {
+        guard let storage = storage else {
+            throw AuthorizationError.missingAuthorizationData
+        }
+        
+        return storage
     }
 }
 

@@ -28,19 +28,14 @@ public extension AuthorizationManaging {
     }
     
     func refreshAuthorizationData() async throws {
-        guard let refreshToken = await storage.get()?.refreshToken else {
-            throw AuthorizationError.missingRefreshToken
-        }
+        let refreshToken = try await storage.get().refreshToken
+        let newAuthData = try await refreshAuthorizationData(with: refreshToken)
         
-        let authData = try await refreshAuthorizationData(with: refreshToken)
-        
-        try await storage.save(data: authData)
+        try await storage.save(data: newAuthData)
     }
     
     func getValidAccessToken() async throws -> String {
-        guard let authData = await storage.get() else {
-            throw AuthorizationError.missingAccessToken
-        }
+        let authData = try await storage.get()
         
         guard !authData.isExpired else {
             throw AuthorizationError.expiredAccessToken

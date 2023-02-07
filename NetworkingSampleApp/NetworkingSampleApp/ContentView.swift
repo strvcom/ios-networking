@@ -22,7 +22,8 @@ struct ContentView: View {
             .navigationTitle("Examples")
             .navigationDestination(for: Example.self) { screen in
                 switch screen {
-                case .authorization: AuthorizationView()
+                case .authorization:
+                    AuthorizationView()
                 }
             }
         }

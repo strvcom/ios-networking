@@ -10,8 +10,7 @@ import Foundation
 // MARK: - Defines base authorization errors
 public enum AuthorizationError: Error, LocalizedError {
     case unauthorized
-    case missingAccessToken
-    case missingRefreshToken
+    case missingAuthorizationData
     case expiredAccessToken
     case expiredRefreshToken
 
@@ -19,10 +18,8 @@ public enum AuthorizationError: Error, LocalizedError {
         switch self {
         case .unauthorized:
             return NSLocalizedString("Unauthorized access", comment: "")
-        case .missingAccessToken:
-            return NSLocalizedString("Missing access token", comment: "")
-        case .missingRefreshToken:
-            return NSLocalizedString("Missing refresh token", comment: "")
+        case .missingAuthorizationData:
+            return NSLocalizedString("Missing authorization data", comment: "")
         case .expiredAccessToken:
             return NSLocalizedString("Access token expired", comment: "")
         case .expiredRefreshToken:

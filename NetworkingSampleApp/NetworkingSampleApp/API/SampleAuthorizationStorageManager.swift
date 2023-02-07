@@ -18,7 +18,11 @@ actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
         storage = nil
     }
     
-    func get() async -> AuthorizationData? {
-        storage
+    func get() async throws -> AuthorizationData {
+        guard let storage = storage else {
+            throw AuthorizationError.missingAuthorizationData
+        }
+        
+        return storage
     }
 }

@@ -141,6 +141,7 @@
 				23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */,
 				DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */,
 				58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */,
+				DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */,
 				23EA9CEC292FB70A00B8E418 /* Responses */,
 				23EA9CF0292FB70A00B8E418 /* Requests */,
 				23EA9CE8292FB70A00B8E418 /* Routers */,
@@ -153,7 +154,6 @@
 			children = (
 				DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */,
 				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
-				DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */,
 			);
 			path = Routers;
 			sourceTree = "<group>";
