@@ -19,14 +19,6 @@ extension EndpointRequestStorageProcessor {
     )
 }
 
-extension LoggingInterceptor {
-    static let shared = LoggingInterceptor()
-}
-
-extension StatusCodeProcessor {
-    static let shared = StatusCodeProcessor()
-}
-
 final class AuthorizationViewModel: ObservableObject {
     private lazy var authManager = SampleAuthorizationManager()
     private lazy var apiManager: APIManager = {

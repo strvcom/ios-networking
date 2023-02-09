@@ -15,8 +15,11 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
     public init(authorizationManager: AuthorizationManaging) {
         self.authorizationManager = authorizationManager
     }
-    
-    public func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest {
+}
+
+// MARK: - RequestInterceptor conformation
+public extension AuthorizationTokenInterceptor {
+    func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) async throws -> URLRequest {
         guard endpointRequest.endpoint.isAuthenticationRequired else {
             return request
         }
@@ -35,7 +38,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         }
     }
     
-    public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
+    func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
         guard let httpResponse = response.response as? HTTPURLResponse else {
             throw NetworkError.noStatusCode(response: response)
         }
@@ -53,7 +56,7 @@ public final class AuthorizationTokenInterceptor: RequestInterceptor {
         return response
     }
     
-    public func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
+    func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error {
         error
     }
 }

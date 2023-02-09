@@ -17,6 +17,8 @@ import Foundation
 /// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
 open class LoggingInterceptor: RequestInterceptor {
     
+    public static let shared = LoggingInterceptor()
+    
     public init() {}
 
     /// Logs a given `URLRequest` into console.

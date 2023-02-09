@@ -19,7 +19,7 @@ open class APIManager: APIManaging {
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
@@ -33,7 +33,7 @@ open class APIManager: APIManaging {
     public init(
         responseProvider: ResponseProviding,
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format

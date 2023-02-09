@@ -11,6 +11,8 @@ import Foundation
 
 /// A response processor validating ``Response`` http status code against ``Requestable`` API endpoint definition.
 open class StatusCodeProcessor: ResponseProcessing {
+    public static let shared = StatusCodeProcessor()
+    
     public init() {}
     
     /// Processes ``Response`` and throws ``NetworkError/unacceptableStatusCode(statusCode:acceptedStatusCodes:response:)`` in case status code is not contained in allowed status codes or ``NetworkError/noStatusCode(response:)`` if status code is missing in response, when validation successes processor passes original response value.
