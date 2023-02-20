@@ -31,4 +31,8 @@ public extension HTTPStatusCode {
     static var successAndRedirectCodes: Range<HTTPStatusCode> {
         200 ..< 400
     }
+    
+    static var nonRetriableCodes: ClosedRange<HTTPStatusCode> {
+        400...499
+    }
 }
