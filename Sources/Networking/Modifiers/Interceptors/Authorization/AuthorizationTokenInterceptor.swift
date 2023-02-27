@@ -8,9 +8,9 @@
 import Foundation
 
 // MARK: - Defines authentication handling in requests
-public final class AuthorizationTokenInterceptor: RequestInterceptor {
-    private let refreshingState = RefreshingState()
+public final actor AuthorizationTokenInterceptor: RequestInterceptor {
     private var authorizationManager: AuthorizationManaging
+    private var refreshTask: Task<Void, Error>?
     
     public init(authorizationManager: AuthorizationManaging) {
         self.authorizationManager = authorizationManager
@@ -27,12 +27,13 @@ public extension AuthorizationTokenInterceptor {
         do {
             return try await authorizationManager.authorizeRequest(request)
         } catch {
-            /// If authorization fails due to expiredAccessToken we should perform refresh and then retry the request authorization again.
+            /// If authorization fails due to expiredAccessToken we should perform refresh
+            /// and then retry the request authorization again.
             guard case AuthorizationError.expiredAccessToken = error else {
                 throw error
             }
             
-            try await performRefresh()
+            try await refreshAuthorizationData()
             
             return try await authorizationManager.authorizeRequest(request)
         }
@@ -52,7 +53,7 @@ public extension AuthorizationTokenInterceptor {
         
         /// Since the request failed due to 401 unauthorized while requiring valid authorization, it means that the currently used auth data are probably invalid,
         /// hence we can try to refresh the auth data.
-        try await performRefresh()
+        try await refreshAuthorizationData()
         
         /// We return the failed response anyway, because we can't retry the request here in the process function.
         /// The decision wether to retry or not should be left to the APIManager.
@@ -66,48 +67,24 @@ public extension AuthorizationTokenInterceptor {
 
 // MARK: Private methods
 private extension AuthorizationTokenInterceptor {
-    func performRefresh() async throws {
-        /// If some thread is already refreshing:
-        guard await !refreshingState.isRefreshing else {
-            /// Wait for signal to continue.
-            await refreshingState.wait()
-            await refreshingState.signal()
-            return
+    func refreshAuthorizationData() async throws {
+        /// In case the refresh is already in progress await it.
+        if let refreshTask = refreshTask {
+            return try await refreshTask.value
         }
-        
-        defer {
-            Task {
-                /// Unlock refreshing state and signal other threads that refreshing is done.
-                await refreshingState.setIsRefreshing(false)
-                await refreshingState.signal()
-            }
-        }
-        
-        /// Lock refreshing state to prevent other threads from trying to refresh as well.
-        await refreshingState.setIsRefreshing(true)
-        
-        /// Try refreshing authorization data.
-        try await authorizationManager.refreshAuthorizationData()
-    }
-}
 
-// MARK: Private actor
-private extension AuthorizationTokenInterceptor {
-    actor RefreshingState {
-        private let semaphore = AsyncSemaphore(value: 0)
-        
-        var isRefreshing = false
-        
-        func setIsRefreshing(_ value: Bool) {
-            isRefreshing = value
+        /// Otherwise create initiate new refresh task.
+        let newRefreshTask = Task { () throws -> Void in
+            /// Make sure to clear refreshTask property after refreshing finishes.
+            defer { refreshTask = nil }
+
+            /// Perform the actual refresh logic.
+            try await authorizationManager.refreshAuthorizationData()
         }
-        
-        func wait() async {
-            await semaphore.wait()
-        }
-        
-        func signal() {
-            semaphore.signal()
-        }
+
+        refreshTask = newRefreshTask
+
+        /// Await the newly created refresh task.
+        return try await newRefreshTask.value
     }
 }
