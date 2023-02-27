@@ -65,7 +65,7 @@ public extension AuthorizationTokenInterceptor {
 private extension AuthorizationTokenInterceptor {
     func performRefresh() async throws {
         /// If some thread is already refreshing:
-        guard await refreshingState.isRefreshing == false else {
+        guard await !refreshingState.isRefreshing else {
             /// Wait for signal to continue.
             await refreshingState.wait()
             await refreshingState.signal()

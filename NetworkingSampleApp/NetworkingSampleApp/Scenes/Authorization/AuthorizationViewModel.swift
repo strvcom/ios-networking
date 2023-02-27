@@ -9,16 +9,6 @@ import Foundation
 import Networking
 import OSLog
 
-// TODO: - Either move these extensions to ios-networking package or to a different file in NetworkingSampleApp
-extension EndpointRequestStorageProcessor {
-    static let shared = EndpointRequestStorageProcessor(
-        config: .init(
-            multiPeerSharing: .init(shareHistory: true),
-            storedSessionsLimit: 5
-        )
-    )
-}
-
 final class AuthorizationViewModel: ObservableObject {
     private lazy var authManager = SampleAuthorizationManager()
     private lazy var apiManager: APIManager = {

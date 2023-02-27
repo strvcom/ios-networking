@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Basic operations to store `AuthorizationData`
+/// To keep consistency all operations are async
 public protocol AuthorizationStorageManaging {    
     func save(data: AuthorizationData) async throws
     func get() async throws -> AuthorizationData

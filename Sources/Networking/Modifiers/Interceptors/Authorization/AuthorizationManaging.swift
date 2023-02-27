@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// AuthorizationManaging authorizes requests and manages refresh token mechanism
+/// AuthorizationStorageManaging is required to read & store `AuthorizationData`
 public protocol AuthorizationManaging {
     var storage: any AuthorizationStorageManaging { get }
     

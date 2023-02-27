@@ -11,6 +11,7 @@ import Foundation
 
 /// A response processor validating ``Response`` http status code against ``Requestable`` API endpoint definition.
 open class StatusCodeProcessor: ResponseProcessing {
+    // MARK: Default shared instance
     public static let shared = StatusCodeProcessor()
     
     public init() {}

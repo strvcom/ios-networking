@@ -16,7 +16,7 @@ import Foundation
 
 /// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
 open class LoggingInterceptor: RequestInterceptor {
-    
+    // MARK: Default shared instance
     public static let shared = LoggingInterceptor()
     
     public init() {}
@@ -66,7 +66,7 @@ private extension LoggingInterceptor {
         if
             let dataType = endpoint.dataType,
             case let RequestDataType.encodable(_, _, hideFromLogs) = dataType,
-            hideFromLogs == true
+            hideFromLogs
         {
             os_log("👉 Body is hidden from logs, most likely due to including sensitive information", type: .info)
         } else if
