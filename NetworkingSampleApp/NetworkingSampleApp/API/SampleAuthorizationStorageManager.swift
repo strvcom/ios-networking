@@ -10,7 +10,7 @@ import Networking
 actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
-    func save(data: AuthorizationData) async throws {
+    func saveData(_ data: AuthorizationData) async throws {
         storage = data
     }
     
@@ -18,7 +18,7 @@ actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
         storage = nil
     }
     
-    func get() async throws -> AuthorizationData {
+    func getData() async throws -> AuthorizationData {
         guard let storage = storage else {
             throw AuthorizationError.missingAuthorizationData
         }

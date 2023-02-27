@@ -47,7 +47,7 @@ extension AuthorizationViewModel {
         
         let data = response.authData
         // Save login token data to auth storage.
-        try await authManager.storage.save(data: data)
+        try await authManager.storage.saveData(data)
     }
 
     func checkAuthorizationStatus() async throws {
