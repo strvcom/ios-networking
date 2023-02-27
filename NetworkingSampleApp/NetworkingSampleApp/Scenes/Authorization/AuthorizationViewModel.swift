@@ -7,7 +7,6 @@
 
 import Foundation
 import Networking
-import OSLog
 
 final class AuthorizationViewModel: ObservableObject {
     private lazy var authManager = SampleAuthorizationManager()
