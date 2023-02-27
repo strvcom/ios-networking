@@ -14,6 +14,7 @@ public protocol AuthorizationManaging {
     
     func refreshAuthorizationData(with refreshToken: String) async throws -> AuthorizationData
     func authorizeRequest(_ request: URLRequest) async throws -> URLRequest
+    func getValidAccessToken() async throws -> String
 }
 
 public extension AuthorizationManaging {
