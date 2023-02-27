@@ -43,7 +43,6 @@ public extension AuthorizationTokenInterceptor {
             throw NetworkError.noStatusCode(response: response)
         }
         
-        /// If request fails due to unauthorized but required valid authorization perform refresh before returning the response.
         guard
             httpResponse.statusCode == 401,
             endpointRequest.endpoint.isAuthenticationRequired
@@ -51,8 +50,12 @@ public extension AuthorizationTokenInterceptor {
             return response
         }
         
+        /// Since the request failed due to 401 unauthorized while requiring valid authorization, it means that the currently used auth data are probably invalid,
+        /// hence we can try to refresh the auth data.
         try await performRefresh()
         
+        /// We return the failed response anyway, because we can't retry the request here in the process function.
+        /// The decision wether to retry or not should be left to the APIManager.
         return response
     }
     
