@@ -49,12 +49,6 @@ final class AuthorizationViewModel: ObservableObject {
 }
 
 extension AuthorizationViewModel {
-    func loadUserList() async throws {
-        try await apiManager.request(
-            SampleUserRouter.users(page: 2)
-        )
-    }
-    
     func login(email: String?, password: String?) async throws {
         let request = SampleUserAuthRequest(email: email, password: password)
         let response: SampleUserAuthResponse = try await apiManager.request(
