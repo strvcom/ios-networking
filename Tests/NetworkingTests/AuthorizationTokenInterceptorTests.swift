@@ -18,7 +18,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let authTokenInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         let validAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        try await authManager.storage.save(data: validAuthData)
+        try await authManager.storage.saveData(validAuthData)
         
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -49,7 +49,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let authTokenInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         let validAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        try await authManager.storage.save(data: validAuthData)
+        try await authManager.storage.saveData(validAuthData)
         
         let requestable = MockRouter.testAuthenticationNotRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -65,7 +65,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let authTokenInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
-        try await authManager.storage.save(data: expiredAuthData)
+        try await authManager.storage.saveData(expiredAuthData)
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
@@ -85,7 +85,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let authTokenInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
-        try await authManager.storage.save(data: expiredAuthData)
+        try await authManager.storage.saveData(expiredAuthData)
         
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -106,7 +106,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
         authManager.sleepNanoseconds = 500_000_000
-        try await authManager.storage.save(data: expiredAuthData)
+        try await authManager.storage.saveData(expiredAuthData)
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
@@ -138,7 +138,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
         authManager.sleepNanoseconds = 500_000_000
-        try await authManager.storage.save(data: expiredAuthData)
+        try await authManager.storage.saveData(expiredAuthData)
         
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -163,7 +163,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
 private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
-    func save(data: AuthorizationData) async throws {
+    func saveData(_ data: AuthorizationData) async throws {
         storage = data
     }
     
@@ -171,7 +171,7 @@ private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
         storage = nil
     }
     
-    func get() async throws -> AuthorizationData {
+    func getData() async throws -> AuthorizationData {
         guard let storage = storage else {
             throw AuthorizationError.missingAuthorizationData
         }
