@@ -69,7 +69,7 @@ public extension AuthorizationTokenInterceptor {
 private extension AuthorizationTokenInterceptor {
     func refreshAuthorizationData() async throws {
         /// In case the refresh is already in progress await it.
-        if let refreshTask = refreshTask {
+        if let refreshTask {
             return try await refreshTask.value
         }
 

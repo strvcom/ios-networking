@@ -189,7 +189,7 @@ private class MockAuthorizationManager: AuthorizationManaging {
     func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
         try await Task.sleep(nanoseconds: sleepNanoseconds)
         
-        if let refreshedAuthorizationData = refreshedAuthorizationData {
+        if let refreshedAuthorizationData {
             return refreshedAuthorizationData
         } else {
             throw AuthorizationError.expiredAccessToken
