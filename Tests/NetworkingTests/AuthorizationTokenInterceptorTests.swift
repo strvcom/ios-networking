@@ -172,7 +172,7 @@ private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
     }
     
     func getData() async throws -> AuthorizationData {
-        guard let storage = storage else {
+        guard let storage else {
             throw AuthorizationError.missingAuthorizationData
         }
         

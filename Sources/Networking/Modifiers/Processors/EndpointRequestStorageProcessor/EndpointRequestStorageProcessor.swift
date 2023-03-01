@@ -139,7 +139,7 @@ private extension EndpointRequestStorageProcessor {
         urlRequest: URLRequest
     ) {
         Task(priority: .background) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -189,7 +189,7 @@ private extension EndpointRequestStorageProcessor {
 
     func createFolderIfNeeded(_ sessionId: String?) {
         do {
-            if let sessionId = sessionId {
+            if let sessionId {
                 let sessionDirectory = responsesDirectory.appendingPathComponent(sessionId)
                 if !fileManager.fileExists(atPath: sessionDirectory.path) {
                     try fileManager.createDirectory(atPath: sessionDirectory.path, withIntermediateDirectories: true, attributes: nil)
