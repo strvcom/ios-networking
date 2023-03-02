@@ -73,18 +73,27 @@ private extension AuthorizationTokenInterceptor {
             return try await refreshTask.value
         }
 
-        /// Otherwise create initiate new refresh task.
-        let newRefreshTask = Task { () throws -> Void in
-            /// Make sure to clear refreshTask property after refreshing finishes.
-            defer { refreshTask = nil }
-
-            /// Perform the actual refresh logic.
-            try await authorizationManager.refreshAuthorizationData()
+        /// Otherwise create a new refresh task.
+        let newRefreshTask = Task { [weak self] () throws -> Void in
+            do {
+                /// Perform the actual refresh logic.
+                try await self?.authorizationManager.refreshAuthorizationData()
+                /// Make sure to clear refreshTask property after refreshing finishes.
+                await self?.clearRefreshTask()
+            } catch {
+                /// Make sure to clear refreshTask property after refreshing finishes.
+                await self?.clearRefreshTask()
+                throw error
+            }
         }
 
         refreshTask = newRefreshTask
 
         /// Await the newly created refresh task.
         return try await newRefreshTask.value
+    }
+    
+    func clearRefreshTask() {
+        refreshTask = nil
     }
 }
