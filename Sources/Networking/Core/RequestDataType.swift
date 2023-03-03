@@ -12,8 +12,8 @@ import Foundation
 
 /// A data type of request body.
 public enum RequestDataType {
-    /// Encodable data type, sets HTTP header content type to application/json.
-    case encodable(Encodable, encoder: JSONEncoder = JSONEncoder())
+    /// Encodable data type, sets HTTP header content type to application/json. Optionally hide sensitive request data from logs.
+    case encodable(Encodable, encoder: JSONEncoder = JSONEncoder(), hideFromLogs: Bool = false)
     /// Custom encoded data for request body with provided content type for HTTP header.
     case custom(encodedData: Data, contentType: String)
 }

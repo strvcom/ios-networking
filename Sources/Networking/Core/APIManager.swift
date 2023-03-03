@@ -19,7 +19,7 @@ open class APIManager: APIManaging {
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
@@ -33,7 +33,7 @@ open class APIManager: APIManaging {
     public init(
         responseProvider: ResponseProviding,
         requestAdapters: [RequestAdapting] = [],
-        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor()],
+        responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
@@ -66,7 +66,7 @@ private extension APIManager {
             
             /// process request
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
-            
+                        
             /// reset retry count
             await retryCounter.reset(for: endpointRequest.id)
             
@@ -75,11 +75,11 @@ private extension APIManager {
             do {
                 /// If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.
                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+                return try await request(endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 /// error processing
                 throw await errorProcessors.process(error, for: endpointRequest)
             }
-            return try await request(endpointRequest, retryConfiguration: retryConfiguration)
         }
     }
     
@@ -96,7 +96,7 @@ private extension APIManager {
             await retryCounter.reset(for: endpointRequest.id)
             throw error
         }
-        
+                
         /// count the delay for retry
         await retryCounter.increment(for: endpointRequest.id)
         

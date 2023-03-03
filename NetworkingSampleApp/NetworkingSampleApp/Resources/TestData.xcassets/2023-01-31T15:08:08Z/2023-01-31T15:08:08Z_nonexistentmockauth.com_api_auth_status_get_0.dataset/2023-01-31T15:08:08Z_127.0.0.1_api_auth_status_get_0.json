@@ -1,0 +1,16 @@
+{
+  "method" : "GET",
+  "responseBody" : "",
+  "statusCode" : 200,
+  "sessionId" : "2023-01-31T15:08:08Z",
+  "date" : 696870494.62034404,
+  "requestHeaders" : {
+    "Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2YXBvciIsImV4cCI6MTY3NTE3NzgwOC43NzQ5MDE5fQ.hcBXDcAyE1wztc0AJ1I4BWdOsWUuw2kbuKoS9NSYPRc"
+  },
+  "responseHeaders" : {
+    "Connection" : "keep-alive",
+    "Content-Length" : "0",
+    "Date" : "Tue, 31 Jan 2023 15:08:14 GMT"
+  },
+  "path" : "auth\/status"
+}
