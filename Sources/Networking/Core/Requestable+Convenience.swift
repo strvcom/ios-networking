@@ -54,7 +54,7 @@ public extension Requestable {
         }
 
         // encode url parameters
-        if let urlParameters = urlParameters {
+        if let urlParameters {
             urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
         }
         
@@ -62,11 +62,12 @@ public extension Requestable {
     }
     
     func encodeBody() throws -> Data? {
-        guard let dataType = dataType else {
+        guard let dataType else {
             return nil
         }
+        
         switch dataType {
-        case let .encodable(encodable, jsonEncoder):
+        case let .encodable(encodable, jsonEncoder, _):
             return try jsonEncoder.encode(encodable)
         case let .custom(data, _):
             return data

@@ -50,6 +50,13 @@
             ReferencedContainer = "container:NetworkingSampleApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "CFNETWORK_DIAGNOSTICS"
+            value = "2"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

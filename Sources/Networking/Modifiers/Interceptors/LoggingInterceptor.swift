@@ -16,6 +16,8 @@ import Foundation
 
 /// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
 open class LoggingInterceptor: RequestInterceptor {
+    // MARK: Default shared instance
+    public static let shared = LoggingInterceptor()
     
     public init() {}
 
@@ -25,7 +27,7 @@ open class LoggingInterceptor: RequestInterceptor {
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The the original `URLRequest`.
     open func adapt(_ request: URLRequest, for endpointRequest: EndpointRequest) -> URLRequest {
-        prettyRequestLog(request)
+        prettyRequestLog(request, from: endpointRequest.endpoint)
         return request
     }
 
@@ -54,19 +56,29 @@ open class LoggingInterceptor: RequestInterceptor {
 // MARK: - Private pretty logging
 
 private extension LoggingInterceptor {
-    func prettyRequestLog(_ request: URLRequest) {
+    func prettyRequestLog(_ request: URLRequest, from endpoint: Requestable) {
         os_log("🔽🔽🔽 REQUEST  🔽🔽🔽", type: .info)
         os_log("🔈 %{public}@ %{public}@", type: .info, request.httpMethod ?? "Request method", request.url?.absoluteString ?? "URL")
         if let headers = request.allHTTPHeaderFields, !headers.isEmpty {
             os_log("👉 Headers: %{public}@", type: .info, headers)
         }
-        if let requestBody = request.httpBody, let object = try? JSONSerialization.jsonObject(with: requestBody, options: []),
-           let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-           let body = String(data: data, encoding: .utf8)
+        
+        if
+            let dataType = endpoint.dataType,
+            case let RequestDataType.encodable(_, _, hideFromLogs) = dataType,
+            hideFromLogs
+        {
+            os_log("👉 Body is hidden from logs, most likely due to including sensitive information", type: .info)
+        } else if
+            let requestBody = request.httpBody,
+            let object = try? JSONSerialization.jsonObject(with: requestBody, options: []),
+            let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+            let body = String(data: data, encoding: .utf8)
         {
             // swiftlint:disable:previous opening_brace
             os_log("👉 Body: %{public}@", type: .info, body)
         }
+        
         os_log("🔼🔼🔼 REQUEST END 🔼🔼🔼", type: .info)
     }
 

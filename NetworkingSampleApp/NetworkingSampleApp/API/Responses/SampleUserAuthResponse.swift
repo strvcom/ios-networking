@@ -6,8 +6,39 @@
 //
 
 import Foundation
+import Networking
 
 /// Data structure of sample API authentication response
-struct SampleUserAuthResponse: Decodable {
-    let token: String
+struct SampleUserAuthResponse {
+    let accessToken: String
+    let refreshToken: String
+    let expiresIn: Date
+}
+
+// MARK: Decodable
+extension SampleUserAuthResponse: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case accessToken, refreshToken, expiresIn
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.accessToken = try container.decode(String.self, forKey: .accessToken)
+        self.refreshToken = try container.decode(String.self, forKey: .refreshToken)
+        
+        let expiresInInterval = try container.decode(Double.self, forKey: .expiresIn)
+        expiresIn = Date(timeIntervalSinceNow: expiresInInterval)
+    }
+}
+
+// MARK: Mapping to AuthorizationData
+extension SampleUserAuthResponse {
+    var authData: AuthorizationData {
+        AuthorizationData(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresIn: expiresIn,
+            expirationOffset: 30
+        )
+    }
 }

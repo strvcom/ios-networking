@@ -20,6 +20,7 @@ import Foundation
 /// The filename is created from a sessionId and a corresponding request identifier.
 /// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
+    // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
     private let config: Config
@@ -39,6 +40,14 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         return nil
         #endif
     }()
+    
+    // MARK: Default shared instance
+    public static let shared = EndpointRequestStorageProcessor(
+        config: .init(
+            multiPeerSharing: .init(shareHistory: true),
+            storedSessionsLimit: 5
+        )
+    )
     
     public init(
         fileManager: FileManager = .default,
@@ -130,7 +139,7 @@ private extension EndpointRequestStorageProcessor {
         urlRequest: URLRequest
     ) {
         Task(priority: .background) { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -180,7 +189,7 @@ private extension EndpointRequestStorageProcessor {
 
     func createFolderIfNeeded(_ sessionId: String?) {
         do {
-            if let sessionId = sessionId {
+            if let sessionId {
                 let sessionDirectory = responsesDirectory.appendingPathComponent(sessionId)
                 if !fileManager.fileExists(atPath: sessionDirectory.path) {
                     try fileManager.createDirectory(atPath: sessionDirectory.path, withIntermediateDirectories: true, attributes: nil)
