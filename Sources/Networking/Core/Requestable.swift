@@ -22,7 +22,7 @@ public protocol Requestable: EndpointIdentifiable {
     var method: HTTPMethod { get }
 
     /// The GET url parameters which are encoded into url.
-    var urlParameters: [String: Any]? { get }
+    var urlParametersType: RequestUrlParametersType? { get }
 
     /// The HTTP request headers.
     var headers: [String: String]? { get }

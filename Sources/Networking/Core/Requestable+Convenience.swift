@@ -27,7 +27,7 @@ public extension Requestable {
     }
 
     /// The default value is `nil`.
-    var urlParameters: [String: Any]? {
+    var urlParametersType: RequestUrlParametersType? {
         nil
     }
 
@@ -54,8 +54,11 @@ public extension Requestable {
         }
 
         // encode url parameters
-        if let urlParameters {
-            urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
+        if let urlParametersType {
+            urlComponents.queryItems = buildQueryItems(
+                urlParameters: urlParametersType.parameters,
+                arrayEncoding: urlParametersType.arrayEncoding
+            )
         }
         
         return urlComponents
@@ -102,5 +105,41 @@ public extension Requestable {
         }
 
         return request
+    }
+}
+
+// MARK: Private utils
+private extension Requestable {
+    func buildQueryItems(urlParameters: [String: Any], arrayEncoding: ArrayEncoding) -> [URLQueryItem] {
+        urlParameters
+            .map { key, value -> [URLQueryItem] in
+                buildQueryItems(key: key, value: value, arrayEncoding: arrayEncoding)
+            }
+            .flatMap { $0 }
+    }
+    
+    func buildQueryItems(key: String, value: Any, arrayEncoding: ArrayEncoding) -> [URLQueryItem] {
+        if let values = value as? [Any] {
+            var queryItems: [URLQueryItem] = []
+            
+            switch arrayEncoding {
+            case .commaSeparated:
+                queryItems = [URLQueryItem(
+                    name: key,
+                    value: values.map { String(describing: $0) }.joined(separator: ",")
+                )]
+                
+            case .individual:
+                for parameter in values {
+                    queryItems.append(URLQueryItem(
+                        name: key,
+                        value: String(describing: parameter)
+                    ))
+                }
+            }
+            return queryItems
+        }
+        
+        return [URLQueryItem(name: key, value: String(describing: value))]
     }
 }
