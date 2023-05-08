@@ -17,16 +17,16 @@ final class AssociatedArrayQueryTests: XCTestCase {
         var baseURL: URL { URL(string: "http://someurl.com")! }
         var path: String { "" }
         
-        var urlParametersType: RequestUrlParametersType? {
+        var urlParameters: [String: Any]? {
             switch self {
             case .single:
-                return .init(["filter": 1])
+                return ["filter": 1]
                 
             case .arrayIndividual:
-                return .init(["filter": [1, 2, 3], "drama": 0], arrayEncoding: .individual)
+                return ["filter": ArrayType([1, 2, 3],arrayEncoding: .individual), "drama": 0]
                 
             case .arraySeparated:
-                return .init(["filter": [1, 2, 3]], arrayEncoding: .commaSeparated)
+                return ["filter": ArrayType([1, 2, 3],arrayEncoding: .commaSeparated)]
             }
         }
     }

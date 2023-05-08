@@ -27,7 +27,7 @@ public extension Requestable {
     }
 
     /// The default value is `nil`.
-    var urlParametersType: RequestUrlParametersType? {
+    var urlParameters: [String: Any]? {
         nil
     }
 
@@ -54,11 +54,8 @@ public extension Requestable {
         }
 
         // encode url parameters
-        if let urlParametersType {
-            urlComponents.queryItems = buildQueryItems(
-                urlParameters: urlParametersType.parameters,
-                arrayEncoding: urlParametersType.arrayEncoding
-            )
+        if let urlParameters {
+            urlComponents.queryItems = buildQueryItems(urlParameters: urlParameters)
         }
         
         return urlComponents
@@ -110,27 +107,27 @@ public extension Requestable {
 
 // MARK: Private utils
 private extension Requestable {
-    func buildQueryItems(urlParameters: [String: Any], arrayEncoding: ArrayEncoding) -> [URLQueryItem] {
+    func buildQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
         urlParameters
             .map { key, value -> [URLQueryItem] in
-                buildQueryItems(key: key, value: value, arrayEncoding: arrayEncoding)
+                buildQueryItems(key: key, value: value)
             }
             .flatMap { $0 }
     }
     
-    func buildQueryItems(key: String, value: Any, arrayEncoding: ArrayEncoding) -> [URLQueryItem] {
-        if let values = value as? [Any] {
+    func buildQueryItems(key: String, value: Any) -> [URLQueryItem] {
+        if let arrayType = value as? ArrayType {
             var queryItems: [URLQueryItem] = []
             
-            switch arrayEncoding {
+            switch arrayType.arrayEncoding {
             case .commaSeparated:
                 queryItems = [URLQueryItem(
                     name: key,
-                    value: values.map { String(describing: $0) }.joined(separator: ",")
+                    value: arrayType.values.map { String(describing: $0) }.joined(separator: ",")
                 )]
                 
             case .individual:
-                for parameter in values {
+                for parameter in arrayType.values {
                     queryItems.append(URLQueryItem(
                         name: key,
                         value: String(describing: parameter)
