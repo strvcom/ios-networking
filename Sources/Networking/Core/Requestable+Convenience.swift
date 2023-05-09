@@ -105,7 +105,7 @@ public extension Requestable {
     }
 }
 
-// MARK: Private utils
+// MARK: Build Query Items
 private extension Requestable {
     func buildQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
         urlParameters
@@ -116,7 +116,7 @@ private extension Requestable {
     }
     
     func buildQueryItems(key: String, value: Any) -> [URLQueryItem] {
-        if let arrayType = value as? ArrayType {
+        if let arrayType = value as? ArrayParameter {
             var queryItems: [URLQueryItem] = []
             
             switch arrayType.arrayEncoding {

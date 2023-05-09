@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ArrayType {
+public struct ArrayParameter {
     let values: [Any]
     let arrayEncoding: ArrayEncoding
     
