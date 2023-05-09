@@ -8,13 +8,13 @@
 import Foundation
 
 /// Default API manager
-open class APIManager: APIManaging {
+open class APIManager: APIManaging, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
     private let responseProvider: ResponseProviding
     private let sessionId: String
-    private var retryCounter = Counter()
+    internal var retryCounter = Counter()
     
     public init(
         urlSession: URLSession = .init(configuration: .default),
@@ -52,6 +52,7 @@ open class APIManager: APIManaging {
     }
 }
 
+// MARK: Private
 private extension APIManager {
     func request(_ endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws -> Response {
         do {
@@ -81,33 +82,5 @@ private extension APIManager {
                 throw await errorProcessors.process(error, for: endpointRequest)
             }
         }
-    }
-    
-    /// Handle if error triggers retry mechanism and return delay for next attempt
-    private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
-        let retryCount = await retryCounter.count(for: endpointRequest.id)
-        
-        guard
-            let retryConfiguration = retryConfiguration,
-            retryConfiguration.retryHandler(error),
-            retryConfiguration.retries > retryCount
-        else {
-            /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
-            throw error
-        }
-                
-        /// count the delay for retry
-        await retryCounter.increment(for: endpointRequest.id)
-        
-        var sleepDuration: UInt64
-        switch retryConfiguration.delay {
-        case .constant(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * 1000000000
-        case .progressive(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1000000000
-        }
-        
-        try await Task.sleep(nanoseconds: sleepDuration)
     }
 }

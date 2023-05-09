@@ -9,13 +9,12 @@ import Foundation
 import Combine
 
 /// Default Download API manager
-open class DownloadAPIManager: NSObject {
+open class DownloadAPIManager: NSObject, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
     private var urlSession: URLSession!
     private let sessionId: String
-    private var retryCounter = Counter()
     private var taskStateCancellables: [URLSessionTask: AnyCancellable] = [:]
     private let downloadStateDictSubject = CurrentValueSubject<[URLSessionTask: URLSessionTask.DownloadState], Never>([:])
     private var downloadStateDict = [URLSessionTask: URLSessionTask.DownloadState]() {
@@ -24,6 +23,7 @@ open class DownloadAPIManager: NSObject {
         }
     }
     
+    internal var retryCounter = Counter()
     public var allTasks: [URLSessionDownloadTask] {
         get async {
             await urlSession.allTasks.compactMap { $0 as? URLSessionDownloadTask }
@@ -51,8 +51,11 @@ open class DownloadAPIManager: NSObject {
             delegateQueue: OperationQueue()
         )
     }
-    
-    public func downloadRequest(
+}
+
+// MARK: Public API
+public extension DownloadAPIManager {
+    func downloadRequest(
         _ endpoint: Requestable,
         resumableData: Data? = nil,
         retryConfiguration: RetryConfiguration?
@@ -62,7 +65,7 @@ open class DownloadAPIManager: NSObject {
         return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
     }
     
-    public func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
+    func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
         AsyncStream { continuation in
             let cancellable = downloadStateDictSubject
                 .sink(receiveValue: { dict in
@@ -86,6 +89,7 @@ open class DownloadAPIManager: NSObject {
     }
 }
 
+// MARK: Private
 private extension DownloadAPIManager {
     func downloadRequest(
          _ endpointRequest: EndpointRequest,
@@ -126,7 +130,11 @@ private extension DownloadAPIManager {
          } catch {
              do {
                  /// If retry fails (retryCount is 0 or Task.sleep thrown), catch the error and process it with `ErrorProcessing` plugins.
-                 try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+                 try await sleepIfRetry(
+                    for: error,
+                    endpointRequest: endpointRequest,
+                    retryConfiguration: retryConfiguration
+                 )
                  
                  return try await downloadRequest(
                     endpointRequest,
@@ -159,36 +167,9 @@ private extension DownloadAPIManager {
             }
         }
     }
-    
-    /// Handle if error triggers retry mechanism and return delay for next attempt
-    private func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
-        let retryCount = await retryCounter.count(for: endpointRequest.id)
-        
-        guard
-            let retryConfiguration = retryConfiguration,
-            retryConfiguration.retryHandler(error),
-            retryConfiguration.retries > retryCount
-        else {
-            /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
-            throw error
-        }
-                
-        /// count the delay for retry
-        await retryCounter.increment(for: endpointRequest.id)
-        
-        var sleepDuration: UInt64
-        switch retryConfiguration.delay {
-        case .constant(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * 1_000_000_000
-        case .progressive(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1_000_000_000
-        }
-        
-        try await Task.sleep(nanoseconds: sleepDuration)
-    }
 }
 
+// MARK: URLSession Delegate
 extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         downloadStateDict[downloadTask]?.totalBytesWritten = totalBytesWritten
@@ -206,6 +187,7 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     }
 }
 
+// MARK: URLSessionTask + asyncResponse
 private extension URLSessionTask {
     func asyncResponse() async throws -> URLResponse {
         var cancellable: AnyCancellable?
