@@ -8,11 +8,12 @@
 import SwiftUI
 import Networking
 
-class DownloadRowViewModel: ObservableObject {
+final class DownloadRowViewModel: ObservableObject {
     private let task: URLSessionTask
     
     @Published var title: String = ""
-    @Published var status: String = ""
+    @Published var status: URLSessionTask.State = .running
+    @Published var statusTitle: String = ""
     @Published var percentCompleted: Double = 0
     @Published var totalMegaBytes: Double = 0
     @Published var errorTitle: String?
@@ -30,8 +31,9 @@ class DownloadRowViewModel: ObservableObject {
             for try await downloadState in stream {
                 DispatchQueue.main.async { [weak self] in
                     self?.percentCompleted = downloadState.fractionCompleted * 100
-                    self?.totalMegaBytes = Double(downloadState.totalBytesExpectedToWrite) / 1000_000
-                    self?.status = downloadState.taskState.title
+                    self?.totalMegaBytes = Double(downloadState.totalBytesExpectedToWrite) / 1_000_000
+                    self?.status = downloadState.taskState
+                    self?.statusTitle = downloadState.taskState.title
                     self?.errorTitle = downloadState.error?.localizedDescription
                     self?.fileURL = downloadState.downloadedFileURL?.absoluteString
                 }

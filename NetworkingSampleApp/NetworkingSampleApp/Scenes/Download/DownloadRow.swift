@@ -15,7 +15,7 @@ struct DownloadRow: View {
             Text(viewModel.title)
                 .padding(.bottom, 8)
             
-            Text("Status: \(viewModel.status)")
+            Text("Status: \(viewModel.statusTitle)")
             Text("\(String(format: "%.1f", viewModel.percentCompleted))% of \(String(format: "%.1f", viewModel.totalMegaBytes))MB")
             
             if let errorTitle = viewModel.errorTitle {
@@ -26,23 +26,25 @@ struct DownloadRow: View {
                 Text("FileURL: \(fileURL)")
             }
             
-            HStack {
-                Button {
-                    viewModel.suspend()
-                } label: {
-                    Text("Suspend")
-                }
-                
-                Button {
-                    viewModel.resume()
-                } label: {
-                    Text("Resume")
-                }
-                
-                Button {
-                    viewModel.cancel()
-                } label: {
-                    Text("Cancel")
+            if viewModel.status != .completed {
+                HStack {
+                    Button {
+                        viewModel.suspend()
+                    } label: {
+                        Text("Suspend")
+                    }
+                    
+                    Button {
+                        viewModel.resume()
+                    } label: {
+                        Text("Resume")
+                    }
+                    
+                    Button {
+                        viewModel.cancel()
+                    } label: {
+                        Text("Cancel")
+                    }
                 }
             }
         }

@@ -72,8 +72,7 @@ open class DownloadAPIManager: NSObject {
                     
                     continuation.yield(downloadState)
                     
-                    if
-                        downloadState.error != nil ||
+                    if downloadState.error != nil ||
                         downloadState.downloadedFileURL != nil
                     {
                         continuation.finish()
@@ -108,7 +107,6 @@ private extension DownloadAPIManager {
                      return urlSession.downloadTask(with: request)
                  }
              }()
-
 
              /// downloadTask must be initiated by resume() before we try to await a response from downloadObserver, because it gets the response from URLSessionDownloadDelegate methods
              downloadTask.resume()
@@ -182,9 +180,9 @@ private extension DownloadAPIManager {
         var sleepDuration: UInt64
         switch retryConfiguration.delay {
         case .constant(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * 1000000000
+            sleepDuration = UInt64(timeInterval) * 1_000_000_000
         case .progressive(let timeInterval):
-            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1000000000
+            sleepDuration = UInt64(timeInterval) * UInt64(retryCount) * 1_000_000_000
         }
         
         try await Task.sleep(nanoseconds: sleepDuration)
