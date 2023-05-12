@@ -65,6 +65,8 @@ extension DownloadAPIManager: DownloadAPIManaging {
         return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
     }
     
+    /// Creates an async stream of download state updates for a given task. ]
+    /// Each time an update is received from the `URLSessionDownloadDelegate`, the async stream emits a new download state.
     public func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
         AsyncStream { continuation in
             let cancellable = downloadStateDictSubject
@@ -92,62 +94,65 @@ extension DownloadAPIManager: DownloadAPIManaging {
 // MARK: Private
 private extension DownloadAPIManager {
     func downloadRequest(
-         _ endpointRequest: EndpointRequest,
-         resumableData: Data?,
-         retryConfiguration: RetryConfiguration?
-     ) async throws -> DownloadResult {
-         do {
-             /// create original url request
-             let originalRequest = try endpointRequest.endpoint.asRequest()
-
-             /// adapt request with all adapters
-             let request = try await requestAdapters.adapt(originalRequest, for: endpointRequest)
-
-             /// create URLSessionDownloadTask with resumableData if available otherwise with URLRequest
-             let downloadTask = {
-                 if let resumableData {
-                     return urlSession.downloadTask(withResumeData: resumableData)
-                 } else {
-                     return urlSession.downloadTask(with: request)
-                 }
-             }()
-
-             /// downloadTask must be initiated by resume() before we try to await a response from downloadObserver, because it gets the response from URLSessionDownloadDelegate methods
-             downloadTask.resume()
-
-             updateTasks()
-             
-             let urlResponse = try await downloadTask.asyncResponse()
-             
-             /// process response
-             let response = try await responseProcessors.process((Data(), urlResponse), with: request, for: endpointRequest)
-
-             /// reset retry count
-             await retryCounter.reset(for: endpointRequest.id)
-
-             /// create download AsyncStream
-             return (downloadTask, response)
-         } catch {
-             do {
-                 /// If retry fails (retryCount is 0 or Task.sleep thrown), catch the error and process it with `ErrorProcessing` plugins.
-                 try await sleepIfRetry(
+        _ endpointRequest: EndpointRequest,
+        resumableData: Data?,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> DownloadResult {
+        do {
+            /// create original url request
+            let originalRequest = try endpointRequest.endpoint.asRequest()
+            
+            /// adapt request with all adapters
+            let request = try await requestAdapters.adapt(originalRequest, for: endpointRequest)
+            
+            /// create URLSessionDownloadTask with resumableData if available otherwise with URLRequest
+            let downloadTask = {
+                if let resumableData {
+                    return urlSession.downloadTask(withResumeData: resumableData)
+                } else {
+                    return urlSession.downloadTask(with: request)
+                }
+            }()
+            
+            /// downloadTask must be initiated by resume() before we try to await a response from downloadObserver, because it gets the response from URLSessionDownloadDelegate methods
+            downloadTask.resume()
+            
+            updateTasks()
+            
+            let urlResponse = try await downloadTask.asyncResponse()
+            
+            /// process response
+            let response = try await responseProcessors.process((Data(), urlResponse), with: request, for: endpointRequest)
+            
+            /// reset retry count
+            await retryCounter.reset(for: endpointRequest.id)
+            
+            /// create download AsyncStream
+            return (downloadTask, response)
+        } catch {
+            do {
+                /// If retry fails (retryCount is 0 or Task.sleep thrown), catch the error and process it with `ErrorProcessing` plugins.
+                try await sleepIfRetry(
                     for: error,
                     endpointRequest: endpointRequest,
                     retryConfiguration: retryConfiguration
-                 )
-                 
-                 return try await downloadRequest(
+                )
+                
+                return try await downloadRequest(
                     endpointRequest,
                     resumableData: resumableData,
                     retryConfiguration: retryConfiguration
-                 )
-             } catch {
-                 /// error processing
-                 throw await errorProcessors.process(error, for: endpointRequest)
-             }
-         }
-     }
-
+                )
+            } catch {
+                /// error processing
+                throw await errorProcessors.process(error, for: endpointRequest)
+            }
+        }
+    }
+    
+    /// Creates a record in the `downloadStateDict` for each task and observes their states.
+    /// Every `downloadStateDict` update triggers an event to the `downloadStateDictSubject`
+    /// which then leads to a task state update from `progressStream`.
     func updateTasks() {
         Task {
             for task in await allTasks where downloadStateDict[task] == nil {
@@ -175,46 +180,14 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
         downloadStateDict[downloadTask]?.downloadedBytes = totalBytesWritten
         downloadStateDict[downloadTask]?.totalBytes = totalBytesExpectedToWrite
     }
-
+    
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         downloadStateDict[downloadTask]?.downloadedFileURL = location
         updateTasks()
     }
-
+    
     public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         downloadStateDict[task]?.error = error
         updateTasks()
-    }
-}
-
-// MARK: URLSessionTask + asyncResponse
-private extension URLSessionTask {
-    func asyncResponse() async throws -> URLResponse {
-        var cancellable: AnyCancellable?
-        
-        return try await withTaskCancellationHandler(
-            operation: {
-                try await withCheckedThrowingContinuation { continuation in
-                    cancellable = Publishers.CombineLatest(
-                        publisher(for: \.response),
-                        publisher(for: \.error)
-                    )
-                    .first(where: { (response, error) in
-                        response != nil || error != nil
-                    })
-                    .sink { (response, error) in
-                        if let error {
-                            continuation.resume(throwing: error)
-                        }
-                        
-                        if let response {
-                            continuation.resume(returning: response)
-                        }
-                    }
-                }
-            },
-            onCancel: { [cancellable] in
-                cancellable?.cancel()
-            })
     }
 }

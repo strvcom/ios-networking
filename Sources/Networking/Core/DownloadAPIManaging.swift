@@ -10,15 +10,27 @@ import Foundation
 // MARK: - Defines Download API managing
 public typealias DownloadResult = (URLSessionDownloadTask, Response)
 
+/// A definition of an API layer with methods for handling data downloading.
 public protocol DownloadAPIManaging {
+    /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
     
+    /// Initiates a download request for a given endpoint, with optional resumable data and retry configuration.
+    /// - Parameters:
+    ///   - endpoint: API endpoint requestable definition.
+    ///   - resumableData: Optional data the download request will be resumed with.
+    ///   - retryConfiguration: Configuration for retrying behaviour.
+    /// - Returns: A download result consisting of `URLSessionDownloadTask` and `Response`
     func downloadRequest(
         _ endpoint: Requestable,
         resumableData: Data?,
         retryConfiguration: RetryConfiguration?
     ) async throws -> DownloadResult
     
+    
+    /// Provides real time download updates for a given `URLSessionTask`
+    /// - Parameter task: The task whose updates are requested.
+    /// - Returns: An async stream of download states describing the task's download progress.
     func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
 }
 
