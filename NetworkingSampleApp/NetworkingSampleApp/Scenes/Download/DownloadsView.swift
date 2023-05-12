@@ -31,7 +31,7 @@ struct DownloadsView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.tasks, id: \.taskIdentifier) { task in
-                        DownloadRow(viewModel: .init(task: task))
+                        DownloadProgressView(viewModel: .init(task: task))
                     }
                 }
                 .padding(.vertical, 5)

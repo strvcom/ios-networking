@@ -54,18 +54,18 @@ open class DownloadAPIManager: NSObject, Retryable {
 }
 
 // MARK: Public API
-public extension DownloadAPIManager {
-    func downloadRequest(
+extension DownloadAPIManager: DownloadAPIManaging {
+    public func downloadRequest(
         _ endpoint: Requestable,
         resumableData: Data? = nil,
         retryConfiguration: RetryConfiguration?
-    ) async throws -> (URLSessionDownloadTask, Response) {
+    ) async throws -> DownloadResult {
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
     }
     
-    func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
+    public func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
         AsyncStream { continuation in
             let cancellable = downloadStateDictSubject
                 .sink(receiveValue: { dict in
@@ -95,7 +95,7 @@ private extension DownloadAPIManager {
          _ endpointRequest: EndpointRequest,
          resumableData: Data?,
          retryConfiguration: RetryConfiguration?
-     ) async throws -> (URLSessionDownloadTask, Response) {
+     ) async throws -> DownloadResult {
          do {
              /// create original url request
              let originalRequest = try endpointRequest.endpoint.asRequest()
@@ -172,8 +172,8 @@ private extension DownloadAPIManager {
 // MARK: URLSession Delegate
 extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        downloadStateDict[downloadTask]?.totalBytesWritten = totalBytesWritten
-        downloadStateDict[downloadTask]?.totalBytesExpectedToWrite = totalBytesExpectedToWrite
+        downloadStateDict[downloadTask]?.downloadedBytes = totalBytesWritten
+        downloadStateDict[downloadTask]?.totalBytes = totalBytesExpectedToWrite
     }
 
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {

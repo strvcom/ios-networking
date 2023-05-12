@@ -48,13 +48,7 @@ public extension Requestable {
 public extension Requestable {
     func urlComponents() throws -> URLComponents {
         // url creation
-        let urlPath = {
-            if path.isEmpty {
-                return baseURL
-            } else {
-                return baseURL.appendingPathComponent(path)
-            }
-        }()
+        let urlPath = path.isEmpty ? baseURL : baseURL.appendingPathComponent(path)
         
         guard var urlComponents = URLComponents(url: urlPath, resolvingAgainstBaseURL: true) else {
             throw RequestableError.invalidURLComponents

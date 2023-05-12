@@ -25,18 +25,4 @@ enum SampleDownloadRouter: Requestable {
             return ""
         }
     }
-
-    var urlParameters: [String: Any]? {
-        switch self {
-        case .download:
-            return nil
-        }
-    }
-
-    var method: HTTPMethod {
-        switch self {
-        case .download:
-            return .get
-        }
-    }
 }

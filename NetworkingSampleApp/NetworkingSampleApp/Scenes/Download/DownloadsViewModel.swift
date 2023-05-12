@@ -9,30 +9,6 @@ import Foundation
 import Networking
 import OSLog
 
-extension DownloadAPIManager {
-    static var shared: DownloadAPIManager = {
-        var responseProcessors: [ResponseProcessing] = [
-            LoggingInterceptor.shared,
-            StatusCodeProcessor.shared
-        ]
-        var errorProcessors: [ErrorProcessing] = [LoggingInterceptor.shared]
-        
-    #if DEBUG
-        responseProcessors.append(EndpointRequestStorageProcessor.shared)
-        errorProcessors.append(EndpointRequestStorageProcessor.shared)
-    #endif
-        
-        return DownloadAPIManager(
-            urlSessionConfiguration: .default,
-            requestAdapters: [
-                LoggingInterceptor.shared
-            ],
-            responseProcessors: responseProcessors,
-            errorProcessors: errorProcessors
-        )
-    }()
-}
-
 @MainActor
 final class DownloadsViewModel: ObservableObject {
     @Published var tasks: [URLSessionTask] = []

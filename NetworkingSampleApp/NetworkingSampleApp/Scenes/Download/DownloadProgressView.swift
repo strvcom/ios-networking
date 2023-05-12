@@ -7,26 +7,26 @@
 
 import SwiftUI
 
-struct DownloadRow: View {
-    @StateObject var viewModel: DownloadRowViewModel
+struct DownloadProgressView: View {
+    @StateObject var viewModel: DownloadProgressViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(viewModel.title)
+            Text(viewModel.state.title)
                 .padding(.bottom, 8)
             
-            Text("Status: \(viewModel.statusTitle)")
-            Text("\(String(format: "%.1f", viewModel.percentCompleted))% of \(String(format: "%.1f", viewModel.totalMegaBytes))MB")
+            Text("Status: \(viewModel.state.statusTitle)")
+            Text("\(String(format: "%.1f", viewModel.state.percentCompleted))% of \(String(format: "%.1f", viewModel.state.totalMegaBytes))MB")
             
-            if let errorTitle = viewModel.errorTitle {
+            if let errorTitle = viewModel.state.errorTitle {
                 Text("Error: \(errorTitle)")
             }
             
-            if let fileURL = viewModel.fileURL {
+            if let fileURL = viewModel.state.fileURL {
                 Text("FileURL: \(fileURL)")
             }
             
-            if viewModel.status != .completed {
+            if viewModel.state.status != .completed {
                 HStack {
                     Button {
                         viewModel.suspend()
