@@ -25,9 +25,7 @@ extension URLSessionTask {
                     .sink { (response, error) in
                         if let error {
                             continuation.resume(throwing: error)
-                        }
-                        
-                        if let response {
+                        } else if let response {
                             continuation.resume(returning: response)
                         }
                     }
