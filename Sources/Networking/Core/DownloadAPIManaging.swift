@@ -15,6 +15,11 @@ public protocol DownloadAPIManaging {
     /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
     
+    /// Invalidates urlSession instance.
+    /// - Parameters:
+    ///   - shouldFinishTasks: Indicates whether all currently active tasks should be able to finish before invalidating. Otherwise they will be cancelled.
+    func invalidateSession(_ shouldFinishTasks: Bool)
+    
     /// Initiates a download request for a given endpoint, with optional resumable data and retry configuration.
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition.

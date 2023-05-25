@@ -57,6 +57,14 @@ open class DownloadAPIManager: NSObject, Retryable {
 
 // MARK: Public API
 extension DownloadAPIManager: DownloadAPIManaging {
+    public func invalidateSession(_ shouldFinishTasks: Bool = false) {
+        if shouldFinishTasks {
+            urlSession.invalidateAndCancel()
+        } else {
+            urlSession.finishTasksAndInvalidate()
+        }
+    }
+    
     public func downloadRequest(
         _ endpoint: Requestable,
         resumableData: Data? = nil,
