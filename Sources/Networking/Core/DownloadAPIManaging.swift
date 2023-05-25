@@ -11,6 +11,8 @@ import Foundation
 public typealias DownloadResult = (URLSessionDownloadTask, Response)
 
 /// A definition of an API layer with methods for handling data downloading.
+/// Recommended to be used as singleton.
+/// If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
 public protocol DownloadAPIManaging {
     /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
