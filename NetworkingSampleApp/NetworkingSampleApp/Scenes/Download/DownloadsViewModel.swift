@@ -14,14 +14,20 @@ final class DownloadsViewModel: ObservableObject {
     @Published var tasks: [URLSessionTask] = []
     @Published var urlText: String = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
     private let downloadAPIManager = DownloadAPIManager.shared
-    
-    func onAppear() {
+
+    func startDownload() {
         Task {
-            tasks = await downloadAPIManager.allTasks
+            await downloadItem()
+        }
+        
+        Task {
+            await downloadItem()
         }
     }
-    
-    func download() async {
+}
+
+private extension DownloadsViewModel {
+    func downloadItem() async {
         guard let url = URL(string: urlText) else {
             return
         }

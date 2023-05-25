@@ -18,9 +18,7 @@ struct DownloadsView: View {
                     .textFieldStyle(.roundedBorder)
                 
                 Button {
-                    Task {
-                        await viewModel.download()
-                    }
+                    viewModel.startDownload()
                 } label: {
                     Text("Download")
                 }

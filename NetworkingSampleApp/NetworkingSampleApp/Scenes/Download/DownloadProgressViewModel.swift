@@ -1,13 +1,14 @@
 //
-//  DownloadRowViewModel.swift
+//  DownloadProgressViewModel.swift
 //  NetworkingSampleApp
 //
 //  Created by Matej Molnár on 07.03.2023.
 //
 
-import SwiftUI
+import Foundation
 import Networking
 
+@MainActor
 final class DownloadProgressViewModel: ObservableObject {
     private let task: URLSessionTask
     
@@ -17,23 +18,19 @@ final class DownloadProgressViewModel: ObservableObject {
         self.task = task
     }
     
-    func onAppear() {
-        Task {
-            let stream = DownloadAPIManager.shared.progressStream(for: task)
+    func startObservingDownloadProgress() async {
+        let stream = DownloadAPIManager.shared.progressStream(for: task)
 
-            for try await downloadState in stream {
-                DispatchQueue.main.async { [weak self] in
-                    var newState = DownloadProgressState()
-                    newState.percentCompleted = downloadState.fractionCompleted * 100
-                    newState.totalMegaBytes = Double(downloadState.totalBytes) / 1_000_000
-                    newState.status = downloadState.taskState
-                    newState.statusTitle = downloadState.taskState.title
-                    newState.errorTitle = downloadState.error?.localizedDescription
-                    newState.fileURL = downloadState.downloadedFileURL?.absoluteString
-                    newState.title = self?.task.currentRequest?.url?.absoluteString ?? "-"
-                    self?.state = newState
-                }
-            }
+        for try await downloadState in stream {
+            var newState = DownloadProgressState()
+            newState.percentCompleted = downloadState.fractionCompleted * 100
+            newState.totalMegaBytes = Double(downloadState.totalBytes) / 1_000_000
+            newState.status = downloadState.taskState
+            newState.statusTitle = downloadState.taskState.title
+            newState.errorTitle = downloadState.error?.localizedDescription
+            newState.fileURL = downloadState.downloadedFileURL?.absoluteString
+            newState.title = task.currentRequest?.url?.absoluteString ?? "-"
+            state = newState
         }
     }
     

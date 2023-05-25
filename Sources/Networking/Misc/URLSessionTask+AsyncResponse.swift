@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  URLSessionTask+AsyncResponse.swift
 //  
 //
 //  Created by Dominika Gajdová on 12.05.2023.
@@ -35,6 +35,7 @@ extension URLSessionTask {
             },
             onCancel: { [cancellable] in
                 cancellable?.cancel()
-            })
+            }
+        )
     }
 }

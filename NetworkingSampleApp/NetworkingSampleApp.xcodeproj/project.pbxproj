@@ -29,7 +29,7 @@
 		58FB80CE29895ABF0031FC59 /* TestData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58FB80CD29895ABF0031FC59 /* TestData.xcassets */; };
 		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
 		DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */; };
-		DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+instance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+instance.swift */; };
+		DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
 		DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */; };
@@ -62,7 +62,7 @@
 		58FB80CD29895ABF0031FC59 /* TestData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestData.xcassets; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadProgressView.swift; sourceTree = "<group>"; };
-		DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+instance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownloadAPIManager+instance.swift"; sourceTree = "<group>"; };
+		DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownloadAPIManager+SharedInstance.swift"; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
 		DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationManager.swift; sourceTree = "<group>"; };
@@ -224,7 +224,7 @@
 		DD6E48742A0E2CC70025AD05 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+instance.swift */,
+				DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -305,7 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */,
-				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+instance.swift in Sources */,
+				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,

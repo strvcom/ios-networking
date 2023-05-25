@@ -1,5 +1,5 @@
 //
-//  DownloadAPIManager+instance.swift
+//  DownloadAPIManager+SharedInstance.swift
 //  NetworkingSampleApp
 //
 //  Created by Dominika Gajdová on 12.05.2023.
