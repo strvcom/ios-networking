@@ -19,10 +19,6 @@ final class DownloadsViewModel: ObservableObject {
         Task {
             await downloadItem()
         }
-        
-        Task {
-            await downloadItem()
-        }
     }
 }
 
