@@ -12,7 +12,7 @@ import OSLog
 @MainActor
 final class DownloadsViewModel: ObservableObject {
     @Published var tasks: [URLSessionTask] = []
-    @Published var urlText: String = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+    @Published var urlText: String = SampleAPIConstants.videoUrl
     private let downloadAPIManager = DownloadAPIManager.shared
 
     func startDownload() {

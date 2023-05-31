@@ -15,7 +15,7 @@ open class DownloadAPIManager: NSObject, Retryable {
     private let errorProcessors: [ErrorProcessing]
     private let sessionId: String
     private let downloadStateDictSubject = CurrentValueSubject<[URLSessionTask: URLSessionTask.DownloadState], Never>([:])
-    private var urlSession: URLSession!
+    private var urlSession = URLSession(configuration: .default)
     private var taskStateCancellables = ThreadSafeDictionary<URLSessionTask, AnyCancellable>()
     private var downloadStateDict = ThreadSafeDictionary<URLSessionTask, URLSessionTask.DownloadState>()
     
@@ -39,7 +39,7 @@ open class DownloadAPIManager: NSObject, Retryable {
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
-        
+                
         super.init()
         
         urlSession = URLSession(
@@ -47,11 +47,6 @@ open class DownloadAPIManager: NSObject, Retryable {
             delegate: self,
             delegateQueue: OperationQueue()
         )
-        
-        Task {
-            /// Publish initial download states value.
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
-        }
     }
 }
 
@@ -75,7 +70,7 @@ extension DownloadAPIManager: DownloadAPIManaging {
         return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
     }
     
-    /// Creates an async stream of download state updates for a given task. ]
+    /// Creates an async stream of download state updates for a given task.
     /// Each time an update is received from the `URLSessionDownloadDelegate`, the async stream emits a new download state.
     public func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState> {
         AsyncStream { continuation in
