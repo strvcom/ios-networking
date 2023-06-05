@@ -6,15 +6,15 @@ The lightweight library for API calls management. The library is built upon URL 
 ## Schedule
   [X] init library with sample app
 
-  [ ] logger modifier (in draft)
+  [X] logger modifier (in draft)
 
-  [ ] data storing modifier
+  [X] data storing modifier
 
-  [ ] authentication modifier with defaul solution with access + refresh tokens
+  [X] authentication modifier with default solution with access + refresh tokens
 
-  [ ] multipeer connection modifier (low priority, last one to do)
+  [X] multipeer connection modifier (low priority, last one to do)
   
-  [ ] APIManager ui tests
+  [ ] APIManager unit tests
 
   [ ] more complex samples in sample app (parallel tasks, retry, ...)
 
@@ -22,6 +22,6 @@ The lightweight library for API calls management. The library is built upon URL 
   
   [ ] sample usage of storaged api calls for UI testing
   
-  [ ] use library in iWeather example app
+  [X] use library in iWeather example app
   
-  [ ] other data types - file upload/download with progres etc
+  [ ] other data types - file upload/download with progress etc
