@@ -18,12 +18,18 @@
 		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
+		58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */; };
+		58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */; };
+		58C3E76129B79259004FD1CD /* SampleDownloadRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */; };
+		58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */; };
 		58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */; };
 		58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */; };
 		58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0F029850E86000ACBC0 /* ContentView.swift */; };
 		58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FB80C6298521FF0031FC59 /* AuthorizationView.swift */; };
 		58FB80CE29895ABF0031FC59 /* TestData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58FB80CD29895ABF0031FC59 /* TestData.xcassets */; };
 		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
+		DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */; };
+		DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
 		DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */; };
@@ -45,12 +51,18 @@
 		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
+		58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsView.swift; sourceTree = "<group>"; };
+		58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsViewModel.swift; sourceTree = "<group>"; };
+		58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDownloadRouter.swift; sourceTree = "<group>"; };
+		58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadProgressViewModel.swift; sourceTree = "<group>"; };
 		58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationStorageManager.swift; sourceTree = "<group>"; };
 		58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleApp.swift; sourceTree = "<group>"; };
 		58E4E0F029850E86000ACBC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		58FB80C6298521FF0031FC59 /* AuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationView.swift; sourceTree = "<group>"; };
 		58FB80CD29895ABF0031FC59 /* TestData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestData.xcassets; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
+		DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadProgressView.swift; sourceTree = "<group>"; };
+		DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownloadAPIManager+SharedInstance.swift"; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
 		DDD3AD202951F527006CB777 /* SampleAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationManager.swift; sourceTree = "<group>"; };
@@ -91,6 +103,7 @@
 		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				DD6E48742A0E2CC70025AD05 /* Extensions */,
 				58FB80CC29895A8D0031FC59 /* Resources */,
 				23EA9CE7292FB70A00B8E418 /* API */,
 				23A575ED25F8BF0E00617551 /* Scenes */,
@@ -113,6 +126,7 @@
 		23A575ED25F8BF0E00617551 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				58C3E75B29B78ED3004FD1CD /* Download */,
 				58FB80C5298521DA0031FC59 /* Authorization */,
 			);
 			path = Scenes;
@@ -153,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */,
+				58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */,
 				23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */,
 			);
 			path = Routers;
@@ -178,6 +193,17 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		58C3E75B29B78ED3004FD1CD /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
+				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
+				58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */,
+				58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */,
+			);
+			path = Download;
+			sourceTree = "<group>";
+		};
 		58FB80C5298521DA0031FC59 /* Authorization */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +219,14 @@
 				58FB80CD29895ABF0031FC59 /* TestData.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		DD6E48742A0E2CC70025AD05 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,21 +305,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */,
+				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
 				58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */,
+				58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
 				DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */,
 				DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */,
 				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
 				23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */,
+				58C3E76129B79259004FD1CD /* SampleDownloadRouter.swift in Sources */,
 				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
 				58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */,
 				DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */,
+				58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */,
+				58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */,
+				DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */,
 				23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

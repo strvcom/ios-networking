@@ -13,4 +13,5 @@ enum SampleAPIConstants {
     static let authHost = "https://nonexistentmockauth.com/api"
     static let validEmail = "eve.holt@reqres.in"
     static let validPassword = "cityslicka"
+    static let videoUrl = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
 }

@@ -7,23 +7,26 @@
 
 import SwiftUI
 
-enum NetworkingCase: String, Hashable, CaseIterable {
+enum NetworkingFeature: String, Hashable, CaseIterable {
     case authorization
+    case downloads
 }
 
 struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(NetworkingCase.allCases, id: \.self) { screen in
-                    NavigationLink(screen.rawValue.capitalized, value: NetworkingCase.authorization)
+                ForEach(NetworkingFeature.allCases, id: \.self) { feature in
+                    NavigationLink(feature.rawValue.capitalized, value: feature)
                 }
             }
             .navigationTitle("Examples")
-            .navigationDestination(for: NetworkingCase.self) { screen in
-                switch screen {
+            .navigationDestination(for: NetworkingFeature.self) { feature in
+                switch feature {
                 case .authorization:
                     AuthorizationView()
+                case .downloads:
+                    DownloadsView()
                 }
             }
         }
