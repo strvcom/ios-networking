@@ -56,7 +56,7 @@ public extension Requestable {
 
         // encode url parameters
         if let urlParameters {
-            urlComponents.queryItems = urlParameters.map { URLQueryItem(name: $0, value: String(describing: $1)) }
+            urlComponents.queryItems = buildQueryItems(urlParameters: urlParameters)
         }
         
         return urlComponents
@@ -103,5 +103,41 @@ public extension Requestable {
         }
 
         return request
+    }
+}
+
+// MARK: Build Query Items
+private extension Requestable {
+    func buildQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
+        urlParameters
+            .map { key, value -> [URLQueryItem] in
+                buildQueryItems(key: key, value: value)
+            }
+            .flatMap { $0 }
+    }
+    
+    func buildQueryItems(key: String, value: Any) -> [URLQueryItem] {
+        if let arrayType = value as? ArrayParameter {
+            var queryItems: [URLQueryItem] = []
+            
+            switch arrayType.arrayEncoding {
+            case .commaSeparated:
+                queryItems = [URLQueryItem(
+                    name: key,
+                    value: arrayType.values.map { String(describing: $0) }.joined(separator: ",")
+                )]
+                
+            case .individual:
+                for parameter in arrayType.values {
+                    queryItems.append(URLQueryItem(
+                        name: key,
+                        value: String(describing: parameter)
+                    ))
+                }
+            }
+            return queryItems
+        }
+        
+        return [URLQueryItem(name: key, value: String(describing: value))]
     }
 }
