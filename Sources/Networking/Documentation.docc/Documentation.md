@@ -184,16 +184,20 @@ let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { e
 ```
 
 ## Interceptors
+Interceptors are useful pieces of code that modify request/response in the network request pipeline.
 ![Interceptors diagram](interceptors-diagram.png)
 
 There are three types you can leverage:
-1. ``RequestAdapting``
-2. ``ResponseProcessing``
-3. ``RequestInterceptor``
-
-## Request Interceptors
+``RequestAdapting``
 Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
 
+``ResponseProcessing``
+Processors are modifying the URLResponse received after a successful network request.
+
+``RequestInterceptor``
+Interceptors do both adapting and processing.
+
+## Request Interceptors
 
 ### Logging
 Networking provides a default ``LoggingInterceptor`` which internally uses `os_log` to pretty print requests/responses. You can utilise it to get logging console output either for requests, responses or both.
@@ -238,10 +242,20 @@ final class CustomAuthorizationManager: AuthorizationManaging {
 }
 ```
 
-## RequestProcessing
+## Processors
 
 ### Status Code
+Each ``Requestable`` endpoint definition contains an ``Requestable/acceptableStatusCodes-9q0ur`` range of acceptable status codes. By default, these are set to `200..<400`. Networking provides a default status code processor that makes sure the received response's HTTP code is an acceptable one, otherwise an ``NetworkError/unacceptableStatusCode(statusCode:acceptedStatusCodes:response:)`` error is thrown.
+
+```
+APIManager(
+    //    
+    responseProcessors: [StatusCodeProcessor.shared],
+    //
+)
+```
 
 ### Storage
+
 
 ### Multipeer Connectivity
