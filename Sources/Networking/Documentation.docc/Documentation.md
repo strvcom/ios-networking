@@ -187,15 +187,19 @@ let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { e
 Interceptors are useful pieces of code that modify request/response in the network request pipeline.
 ![Interceptors diagram](interceptors-diagram.png)
 
-There are three types you can leverage:
+There are three types you can leverage:<br>
+
 ``RequestAdapting``
+
 Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
 
 ``ResponseProcessing``
+
 Processors are modifying the URLResponse received after a successful network request.
 
 ``RequestInterceptor``
-Interceptors do both adapting and processing.
+
+Interceptors handle both adapting and processing.
 
 By conforming to these protocols, you can create your own adaptors/processors/interceptors. In the following part, interceptors provided by Networking are introduced.
 
