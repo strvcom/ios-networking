@@ -7,7 +7,7 @@ Heavily inspired by Moya, the networking layer's philosophy is focused on creati
 
 ## Router
 By conforming to the ``Requestable`` protocol, you can define endpoint definitions containing the elementary HTTP request components necessary to create valid HTTP requests.
-<br> **Recommendation:** Follow the `Router` naming convention to explicitly indicate the usage of a router pattern.
+<br>**Recommendation:** Follow the `Router` naming convention to explicitly indicate the usage of a router pattern.
 
 ### Example
 ```
@@ -85,6 +85,7 @@ init(
     errorProcessors: [ErrorProcessing] = []
 )
 ```
+Adapters and processors are passed during initialisation and cannot be changed afterwards.
 
 There are two methods provided by the ``APIManaging`` protocol:
 
@@ -130,13 +131,52 @@ let userResponse: UserResponse = try await apiManager.request(
 ```
 
 ## DownloadAPIManager
-DownloadAPIManager is responsible for the creation and management of a network file download. It conforms to the ``DownloadAPIManaging`` protocol which allows you to define your own custom DownloadAPIManager if needed.
+DownloadAPIManager is responsible for the creation and management of a network file download. It conforms to the ``DownloadAPIManaging`` protocol which allows you to define your own custom DownloadAPIManager if needed. Multiple parallel downloads are supported.
 
+The initialisation is equivalent to APIManager, except the session is created for the user based on a given ``URLSessionConfiguration``:
+```
+init(
+    urlSessionConfiguration: URLSessionConfiguration = .default,
+    requestAdapters: [RequestAdapting] = [],
+    responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
+    errorProcessors: [ErrorProcessing] = []
+)
+```
 
+Adapters and processors are passed during initialisation and cannot be changed afterwards.
+
+The DownloadAPIManager contains a public property that enables you to keep track of current tasks in progress.
+```
+var allTasks: [URLSessionDownloadTask] { get async }
+```
+There are three methods provided by the ``DownloadAPIManaging`` protocol:
+
+1. Request download for a given endpoint. Returns a standard (URLSessionDownloadTask, Response) result for the HTTP handshake. This result is not the actual downloaded file, but the HTTP response received after the download is initiated.
+```
+func downloadRequest(
+    _ endpoint: Requestable,
+    resumableData: Data? = nil,
+    retryConfiguration: RetryConfiguration?
+) async throws -> DownloadResult
+```
+
+2. Get progress async stream for a given task to observe task download progress and state.
+```
+func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
+```
+
+The `DownloadState` struct provides you with information about the download itself, including bytes downloaded, total byte size of the file being downloaded or the error if any occurs.
+
+3. Invalidate download session in case DownloadAPIManager is not used as singleton to prevent memory leaks.
+```
+func invalidateSession(shouldFinishTasks: Bool = false)
+```
+DownloadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the DownloadAPIManager, don't forget to invalidate the session if it is not needed anymore.
 
 ## Retry ability
+Both APIManager and DownloadAPIManager allow for configurable retry mechanism. 
 
-## Interceptors
+## Adapters
 
 ### Authorization
 
@@ -146,6 +186,6 @@ DownloadAPIManager is responsible for the creation and management of a network f
 
 ### Status Code
 
-### Storage 
+### Storage
 
 ### Multipeer Connectivity
