@@ -3,7 +3,7 @@
 A networking layer using native `UrlSession` and Swift concurrency.
 
 ## Overview
-Heavily inspired by Moya, the networking layer's philosophy is focused on creating individual endpoint routers, transforming them into a valid URLRequest objects and applying optional interceptors and processors in the network call pipeline.
+Heavily inspired by Moya, the networking layer's philosophy is focused on creating individual endpoint routers, transforming them into a valid URLRequest objects and applying optional adapters and processors in the network call pipeline.
 
 ## Router
 By conforming to the ``Requestable`` protocol, you can define endpoint definitions containing the elementary HTTP request components necessary to create valid HTTP requests.
@@ -133,7 +133,7 @@ let userResponse: UserResponse = try await apiManager.request(
 ## DownloadAPIManager
 DownloadAPIManager is responsible for the creation and management of a network file download. It conforms to the ``DownloadAPIManaging`` protocol which allows you to define your own custom DownloadAPIManager if needed. Multiple parallel downloads are supported.
 
-The initialisation is equivalent to APIManager, except the session is created for the user based on a given ``URLSessionConfiguration``:
+The initialisation is equivalent to APIManager, except the session is created for the user based on a given `URLSessionConfiguration`:
 ```
 init(
     urlSessionConfiguration: URLSessionConfiguration = .default,
@@ -174,15 +174,71 @@ func invalidateSession(shouldFinishTasks: Bool = false)
 DownloadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the DownloadAPIManager, don't forget to invalidate the session if it is not needed anymore.
 
 ## Retry ability
-Both APIManager and DownloadAPIManager allow for configurable retry mechanism. 
+Both APIManager and DownloadAPIManager allow for configurable retry mechanism.
 
-## Adapters
+```
+let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
+    // custom logic here that determines whether the request should be retried
+    // e.g you can only retry with 5xx http error codes
+}
+```
 
-### Authorization
+## Interceptors
+![Interceptors diagram](interceptors-diagram.png)
+
+There are three types you can leverage:
+1. ``RequestAdapting``
+2. ``ResponseProcessing``
+3. ``RequestInterceptor``
+
+## Request Interceptors
+Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
+
 
 ### Logging
+Networking provides a default ``LoggingInterceptor`` which internally uses `os_log` to pretty print requests/responses. You can utilise it to get logging console output either for requests, responses or both.
 
-## Processors
+```
+APIManager(
+    //
+    requestAdapters: [LoggingInterceptor.shared],
+    responseProcessors: [LoggingInterceptor.shared],
+    errorProcessors: [LoggingInterceptor.shared]
+    //
+)
+```
+
+### Authorization
+Networking provides a default authorization handling for OAuth scenarios. Use the default ``AuthorizationTokenInterceptor`` with the APIManager to obtain the behaviour of JWT Bearer authorization header injection and access token expiration refresh flow.
+
+Start by implementing an authorization manager by conforming to ``AuthorizationManaging``. This manager requires you to provide storage defined by ``AuthorizationStorageManaging`` (where OAuth credentials will be stored) and a refresh method that will perform the refresh token network call to obtain a new OAuth pair. Optionally, you can provide custom implementations for ``AuthorizationManaging/authorizeRequest(_:)-6azlk`` (by default, this method sets the authorization header) or access token getter (by default, this method returns the access token saved in provided storage).
+
+```
+let authorizationManager = CustomAuthorizationManager()
+let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authorizationManager)
+APIManager(
+    //
+    requestAdapters: [authorizationInterceptor],
+    responseProcessors: [authorizationInterceptor],
+    //
+)
+```
+
+```
+final class CustomAuthorizationManager: AuthorizationManaging {
+    let storage: AuthorizationStorageManaging = CustomAuthorizationStorageManager()
+        
+    /// For refresh token logic, create a new instance of APIManager 
+    /// without injecting `AuthorizationTokenInterceptor` to avoid cycling in refreshes    
+    private let apiManager: APIManager = APIManager()
+    
+    func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
+        // perform an network request to obtain refresh OAuth credentials
+    }
+}
+```
+
+## RequestProcessing
 
 ### Status Code
 
