@@ -197,6 +197,8 @@ Processors are modifying the URLResponse received after a successful network req
 ``RequestInterceptor``
 Interceptors do both adapting and processing.
 
+By conforming to these protocols, you can create your own adaptors/processors/interceptors. In the following part, interceptors provided by Networking are introduced.
+
 ## Request Interceptors
 
 ### Logging
@@ -256,6 +258,14 @@ APIManager(
 ```
 
 ### Storage
+Networking provides an ``EndpointRequestStorageProcessor`` which allows for requests and responses to be saved locally into the file system.
 
+Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to set a `storedSessionsLimit` and optionally a multiPeerSharing configuration if you wish to utilize the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
 
-### Multipeer Connectivity
+```
+init(
+    fileManager: FileManager = .default,
+    jsonEncoder: JSONEncoder? = nil,
+    config: Config = .default
+)
+```

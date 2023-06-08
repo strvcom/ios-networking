@@ -14,14 +14,16 @@ The lightweight library for API calls management. The library is built upon URL 
 
   [X] multipeer connection modifier (low priority, last one to do)
   
+  [X] use library in iWeather example app
+  
+  [X] file download with progress
+  
   [ ] APIManager unit tests
 
   [ ] more complex samples in sample app (parallel tasks, retry, ...)
 
   [ ] tests for library objects if any are missing
   
-  [ ] sample usage of storaged api calls for UI testing
+  [ ] sample usage of storaged api calls for UI testing  
   
-  [X] use library in iWeather example app
-  
-  [ ] other data types - file upload/download with progress etc
+  [ ] file upload with progress
