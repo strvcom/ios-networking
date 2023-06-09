@@ -273,3 +273,25 @@ init(
     config: Config = .default
 )
 ```
+
+## Associated array query parameters
+When specifying urlParameters in the endpoint definition, use an ``ArrayParameter`` to define multiple values for a single URL query parameter. The struct lets you decide which ``ArrayEncoding`` will be used during the creation of the URL.
+
+There are two currently supported encodings:
+
+1. Comma separated
+```
+http://example.com?filter=1,2,3
+```
+
+2. Individual (default)
+```
+http://example.com?filter=1&filter=2&filter=3
+```
+
+### Example
+```
+var urlParameters: [String: Any]? { 
+     ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
+}
+```
