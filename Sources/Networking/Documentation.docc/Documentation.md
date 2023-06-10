@@ -10,7 +10,7 @@ By conforming to the ``Requestable`` protocol, you can define endpoint definitio
 <br>**Recommendation:** Follow the `Router` naming convention to explicitly indicate the usage of a router pattern.
 
 ### Example
-```
+```swift
 enum UserRouter { 
     case getUser
     case updateUser(UpdateUserRequest)
@@ -67,7 +67,7 @@ APIManager is responsible for the creation and management of a network call. It 
 
 There are two ways to initialise the ``APIManager`` object:
 1. Using URLSession as the response provider.
-```
+```swift
 init(
     urlSession: URLSession = .init(configuration: .default),
     requestAdapters: [RequestAdapting] = [],
@@ -77,7 +77,7 @@ init(
 ```
 
 2. Using custom response provider by conforming to ``ResponseProviding``.
-```
+```swift
 init(
     responseProvider: ResponseProviding,
     requestAdapters: [RequestAdapting] = [],
@@ -90,14 +90,14 @@ Adapters and processors are passed during initialisation and cannot be changed a
 There are two methods provided by the ``APIManaging`` protocol:
 
 1. Result is URLSession's default (data, response) tuple.
-```
+```swift
 func request(
   _ endpoint: Requestable,
   retryConfiguration: RetryConfiguration?
 ) async throws -> Response
 ```
 2. Result is custom decodable object.
-```
+```swift
 func request<DecodableResponse: Decodable>(
   _ endpoint: Requestable,
   decoder: JSONDecoder,
@@ -108,19 +108,19 @@ func request<DecodableResponse: Decodable>(
 ### Example
 In the most simple form, the network request looks like this:
 
-```
+```swift
 try await apiManager.request(UserRouter.getUser)
 ```
 
 If you specify object type, the APIManager will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
 
-```
+```swift
 let userResponse: UserResponse = try await apiManager.request(UserRouter.getUser)
 ```
 
 Provide a custom after failure ``RetryConfiguration``, specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, ``RetryConfiguration/default`` configuration is used.
 
-```
+```swift
 let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
     // custom logic here
 }
@@ -134,7 +134,7 @@ let userResponse: UserResponse = try await apiManager.request(
 DownloadAPIManager is responsible for the creation and management of a network file download. It conforms to the ``DownloadAPIManaging`` protocol which allows you to define your own custom DownloadAPIManager if needed. Multiple parallel downloads are supported.
 
 The initialisation is equivalent to APIManager, except the session is created for the user based on a given `URLSessionConfiguration`:
-```
+```swift
 init(
     urlSessionConfiguration: URLSessionConfiguration = .default,
     requestAdapters: [RequestAdapting] = [],
@@ -146,13 +146,13 @@ init(
 Adapters and processors are passed during initialisation and cannot be changed afterwards.
 
 The DownloadAPIManager contains a public property that enables you to keep track of current tasks in progress.
-```
+```swift
 var allTasks: [URLSessionDownloadTask] { get async }
 ```
 There are three methods provided by the ``DownloadAPIManaging`` protocol:
 
 1. Request download for a given endpoint. Returns a standard (URLSessionDownloadTask, Response) result for the HTTP handshake. This result is not the actual downloaded file, but the HTTP response received after the download is initiated.
-```
+```swift
 func downloadRequest(
     _ endpoint: Requestable,
     resumableData: Data? = nil,
@@ -161,14 +161,14 @@ func downloadRequest(
 ```
 
 2. Get progress async stream for a given task to observe task download progress and state.
-```
+```swift
 func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
 ```
 
 The `DownloadState` struct provides you with information about the download itself, including bytes downloaded, total byte size of the file being downloaded or the error if any occurs.
 
 3. Invalidate download session in case DownloadAPIManager is not used as singleton to prevent memory leaks.
-```
+```swift
 func invalidateSession(shouldFinishTasks: Bool = false)
 ```
 DownloadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the DownloadAPIManager, don't forget to invalidate the session if it is not needed anymore.
@@ -176,7 +176,7 @@ DownloadAPIManager is not deallocated from memory since URLSession is holding a 
 ## Retry ability
 Both APIManager and DownloadAPIManager allow for configurable retry mechanism.
 
-```
+```swift
 let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
     // custom logic here that determines whether the request should be retried
     // e.g you can only retry with 5xx http error codes
@@ -208,7 +208,7 @@ By conforming to these protocols, you can create your own adaptors/processors/in
 ### Logging
 Networking provides a default ``LoggingInterceptor`` which internally uses `os_log` to pretty print requests/responses. You can utilise it to get logging console output either for requests, responses or both.
 
-```
+```swift
 APIManager(
     //
     requestAdapters: [LoggingInterceptor.shared],
@@ -223,7 +223,7 @@ Networking provides a default authorization handling for OAuth scenarios. Use th
 
 Start by implementing an authorization manager by conforming to ``AuthorizationManaging``. This manager requires you to provide storage defined by ``AuthorizationStorageManaging`` (where OAuth credentials will be stored) and a refresh method that will perform the refresh token network call to obtain a new OAuth pair. Optionally, you can provide custom implementations for ``AuthorizationManaging/authorizeRequest(_:)-6azlk`` (by default, this method sets the authorization header) or access token getter (by default, this method returns the access token saved in provided storage).
 
-```
+```swift
 let authorizationManager = CustomAuthorizationManager()
 let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authorizationManager)
 APIManager(
@@ -234,7 +234,7 @@ APIManager(
 )
 ```
 
-```
+```swift
 final class CustomAuthorizationManager: AuthorizationManaging {
     let storage: AuthorizationStorageManaging = CustomAuthorizationStorageManager()
         
@@ -253,7 +253,7 @@ final class CustomAuthorizationManager: AuthorizationManaging {
 ### Status Code
 Each ``Requestable`` endpoint definition contains an ``Requestable/acceptableStatusCodes-9q0ur`` range of acceptable status codes. By default, these are set to `200..<400`. Networking provides a default status code processor that makes sure the received response's HTTP code is an acceptable one, otherwise an ``NetworkError/unacceptableStatusCode(statusCode:acceptedStatusCodes:response:)`` error is thrown.
 
-```
+```swift
 APIManager(
     //    
     responseProcessors: [StatusCodeProcessor.shared],
@@ -266,7 +266,7 @@ Networking provides an ``EndpointRequestStorageProcessor`` which allows for requ
 
 Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to set a `storedSessionsLimit` and optionally a multiPeerSharing configuration if you wish to utilize the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
 
-```
+```swift
 init(
     fileManager: FileManager = .default,
     jsonEncoder: JSONEncoder? = nil,
@@ -280,17 +280,17 @@ When specifying urlParameters in the endpoint definition, use an ``ArrayParamete
 There are two currently supported encodings:
 
 1. Comma separated
-```
+```swift
 http://example.com?filter=1,2,3
 ```
 
 2. Individual (default)
-```
+```swift
 http://example.com?filter=1&filter=2&filter=3
 ```
 
 ### Example
-```
+```swift
 var urlParameters: [String: Any]? { 
      ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
 }
