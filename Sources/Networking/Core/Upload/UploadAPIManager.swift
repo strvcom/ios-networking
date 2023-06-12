@@ -116,8 +116,28 @@ private extension UploadAPIManager {
         do {
             let urlRequest = try await prepare(request)
 
-            let task = upload(uploadable, for: urlRequest) { _, _, _ in
-                // TODO: Handle request completion
+            let task = upload(
+                uploadable,
+                for: urlRequest
+            ) { [uploadTasks, responseProcessors] data, response, error in
+                Task {
+                    guard let uploadTask = await uploadTasks.getValue(for: request.id) else {
+                        return
+                    }
+
+                    var state = UploadTask.State(task: uploadTask.task)
+                    if let data, let response {
+                        state.response = try await responseProcessors.process(
+                            (data, response),
+                            with: urlRequest,
+                            for: request
+                        )
+                    } else if let error {
+                        state.error = error
+                    }
+
+                    uploadTask.statePublisher.send(state)
+                }
             }
 
             let uploadTask = UploadTask(
