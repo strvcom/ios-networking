@@ -51,9 +51,23 @@ open class UploadAPIManager: NSObject {
 }
 
 // MARK: - URLSessionDelegate, URLSessionTaskDelegate
-extension UploadAPIManager: URLSessionDelegate, URLSessionTaskDelegate {}
+extension UploadAPIManager: URLSessionTaskDelegate {
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didSendBodyData bytesSent: Int64,
+        totalBytesSent: Int64,
+        totalBytesExpectedToSend: Int64
+    ) {
+        Task {
+            await uploadTask(for: task)?
+                .statePublisher
+                .send(UploadTask.State(task: task))
+        }
+    }
+}
 
-// MARK: - Public API
+// MARK: - UploadAPIManaging
 extension UploadAPIManager: UploadAPIManaging {
     public func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
@@ -80,8 +94,12 @@ extension UploadAPIManager: UploadAPIManaging {
     }
 
     public func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream {
-        // TODO: Provide stream
-        Empty().eraseToAnyPublisher().values
+        let uploadTask = await uploadTasks
+            .getValues()
+            .values
+            .first { $0.id == uploadTaskId }
+
+        return uploadTask?.stateStream ?? Empty().eraseToAnyPublisher().values
     }
 }
 
@@ -146,6 +164,13 @@ private extension UploadAPIManager {
         let originalRequest = try request.endpoint.asRequest()
         let adaptedRequest = try await requestAdapters.adapt(originalRequest, for: request)
         return adaptedRequest
+    }
+
+    func uploadTask(for task: URLSessionTask) async -> UploadTask? {
+        await uploadTasks
+            .getValues()
+            .values
+            .first { $0.taskIdentifier == task.taskIdentifier }
     }
 }
 

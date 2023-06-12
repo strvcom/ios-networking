@@ -22,6 +22,19 @@ public struct UploadTask {
     let statePublisher: CurrentValueSubject<State, Never>
 }
 
+extension UploadTask {
+    /// The identifier of the underlying `URLSessionUploadTask`.
+    var taskIdentifier: Int {
+        task.taskIdentifier
+    }
+
+    /// An asynchronous sequence of the upload task' state.
+    var stateStream: AsyncPublisher<AnyPublisher<UploadTask.State, Never>> {
+        statePublisher.eraseToAnyPublisher().values
+    }
+}
+
+// MARK: - Identifiable
 extension UploadTask: Identifiable {
     /// An unique task identifier.
     ///
