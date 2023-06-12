@@ -25,42 +25,26 @@ struct UploadItemView: View {
 
                 if !viewModel.isCancelled && !viewModel.isRetryable {
                     HStack {
-                        Button(action: {
-                            viewModel.isPaused ? viewModel.resume() : viewModel.pause()
-                        }, label: {
-                            Image(systemName: viewModel.isPaused ? "play" : "pause")
-                                .symbolVariant(.circle.fill)
-                                .font(.title2)
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(.blue)
-                        })
-                        .buttonStyle(.plain)
-                        .contentShape(Circle())
+                        button(
+                            symbol: viewModel.isPaused ? "play" : "pause",
+                            color: .blue,
+                            action: { viewModel.isPaused ? viewModel.resume() : viewModel.pause() }
+                        )
 
-                        Button(action: {
-                            viewModel.cancel()
-                        }, label: {
-                            Image(systemName: "x")
-                                .symbolVariant(.circle.fill)
-                                .font(.title2)
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(.red)
-                        })
-                        .buttonStyle(.plain)
-                        .contentShape(Circle())
+                        button(
+                            symbol: "x",
+                            color: .red,
+                            action: { viewModel.cancel() }
+                        )
                     }
                 } else if viewModel.isRetryable {
-                    Button(action: {
-                        // TODO: Allow retry
-                    }, label: {
-                        Image(systemName: "repeat")
-                            .symbolVariant(.circle.fill)
-                            .font(.title2)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.blue)
-                    })
-                    .buttonStyle(.plain)
-                    .contentShape(Circle())
+                    button(
+                        symbol: "repeat",
+                        color: .blue,
+                        action: {
+                            // TODO: Allow retry
+                        }
+                    )
                 }
             }
 
@@ -72,5 +56,22 @@ struct UploadItemView: View {
         .animation(.easeOut(duration: 0.3), value: viewModel.progress)
         .padding(.vertical, 8)
         .task { await viewModel.observeProgress() }
+    }
+}
+
+private extension UploadItemView {
+    func button(symbol: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(
+            action: action,
+            label: {
+                Image(systemName: symbol)
+                    .symbolVariant(.circle.fill)
+                    .font(.title2)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(color)
+            }
+        )
+        .buttonStyle(.plain)
+        .contentShape(Circle())
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 final class UploadsViewModel: ObservableObject {
     @Published var error: Error?
-    @Published var uploadItemViewModels: [UploadItemViewModel] = []
+    @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
 
     private let uploadService: UploadService
 
