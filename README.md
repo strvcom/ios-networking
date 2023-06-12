@@ -1,29 +1,11 @@
-# **WIP - TBD**
-
 # Networking
-The lightweight library for API calls management. The library is built upon URL session using swift concurrency.
+The streamlined library for efficient API call management. This lightweight solution leverages the power of Swift concurrency by building upon URL sessions.
 
-## Schedule
-  [X] init library with sample app
+The library is thoughtfully documented using the DocC documentation format, ensuring comprehensive and accessible documentation for developers.
 
-  [X] logger modifier (in draft)
-
+## Supported features
+  [X] logger modifier
   [X] data storing modifier
-
+  [X] multipeer connection modifier
   [X] authentication modifier with default solution with access + refresh tokens
-
-  [X] multipeer connection modifier (low priority, last one to do)
-  
-  [X] use library in iWeather example app
-  
   [X] file download with progress
-  
-  [ ] APIManager unit tests
-
-  [ ] more complex samples in sample app (parallel tasks, retry, ...)
-
-  [ ] tests for library objects if any are missing
-  
-  [ ] sample usage of storaged api calls for UI testing  
-  
-  [ ] file upload with progress
