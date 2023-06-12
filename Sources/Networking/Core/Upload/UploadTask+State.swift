@@ -27,6 +27,37 @@ extension UploadTask {
     }
 }
 
+public extension UploadTask.State {
+    /// The amount of data sent indicated by values from 0 to 1.
+    var fractionCompleted: Double {
+        totalBytes > 0 ? Double(sentBytes) / Double(totalBytes) : 0
+    }
+
+    var cancelled: Bool {
+        (error as? URLError)?.code == .cancelled
+    }
+
+    var timedOut: Bool {
+        (error as? URLError)?.code == .timedOut
+    }
+
+    var isRunning: Bool {
+        taskState == .running
+    }
+
+    var isSuspended: Bool {
+        taskState == .suspended
+    }
+
+    var isCanceling: Bool {
+        taskState == .canceling
+    }
+
+    var isCompleted: Bool {
+        taskState == .completed
+    }
+}
+
 extension UploadTask.State {
     /// Initializes the state from a `URLSessionTask`
     init(task: URLSessionTask) {
