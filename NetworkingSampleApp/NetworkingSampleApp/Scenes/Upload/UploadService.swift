@@ -46,6 +46,18 @@ extension UploadService {
     func uploadStateStream(for uploadTaskId: String) async -> UploadAPIManaging.StateStream {
         await uploadManager.stateStream(for: uploadTaskId)
     }
+
+    func pause(taskId: String) async {
+        await uploadManager.task(with: taskId)?.pause()
+    }
+
+    func resume(taskId: String) async {
+        await uploadManager.task(with: taskId)?.resume()
+    }
+
+    func cancel(taskId: String) async {
+        await uploadManager.task(with: taskId)?.cancel()
+    }
 }
 
 private extension UploadAPIManaging {

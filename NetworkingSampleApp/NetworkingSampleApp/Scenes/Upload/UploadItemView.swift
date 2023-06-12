@@ -26,7 +26,7 @@ struct UploadItemView: View {
                 if !viewModel.isCancelled && !viewModel.isRetryable {
                     HStack {
                         Button(action: {
-                            // TODO: allow pause/resume
+                            viewModel.isPaused ? viewModel.resume() : viewModel.pause()
                         }, label: {
                             Image(systemName: viewModel.isPaused ? "play" : "pause")
                                 .symbolVariant(.circle.fill)
@@ -38,7 +38,7 @@ struct UploadItemView: View {
                         .contentShape(Circle())
 
                         Button(action: {
-                            // TODO: allow cancel
+                            viewModel.cancel()
                         }, label: {
                             Image(systemName: "x")
                                 .symbolVariant(.circle.fill)

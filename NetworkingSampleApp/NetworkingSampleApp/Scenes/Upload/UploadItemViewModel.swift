@@ -39,4 +39,28 @@ extension UploadItemViewModel {
             isRetryable = state.cancelled || state.timedOut
         }
     }
+
+    func pause() {
+        Task {
+            await uploadService.pause(taskId: item.id)
+            isPaused = true
+            isRetryable = false
+        }
+    }
+
+    func resume() {
+        Task {
+            await uploadService.resume(taskId: item.id)
+            isPaused = false
+            isRetryable = false
+        }
+    }
+
+    func cancel() {
+        Task {
+            await uploadService.cancel(taskId: item.id)
+            isCancelled = true
+            isRetryable = true
+        }
+    }
 }
