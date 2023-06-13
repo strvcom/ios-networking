@@ -13,7 +13,7 @@ public struct UploadTask {
     public typealias ID = String
 
     /// The session task this object represents.
-    let task: URLSessionUploadTask
+    var task: URLSessionUploadTask
 
     /// The request associated with this task.
     let endpointRequest: EndpointRequest
@@ -66,6 +66,33 @@ extension UploadTask {
     /// An asynchronous sequence of the upload task' state.
     var stateStream: AsyncPublisher<AnyPublisher<UploadTask.State, Never>> {
         statePublisher.eraseToAnyPublisher().values
+    }
+
+    /// Completes the upload task by emitting the latest state and completing the state stream.
+    /// - Parameters:
+    ///   - state: The latest state to emit before completing the task.
+    ///   - delay: The delay between the emitting the `state` and completion in nanoseconds. Defaults to 0.2 seconds.
+    func complete(with state: State, delay: TimeInterval = 20_000_000) async throws {
+        statePublisher.send(state)
+
+        // Publishing value and completion one after another might cause the completion
+        // cancelling the whole stream before the client can process the emitted value.
+        try await Task.sleep(nanoseconds: UInt64(delay))
+        statePublisher.send(completion: .finished)
+    }
+}
+
+extension UploadTask {
+    init(
+        sessionUploadTask: URLSessionUploadTask,
+        endpointRequest: EndpointRequest,
+        uploadable: Uploadable
+    ) {
+        self.task = sessionUploadTask
+        self.endpointRequest = endpointRequest
+        self.uploadable = uploadable
+        self.statePublisher = .init(State(task: sessionUploadTask))
+        self.retryCounter = Counter()
     }
 }
 

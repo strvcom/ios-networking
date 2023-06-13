@@ -58,5 +58,6 @@ struct UploadsView: View {
                 }
             }
         }
+        .navigationTitle("Uploads")
     }
 }

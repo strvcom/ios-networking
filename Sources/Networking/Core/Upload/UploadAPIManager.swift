@@ -10,6 +10,7 @@ import Foundation
 
 /// Default upload API manager
 open class UploadAPIManager: NSObject {
+    // MARK: - Public Properties
     public var allTasks: [UploadTask] {
         get async {
             let activeTasks = await urlSession.allTasks.compactMap { $0 as? URLSessionUploadTask }
@@ -21,6 +22,7 @@ open class UploadAPIManager: NSObject {
         }
     }
 
+    // MARK: - Private Properties
     private var uploadTasks = ThreadSafeDictionary<String, UploadTask>()
 
     private lazy var urlSession = URLSession(
@@ -35,6 +37,7 @@ open class UploadAPIManager: NSObject {
     private let urlSessionConfiguration: URLSessionConfiguration
     private let sessionId: String
 
+    // MARK: - Initialization
     public init(
         urlSessionConfiguration: URLSessionConfiguration = .default,
         requestAdapters: [RequestAdapting] = [],
@@ -50,7 +53,7 @@ open class UploadAPIManager: NSObject {
     }
 }
 
-// MARK: - URLSessionDelegate, URLSessionTaskDelegate
+// MARK: - URLSessionTaskDelegate
 extension UploadAPIManager: URLSessionTaskDelegate {
     public func urlSession(
         _ session: URLSession,
@@ -133,6 +136,7 @@ extension UploadAPIManager: UploadAPIManaging {
     }
 }
 
+// MARK: - Private API
 private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
@@ -143,93 +147,111 @@ private extension UploadAPIManager {
         do {
             let urlRequest = try await prepare(request)
 
-            let task = upload(
-                uploadable,
+            let sessionUploadTask = sessionUploadTask(
+                with: uploadable,
                 for: urlRequest
-            ) { [unowned self, uploadTasks, responseProcessors, errorProcessors] data, response, error in
-                Task {
-                    guard let uploadTask = await uploadTasks.getValue(for: request.id) else {
-                        return
-                    }
-
-                    var state = UploadTask.State(task: uploadTask.task)
-                    if let data, let response {
-                        state.response = try await responseProcessors.process(
-                            (data, response),
-                            with: urlRequest,
-                            for: request
-                        )
-
-                        uploadTask.statePublisher.send(state)
-
-                        // Publishing value and completion one after another might cause the completion
-                        // cancelling the whole stream before the client processed the emitted value.
-                        try await Task.sleep(nanoseconds: 20_000_000)
-                        uploadTask.statePublisher.send(completion: .finished)
-
-                        // Cleanup on successful task completion
-                        await uploadTask.resetRetryCounter()
-                        await uploadTasks.set(value: nil, for: request.id)
-                    } else if let error {
-                        do {
-                            try await uploadTask.sleepIfRetry(
-                                for: error,
-                                retryConfiguration: retryConfiguration
-                            )
-
-                            try await self.uploadRequest(
-                                uploadTask.uploadable,
-                                request: uploadTask.endpointRequest,
-                                retryConfiguration: retryConfiguration
-                            )
-                        } catch {
-                            state.error = await errorProcessors.process(
-                                error,
-                                for: uploadTask.endpointRequest
-                            )
-
-                            uploadTask.statePublisher.send(state)
-
-                            // Publishing value and completion one after another might cause the completion
-                            // cancelling the whole stream before the client processed the emitted value.
-                            try await Task.sleep(nanoseconds: 20_000_000)
-                            uploadTask.statePublisher.send(completion: .finished)
-                        }
-                    }
-                }
-            }
-
-            // Get any stored upload task and update its internal URLSessionUploadTask, or create a new one
-            let uploadTask: UploadTask
-            if let existingUploadTask = await uploadTasks.getValue(for: request.id) {
-                uploadTask = UploadTask(
-                    task: task,
-                    endpointRequest: existingUploadTask.endpointRequest,
-                    uploadable: existingUploadTask.uploadable,
-                    statePublisher: existingUploadTask.statePublisher,
-                    retryCounter: existingUploadTask.retryCounter
-                )
-            } else {
-                uploadTask = UploadTask(
-                    task: task,
+            ) { [weak self] data, response, error in
+                self?.handleUploadTaskCompletion(
+                    urlRequest: urlRequest,
                     endpointRequest: request,
-                    uploadable: uploadable,
-                    statePublisher: .init(UploadTask.State(task: task)),
-                    retryCounter: Counter()
+                    retryConfiguration: retryConfiguration,
+                    data: data,
+                    response: response,
+                    error: error
                 )
             }
+
+            let uploadTask = await existingUploadTaskOrNew(
+                for: sessionUploadTask,
+                request: request,
+                uploadable: uploadable
+            )
 
             // Store the task for future processing
             await uploadTasks.set(value: uploadTask, for: request.id)
-            task.resume()
+            sessionUploadTask.resume()
             return uploadTask
         } catch {
             throw await errorProcessors.process(error, for: request)
         }
     }
 
-    func upload(
-        _ uploadable: Uploadable,
+    /// Returns any stored upload task and updates its internal URLSessionUploadTask, or creates a new one.
+    func existingUploadTaskOrNew(
+        for sessionUploadTask: URLSessionUploadTask,
+        request: EndpointRequest,
+        uploadable: Uploadable
+    ) async -> UploadTask {
+        guard var existingUploadTask = await uploadTasks.getValue(for: request.id) else {
+            return UploadTask(
+                sessionUploadTask: sessionUploadTask,
+                endpointRequest: request,
+                uploadable: uploadable
+            )
+        }
+        existingUploadTask.task = sessionUploadTask
+        return existingUploadTask
+    }
+
+    func handleUploadTaskCompletion(
+        urlRequest: URLRequest,
+        endpointRequest: EndpointRequest,
+        retryConfiguration: RetryConfiguration?,
+        data: Data?,
+        response: URLResponse?,
+        error: Error?
+    ) {
+        Task {
+            guard let uploadTask = await uploadTasks.getValue(for: endpointRequest.id) else {
+                return
+            }
+
+            var state = UploadTask.State(task: uploadTask.task)
+            if let data, let response {
+                state.response = try await responseProcessors.process(
+                    (data, response),
+                    with: urlRequest,
+                    for: endpointRequest
+                )
+
+                try await uploadTask.complete(with: state)
+
+                // Cleanup on successful task completion
+                await uploadTask.resetRetryCounter()
+                await uploadTasks.set(value: nil, for: endpointRequest.id)
+            } else if let error {
+                do {
+                    // URLError.Code.cancelled is thrown if the URLSessionTask is cancelled.
+                    // Consider this action intentional, thus the request won't be retried.
+                    guard !state.cancelled else {
+                        throw error
+                    }
+
+                    try await uploadTask.sleepIfRetry(
+                        for: error,
+                        retryConfiguration: retryConfiguration
+                    )
+
+                    try await self.uploadRequest(
+                        uploadTask.uploadable,
+                        request: uploadTask.endpointRequest,
+                        retryConfiguration: retryConfiguration
+                    )
+                } catch {
+                    state.error = await errorProcessors.process(
+                        error,
+                        for: uploadTask.endpointRequest
+                    )
+
+                    // No cleanup in case the task will be retried.
+                    try await uploadTask.complete(with: state)
+                }
+            }
+        }
+    }
+
+    func sessionUploadTask(
+        with uploadable: Uploadable,
         for request: URLRequest,
         completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void
     ) -> URLSessionUploadTask {
