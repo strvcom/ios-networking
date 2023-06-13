@@ -15,6 +15,14 @@ final class UploadItemViewModel: ObservableObject {
     @Published private(set) var isCancelled = false
     @Published private(set) var isRetryable = false
 
+    var stateTitle: String {
+        isCancelled
+            ? "Cancelled"
+            : isCompleted ? "Completed" : formattedProgress
+    }
+
+    var isCompleted: Bool { progress == 100 }
+
     let fileName: String
     let totalProgress = 100.0
 

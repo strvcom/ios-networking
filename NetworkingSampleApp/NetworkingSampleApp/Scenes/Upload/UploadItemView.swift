@@ -16,14 +16,14 @@ struct UploadItemView: View {
                 HStack {
                     Text(viewModel.fileName)
                         .font(.subheadline)
-                    Text(viewModel.isCancelled ? "Cancelled" : viewModel.formattedProgress)
+                    Text(viewModel.stateTitle)
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
 
                 Spacer()
 
-                if !viewModel.isCancelled && !viewModel.isRetryable {
+                if !viewModel.isCancelled && !viewModel.isRetryable && !viewModel.isCompleted {
                     HStack {
                         button(
                             symbol: viewModel.isPaused ? "play" : "pause",
