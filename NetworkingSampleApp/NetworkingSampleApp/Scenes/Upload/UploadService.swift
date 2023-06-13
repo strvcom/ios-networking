@@ -24,7 +24,8 @@ extension UploadService {
     func uploadImage(_ data: Data, fileName: String) async throws -> UploadItem {
         let task = try await uploadManager.upload(
             data: data,
-            to: SampleUploadRouter.image
+            to: SampleUploadRouter.image,
+            retryConfiguration: .default
         )
         return UploadItem(
             id: task.id,
@@ -35,7 +36,8 @@ extension UploadService {
     func uploadFile(_ fileUrl: URL) async throws -> UploadItem {
         let task = try await uploadManager.upload(
             fromFile: fileUrl,
-            to: SampleUploadRouter.file(fileUrl)
+            to: SampleUploadRouter.file(fileUrl),
+            retryConfiguration: .default
         )
         return UploadItem(
             id: task.id,
@@ -57,6 +59,13 @@ extension UploadService {
 
     func cancel(taskId: String) async {
         await uploadManager.task(with: taskId)?.cancel()
+    }
+
+    func retry(_ uploadItem: UploadItem) async throws {
+        try await uploadManager.retry(
+            taskId: uploadItem.id,
+            retryConfiguration: .default
+        )
     }
 }
 

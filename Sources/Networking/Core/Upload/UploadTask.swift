@@ -18,8 +18,14 @@ public struct UploadTask {
     /// The request associated with this task.
     let endpointRequest: EndpointRequest
 
+    /// The uploadable data associated with this task.
+    let uploadable: Uploadable
+
     /// Use this publisher to emit a new state of the task.
     let statePublisher: CurrentValueSubject<State, Never>
+
+    /// The counter that counts number of retries for this task.
+    let retryCounter: Counter
 }
 
 public extension UploadTask {
@@ -60,6 +66,21 @@ extension UploadTask {
     /// An asynchronous sequence of the upload task' state.
     var stateStream: AsyncPublisher<AnyPublisher<UploadTask.State, Never>> {
         statePublisher.eraseToAnyPublisher().values
+    }
+}
+
+// MARK: - Retryable
+extension UploadTask: Retryable {
+    func sleepIfRetry(for error: Error, retryConfiguration: RetryConfiguration?) async throws {
+        try await sleepIfRetry(
+            for: error,
+            endpointRequest: endpointRequest,
+            retryConfiguration: retryConfiguration
+        )
+    }
+
+    func resetRetryCounter() async {
+        await retryCounter.reset(for: endpointRequest.id)
     }
 }
 

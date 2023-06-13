@@ -79,18 +79,48 @@ extension UploadAPIManager: UploadAPIManaging {
 
     public func upload(
         data: Data,
-        to endpoint: Requestable
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(.data(data), request: endpointRequest)
+        return try await uploadRequest(
+            .data(data),
+            request: endpointRequest,
+            retryConfiguration: retryConfiguration
+        )
     }
 
     public func upload(
         fromFile fileUrl: URL,
-        to endpoint: Requestable
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(.file(fileUrl), request: endpointRequest)
+        return try await uploadRequest(
+            .file(fileUrl),
+            request: endpointRequest,
+            retryConfiguration: retryConfiguration
+        )
+    }
+
+    public func retry(
+        taskId: String,
+        retryConfiguration: RetryConfiguration?
+    ) async throws {
+        // Get stored upload task to invoke the request with the same arguments
+        guard let existingUploadTask = await uploadTasks.getValue(for: taskId) else {
+            throw NetworkError.unknown
+        }
+
+        // Removes the existing task from internal storage so that the `uploadRequest`
+        // invocation treats the request/task as new
+        await uploadTasks.set(value: nil, for: taskId)
+
+        try await uploadRequest(
+            existingUploadTask.uploadable,
+            request: existingUploadTask.endpointRequest,
+            retryConfiguration: retryConfiguration
+        )
     }
 
     public func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream {
@@ -104,14 +134,11 @@ extension UploadAPIManager: UploadAPIManaging {
 }
 
 private extension UploadAPIManager {
-    enum Uploadable {
-        case data(Data)
-        case file(URL)
-    }
-
+    @discardableResult
     func uploadRequest(
         _ uploadable: Uploadable,
-        request: EndpointRequest
+        request: EndpointRequest,
+        retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask {
         do {
             let urlRequest = try await prepare(request)
@@ -119,7 +146,7 @@ private extension UploadAPIManager {
             let task = upload(
                 uploadable,
                 for: urlRequest
-            ) { [uploadTasks, responseProcessors] data, response, error in
+            ) { [unowned self, uploadTasks, responseProcessors, errorProcessors] data, response, error in
                 Task {
                     guard let uploadTask = await uploadTasks.getValue(for: request.id) else {
                         return
@@ -132,19 +159,65 @@ private extension UploadAPIManager {
                             with: urlRequest,
                             for: request
                         )
-                    } else if let error {
-                        state.error = error
-                    }
 
-                    uploadTask.statePublisher.send(state)
+                        uploadTask.statePublisher.send(state)
+
+                        // Publishing value and completion one after another might cause the completion
+                        // cancelling the whole stream before the client processed the emitted value.
+                        try await Task.sleep(nanoseconds: 20_000_000)
+                        uploadTask.statePublisher.send(completion: .finished)
+
+                        // Cleanup on successful task completion
+                        await uploadTask.resetRetryCounter()
+                        await uploadTasks.set(value: nil, for: request.id)
+                    } else if let error {
+                        do {
+                            try await uploadTask.sleepIfRetry(
+                                for: error,
+                                retryConfiguration: retryConfiguration
+                            )
+
+                            try await self.uploadRequest(
+                                uploadTask.uploadable,
+                                request: uploadTask.endpointRequest,
+                                retryConfiguration: retryConfiguration
+                            )
+                        } catch {
+                            state.error = await errorProcessors.process(
+                                error,
+                                for: uploadTask.endpointRequest
+                            )
+
+                            uploadTask.statePublisher.send(state)
+
+                            // Publishing value and completion one after another might cause the completion
+                            // cancelling the whole stream before the client processed the emitted value.
+                            try await Task.sleep(nanoseconds: 20_000_000)
+                            uploadTask.statePublisher.send(completion: .finished)
+                        }
+                    }
                 }
             }
 
-            let uploadTask = UploadTask(
-                task: task,
-                endpointRequest: request,
-                statePublisher: .init(UploadTask.State(task: task))
-            )
+            // Get any stored upload task and update its internal URLSessionUploadTask, or create a new one
+            let uploadTask: UploadTask
+            if let existingUploadTask = await uploadTasks.getValue(for: request.id) {
+                uploadTask = UploadTask(
+                    task: task,
+                    endpointRequest: existingUploadTask.endpointRequest,
+                    uploadable: existingUploadTask.uploadable,
+                    statePublisher: existingUploadTask.statePublisher,
+                    retryCounter: existingUploadTask.retryCounter
+                )
+            } else {
+                uploadTask = UploadTask(
+                    task: task,
+                    endpointRequest: request,
+                    uploadable: uploadable,
+                    statePublisher: .init(UploadTask.State(task: task)),
+                    retryCounter: Counter()
+                )
+            }
 
             // Store the task for future processing
             await uploadTasks.set(value: uploadTask, for: request.id)
@@ -152,7 +225,11 @@ private extension UploadAPIManager {
             return uploadTask
         } catch {
             do {
-                return try await uploadRequest(uploadable, request: request)
+                return try await uploadRequest(
+                    uploadable,
+                    request: request,
+                    retryConfiguration: retryConfiguration
+                )
             } catch {
                 throw await errorProcessors.process(error, for: request)
             }

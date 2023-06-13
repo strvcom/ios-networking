@@ -36,7 +36,7 @@ extension UploadItemViewModel {
             formattedProgress = String(format: "%.2f", progress) + "%"
             isPaused = state.isSuspended
             isCancelled = state.cancelled
-            isRetryable = state.cancelled || state.timedOut
+            isRetryable = state.cancelled || state.timedOut || state.error != nil
         }
     }
 
@@ -61,6 +61,13 @@ extension UploadItemViewModel {
             await uploadService.cancel(taskId: item.id)
             isCancelled = true
             isRetryable = true
+        }
+    }
+
+    func retry() {
+        Task {
+            try await uploadService.retry(item)
+            await observeProgress()
         }
     }
 }

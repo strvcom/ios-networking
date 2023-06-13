@@ -41,14 +41,12 @@ struct UploadItemView: View {
                     button(
                         symbol: "repeat",
                         color: .blue,
-                        action: {
-                            // TODO: Allow retry
-                        }
+                        action: { viewModel.retry() }
                     )
                 }
             }
 
-            if !viewModel.isCancelled {
+            if !viewModel.isCancelled && !viewModel.isRetryable {
                 ProgressView(value: viewModel.progress, total: viewModel.totalProgress)
                     .progressViewStyle(.linear)
             }

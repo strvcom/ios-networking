@@ -18,23 +18,36 @@ public protocol UploadAPIManaging {
     /// - Parameters:
     ///   - data: The data to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
+    ///   - retryConfiguration: An optional configuration for retry behavior.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
         data: Data,
-        to endpoint: Requestable
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask
 
     /// Initiates a file upload request for the specified endpoint.
     /// - Parameters:
     ///   - fileUrl: The file's URL to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
+    ///   - retryConfiguration: An optional configuration for retry behavior.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
         fromFile fileUrl: URL,
-        to endpoint: Requestable
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask
 
+    /// Retries the upload task with the specified identifier.
+    /// - Parameters:
+    ///   - taskId: The upload task's identifier to retry.
+    ///   - retryConfiguration: An optional configuration for retry behavior.
+    func retry(taskId: String, retryConfiguration: RetryConfiguration?) async throws
+
     /// Provides a stream of upload task's states for the specified `UploadTask.ID`.
+    ///
+    /// The stream stops providing updates whenever the internal stream produces an error,
+    /// i.e., `UploadTask.State.error` is non-nil. In such case, you can call `retry(taskId:)` to re-activate the stream for the specified `uploadTaskId`.
     /// - Parameter uploadTaskId: The identifier of the task to observe.
     /// - Returns: An asynchronous stream of upload state.
     func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream
