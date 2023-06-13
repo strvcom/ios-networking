@@ -67,4 +67,3 @@ extension UploadTask.State {
         error = task.error
     }
 }
-

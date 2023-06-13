@@ -224,15 +224,7 @@ private extension UploadAPIManager {
             task.resume()
             return uploadTask
         } catch {
-            do {
-                return try await uploadRequest(
-                    uploadable,
-                    request: request,
-                    retryConfiguration: retryConfiguration
-                )
-            } catch {
-                throw await errorProcessors.process(error, for: request)
-            }
+            throw await errorProcessors.process(error, for: request)
         }
     }
 
@@ -270,5 +262,3 @@ private extension UploadAPIManager {
             .first { $0.taskIdentifier == task.taskIdentifier }
     }
 }
-
-
