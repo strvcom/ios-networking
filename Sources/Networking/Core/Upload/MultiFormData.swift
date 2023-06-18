@@ -8,7 +8,12 @@
 import Foundation
 
 open class MultiFormData {
+    public var size: UInt64 {
+        bodyParts.reduce(0) { $0 + $1.size }
+    }
+
     private(set) var bodyParts: [BodyPart] = []
+
     let boundary: String
 
     public init(boundary: String? = nil) {
@@ -25,12 +30,19 @@ public extension MultiFormData {
         mimeType: String? = nil
     ) {
         let dataStream = InputStream(data: data)
-        append(dataStream: dataStream, name: name, fileName: fileName, mimeType: mimeType)
+        append(
+            dataStream: dataStream,
+            name: name,
+            size: UInt64(data.count),
+            fileName: fileName,
+            mimeType: mimeType
+        )
     }
 
     func append(
         from fileUrl: URL,
         name: String,
+        size: UInt64,
         fileName: String? = nil,
         mimeType: String? = nil
     ) throws {
@@ -47,7 +59,13 @@ public extension MultiFormData {
             throw EncodingError.invalidFileUrl(fileUrl)
         }
 
-        append(dataStream: dataStream, name: name, fileName: fileName, mimeType: mimeType ?? fileUrl.mimeType)
+        append(
+            dataStream: dataStream,
+            name: name,
+            size: size,
+            fileName: fileName,
+            mimeType: mimeType ?? fileUrl.mimeType
+        )
     }
 }
 
@@ -56,12 +74,14 @@ private extension MultiFormData {
     func append(
         dataStream: InputStream,
         name: String,
+        size: UInt64,
         fileName: String? = nil,
         mimeType: String? = nil
     ) {
         bodyParts.append(BodyPart(
             dataStream: dataStream,
             name: name,
+            size: size,
             fileName: fileName,
             mimeType: mimeType
         ))

@@ -11,6 +11,7 @@ public extension MultiFormData {
     struct BodyPart {
         let dataStream: InputStream
         let name: String
+        let size: UInt64
         let fileName: String?
         let mimeType: String?
     }
