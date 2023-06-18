@@ -38,6 +38,24 @@ public protocol UploadAPIManaging {
         retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask
 
+    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
+    ///
+    /// If the size of the `MultiFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
+    ///
+    /// - Parameters:
+    ///   - multiFormData: The multipart form data to upload.
+    ///   - sizeThreshold: The size threshold, in bytes, above which the data is streamed from disk rather than being loaded into memory all at once. Defaults to 10MB.
+    ///   - endpoint: The API endpoint to where data will be sent.
+    ///   - retryConfiguration: An optional configuration for retry behavior.
+    ///
+    /// - Returns: An `UploadTask` that represents this request.
+    func upload(
+        multiFormData: MultiFormData,
+        sizeThreshold: UInt64,
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> UploadTask
+
     /// Retries the upload task with the specified identifier.
     /// - Parameters:
     ///   - taskId: The upload task's identifier to retry.
@@ -57,4 +75,20 @@ public protocol UploadAPIManaging {
     /// The internal implementation uses Apple's delegate pattern which retains a strong reference to the delegate. You must call this method to allow the manager to be released from the memory, otherwise your app will be leaking until your app exits or the session is invalidated.
     /// - Parameter shouldFinishTasks: Determines whether all outstanding tasks should finish before invalidating the session or be immediately cancelled.
     func invalidateSession(shouldFinishTasks: Bool)
+}
+
+extension UploadAPIManaging {
+    func upload(
+        multiFormData: MultiFormData,
+        sizeThreshold: UInt64 = 10_000_000,
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> UploadTask {
+        try await upload(
+            multiFormData: multiFormData,
+            sizeThreshold: sizeThreshold,
+            to: endpoint,
+            retryConfiguration: retryConfiguration
+        )
+    }
 }

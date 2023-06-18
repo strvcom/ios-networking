@@ -31,6 +31,8 @@ open class UploadAPIManager: NSObject {
         delegateQueue: nil
     )
 
+    private let multiFormDataEncoder: MultiFormDataEncoding
+    private let fileManager: FileManager
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
@@ -40,11 +42,15 @@ open class UploadAPIManager: NSObject {
     // MARK: - Initialization
     public init(
         urlSessionConfiguration: URLSessionConfiguration = .default,
+        multiFormDataEncoder: MultiFormDataEncoding = MultiFormDataEncoder(),
+        fileManager: FileManager = .default,
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         self.urlSessionConfiguration = urlSessionConfiguration
+        self.multiFormDataEncoder = multiFormDataEncoder
+        self.fileManager = fileManager
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -104,6 +110,32 @@ extension UploadAPIManager: UploadAPIManaging {
             request: endpointRequest,
             retryConfiguration: retryConfiguration
         )
+    }
+
+    public func upload(
+        multiFormData: MultiFormData,
+        sizeThreshold: UInt64 = 10_000_000,
+        to endpoint: Requestable,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> UploadTask {
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+
+        if multiFormData.size < sizeThreshold {
+            let encodedMultiFormData = try multiFormDataEncoder.encode(multiFormData)
+            return try await uploadRequest(
+                .data(encodedMultiFormData),
+                request: endpointRequest,
+                retryConfiguration: retryConfiguration
+            )
+        } else {
+            let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
+            try multiFormDataEncoder.encode(multiFormData, to: temporaryFileUrl)
+            return try await uploadRequest(
+                .file(temporaryFileUrl),
+                request: endpointRequest,
+                retryConfiguration: retryConfiguration
+            )
+        }
     }
 
     public func retry(
@@ -282,5 +314,14 @@ private extension UploadAPIManager {
             .getValues()
             .values
             .first { $0.taskIdentifier == task.taskIdentifier }
+    }
+
+    func temporaryFileUrl(for request: EndpointRequest) throws -> URL {
+        let temporaryFileUrl = fileManager
+            .temporaryDirectory
+            .appendingPathComponent("ios-networking")
+            .appendingPathComponent(request.id)
+        try fileManager.createDirectory(at: temporaryFileUrl, withIntermediateDirectories: true)
+        return temporaryFileUrl
     }
 }
