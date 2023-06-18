@@ -73,5 +73,9 @@ extension MultiFormData {
     public enum EncodingError: LocalizedError {
         case invalidFileUrl(URL)
         case invalidFileName(at: URL)
+        case dataStreamReadFailed(with: Error)
+        case dataStreamWriteFailed(at: URL)
+        case fileAlreadyExists(at: URL)
+
     }
 }
