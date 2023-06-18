@@ -26,6 +26,9 @@ public struct UploadTask {
 
     /// The counter that counts number of retries for this task.
     let retryCounter: Counter
+
+    /// The file manager associated with the task.
+    let fileManager: FileManager
 }
 
 public extension UploadTask {
@@ -79,6 +82,10 @@ extension UploadTask {
         // cancelling the whole stream before the client can process the emitted value.
         try await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
+
+        if case let .file(url) = uploadable {
+            try? fileManager.removeItem(at: url)
+        }
     }
 }
 
@@ -86,13 +93,15 @@ extension UploadTask {
     init(
         sessionUploadTask: URLSessionUploadTask,
         endpointRequest: EndpointRequest,
-        uploadable: Uploadable
+        uploadable: Uploadable,
+        fileManager: FileManager
     ) {
         self.task = sessionUploadTask
         self.endpointRequest = endpointRequest
         self.uploadable = uploadable
         self.statePublisher = .init(State(task: sessionUploadTask))
         self.retryCounter = Counter()
+        self.fileManager = fileManager
     }
 }
 
