@@ -8,11 +8,20 @@
 import Foundation
 
 open class MultiFormDataEncoder {
+    /// A string representing a carriage return and line feed.
     private let crlf = "\r\n"
 
+    /// An instance of `FileManager` used to manage files.
     private let fileManager: FileManager
+
+    /// A read/write stream buffer size in bytes.
     private let streamBufferSize: Int
 
+    /// Creates a `MultiFormDataEncoder` instance with the specified file manager and stream buffer size.
+    ///
+    /// - Parameters:
+    ///   - fileManager: A `FileManager` used for files management.
+    ///   - streamBufferSize: A read/write stream buffer size in bytes. Defaults to 1KB.
     public init(
         fileManager: FileManager = .default,
         streamBufferSize: Int = 1024

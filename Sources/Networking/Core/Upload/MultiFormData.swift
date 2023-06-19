@@ -7,15 +7,24 @@
 
 import Foundation
 
+/// The `MultiFormData` class provides a convenient way to handle multipart form data.
+/// It allows you to construct a multipart form data payload by adding multiple body parts, each representing a separate piece of data.
 open class MultiFormData {
+    /// The total size of the `multipart/form-data`.
+    /// It is calculated as the sum of sizes of all the body parts added to the MultiFormData instance.
     public var size: UInt64 {
         bodyParts.reduce(0) { $0 + $1.size }
     }
 
+    /// Represents the boundary string used to separate the different parts of the multipart form data.
+    /// It is a unique string that acts as a delimiter between each body part.
+    public let boundary: String
+
     private(set) var bodyParts: [BodyPart] = []
 
-    let boundary: String
-
+    /// Initializes a new instance of `MultiFormData` with an optional boundary string.
+    /// - Parameter boundary: A custom boundary string to be used for separating the body parts in the multipart form data.
+    /// If not provided, a unique boundary string is generated using a combination of "--boundary-" and a UUID.
     public init(boundary: String? = nil) {
         self.boundary = boundary ?? "--boundary-\(UUID().uuidString)"
     }
@@ -23,6 +32,13 @@ open class MultiFormData {
 
 // MARK: - Adding form data
 public extension MultiFormData {
+    /// Adds a body part to the multipart form data payload using the specified `data`.
+    ///
+    /// - Parameters:
+    ///   - data: The data to be added to the payload.
+    ///   - name: The name parameter of the `Content-Disposition` header field associated with this body part.
+    ///   - fileName: An optional filename parameter of the `Content-Disposition` header field associated with this body part.
+    ///   - mimeType: An optional MIME type of the body part.
     func append(
         _ data: Data,
         name: String,
@@ -39,6 +55,14 @@ public extension MultiFormData {
         )
     }
 
+    /// Adds a body part to the multipart form data payload using data from a file specified by its URL.
+    ///
+    /// - Parameters:
+    ///   - fileUrl: The URL of the file containing the data for the body part.
+    ///   - name: The name parameter of the `Content-Disposition` header field associated with this body part.
+    ///   - size: The size of the body part data.
+    ///   - fileName: An optional filename parameter of the `Content-Disposition` header field associated with this body part. If not provided, the last path component of the fileUrl is used as the filename (if any).
+    ///   - mimeType: An optional MIME type of the body part. If not provided, the MIME type is inferred from the file extension of the file.
     func append(
         from fileUrl: URL,
         name: String,

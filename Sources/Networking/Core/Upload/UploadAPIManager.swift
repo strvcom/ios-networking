@@ -120,6 +120,8 @@ extension UploadAPIManager: UploadAPIManaging {
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
 
+        // Encode in-memory and upload directly if the payload's size is less than the threshold,
+        // otherwise we write the payload to the disk first and upload by reading the file content.
         if multiFormData.size < sizeThreshold {
             let encodedMultiFormData = try multiFormDataEncoder.encode(multiFormData)
             return try await uploadRequest(
