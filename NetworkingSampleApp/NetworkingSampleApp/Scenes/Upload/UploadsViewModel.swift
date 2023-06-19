@@ -20,26 +20,39 @@ final class UploadsViewModel: ObservableObject {
 }
 
 extension UploadsViewModel {
-    func uploadImage(_ imageData: Data, fileName: String?) async {
-        do {
-            let uploadItem = try await uploadService.uploadImage(
-                imageData,
-                fileName: fileName ?? ""
-            )
-            uploadItemViewModels.append(UploadItemViewModel(item: uploadItem, uploadService: uploadService))
-        } catch {
-            print("Failed to upload with error", error)
-            self.error = error
+    func uploadImage(result: Result<Data?, Error>) {
+        Task {
+            do {
+                if let imageData = try result.get() {
+                    let uploadItem = try await uploadService.uploadImage(
+                        imageData,
+                        fileName: "image.jpg"
+                    )
+                    uploadItemViewModels.append(UploadItemViewModel(
+                        item: uploadItem,
+                        uploadService: uploadService
+                    ))
+                }
+            } catch {
+                print("Failed to upload with error", error)
+                self.error = error
+            }
         }
     }
 
-    func uploadFile(at fileUrl: URL) async {
-        do {
-            let uploadItem = try await uploadService.uploadFile(fileUrl)
-            uploadItemViewModels.append(UploadItemViewModel(item: uploadItem, uploadService: uploadService))
-        } catch {
-            print("Failed to upload with error", error)
-            self.error = error
+    func uploadFile(result: Result<URL, Error>) {
+        Task {
+            do {
+                let fileUrl = try result.get()
+                let uploadItem = try await uploadService.uploadFile(fileUrl)
+                uploadItemViewModels.append(UploadItemViewModel(
+                    item: uploadItem,
+                    uploadService: uploadService
+                ))
+            } catch {
+                print("Failed to upload with error", error)
+                self.error = error
+            }
         }
     }
 }

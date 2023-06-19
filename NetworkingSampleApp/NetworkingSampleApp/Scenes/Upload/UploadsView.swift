@@ -24,13 +24,8 @@ struct UploadsView: View {
                         matching: .images
                     )
                     .onChange(of: selectedPhotoPickerItem) { photo in
-                        Task {
-                            if let data = try? await photo?.loadTransferable(type: Data.self) {
-                                await viewModel.uploadImage(
-                                    data,
-                                    fileName: selectedPhotoPickerItem?.supportedContentTypes.first?.preferredFilenameExtension
-                                )
-                            }
+                        photo?.loadTransferable(type: Data.self) { result in
+                            viewModel.uploadImage(result: result)
                         }
                     }
 
@@ -39,11 +34,7 @@ struct UploadsView: View {
                         isPresented: $isFileImporterPresented,
                         allowedContentTypes: [.mp3, .mpeg4Movie]
                     ) { result in
-                        Task {
-                            if let fileUrl = try? result.get() {
-                                await viewModel.uploadFile(at: fileUrl)
-                            }
-                        }
+                        viewModel.uploadFile(result: result)
                     }
             }
 
