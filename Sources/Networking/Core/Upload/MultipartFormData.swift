@@ -1,5 +1,5 @@
 //
-//  MultiFormData.swift
+//  MultipartFormData.swift
 //  
 //
 //  Created by Tony Ngo on 18.06.2023.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-/// The `MultiFormData` class provides a convenient way to handle multipart form data.
+/// The `MultipartFormData` class provides a convenient way to handle multipart form data.
 /// It allows you to construct a multipart form data payload by adding multiple body parts, each representing a separate piece of data.
-open class MultiFormData {
+open class MultipartFormData {
     /// The total size of the `multipart/form-data`.
-    /// It is calculated as the sum of sizes of all the body parts added to the MultiFormData instance.
+    /// It is calculated as the sum of sizes of all the body parts added to the `MultipartFormData` instance.
     public var size: UInt64 {
         bodyParts.reduce(0) { $0 + $1.size }
     }
@@ -22,7 +22,7 @@ open class MultiFormData {
 
     private(set) var bodyParts: [BodyPart] = []
 
-    /// Initializes a new instance of `MultiFormData` with an optional boundary string.
+    /// Initializes a new instance of `MultipartFormData` with an optional boundary string.
     /// - Parameter boundary: A custom boundary string to be used for separating the body parts in the multipart form data.
     /// If not provided, a unique boundary string is generated using a combination of "--boundary-" and a UUID.
     public init(boundary: String? = nil) {
@@ -31,7 +31,7 @@ open class MultiFormData {
 }
 
 // MARK: - Adding form data
-public extension MultiFormData {
+public extension MultipartFormData {
     /// Adds a body part to the multipart form data payload using the specified `data`.
     ///
     /// - Parameters:
@@ -96,7 +96,7 @@ public extension MultiFormData {
 }
 
 // MARK: - Private
-private extension MultiFormData {
+private extension MultipartFormData {
     func append(
         dataStream: InputStream,
         name: String,
@@ -115,7 +115,7 @@ private extension MultiFormData {
 }
 
 // MARK: - Errors
-extension MultiFormData {
+extension MultipartFormData {
     public enum EncodingError: LocalizedError {
         case invalidFileUrl(URL)
         case invalidFileName(at: URL)

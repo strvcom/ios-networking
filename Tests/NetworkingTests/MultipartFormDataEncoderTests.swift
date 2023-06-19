@@ -1,5 +1,5 @@
 //
-//  MultiFormDataEncoderTests.swift
+//  MultipartFormDataEncoderTests.swift
 //  
 //
 //  Created by Tony Ngo on 18.06.2023.
@@ -8,14 +8,14 @@
 import Networking
 import XCTest
 
-final class MultiFormDataEncoderTests: XCTestCase {
+final class MultipartFormDataEncoderTests: XCTestCase {
     private let fileManager = FileManager.default
 
     private var temporaryDirectoryUrl: URL {
         URL(
             fileURLWithPath: NSTemporaryDirectory(),
             isDirectory: true
-        ).appendingPathComponent("multiformdata-encoder-tests")
+        ).appendingPathComponent("multipartformdata-encoder-tests")
     }
 
     override func setUpWithError() throws {
@@ -33,7 +33,7 @@ final class MultiFormDataEncoderTests: XCTestCase {
 
     func test_encode_encodesDataAsExpected() throws {
         let sut = makeSUT()
-        let formData = MultiFormData(boundary: "--boundary--123")
+        let formData = MultipartFormData(boundary: "--boundary--123")
 
         let data1 = Data("Hello".utf8)
         formData.append(data1, name: "first-data")
@@ -56,7 +56,7 @@ final class MultiFormDataEncoderTests: XCTestCase {
 
     func test_encode_encodesToFileAsExpected() throws {
         let sut = makeSUT()
-        let formData = MultiFormData(boundary: "--boundary--123")
+        let formData = MultipartFormData(boundary: "--boundary--123")
 
         let data = Data("Hello".utf8)
         formData.append(data, name: "first-data")
@@ -76,36 +76,36 @@ final class MultiFormDataEncoderTests: XCTestCase {
 
     func test_encode_throwsInvalidFileUrl() {
         let sut = makeSUT()
-        let formData = MultiFormData()
+        let formData = MultipartFormData()
         let tmpFileUrl = URL(string: "invalid/path")!
 
         do {
             try sut.encode(formData, to: tmpFileUrl)
             XCTFail("Encoding should have failed.")
-        } catch MultiFormData.EncodingError.invalidFileUrl {
+        } catch MultipartFormData.EncodingError.invalidFileUrl {
         } catch {
-            XCTFail("Should have failed with MultiFormData.EncodingError.fileAlreadyExists")
+            XCTFail("Should have failed with MultipartFormData.EncodingError.fileAlreadyExists")
         }
     }
 
     func test_encode_throwsFileAlreadyExists() {
         let sut = makeSUT()
-        let formData = MultiFormData()
+        let formData = MultipartFormData()
         let tmpFileUrl = temporaryDirectoryUrl.appendingPathComponent("file")
         try? sut.encode(formData, to: tmpFileUrl)
         do {
             try sut.encode(formData, to: tmpFileUrl)
             XCTFail("Encoding should have failed.")
-        } catch MultiFormData.EncodingError.fileAlreadyExists {
+        } catch MultipartFormData.EncodingError.fileAlreadyExists {
         } catch {
-            XCTFail("Should have failed with MultiFormData.EncodingError.fileAlreadyExists")
+            XCTFail("Should have failed with MultipartFormData.EncodingError.fileAlreadyExists")
         }
     }
 }
 
-private extension MultiFormDataEncoderTests {
-    func makeSUT(fileManager: FileManager = .default) -> MultiFormDataEncoder {
-        let sut = MultiFormDataEncoder(fileManager: fileManager)
+private extension MultipartFormDataEncoderTests {
+    func makeSUT(fileManager: FileManager = .default) -> MultipartFormDataEncoder {
+        let sut = MultipartFormDataEncoder(fileManager: fileManager)
         return sut
     }
 }

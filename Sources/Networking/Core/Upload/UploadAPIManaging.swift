@@ -40,19 +40,19 @@ public protocol UploadAPIManaging {
 
     /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
     ///
-    /// If the size of the `MultiFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
+    /// If the size of the `MultipartFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
     ///
     /// When uploaded from disk, a temporary file is created on the file system. This file is deleted when the upload task completes or errors out after all retry attempts.
     ///
     /// - Parameters:
-    ///   - multiFormData: The multipart form data to upload.
+    ///   - multipartFormData: The multipart form data to upload.
     ///   - sizeThreshold: The size threshold, in bytes, above which the data is streamed from disk rather than being loaded into memory all at once.
     ///   - endpoint: The API endpoint to where data will be sent.
     ///   - retryConfiguration: An optional configuration for retry behavior.
     ///
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
-        multiFormData: MultiFormData,
+        multipartFormData: MultipartFormData,
         sizeThreshold: UInt64,
         to endpoint: Requestable,
         retryConfiguration: RetryConfiguration?
@@ -82,22 +82,22 @@ public protocol UploadAPIManaging {
 public extension UploadAPIManaging {
     /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
     ///
-    /// If the size of the `MultiFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
-    /// To specify different data threshold, use ``upload(multiFormData:sizeThreshold:to:retryConfiguration:)``.
+    /// If the size of the `MultipartFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
+    /// To specify different data threshold, use ``upload(multipartFormData:sizeThreshold:to:retryConfiguration:)``.
     ///
     /// - Parameters:
-    ///   - multiFormData: The multipart form data to upload.
+    ///   - multipartFormData: The multipart form data to upload.
     ///   - endpoint: The API endpoint to where data will be sent.
     ///   - retryConfiguration: An optional configuration for retry behavior.
     ///
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
-        multiFormData: MultiFormData,
+        multipartFormData: MultipartFormData,
         to endpoint: Requestable,
         retryConfiguration: RetryConfiguration?
     ) async throws -> UploadTask {
         try await upload(
-            multiFormData: multiFormData,
+            multipartFormData: multipartFormData,
             sizeThreshold: 10_000_000,
             to: endpoint,
             retryConfiguration: retryConfiguration

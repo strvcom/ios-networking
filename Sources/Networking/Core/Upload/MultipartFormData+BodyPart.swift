@@ -1,5 +1,5 @@
 //
-//  MultiFormData+BodyPart.swift
+//  MultipartFormData+BodyPart.swift
 //  
 //
 //  Created by Tony Ngo on 18.06.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension MultiFormData {
+public extension MultipartFormData {
     /// Represents an individual part of the `multipart/form-data`.
     struct BodyPart {
         /// The input stream containing the data of the part's body.
@@ -27,7 +27,7 @@ public extension MultiFormData {
     }
 }
 
-extension MultiFormData.BodyPart {
+extension MultipartFormData.BodyPart {
     /// Returns the body part's header fields and values based on the properties of the instance.
     var contentHeaders: [HTTPHeader.HeaderField: String] {
         var disposition = "form-data; name=\"\(name)\""

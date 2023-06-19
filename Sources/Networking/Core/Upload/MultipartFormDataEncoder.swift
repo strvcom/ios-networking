@@ -1,5 +1,5 @@
 //
-//  MultiFormDataEncoder.swift
+//  MultipartFormDataEncoder.swift
 //  
 //
 //  Created by Tony Ngo on 18.06.2023.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class MultiFormDataEncoder {
+open class MultipartFormDataEncoder {
     /// A string representing a carriage return and line feed.
     private let crlf = "\r\n"
 
@@ -17,7 +17,7 @@ open class MultiFormDataEncoder {
     /// A read/write stream buffer size in bytes.
     private let streamBufferSize: Int
 
-    /// Creates a `MultiFormDataEncoder` instance with the specified file manager and stream buffer size.
+    /// Creates a `MultipartFormDataEncoder` instance with the specified file manager and stream buffer size.
     ///
     /// - Parameters:
     ///   - fileManager: A `FileManager` used for files management.
@@ -31,13 +31,13 @@ open class MultiFormDataEncoder {
     }
 }
 
-// MARK: - MultiFormDataEncoding
-extension MultiFormDataEncoder: MultiFormDataEncoding {
-    public func encode(_ multiFormData: MultiFormData) throws -> Data {
+// MARK: - MultipartFormDataEncoding
+extension MultipartFormDataEncoder: MultipartFormDataEncoding {
+    public func encode(_ multipartFormData: MultipartFormData) throws -> Data {
         var encoded = Data()
 
-        for bodyPart in multiFormData.bodyParts {
-            encoded.append("\(multiFormData.boundary)\(crlf)")
+        for bodyPart in multipartFormData.bodyParts {
+            encoded.append("\(multipartFormData.boundary)\(crlf)")
 
             let encodedHeaders = encode(bodyPart.contentHeaders)
             encoded.append(encodedHeaders)
@@ -48,34 +48,34 @@ extension MultiFormDataEncoder: MultiFormDataEncoding {
             encoded.append("\(crlf)")
         }
 
-        encoded.append("\(multiFormData.boundary)--\(crlf)")
+        encoded.append("\(multipartFormData.boundary)--\(crlf)")
         return encoded
     }
 
-    public func encode(_ multiFormData: MultiFormData, to fileUrl: URL) throws {
+    public func encode(_ multipartFormData: MultipartFormData, to fileUrl: URL) throws {
         guard fileUrl.isFileURL else {
-            throw MultiFormData.EncodingError.invalidFileUrl(fileUrl)
+            throw MultipartFormData.EncodingError.invalidFileUrl(fileUrl)
         }
 
         guard !fileManager.fileExists(at: fileUrl) else {
-            throw MultiFormData.EncodingError.fileAlreadyExists(at: fileUrl)
+            throw MultipartFormData.EncodingError.fileAlreadyExists(at: fileUrl)
         }
 
         guard let outputStream = OutputStream(url: fileUrl, append: false) else {
-            throw MultiFormData.EncodingError.dataStreamWriteFailed(at: fileUrl)
+            throw MultipartFormData.EncodingError.dataStreamWriteFailed(at: fileUrl)
         }
 
-        try encode(multiFormData, into: outputStream)
+        try encode(multipartFormData, into: outputStream)
     }
 }
 
-private extension MultiFormDataEncoder {
-    func encode(_ multiFormData: MultiFormData, into outputStream: OutputStream) throws {
+private extension MultipartFormDataEncoder {
+    func encode(_ multipartFormData: MultipartFormData, into outputStream: OutputStream) throws {
         outputStream.open()
         defer { outputStream.close() }
 
-        for bodyPart in multiFormData.bodyParts {
-            let encodedBoundary = "\(multiFormData.boundary)\(crlf)".data
+        for bodyPart in multipartFormData.bodyParts {
+            let encodedBoundary = "\(multipartFormData.boundary)\(crlf)".data
             try write(encodedBoundary, into: outputStream)
 
             var encodedHeaders = encode(bodyPart.contentHeaders)
@@ -86,7 +86,7 @@ private extension MultiFormDataEncoder {
             try write("\(crlf)".data, into: outputStream)
         }
 
-        try write("\(multiFormData.boundary)--\(crlf)".data, into: outputStream)
+        try write("\(multipartFormData.boundary)--\(crlf)".data, into: outputStream)
     }
 
     func write(_ inputStream: InputStream, into outputStream: OutputStream) throws {
@@ -101,7 +101,7 @@ private extension MultiFormDataEncoder {
             let bytesRead = inputStream.read(buffer, maxLength: streamBufferSize)
 
             if bytesRead == -1, let error = inputStream.streamError {
-                throw MultiFormData.EncodingError.dataStreamReadFailed(with: error)
+                throw MultipartFormData.EncodingError.dataStreamReadFailed(with: error)
             }
 
             if bytesRead > 0 {
@@ -129,7 +129,7 @@ private extension MultiFormDataEncoder {
             let bytesRead = dataStream.read(buffer, maxLength: streamBufferSize)
 
             if bytesRead == -1, let error = dataStream.streamError {
-                throw MultiFormData.EncodingError.dataStreamReadFailed(with: error)
+                throw MultipartFormData.EncodingError.dataStreamReadFailed(with: error)
             }
 
             if bytesRead > 0 {

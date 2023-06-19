@@ -31,7 +31,7 @@ open class UploadAPIManager: NSObject {
         delegateQueue: nil
     )
 
-    private let multiFormDataEncoder: MultiFormDataEncoding
+    private let multipartFormDataEncoder: MultipartFormDataEncoding
     private let fileManager: FileManager
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
@@ -42,14 +42,14 @@ open class UploadAPIManager: NSObject {
     // MARK: - Initialization
     public init(
         urlSessionConfiguration: URLSessionConfiguration = .default,
-        multiFormDataEncoder: MultiFormDataEncoding = MultiFormDataEncoder(),
+        multipartFormDataEncoder: MultipartFormDataEncoding = MultipartFormDataEncoder(),
         fileManager: FileManager = .default,
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         self.urlSessionConfiguration = urlSessionConfiguration
-        self.multiFormDataEncoder = multiFormDataEncoder
+        self.multipartFormDataEncoder = multipartFormDataEncoder
         self.fileManager = fileManager
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
@@ -113,7 +113,7 @@ extension UploadAPIManager: UploadAPIManaging {
     }
 
     public func upload(
-        multiFormData: MultiFormData,
+        multipartFormData: MultipartFormData,
         sizeThreshold: UInt64 = 10_000_000,
         to endpoint: Requestable,
         retryConfiguration: RetryConfiguration?
@@ -122,16 +122,16 @@ extension UploadAPIManager: UploadAPIManaging {
 
         // Encode in-memory and upload directly if the payload's size is less than the threshold,
         // otherwise we write the payload to the disk first and upload by reading the file content.
-        if multiFormData.size < sizeThreshold {
-            let encodedMultiFormData = try multiFormDataEncoder.encode(multiFormData)
+        if multipartFormData.size < sizeThreshold {
+            let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
             return try await uploadRequest(
-                .data(encodedMultiFormData),
+                .data(encodedMultipartFormData),
                 request: endpointRequest,
                 retryConfiguration: retryConfiguration
             )
         } else {
             let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
-            try multiFormDataEncoder.encode(multiFormData, to: temporaryFileUrl)
+            try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
             return try await uploadRequest(
                 .file(temporaryFileUrl, removeOnComplete: true),
                 request: endpointRequest,
