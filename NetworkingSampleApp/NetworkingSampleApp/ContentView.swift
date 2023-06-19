@@ -30,11 +30,18 @@ struct ContentView: View {
                 case .downloads:
                     DownloadsView()
                 case .uploads:
-                    UploadsView(viewModel: UploadsViewModel(
-                        uploadService: UploadService(
-                            uploadManager: UploadAPIManager()
+                    UploadsView(
+                        viewModel: UploadsViewModel(
+                            uploadService: UploadService(
+                                uploadManager: UploadAPIManager()
+                            )
+                        ),
+                        formViewModel: FormUploadsViewModel(
+                            uploadService: UploadService(
+                                uploadManager: UploadAPIManager()
+                            )
                         )
-                    ))
+                    )
                 }
             }
         }

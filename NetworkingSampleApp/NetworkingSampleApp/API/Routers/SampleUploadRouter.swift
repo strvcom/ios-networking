@@ -12,6 +12,7 @@ import UniformTypeIdentifiers
 enum SampleUploadRouter: Requestable {
     case image
     case file(URL)
+    case multipart(boundary: String)
 
     var baseURL: URL {
         fatalError("Provide your API base URL for upload")
@@ -23,6 +24,8 @@ enum SampleUploadRouter: Requestable {
             return ["Content-Type": "image/png"]
         case let .file(url):
             return ["Content-Type": url.mimeType]
+        case let .multipart(boundary):
+            return ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
         }
     }
 

@@ -1,0 +1,59 @@
+//
+//  FormUploadsViewModel.swift
+//  NetworkingSampleApp
+//
+//  Created by Tony Ngo on 19.06.2023.
+//
+
+import Foundation
+
+@MainActor
+final class FormUploadsViewModel: ObservableObject {
+    @Published var text = ""
+    @Published var fileUrl: URL?
+    @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
+
+    var selectedFileName: String {
+        let resources = try? fileUrl?.resourceValues(forKeys:[.fileSizeKey])
+        let fileSize = (resources?.fileSize ?? 0) / 1_000_000
+        var fileName = fileUrl?.lastPathComponent ?? ""
+        if fileSize > 0 { fileName += "\n\(fileSize) MB" }
+        return fileName
+    }
+
+    private let uploadService: UploadService
+
+    init(uploadService: UploadService) {
+        self.uploadService = uploadService
+    }
+}
+
+extension FormUploadsViewModel {
+    func uploadForm() {
+        Task {
+            do {
+                let uploadItem = try await uploadService.uploadFormData { form in
+                    form.append(Data(self.text.utf8), name: "textfield")
+
+                    if
+                        let fileUrl = self.fileUrl,
+                        let resources = try? fileUrl.resourceValues(forKeys:[.fileSizeKey]),
+                        let fileSize = resources.fileSize
+                    {
+                        try form.append(from: fileUrl, name: "attachment", size: UInt64(fileSize))
+                    }
+                }
+
+                uploadItemViewModels.append(UploadItemViewModel(
+                    item: uploadItem,
+                    uploadService: uploadService
+                ))
+
+                text = ""
+                fileUrl = nil
+            } catch {
+                print("Failed to upload with error:", error)
+            }
+        }
+    }
+}

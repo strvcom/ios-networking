@@ -45,6 +45,20 @@ extension UploadService {
         )
     }
 
+    func uploadFormData(_ build: @escaping (MultiFormData) throws -> Void) async throws -> UploadItem {
+        let multiFormData = MultiFormData()
+        try build(multiFormData)
+        let task = try await uploadManager.upload(
+            multiFormData: multiFormData,
+            to: SampleUploadRouter.multipart(boundary: multiFormData.boundary),
+            retryConfiguration: .default
+        )
+        return UploadItem(
+            id: task.id,
+            fileName: "Form upload of size \(multiFormData.size)"
+        )
+    }
+
     func uploadStateStream(for uploadTaskId: String) async -> UploadAPIManaging.StateStream {
         await uploadManager.stateStream(for: uploadTaskId)
     }

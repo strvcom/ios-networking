@@ -79,7 +79,7 @@ public protocol UploadAPIManaging {
     func invalidateSession(shouldFinishTasks: Bool)
 }
 
-extension UploadAPIManaging {
+public extension UploadAPIManaging {
     /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
     ///
     /// If the size of the `MultiFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
