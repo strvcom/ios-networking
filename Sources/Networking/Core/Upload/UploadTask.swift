@@ -31,6 +31,7 @@ public struct UploadTask {
     let fileManager: FileManager
 }
 
+// MARK: - Public API
 public extension UploadTask {
     /// Resumes the task.
     /// Has no effect if the task is not in the suspended state.
@@ -60,6 +61,7 @@ public extension UploadTask {
     }
 }
 
+// MARK: - Internal API
 extension UploadTask {
     /// The identifier of the underlying `URLSessionUploadTask`.
     var taskIdentifier: Int {

@@ -69,8 +69,12 @@ extension MultipartFormDataEncoder: MultipartFormDataEncoding {
     }
 }
 
+// MARK: - Private API
 private extension MultipartFormDataEncoder {
-    func encode(_ multipartFormData: MultipartFormData, into outputStream: OutputStream) throws {
+    func encode(
+        _ multipartFormData: MultipartFormData,
+        into outputStream: OutputStream
+    ) throws {
         outputStream.open()
         defer { outputStream.close() }
 
@@ -89,7 +93,10 @@ private extension MultipartFormDataEncoder {
         try write("\(multipartFormData.boundary)--\(crlf)".data, into: outputStream)
     }
 
-    func write(_ inputStream: InputStream, into outputStream: OutputStream) throws {
+    func write(
+        _ inputStream: InputStream,
+        into outputStream: OutputStream
+    ) throws {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: streamBufferSize)
         inputStream.open()
         defer {

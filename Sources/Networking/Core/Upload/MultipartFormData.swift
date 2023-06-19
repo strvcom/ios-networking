@@ -113,15 +113,3 @@ private extension MultipartFormData {
         ))
     }
 }
-
-// MARK: - Errors
-extension MultipartFormData {
-    public enum EncodingError: LocalizedError {
-        case invalidFileUrl(URL)
-        case invalidFileName(at: URL)
-        case missingFileSize(for: URL)
-        case dataStreamReadFailed(with: Error)
-        case dataStreamWriteFailed(at: URL)
-        case fileAlreadyExists(at: URL)
-    }
-}
