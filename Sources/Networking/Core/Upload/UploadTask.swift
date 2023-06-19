@@ -83,7 +83,7 @@ extension UploadTask {
         try await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
 
-        if case let .file(url) = uploadable {
+        if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
             try? fileManager.removeItem(at: url)
         }
     }

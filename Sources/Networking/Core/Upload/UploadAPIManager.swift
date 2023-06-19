@@ -133,7 +133,7 @@ extension UploadAPIManager: UploadAPIManaging {
             let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
             try multiFormDataEncoder.encode(multiFormData, to: temporaryFileUrl)
             return try await uploadRequest(
-                .file(temporaryFileUrl),
+                .file(temporaryFileUrl, removeOnComplete: true),
                 request: endpointRequest,
                 retryConfiguration: retryConfiguration
             )
@@ -297,7 +297,7 @@ private extension UploadAPIManager {
                 from: data,
                 completionHandler: completionHandler
             )
-        case let .file(fileUrl):
+        case let .file(fileUrl, _):
             return urlSession.uploadTask(
                 with: request,
                 fromFile: fileUrl,
@@ -320,11 +320,13 @@ private extension UploadAPIManager {
     }
 
     func temporaryFileUrl(for request: EndpointRequest) throws -> URL {
-        let temporaryFileUrl = fileManager
+        let temporaryDirectoryUrl = fileManager
             .temporaryDirectory
             .appendingPathComponent("ios-networking")
+
+        let temporaryFileUrl = temporaryDirectoryUrl
             .appendingPathComponent(request.id)
-        try fileManager.createDirectory(at: temporaryFileUrl, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: temporaryDirectoryUrl, withIntermediateDirectories: true)
         return temporaryFileUrl
     }
 }

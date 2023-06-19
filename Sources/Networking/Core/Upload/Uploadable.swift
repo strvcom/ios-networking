@@ -10,5 +10,5 @@ import Foundation
 /// Represents a data type that can be uploaded.
 enum Uploadable {
     case data(Data)
-    case file(URL)
+    case file(URL, removeOnComplete: Bool = false)
 }
