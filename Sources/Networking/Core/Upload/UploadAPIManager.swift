@@ -252,7 +252,7 @@ private extension UploadAPIManager {
                 try await uploadTask.complete(with: state)
 
                 // Cleanup on successful task completion
-                await uploadTask.resetRetryCounter()
+                await uploadTask.cleanup()
                 await uploadTasks.set(value: nil, for: endpointRequest.id)
             } else if let error {
                 do {
