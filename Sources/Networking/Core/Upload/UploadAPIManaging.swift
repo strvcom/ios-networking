@@ -11,8 +11,8 @@ import Foundation
 public protocol UploadAPIManaging {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
-    /// Currently ongoing upload tasks.
-    var allTasks: [UploadTask] { get async }
+    /// Currently active upload tasks.
+    var activeTasks: [UploadTask] { get async }
 
     /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:
