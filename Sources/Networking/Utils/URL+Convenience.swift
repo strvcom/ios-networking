@@ -16,4 +16,11 @@ extension URL {
     var isDirectory: Bool {
         (try? resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
     }
+
+    var fileSize: Int? {
+        guard let resources = try? resourceValues(forKeys:[.fileSizeKey]) else {
+            return nil
+        }
+        return resources.fileSize
+    }
 }

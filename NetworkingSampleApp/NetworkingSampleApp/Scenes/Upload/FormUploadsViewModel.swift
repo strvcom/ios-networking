@@ -35,12 +35,8 @@ extension FormUploadsViewModel {
                 let uploadItem = try await uploadService.uploadFormData { form in
                     form.append(Data(self.text.utf8), name: "textfield")
 
-                    if
-                        let fileUrl = self.fileUrl,
-                        let resources = try? fileUrl.resourceValues(forKeys:[.fileSizeKey]),
-                        let fileSize = resources.fileSize
-                    {
-                        try form.append(from: fileUrl, name: "attachment", size: UInt64(fileSize))
+                    if let fileUrl = self.fileUrl {
+                        try form.append(from: fileUrl, name: "attachment")
                     }
                 }
 

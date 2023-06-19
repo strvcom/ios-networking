@@ -60,13 +60,11 @@ public extension MultiFormData {
     /// - Parameters:
     ///   - fileUrl: The URL of the file containing the data for the body part.
     ///   - name: The name parameter of the `Content-Disposition` header field associated with this body part.
-    ///   - size: The size of the body part data.
     ///   - fileName: An optional filename parameter of the `Content-Disposition` header field associated with this body part. If not provided, the last path component of the fileUrl is used as the filename (if any).
     ///   - mimeType: An optional MIME type of the body part. If not provided, the MIME type is inferred from the file extension of the file.
     func append(
         from fileUrl: URL,
         name: String,
-        size: UInt64,
         fileName: String? = nil,
         mimeType: String? = nil
     ) throws {
@@ -83,10 +81,14 @@ public extension MultiFormData {
             throw EncodingError.invalidFileUrl(fileUrl)
         }
 
+        guard let fileSize = fileUrl.fileSize else {
+            throw EncodingError.missingFileSize(for: fileUrl)
+        }
+
         append(
             dataStream: dataStream,
             name: name,
-            size: size,
+            size: UInt64(fileSize),
             fileName: fileName,
             mimeType: mimeType ?? fileUrl.mimeType
         )
@@ -117,9 +119,9 @@ extension MultiFormData {
     public enum EncodingError: LocalizedError {
         case invalidFileUrl(URL)
         case invalidFileName(at: URL)
+        case missingFileSize(for: URL)
         case dataStreamReadFailed(with: Error)
         case dataStreamWriteFailed(at: URL)
         case fileAlreadyExists(at: URL)
-
     }
 }
