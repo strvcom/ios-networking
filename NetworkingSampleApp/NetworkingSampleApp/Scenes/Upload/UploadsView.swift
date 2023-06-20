@@ -44,6 +44,22 @@ struct UploadsView: View {
                 }
             }
         }
+        .alert(
+            "Error",
+            isPresented: $viewModel.isErrorAlertPresented,
+            actions: {},
+            message: {
+                Text(viewModel.error?.localizedDescription ?? "")
+            }
+        )
+        .alert(
+            "Error",
+            isPresented: $formViewModel.isErrorAlertPresented,
+            actions: {},
+            message: {
+                Text(formViewModel.error?.localizedDescription ?? "")
+            }
+        )
         .navigationTitle("Uploads")
     }
 }

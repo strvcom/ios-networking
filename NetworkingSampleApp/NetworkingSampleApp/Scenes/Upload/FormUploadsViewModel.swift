@@ -11,6 +11,8 @@ import Foundation
 final class FormUploadsViewModel: ObservableObject {
     @Published var text = ""
     @Published var fileUrl: URL?
+    @Published var isErrorAlertPresented = false
+    @Published private(set) var error: Error?
     @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
 
     var selectedFileName: String {
@@ -49,6 +51,8 @@ extension FormUploadsViewModel {
                 fileUrl = nil
             } catch {
                 print("Failed to upload with error:", error)
+                self.error = error
+                self.isErrorAlertPresented = true
             }
         }
     }

@@ -9,7 +9,8 @@ import Foundation
 
 @MainActor
 final class UploadsViewModel: ObservableObject {
-    @Published var error: Error?
+    @Published var isErrorAlertPresented = false
+    @Published private(set) var error: Error?
     @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
 
     private let uploadService: UploadService
@@ -36,6 +37,7 @@ extension UploadsViewModel {
             } catch {
                 print("Failed to upload with error", error)
                 self.error = error
+                self.isErrorAlertPresented = true
             }
         }
     }
@@ -52,6 +54,7 @@ extension UploadsViewModel {
             } catch {
                 print("Failed to upload with error", error)
                 self.error = error
+                self.isErrorAlertPresented = true
             }
         }
     }
