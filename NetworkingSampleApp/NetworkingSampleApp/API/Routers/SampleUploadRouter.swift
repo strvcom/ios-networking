@@ -18,7 +18,7 @@ enum SampleUploadRouter: Requestable {
         fatalError("Provide your API base URL for upload")
     }
 
-    var headers: [String : String]? {
+    var headers: [String: String]? {
         switch self {
         case .image:
             return ["Content-Type": "image/png"]

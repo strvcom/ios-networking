@@ -85,6 +85,6 @@ extension UploadService {
 
 private extension UploadAPIManaging {
     func task(with id: String) async -> UploadTask? {
-        await allTasks.first { $0.id == id }
+        await activeTasks.first { $0.id == id }
     }
 }

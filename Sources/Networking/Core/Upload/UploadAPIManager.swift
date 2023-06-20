@@ -11,7 +11,7 @@ import Foundation
 /// Default upload API manager
 open class UploadAPIManager: NSObject {
     // MARK: - Public Properties
-    public var allTasks: [UploadTask] {
+    public var activeTasks: [UploadTask] {
         get async {
             let activeTasks = await urlSession.allTasks.compactMap { $0 as? URLSessionUploadTask }
             return await uploadTasks
