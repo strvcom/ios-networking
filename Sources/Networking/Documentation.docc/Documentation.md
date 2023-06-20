@@ -76,7 +76,8 @@ init(
 )
 ```
 
-2. Using custom response provider by conforming to ``ResponseProviding``.
+2. Using custom response provider by conforming to ``ResponseProviding``. An example of a custom provider is ``MockResponseProvider``, which can be used for UI tests to interact with mocked data saved through "EndpointRequestStorageProcessor". To utilize them, simply move the stored session folder into the Asset catalogue.
+
 ```swift
 init(
     responseProvider: ResponseProviding,
@@ -85,6 +86,7 @@ init(
     errorProcessors: [ErrorProcessing] = []
 )
 ```
+
 Adapters and processors are passed during initialisation and cannot be changed afterwards.
 
 There are two methods provided by the ``APIManaging`` protocol:
@@ -183,8 +185,8 @@ let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { e
 }
 ```
 
-## Interceptors
-Interceptors are useful pieces of code that modify request/response in the network request pipeline.
+## Modifiers
+Modifiers are useful pieces of code that modify request/response in the network request pipeline.
 ![Interceptors diagram](interceptors-diagram.png)
 
 There are three types you can leverage:<br>
@@ -195,13 +197,13 @@ Adapters are request transformable components that perform operations on the URL
 
 ``ResponseProcessing``
 
-Processors are modifying the URLResponse received after a successful network request.
+Processors are handling the ``Response`` received after a successful network request.
 
 ``RequestInterceptor``
 
 Interceptors handle both adapting and processing.
 
-By conforming to these protocols, you can create your own adaptors/processors/interceptors. In the following part, interceptors provided by Networking are introduced.
+By conforming to these protocols, you can create your own adaptors/processors/interceptors. In the following part, modifiers provided by Networking are introduced.
 
 ## Request Interceptors
 
@@ -262,9 +264,9 @@ APIManager(
 ```
 
 ### Storage
-Networking provides an ``EndpointRequestStorageProcessor`` which allows for requests and responses to be saved locally into the file system.
+Networking provides an ``EndpointRequestStorageProcessor`` which allows for requests and responses to be saved locally into the file system. Requests are stored in a sequential manner. Each session is kept in its own dedicated folder. The ``EndpointRequestStorageModel`` includes both successful and erroneous data.
 
-Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to set a `storedSessionsLimit` and optionally a multiPeerSharing configuration if you wish to utilize the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
+Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to set optionally a multiPeerSharing configuration if you wish to utilize the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
 
 ```swift
 init(
