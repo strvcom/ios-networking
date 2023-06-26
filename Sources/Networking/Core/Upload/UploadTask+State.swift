@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension UploadTask {
+public extension UploadTask {
     /// The upload task's state.
-    public struct State {
+    struct State {
         /// Number of bytes sent.
         public let sentBytes: Int64
 
