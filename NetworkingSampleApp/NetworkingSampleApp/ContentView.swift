@@ -5,7 +5,6 @@
 //  Created by Matej Molnár on 28.01.2023.
 //
 
-import Networking
 import SwiftUI
 
 enum NetworkingFeature: String, Hashable, CaseIterable {
@@ -30,11 +29,7 @@ struct ContentView: View {
                 case .downloads:
                     DownloadsView()
                 case .uploads:
-                    UploadsView(viewModel: UploadsViewModel(
-                        uploadService: UploadService(
-                            uploadManager: UploadAPIManager()
-                        )
-                    ))
+                    UploadsView()
                 }
             }
         }

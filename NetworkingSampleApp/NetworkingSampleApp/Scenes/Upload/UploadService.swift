@@ -11,7 +11,7 @@ import Networking
 final class UploadService {
     private let uploadManager: UploadAPIManaging
 
-    init(uploadManager: UploadAPIManaging) {
+    init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
         self.uploadManager = uploadManager
     }
 
