@@ -58,3 +58,10 @@ public protocol UploadAPIManaging {
     /// - Parameter shouldFinishTasks: Determines whether all outstanding tasks should finish before invalidating the session or be immediately cancelled.
     func invalidateSession(shouldFinishTasks: Bool)
 }
+
+public extension UploadAPIManaging {
+    /// Returns an active ``UploadTask`` specified by its identifier.
+    func task(with id: UploadTask.ID) async -> UploadTask? {
+        await activeTasks.first { $0.id == id }
+    }
+}
