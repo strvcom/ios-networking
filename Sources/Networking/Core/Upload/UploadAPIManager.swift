@@ -250,6 +250,13 @@ private extension UploadAPIManager {
         }
     }
 
+    /// The implementation uses completion closure version of the upload task instaed of the async versions.
+    ///
+    /// The async versions could be used, however, if we go down that route, we'll need to make some slight
+    /// changes to the implementation, because:
+    /// - The async versions don't return `URLSessionTask` and will be suspended, which means returning immediately
+    ///   as it is now wouldn't be possible. So we'll need to consider what to return to the client, if anything at all.
+    /// - We'll need to handle errors and responses from the request using delegates.
     func sessionUploadTask(
         with uploadable: Uploadable,
         for request: URLRequest,
