@@ -11,7 +11,7 @@ import Networking
 final class UploadService {
     private let uploadManager: UploadAPIManaging
 
-    init(uploadManager: UploadAPIManaging) {
+    init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
         self.uploadManager = uploadManager
     }
 
@@ -80,11 +80,5 @@ extension UploadService {
             taskId: uploadItem.id,
             retryConfiguration: .default
         )
-    }
-}
-
-private extension UploadAPIManaging {
-    func task(with id: String) async -> UploadTask? {
-        await activeTasks.first { $0.id == id }
     }
 }

@@ -103,4 +103,9 @@ public extension UploadAPIManaging {
             retryConfiguration: retryConfiguration
         )
     }
+    
+    /// Returns an active ``UploadTask`` specified by its identifier.
+    func task(with id: UploadTask.ID) async -> UploadTask? {
+        await activeTasks.first { $0.id == id }
+    }
 }

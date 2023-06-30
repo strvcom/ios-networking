@@ -15,7 +15,7 @@ final class UploadsViewModel: ObservableObject {
 
     private let uploadService: UploadService
 
-    init(uploadService: UploadService) {
+    init(uploadService: UploadService = UploadService()) {
         self.uploadService = uploadService
     }
 }

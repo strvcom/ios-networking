@@ -15,7 +15,7 @@ enum SampleUploadRouter: Requestable {
     case multipart(boundary: String)
 
     var baseURL: URL {
-        fatalError("Provide your API base URL for upload")
+        URL(string: SampleAPIConstants.uploadHost)!
     }
 
     var headers: [String: String]? {
@@ -30,7 +30,7 @@ enum SampleUploadRouter: Requestable {
     }
 
     var path: String {
-        fatalError("Provide your API endpoint path for upload")
+        "/post"
     }
 
     var method: HTTPMethod {

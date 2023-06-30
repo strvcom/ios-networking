@@ -5,12 +5,13 @@
 //  Created by Tony Ngo on 12.06.2023.
 //
 
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 struct UploadsView: View {
-    @ObservedObject var viewModel: UploadsViewModel
-    @ObservedObject var formViewModel: FormUploadsViewModel
+    @StateObject var viewModel = UploadsViewModel()
+    @StateObject var formViewModel = FormUploadsViewModel()
+
     @State var isPhotosPickerPresented = false
     @State var isFileImporterPresented = false
     @State var isFormFileImporterPresented = false
