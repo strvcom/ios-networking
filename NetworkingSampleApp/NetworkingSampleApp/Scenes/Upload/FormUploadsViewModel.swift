@@ -17,10 +17,10 @@ final class FormUploadsViewModel: ObservableObject {
     @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
 
     var selectedFileName: String {
-        let resources = try? fileUrl?.resourceValues(forKeys:[.fileSizeKey])
-        let fileSize = (resources?.fileSize ?? 0) / 1_000_000
+        let fileSize = Int64(fileUrl?.fileSize ?? 0)
         var fileName = fileUrl?.lastPathComponent ?? ""
-        if fileSize > 0 { fileName += "\n\(fileSize) MB" }
+        let formattedFileSize = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: fileSize)
+        if fileSize > 0 { fileName += "\n\(formattedFileSize)" }
         return fileName
     }
 
