@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 @MainActor
 final class FormUploadsViewModel: ObservableObject {
@@ -50,7 +51,7 @@ extension FormUploadsViewModel {
                 text = ""
                 fileUrl = nil
             } catch {
-                print("Failed to upload with error:", error)
+                os_log("❌ FormUploadsViewModel failed to upload form with error: \(error.localizedDescription)")
                 self.error = error
                 self.isErrorAlertPresented = true
             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 @MainActor
 final class UploadsViewModel: ObservableObject {
@@ -35,7 +36,7 @@ extension UploadsViewModel {
                     ))
                 }
             } catch {
-                print("Failed to upload with error", error)
+                os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
                 self.isErrorAlertPresented = true
             }
@@ -52,7 +53,7 @@ extension UploadsViewModel {
                     uploadService: uploadService
                 ))
             } catch {
-                print("Failed to upload with error", error)
+                os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
                 self.isErrorAlertPresented = true
             }
