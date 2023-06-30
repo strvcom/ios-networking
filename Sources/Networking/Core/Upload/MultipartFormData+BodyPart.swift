@@ -27,7 +27,7 @@ public extension MultipartFormData {
     }
 }
 
-extension MultipartFormData.BodyPart {
+public extension MultipartFormData.BodyPart {
     /// Returns the body part's header fields and values based on the properties of the instance.
     var contentHeaders: [HTTPHeader.HeaderField: String] {
         var disposition = "form-data; name=\"\(name)\""
