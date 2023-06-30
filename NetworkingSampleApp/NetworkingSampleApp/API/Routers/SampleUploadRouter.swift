@@ -7,7 +7,6 @@
 
 import Foundation
 import Networking
-import UniformTypeIdentifiers
 
 enum SampleUploadRouter: Requestable {
     case image
@@ -35,11 +34,5 @@ enum SampleUploadRouter: Requestable {
 
     var method: HTTPMethod {
         .post
-    }
-}
-
-private extension URL {
-    var mimeType: String {
-        UTType(filenameExtension: pathExtension)?.preferredMIMEType ?? "application/octet-stream"
     }
 }

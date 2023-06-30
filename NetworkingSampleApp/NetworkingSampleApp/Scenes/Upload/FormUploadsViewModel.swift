@@ -10,7 +10,7 @@ import OSLog
 
 @MainActor
 final class FormUploadsViewModel: ObservableObject {
-    @Published var text = ""
+    @Published var username = ""
     @Published var fileUrl: URL?
     @Published var isErrorAlertPresented = false
     @Published private(set) var error: Error?
@@ -36,7 +36,7 @@ extension FormUploadsViewModel {
         Task {
             do {
                 let uploadItem = try await uploadService.uploadFormData { form in
-                    form.append(Data(self.text.utf8), name: "textfield")
+                    form.append(Data(self.username.utf8), name: "username-textfield")
 
                     if let fileUrl = self.fileUrl {
                         try form.append(from: fileUrl, name: "attachment")
@@ -48,7 +48,7 @@ extension FormUploadsViewModel {
                     uploadService: uploadService
                 ))
 
-                text = ""
+                username = ""
                 fileUrl = nil
             } catch {
                 os_log("❌ FormUploadsViewModel failed to upload form with error: \(error.localizedDescription)")

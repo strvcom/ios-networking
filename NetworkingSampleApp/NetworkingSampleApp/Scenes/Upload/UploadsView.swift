@@ -93,7 +93,7 @@ private extension UploadsView {
     var multipartUpload: some View {
         Section(
             content: {
-                TextField("Enter text", text: $formViewModel.text)
+                TextField("Enter username", text: $formViewModel.username)
 
                 HStack {
                     if formViewModel.fileUrl == nil {
