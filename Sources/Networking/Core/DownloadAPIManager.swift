@@ -197,10 +197,22 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     }
     
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        Task {
-            await downloadStateDict.update(task: downloadTask, for: \.downloadedFileURL, with: location)
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
-            updateTasks()
+        do {
+            guard let response = downloadTask.response else {
+                return
+            }
+            
+            // Move downloaded contents to documents as location will be unavailable after scope of this method.
+            let tempURL = try location.moveContentsToDocuments(response: response)
+            Task {
+                await downloadStateDict.update(task: downloadTask, for: \.downloadedFileURL, with: tempURL)
+                downloadStateDictSubject.send(await downloadStateDict.getValues())
+                updateTasks()
+            }
+        } catch {
+            Task {
+                await downloadStateDict.update(task: downloadTask, for: \.error, with: error)
+            }
         }
     }
     
@@ -210,5 +222,25 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
             downloadStateDictSubject.send(await downloadStateDict.getValues())
             updateTasks()
         }
+    }
+}
+
+extension URL {
+    enum FileError: Error {
+        case documentsDirUnavailable
+    }
+    
+    func moveContentsToDocuments(response: URLResponse) throws -> URL {
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            throw FileError.documentsDirUnavailable
+        }
+        
+        // Use original extension, otherwise urlSession saves file as .tmp
+        let pathExtension = response.url?.pathExtension ?? pathExtension
+        let newURL = documentsURL.appendingPathComponent("temp.\(pathExtension)")
+        
+        try? FileManager.default.removeItem(at: newURL)
+        try FileManager.default.moveItem(at: self, to: newURL)
+        return newURL
     }
 }
