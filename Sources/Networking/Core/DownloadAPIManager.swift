@@ -227,17 +227,17 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
 
 extension URL {
     enum FileError: Error {
-        case documentsDirUnavailable
+        case documentsDirectoryUnavailable
     }
     
     func moveContentsToDocuments(response: URLResponse) throws -> URL {
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            throw FileError.documentsDirUnavailable
+            throw FileError.documentsDirectoryUnavailable
         }
         
-        // Use original extension, otherwise urlSession saves file as .tmp
-        let pathExtension = response.url?.pathExtension ?? pathExtension
-        let newURL = documentsURL.appendingPathComponent("temp.\(pathExtension)")
+        // Use original filename.
+        let filename = response.suggestedFilename ?? response.url?.lastPathComponent ?? lastPathComponent
+        let newURL = documentsURL.appendingPathComponent(filename)
         
         try? FileManager.default.removeItem(at: newURL)
         try FileManager.default.moveItem(at: self, to: newURL)
