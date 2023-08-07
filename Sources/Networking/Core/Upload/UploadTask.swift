@@ -77,14 +77,13 @@ extension UploadTask {
     /// - Parameters:
     ///   - state: The latest state to emit before completing the task.
     ///   - delay: The delay between the emitting the `state` and completion in nanoseconds. Defaults to 0.2 seconds.
-    func complete(with state: State, delay: TimeInterval = 20_000_000) async throws {
+    func complete(with state: State, delay: TimeInterval = 20_000_000) async {
         statePublisher.send(state)
 
         // Publishing value and completion one after another might cause the completion
         // cancelling the whole stream before the client can process the emitted value.
-        try await Task.sleep(nanoseconds: UInt64(delay))
+        try? await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
-
     }
 
     func cleanup() async {
