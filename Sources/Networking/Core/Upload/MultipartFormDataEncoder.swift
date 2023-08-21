@@ -31,6 +31,12 @@ open class MultipartFormDataEncoder {
     }
 }
 
+
+/**
+ 
+The main reason why there are methods to encode data & encode file is similar to `uploadTask(with:from:)` and `uploadTask(with:fromFile:)`  ig one could convert the content of the file to Data using Data(contentsOf:) and use the first method to send data. One has the data available in memory while the second reads the data directly from the file thus doesn't load the data into memory so it is more efficient.
+ */
+
 // MARK: - MultipartFormDataEncoding
 extension MultipartFormDataEncoder: MultipartFormDataEncoding {
     public func encode(_ multipartFormData: MultipartFormData) throws -> Data {

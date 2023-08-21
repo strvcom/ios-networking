@@ -59,6 +59,14 @@ public extension UploadTask {
         task.cancel()
         statePublisher.send(State(task: task))
     }
+    
+    func cleanup() async {
+        await resetRetryCounter()
+
+        if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
+            try? fileManager.removeItem(at: url)
+        }
+    }
 }
 
 // MARK: - Internal API
@@ -85,13 +93,9 @@ extension UploadTask {
         try? await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
     }
-
-    func cleanup() async {
-        await resetRetryCounter()
-
-        if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
-            try? fileManager.removeItem(at: url)
-        }
+    
+    func resetRetryCounter() async {
+        await retryCounter.reset(for: endpointRequest.id)
     }
 }
 
@@ -119,10 +123,6 @@ extension UploadTask: Retryable {
             endpointRequest: endpointRequest,
             retryConfiguration: retryConfiguration
         )
-    }
-
-    func resetRetryCounter() async {
-        await retryCounter.reset(for: endpointRequest.id)
     }
 }
 
