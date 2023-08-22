@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 import OSLog
 
 @MainActor
@@ -35,13 +36,8 @@ extension FormUploadsViewModel {
     func uploadForm() {
         Task {
             do {
-                let uploadItem = try await uploadService.uploadFormData { form in
-                    form.append(Data(self.username.utf8), name: "username-textfield")
-
-                    if let fileUrl = self.fileUrl {
-                        try form.append(from: fileUrl, name: "attachment")
-                    }
-                }
+                let multipartFormData = try createMultipartFormData()
+                let uploadItem = try await uploadService.uploadFormData(multipartFormData)
 
                 uploadItemViewModels.append(UploadItemViewModel(
                     item: uploadItem,
@@ -56,5 +52,17 @@ extension FormUploadsViewModel {
                 self.isErrorAlertPresented = true
             }
         }
+    }
+}
+
+// MARK: - Prepare multipartForm data
+private extension FormUploadsViewModel {
+    func createMultipartFormData() throws -> MultipartFormData {
+        let multipartFormData = MultipartFormData()
+        multipartFormData.append(Data(username.utf8), name: "username-textfield")
+        if let fileUrl {
+            try multipartFormData.append(from: fileUrl, name: "attachment")
+        }
+        return multipartFormData
     }
 }
