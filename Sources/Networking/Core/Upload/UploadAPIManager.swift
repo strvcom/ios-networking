@@ -141,35 +141,30 @@ extension UploadAPIManager: UploadAPIManaging {
 
     public func upload(
         data: Data,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await uploadRequest(
             .data(data),
-            request: endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: endpointRequest
         )
     }
 
     public func upload(
         fromFile fileUrl: URL,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await uploadRequest(
             .file(fileUrl),
-            request: endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: endpointRequest
         )
     }
 
     public func upload(
         multipartFormData: MultipartFormData,
         sizeThreshold: UInt64 = 10_000_000,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         
@@ -182,24 +177,19 @@ extension UploadAPIManager: UploadAPIManaging {
             let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
             return try await uploadRequest(
                 .data(encodedMultipartFormData),
-                request: endpointRequest,
-                retryConfiguration: retryConfiguration
+                request: endpointRequest
             )
         } else {
             let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
             try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
             return try await uploadRequest(
                 .file(temporaryFileUrl, removeOnComplete: true),
-                request: endpointRequest,
-                retryConfiguration: retryConfiguration
+                request: endpointRequest
             )
         }
     }
 
-    public func retry(
-        taskId: String,
-        retryConfiguration: RetryConfiguration?
-    ) async throws {
+    public func retry(taskId: String) async throws {
         // Get stored upload task to invoke the request with the same arguments
         guard let existingUploadTask = await uploadTasks.getValue(for: taskId) else {
             throw NetworkError.unknown
@@ -211,8 +201,7 @@ extension UploadAPIManager: UploadAPIManaging {
 
         try await uploadRequest(
             existingUploadTask.uploadable,
-            request: existingUploadTask.endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: existingUploadTask.endpointRequest
         )
     }
 
@@ -231,8 +220,7 @@ private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
         _ uploadable: Uploadable,
-        request: EndpointRequest,
-        retryConfiguration: RetryConfiguration?
+        request: EndpointRequest
     ) async throws -> UploadTask {
         do {
             let urlRequest = try await prepare(request)

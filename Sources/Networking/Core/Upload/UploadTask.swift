@@ -23,9 +23,6 @@ public struct UploadTask {
 
     /// Use this publisher to emit a new state of the task.
     let statePublisher: CurrentValueSubject<State, Never>
-
-    /// The counter that counts number of retries for this task.
-    let retryCounter: Counter
 }
 
 // MARK: - Public API
@@ -58,8 +55,6 @@ public extension UploadTask {
     }
     
     func cleanup() async {
-        await resetRetryCounter()
-
         if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
             try? FileManager.default.removeItem(at: url)
         }
@@ -90,10 +85,6 @@ extension UploadTask {
         try? await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
     }
-    
-    func resetRetryCounter() async {
-        await retryCounter.reset(for: endpointRequest.id)
-    }
 }
 
 extension UploadTask {
@@ -106,18 +97,6 @@ extension UploadTask {
         self.endpointRequest = endpointRequest
         self.uploadable = uploadable
         self.statePublisher = .init(State(task: sessionUploadTask))
-        self.retryCounter = Counter()
-    }
-}
-
-// MARK: - Retryable
-extension UploadTask: Retryable {
-    func sleepIfRetry(for error: Error, retryConfiguration: RetryConfiguration?) async throws {
-        try await sleepIfRetry(
-            for: error,
-            endpointRequest: endpointRequest,
-            retryConfiguration: retryConfiguration
-        )
     }
 }
 
