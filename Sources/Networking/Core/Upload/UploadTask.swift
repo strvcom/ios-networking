@@ -26,9 +26,6 @@ public struct UploadTask {
 
     /// The counter that counts number of retries for this task.
     let retryCounter: Counter
-
-    /// The file manager associated with the task.
-    let fileManager: FileManager
 }
 
 // MARK: - Public API
@@ -64,7 +61,7 @@ public extension UploadTask {
         await resetRetryCounter()
 
         if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
-            try? fileManager.removeItem(at: url)
+            try? FileManager.default.removeItem(at: url)
         }
     }
 }
@@ -103,15 +100,13 @@ extension UploadTask {
     init(
         sessionUploadTask: URLSessionUploadTask,
         endpointRequest: EndpointRequest,
-        uploadable: Uploadable,
-        fileManager: FileManager
+        uploadable: Uploadable
     ) {
         self.task = sessionUploadTask
         self.endpointRequest = endpointRequest
         self.uploadable = uploadable
         self.statePublisher = .init(State(task: sessionUploadTask))
         self.retryCounter = Counter()
-        self.fileManager = fileManager
     }
 }
 

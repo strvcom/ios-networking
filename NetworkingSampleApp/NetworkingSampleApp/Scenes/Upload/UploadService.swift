@@ -27,6 +27,7 @@ extension UploadService {
             to: SampleUploadRouter.image,
             retryConfiguration: .default
         )
+
         return UploadItem(
             id: task.id,
             fileName: fileName

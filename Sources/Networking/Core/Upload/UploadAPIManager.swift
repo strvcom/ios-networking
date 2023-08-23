@@ -268,8 +268,7 @@ private extension UploadAPIManager {
             return UploadTask(
                 sessionUploadTask: sessionUploadTask,
                 endpointRequest: request,
-                uploadable: uploadable,
-                fileManager: fileManager
+                uploadable: uploadable
             )
         }
         existingUploadTask.task = sessionUploadTask
