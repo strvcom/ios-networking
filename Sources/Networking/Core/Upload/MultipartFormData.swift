@@ -26,7 +26,7 @@ open class MultipartFormData {
     /// - Parameter boundary: A custom boundary string to be used for separating the body parts in the multipart form data.
     /// If not provided, a unique boundary string is generated using a combination of "--boundary-" and a UUID.
     public init(boundary: String? = nil) {
-        self.boundary = boundary ?? "--boundary-\(UUID().uuidString)"
+        self.boundary = boundary ?? "----boundary-\(UUID().uuidString)"
     }
 }
 
