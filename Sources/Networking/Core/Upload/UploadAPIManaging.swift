@@ -18,31 +18,44 @@ public protocol UploadAPIManaging {
     /// - Parameters:
     ///   - data: The data to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
-    ///   - retryConfiguration: An optional configuration for retry behavior.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
         data: Data,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask
 
     /// Initiates a file upload request for the specified endpoint.
     /// - Parameters:
     ///   - fileUrl: The file's URL to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
-    ///   - retryConfiguration: An optional configuration for retry behavior.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
         fromFile fileUrl: URL,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
+    ) async throws -> UploadTask
+
+    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
+    ///
+    /// If the size of the `MultipartFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
+    ///
+    /// When uploaded from disk, a temporary file is created on the file system. This file is deleted when the upload task completes or errors out after all retry attempts.
+    ///
+    /// - Parameters:
+    ///   - multipartFormData: The multipart form data to upload.
+    ///   - sizeThreshold: The size threshold, in bytes, above which the data is streamed from disk rather than being loaded into memory all at once.
+    ///   - endpoint: The API endpoint to where data will be sent.
+    ///
+    /// - Returns: An `UploadTask` that represents this request.
+    func upload(
+        multipartFormData: MultipartFormData,
+        sizeThreshold: UInt64,
+        to endpoint: Requestable
     ) async throws -> UploadTask
 
     /// Retries the upload task with the specified identifier.
     /// - Parameters:
     ///   - taskId: The upload task's identifier to retry.
-    ///   - retryConfiguration: An optional configuration for retry behavior.
-    func retry(taskId: String, retryConfiguration: RetryConfiguration?) async throws
+    func retry(taskId: String) async throws
 
     /// Provides a stream of upload task's states for the specified `UploadTask.ID`.
     ///
@@ -60,6 +73,27 @@ public protocol UploadAPIManaging {
 }
 
 public extension UploadAPIManaging {
+    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
+    ///
+    /// If the size of the `MultipartFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
+    /// To specify different data threshold, use ``upload(multipartFormData:sizeThreshold:to:)``.
+    ///
+    /// - Parameters:
+    ///   - multipartFormData: The multipart form data to upload.
+    ///   - endpoint: The API endpoint to where data will be sent.
+    ///
+    /// - Returns: An `UploadTask` that represents this request.
+    func upload(
+        multipartFormData: MultipartFormData,
+        to endpoint: Requestable
+    ) async throws -> UploadTask {
+        try await upload(
+            multipartFormData: multipartFormData,
+            sizeThreshold: 10_000_000,
+            to: endpoint
+        )
+    }
+    
     /// Returns an active ``UploadTask`` specified by its identifier.
     func task(with id: UploadTask.ID) async -> UploadTask? {
         await activeTasks.first { $0.id == id }

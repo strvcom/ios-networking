@@ -34,6 +34,8 @@
 		B52674C32A370E35006D3B9C /* UploadItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */; };
 		B52674C52A37102D006D3B9C /* UploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C42A37102D006D3B9C /* UploadsView.swift */; };
 		B52674C72A371046006D3B9C /* UploadItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C62A371046006D3B9C /* UploadItemView.swift */; };
+		B58162F72A4F23420074A115 /* ByteCountFormatter+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */; };
+		B5A2CE6C2A3FF42400467EB3 /* FormUploadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2CE6B2A3FF42400467EB3 /* FormUploadsViewModel.swift */; };
 		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
 		DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */; };
 		DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */; };
@@ -74,6 +76,8 @@
 		B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadItemViewModel.swift; sourceTree = "<group>"; };
 		B52674C42A37102D006D3B9C /* UploadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsView.swift; sourceTree = "<group>"; };
 		B52674C62A371046006D3B9C /* UploadItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadItemView.swift; sourceTree = "<group>"; };
+		B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteCountFormatter+Convenience.swift"; sourceTree = "<group>"; };
+		B5A2CE6B2A3FF42400467EB3 /* FormUploadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormUploadsViewModel.swift; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadProgressView.swift; sourceTree = "<group>"; };
 		DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownloadAPIManager+SharedInstance.swift"; sourceTree = "<group>"; };
@@ -240,6 +244,7 @@
 		B52674BB2A370D0D006D3B9C /* Upload */ = {
 			isa = PBXGroup;
 			children = (
+				B5A2CE6B2A3FF42400467EB3 /* FormUploadsViewModel.swift */,
 				B52674BE2A370D33006D3B9C /* UploadItem.swift */,
 				B52674C62A371046006D3B9C /* UploadItemView.swift */,
 				B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */,
@@ -254,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */,
+				B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -337,9 +343,11 @@
 				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
 				DDD3AD212951F527006CB777 /* SampleAuthorizationManager.swift in Sources */,
+				B5A2CE6C2A3FF42400467EB3 /* FormUploadsViewModel.swift in Sources */,
 				23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */,
 				58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */,
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
+				B58162F72A4F23420074A115 /* ByteCountFormatter+Convenience.swift in Sources */,
 				58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */,
 				B52674BD2A370D1D006D3B9C /* UploadService.swift in Sources */,
 				58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */,

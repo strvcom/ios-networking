@@ -1,6 +1,6 @@
 //
 //  UploadAPIManager.swift
-//  
+//
 //
 //  Created by Tony Ngo on 12.06.2023.
 //
@@ -31,6 +31,8 @@ open class UploadAPIManager: NSObject {
         delegateQueue: nil
     )
 
+    private let multipartFormDataEncoder: MultipartFormDataEncoding
+    private let fileManager: FileManager
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
@@ -40,16 +42,52 @@ open class UploadAPIManager: NSObject {
     // MARK: - Initialization
     public init(
         urlSessionConfiguration: URLSessionConfiguration = .default,
+        multipartFormDataEncoder: MultipartFormDataEncoding = MultipartFormDataEncoder(),
+        fileManager: FileManager = .default,
         requestAdapters: [RequestAdapting] = [],
         responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
         errorProcessors: [ErrorProcessing] = []
     ) {
         self.urlSessionConfiguration = urlSessionConfiguration
+        self.multipartFormDataEncoder = multipartFormDataEncoder
+        self.fileManager = fileManager
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
         self.sessionId = Date.now.ISO8601Format()
         super.init()
+    }
+}
+
+// MARK: URLSessionDataDelegate
+extension UploadAPIManager: URLSessionDataDelegate {
+    public func urlSession(
+        _ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive data: Data
+    ) {
+        Task {
+            guard let uploadTask = await uploadTask(for: dataTask) else {
+                return
+            }
+            
+            if let originalRequest = dataTask.originalRequest,
+               let response = dataTask.response {
+                do {
+                    try await handleUploadTaskCompletion(
+                        uploadTask: uploadTask,
+                        urlRequest: originalRequest,
+                        response: response,
+                        data: data
+                    )
+                } catch {
+                    await handleUploadTaskError(
+                        uploadTask: uploadTask,
+                        error: error
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -68,6 +106,27 @@ extension UploadAPIManager: URLSessionTaskDelegate {
                 .send(UploadTask.State(task: task))
         }
     }
+        
+    public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didCompleteWithError error: Error?
+    ) {
+        Task {
+            await uploadTask(for: task)?
+                .statePublisher
+                .send(UploadTask.State(task: task))
+
+            guard let uploadTask = await uploadTask(for: task) else {
+                return
+            }
+                        
+            await handleUploadTaskError(
+                uploadTask: uploadTask,
+                error: error
+            )
+        }
+    }
 }
 
 // MARK: - UploadAPIManaging
@@ -82,34 +141,55 @@ extension UploadAPIManager: UploadAPIManaging {
 
     public func upload(
         data: Data,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await uploadRequest(
             .data(data),
-            request: endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: endpointRequest
         )
     }
 
     public func upload(
         fromFile fileUrl: URL,
-        to endpoint: Requestable,
-        retryConfiguration: RetryConfiguration?
+        to endpoint: Requestable
     ) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await uploadRequest(
             .file(fileUrl),
-            request: endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: endpointRequest
         )
     }
 
-    public func retry(
-        taskId: String,
-        retryConfiguration: RetryConfiguration?
-    ) async throws {
+    public func upload(
+        multipartFormData: MultipartFormData,
+        sizeThreshold: UInt64 = 10_000_000,
+        to endpoint: Requestable
+    ) async throws -> UploadTask {
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+        
+        // Determine if the session configuration is background.
+        let usesBackgroundSession = urlSessionConfiguration.sessionSendsLaunchEvents
+
+        // Encode in-memory and upload directly if the payload's size is less than the threshold,
+        // otherwise we write the payload to the disk first and upload by reading the file content.
+        if multipartFormData.size < sizeThreshold && !usesBackgroundSession {
+            let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
+            return try await uploadRequest(
+                .data(encodedMultipartFormData),
+                request: endpointRequest
+            )
+        } else {
+            let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
+            try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
+            return try await uploadRequest(
+                .file(temporaryFileUrl, removeOnComplete: true),
+                request: endpointRequest
+            )
+        }
+    }
+
+    public func retry(taskId: String) async throws {
         // Get stored upload task to invoke the request with the same arguments
         guard let existingUploadTask = await uploadTasks.getValue(for: taskId) else {
             throw NetworkError.unknown
@@ -121,8 +201,7 @@ extension UploadAPIManager: UploadAPIManaging {
 
         try await uploadRequest(
             existingUploadTask.uploadable,
-            request: existingUploadTask.endpointRequest,
-            retryConfiguration: retryConfiguration
+            request: existingUploadTask.endpointRequest
         )
     }
 
@@ -141,35 +220,26 @@ private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
         _ uploadable: Uploadable,
-        request: EndpointRequest,
-        retryConfiguration: RetryConfiguration?
+        request: EndpointRequest
     ) async throws -> UploadTask {
         do {
             let urlRequest = try await prepare(request)
-
+            
             let sessionUploadTask = sessionUploadTask(
                 with: uploadable,
                 for: urlRequest
-            ) { [weak self] data, response, error in
-                self?.handleUploadTaskCompletion(
-                    urlRequest: urlRequest,
-                    endpointRequest: request,
-                    retryConfiguration: retryConfiguration,
-                    data: data,
-                    response: response,
-                    error: error
-                )
-            }
-
+            )
+            
             let uploadTask = await existingUploadTaskOrNew(
                 for: sessionUploadTask,
                 request: request,
                 uploadable: uploadable
             )
-
+            
             // Store the task for future processing
             await uploadTasks.set(value: uploadTask, for: request.id)
             sessionUploadTask.resume()
+
             return uploadTask
         } catch {
             throw await errorProcessors.process(error, for: request)
@@ -194,59 +264,44 @@ private extension UploadAPIManager {
     }
 
     func handleUploadTaskCompletion(
+        uploadTask: UploadTask,
         urlRequest: URLRequest,
-        endpointRequest: EndpointRequest,
-        retryConfiguration: RetryConfiguration?,
-        data: Data?,
-        response: URLResponse?,
+        response: URLResponse,
+        data: Data
+    ) async throws {
+        var state = UploadTask.State(task: uploadTask.task)
+        state.response = try await responseProcessors.process(
+            (data, response),
+            with: urlRequest,
+            for: uploadTask.endpointRequest
+        )
+        await uploadTask.complete(with: state)
+        
+        // Cleanup on successful task completion
+        await uploadTask.cleanup()
+        await uploadTasks.set(value: nil, for: uploadTask.endpointRequest.id)
+    }
+    
+    func handleUploadTaskError(
+        uploadTask: UploadTask,
         error: Error?
-    ) {
-        Task {
-            guard let uploadTask = await uploadTasks.getValue(for: endpointRequest.id) else {
+    ) async {
+        var state = UploadTask.State(task: uploadTask.task)
+        
+        if let error {
+            // URLError.Code.cancelled is thrown if the URLSessionTask is cancelled.
+            // Consider this action intentional, thus the request won't be retried.
+            guard !state.cancelled else {
                 return
             }
-
-            var state = UploadTask.State(task: uploadTask.task)
-            if let data, let response {
-                state.response = try await responseProcessors.process(
-                    (data, response),
-                    with: urlRequest,
-                    for: endpointRequest
-                )
-
-                try await uploadTask.complete(with: state)
-
-                // Cleanup on successful task completion
-                await uploadTask.resetRetryCounter()
-                await uploadTasks.set(value: nil, for: endpointRequest.id)
-            } else if let error {
-                do {
-                    // URLError.Code.cancelled is thrown if the URLSessionTask is cancelled.
-                    // Consider this action intentional, thus the request won't be retried.
-                    guard !state.cancelled else {
-                        throw error
-                    }
-
-                    try await uploadTask.sleepIfRetry(
-                        for: error,
-                        retryConfiguration: retryConfiguration
-                    )
-
-                    try await self.uploadRequest(
-                        uploadTask.uploadable,
-                        request: uploadTask.endpointRequest,
-                        retryConfiguration: retryConfiguration
-                    )
-                } catch {
-                    state.error = await errorProcessors.process(
-                        error,
-                        for: uploadTask.endpointRequest
-                    )
-
-                    // No cleanup in case the task will be retried.
-                    try await uploadTask.complete(with: state)
-                }
-            }
+            
+            state.error = await errorProcessors.process(
+                error,
+                for: uploadTask.endpointRequest
+            )
+            
+            // No cleanup in case the task will be retried.
+            await uploadTask.complete(with: state)
         }
     }
 
@@ -259,21 +314,18 @@ private extension UploadAPIManager {
     /// - We'll need to handle errors and responses from the request using delegates.
     func sessionUploadTask(
         with uploadable: Uploadable,
-        for request: URLRequest,
-        completionHandler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void
+        for request: URLRequest
     ) -> URLSessionUploadTask {
         switch uploadable {
         case let .data(data):
             return urlSession.uploadTask(
                 with: request,
-                from: data,
-                completionHandler: completionHandler
+                from: data
             )
-        case let .file(fileUrl):
+        case let .file(fileUrl, _):
             return urlSession.uploadTask(
                 with: request,
-                fromFile: fileUrl,
-                completionHandler: completionHandler
+                fromFile: fileUrl
             )
         }
     }
@@ -289,5 +341,16 @@ private extension UploadAPIManager {
             .getValues()
             .values
             .first { $0.taskIdentifier == task.taskIdentifier }
+    }
+
+    func temporaryFileUrl(for request: EndpointRequest) throws -> URL {
+        let temporaryDirectoryUrl = fileManager
+            .temporaryDirectory
+            .appendingPathComponent("ios-networking")
+
+        let temporaryFileUrl = temporaryDirectoryUrl
+            .appendingPathComponent(request.id)
+        try fileManager.createDirectory(at: temporaryDirectoryUrl, withIntermediateDirectories: true)
+        return temporaryFileUrl
     }
 }

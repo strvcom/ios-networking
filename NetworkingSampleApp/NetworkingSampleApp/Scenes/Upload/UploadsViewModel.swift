@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import OSLog
 
 @MainActor
 final class UploadsViewModel: ObservableObject {
-    @Published var error: Error?
+    @Published var isErrorAlertPresented = false
+    @Published private(set) var error: Error?
     @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
 
     private let uploadService: UploadService
@@ -34,8 +36,9 @@ extension UploadsViewModel {
                     ))
                 }
             } catch {
-                print("Failed to upload with error", error)
+                os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
+                self.isErrorAlertPresented = true
             }
         }
     }
@@ -50,8 +53,9 @@ extension UploadsViewModel {
                     uploadService: uploadService
                 ))
             } catch {
-                print("Failed to upload with error", error)
+                os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
+                self.isErrorAlertPresented = true
             }
         }
     }

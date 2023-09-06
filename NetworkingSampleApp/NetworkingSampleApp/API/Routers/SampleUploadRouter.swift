@@ -7,11 +7,11 @@
 
 import Foundation
 import Networking
-import UniformTypeIdentifiers
 
 enum SampleUploadRouter: Requestable {
     case image
     case file(URL)
+    case multipart(boundary: String)
 
     var baseURL: URL {
         URL(string: SampleAPIConstants.uploadHost)!
@@ -23,6 +23,8 @@ enum SampleUploadRouter: Requestable {
             return ["Content-Type": "image/png"]
         case let .file(url):
             return ["Content-Type": url.mimeType]
+        case let .multipart(boundary):
+            return ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
         }
     }
 
@@ -32,11 +34,5 @@ enum SampleUploadRouter: Requestable {
 
     var method: HTTPMethod {
         .post
-    }
-}
-
-private extension URL {
-    var mimeType: String {
-        UTType(filenameExtension: pathExtension)?.preferredMIMEType ?? "application/octet-stream"
     }
 }

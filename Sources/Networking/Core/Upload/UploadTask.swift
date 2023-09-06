@@ -23,11 +23,9 @@ public struct UploadTask {
 
     /// Use this publisher to emit a new state of the task.
     let statePublisher: CurrentValueSubject<State, Never>
-
-    /// The counter that counts number of retries for this task.
-    let retryCounter: Counter
 }
 
+// MARK: - Public API
 public extension UploadTask {
     /// Resumes the task.
     /// Has no effect if the task is not in the suspended state.
@@ -55,8 +53,15 @@ public extension UploadTask {
         task.cancel()
         statePublisher.send(State(task: task))
     }
+    
+    func cleanup() async {
+        if case let .file(url, removeOnComplete) = uploadable, removeOnComplete {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
 }
 
+// MARK: - Internal API
 extension UploadTask {
     /// The identifier of the underlying `URLSessionUploadTask`.
     var taskIdentifier: Int {
@@ -72,12 +77,12 @@ extension UploadTask {
     /// - Parameters:
     ///   - state: The latest state to emit before completing the task.
     ///   - delay: The delay between the emitting the `state` and completion in nanoseconds. Defaults to 0.2 seconds.
-    func complete(with state: State, delay: TimeInterval = 20_000_000) async throws {
+    func complete(with state: State, delay: TimeInterval = 20_000_000) async {
         statePublisher.send(state)
 
         // Publishing value and completion one after another might cause the completion
         // cancelling the whole stream before the client can process the emitted value.
-        try await Task.sleep(nanoseconds: UInt64(delay))
+        try? await Task.sleep(nanoseconds: UInt64(delay))
         statePublisher.send(completion: .finished)
     }
 }
@@ -92,22 +97,6 @@ extension UploadTask {
         self.endpointRequest = endpointRequest
         self.uploadable = uploadable
         self.statePublisher = .init(State(task: sessionUploadTask))
-        self.retryCounter = Counter()
-    }
-}
-
-// MARK: - Retryable
-extension UploadTask: Retryable {
-    func sleepIfRetry(for error: Error, retryConfiguration: RetryConfiguration?) async throws {
-        try await sleepIfRetry(
-            for: error,
-            endpointRequest: endpointRequest,
-            retryConfiguration: retryConfiguration
-        )
-    }
-
-    func resetRetryCounter() async {
-        await retryCounter.reset(for: endpointRequest.id)
     }
 }
 
