@@ -10,6 +10,7 @@ import SwiftUI
 enum NetworkingFeature: String, Hashable, CaseIterable {
     case authorization
     case downloads
+    case uploads
 }
 
 struct ContentView: View {
@@ -27,6 +28,8 @@ struct ContentView: View {
                     AuthorizationView()
                 case .downloads:
                     DownloadsView()
+                case .uploads:
+                    UploadsView()
                 }
             }
         }

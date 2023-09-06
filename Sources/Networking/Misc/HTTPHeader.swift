@@ -13,8 +13,9 @@ import Foundation
 public enum HTTPHeader {
     /// Constants that describe HTTP header keys.
     public enum HeaderField: String {
-        case contentType = "Content-Type"
         case authorization = "Authorization"
+        case contentDisposition = "Content-Disposition"
+        case contentType = "Content-Type"
     }
 
     /// Constants that describe values for HTTP header content type keys.
