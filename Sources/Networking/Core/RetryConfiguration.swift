@@ -28,7 +28,7 @@ public struct RetryConfiguration {
     }
     
     // default configuration ignores
-    static var `default` = RetryConfiguration(
+    public static var `default` = RetryConfiguration(
         retries: 3,
         delay: .constant(2)
     ) { error in
