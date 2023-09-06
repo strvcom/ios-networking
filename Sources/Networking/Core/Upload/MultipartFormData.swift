@@ -71,7 +71,7 @@ public extension MultipartFormData {
         let fileName = fileName ?? fileUrl.lastPathComponent
 
         guard !fileName.isEmpty && !fileUrl.pathExtension.isEmpty else {
-            throw EncodingError.invalidFileName(at: fileUrl)
+            throw EncodingError.invalidFileName(for: fileUrl)
         }
 
         guard
