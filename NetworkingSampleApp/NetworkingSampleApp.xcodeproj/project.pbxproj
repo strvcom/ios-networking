@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -278,6 +278,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				230A9F9C2AA8FD8500773B2F /* PBXTargetDependency */,
 			);
 			name = NetworkingSampleApp;
 			packageProductDependencies = (
@@ -293,8 +294,9 @@
 		23A575A925F8B9DA00617551 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					23A575B025F8B9DA00617551 = {
 						CreatedOnToolsVersion = 12.4;
@@ -311,6 +313,7 @@
 			);
 			mainGroup = 23A575A825F8B9DA00617551;
 			packageReferences = (
+				230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */,
 			);
 			productRefGroup = 23A575B225F8B9DA00617551 /* Products */;
 			projectDirPath = "";
@@ -375,6 +378,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		230A9F9C2AA8FD8500773B2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 230A9F9B2AA8FD8500773B2F /* SwiftLint */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */ = {
@@ -567,10 +577,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lukepistrol/SwiftLintPlugin";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.52.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2305D1E5261E595E003632D9 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
+		};
+		230A9F9B2AA8FD8500773B2F /* SwiftLint */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */;
+			productName = "plugin:SwiftLint";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

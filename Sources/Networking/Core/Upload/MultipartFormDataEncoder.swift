@@ -1,6 +1,6 @@
 //
 //  MultipartFormDataEncoder.swift
-//  
+//
 //
 //  Created by Tony Ngo on 18.06.2023.
 //
@@ -31,14 +31,9 @@ open class MultipartFormDataEncoder {
     }
 }
 
-
-/**
- 
-The main reason why there are methods to encode data & encode file is similar to `uploadTask(with:from:)` and `uploadTask(with:fromFile:)`  ig one could convert the content of the file to Data using Data(contentsOf:) and use the first method to send data. One has the data available in memory while the second reads the data directly from the file thus doesn't load the data into memory so it is more efficient.
- */
-
 // MARK: - MultipartFormDataEncoding
 extension MultipartFormDataEncoder: MultipartFormDataEncoding {
+    /// The main reason why there are methods to encode data & encode file is similar to `uploadTask(with:from:)` and `uploadTask(with:fromFile:)`  ig one could convert the content of the file to Data using Data(contentsOf:) and use the first method to send data. One has the data available in memory while the second reads the data directly from the file thus doesn't load the data into memory so it is more efficient.
     public func encode(_ multipartFormData: MultipartFormData) throws -> Data {
         var encoded = Data()
 
@@ -64,11 +59,11 @@ extension MultipartFormDataEncoder: MultipartFormDataEncoding {
         }
 
         guard !fileManager.fileExists(at: fileUrl) else {
-            throw MultipartFormData.EncodingError.fileAlreadyExists(at: fileUrl)
+            throw MultipartFormData.EncodingError.fileAlreadyExists(for: fileUrl)
         }
 
         guard let outputStream = OutputStream(url: fileUrl, append: false) else {
-            throw MultipartFormData.EncodingError.dataStreamWriteFailed(at: fileUrl)
+            throw MultipartFormData.EncodingError.dataStreamWriteFailed(for: fileUrl)
         }
 
         try encode(multipartFormData, into: outputStream)
@@ -158,7 +153,7 @@ private extension MultipartFormDataEncoder {
         // Encode headers in a deterministic manner for easier testing
         let encodedHeaders = contentHeaders
             .sorted(by: { $0.key.rawValue < $1.key.rawValue })
-            .map { "\($0.key.rawValue): \($0.value)"}
+            .map { "\($0.key.rawValue): \($0.value)" }
             .joined(separator: "\(crlf)")
 
         encoded.append(encodedHeaders)

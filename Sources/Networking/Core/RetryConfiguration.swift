@@ -20,8 +20,7 @@ public struct RetryConfiguration {
     public init(
         retries: Int,
         delay: DelayConfiguration,
-        retryHandler: @escaping (Error) -> Bool)
-    {
+        retryHandler: @escaping (Error) -> Bool) {
         self.retries = retries
         self.delay = delay
         self.retryHandler = retryHandler

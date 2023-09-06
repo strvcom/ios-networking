@@ -1,6 +1,6 @@
 //
 //  MockResponseProvider.swift
-//  
+//
 //
 //  Created by Matej Molnár on 04.01.2023.
 //
@@ -71,6 +71,7 @@ private extension MockResponseProvider {
         }
         
         // return previous response, if no more stored indexed api calls
+        // swiftlint:disable:next empty_count
         if count > 0, let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count - 1)", bundle: bundle)?.data {
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }

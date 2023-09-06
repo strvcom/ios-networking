@@ -1,6 +1,6 @@
 //
 //  URL+Convenience.swift
-//  
+//
 //
 //  Created by Tony Ngo on 18.06.2023.
 //
@@ -18,7 +18,7 @@ public extension URL {
     }
 
     var fileSize: Int? {
-        guard let resources = try? resourceValues(forKeys:[.fileSizeKey]) else {
+        guard let resources = try? resourceValues(forKeys: [.fileSizeKey]) else {
             return nil
         }
         return resources.fileSize

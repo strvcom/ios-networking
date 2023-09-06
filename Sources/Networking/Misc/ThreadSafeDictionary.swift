@@ -1,6 +1,6 @@
 //
 //  ThreadSafeDictionary.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 25.05.2023.
 //
@@ -20,7 +20,7 @@ actor ThreadSafeDictionary<Key: Hashable, Value> {
     }
     
     func set(value: Value?, for task: Key) {
-        values[task] = value        
+        values[task] = value
     }
     
     /// Updates the property of a given keyPath.

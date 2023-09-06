@@ -1,6 +1,6 @@
 //
 //  AuthorizationError.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 02.01.2023.
 //
