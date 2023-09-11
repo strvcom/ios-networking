@@ -17,7 +17,7 @@ final class AssociatedArrayQueryTests: XCTestCase {
         
         var baseURL: URL {
             // swiftlint:disable:next force_unwrapping
-            URL(string: "https://someurl.com")!
+            URL(string: "https://someurl.com/")!
         }
         
         var path: String { "" }
