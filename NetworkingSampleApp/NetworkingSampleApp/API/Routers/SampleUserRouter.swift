@@ -9,14 +9,13 @@ import Foundation
 import Networking
 
 /// Implementation of sample API router
-enum SampleUserRouter: Requestable {        
+enum SampleUserRouter: Requestable {
     case users(page: Int)
     case user(userId: Int)
     case createUser(user: SampleUserRequest)
     case registerUser(user: SampleUserAuthRequest)
     
     var baseURL: URL {
-        /// sample API host
         // swiftlint:disable:next force_unwrapping
         URL(string: SampleAPIConstants.userHost)!
     }

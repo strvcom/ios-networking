@@ -1,6 +1,6 @@
 //
 //  EndpointRequestStorageProcessorTests.swift
-//  
+//
 //
 //  Created by Matej Molnár on 12.12.2022.
 //
@@ -51,14 +51,14 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
                 return .post
             }
         }
-        var urlParameters: [String : Any]? {
+        var urlParameters: [String: Any]? {
             switch self {
             case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
                 return ["query": "mock"]
             }
         }
         
-        var headers: [String : String]? {
+        var headers: [String: String]? {
             switch self {
             case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
                 return ["mockRequestHeader": "mock"]
@@ -278,13 +278,13 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
     }
     
+    // swiftlint:enable force_unwrapping
     static var allTests = [
         ("testResponseStaysTheSameAfterStoringData", testResponseStaysTheSameAfterStoringData),
         ("testStoredDataForGetRequestWithJSONResponse", testStoredDataForGetRequestWithJSONResponse),
         ("testStoredDataForGetRequestWithImageResponse", testStoredDataForGetRequestWithImageResponse),
         ("testStoredDataForGetRequestWithErrorResponse", testStoredDataForGetRequestWithErrorResponse),
-        ("testStoredDataForPostRequest", testStoredDataForPostRequest),
-        
+        ("testStoredDataForPostRequest", testStoredDataForPostRequest)
     ]
 }
 

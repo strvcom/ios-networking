@@ -1,6 +1,6 @@
 //
 //  StatusCodeProcessorTests.swift
-//  
+//
 //
 //  Created by Matej Molnár on 01.12.2022.
 //
@@ -120,9 +120,11 @@ final class StatusCodeProcessorTests: XCTestCase {
 // MARK: - Factory methods to create mock objects
 
 private extension StatusCodeProcessorTests {
+    
     func createMockResponseParams(
         _ router: MockRouter,
         statusCode: HTTPStatusCode
+        // swiftlint:disable:next large_tuple
     ) -> (response: Response, urlRequest: URLRequest, endpointRequest: EndpointRequest) {
         let mockEndpointRequest = EndpointRequest(router, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: router.baseURL)

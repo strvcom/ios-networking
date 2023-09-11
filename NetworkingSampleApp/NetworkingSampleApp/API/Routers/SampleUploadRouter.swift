@@ -14,6 +14,7 @@ enum SampleUploadRouter: Requestable {
     case multipart(boundary: String)
 
     var baseURL: URL {
+        // swiftlint:disable:next force_unwrapping
         URL(string: SampleAPIConstants.uploadHost)!
     }
 

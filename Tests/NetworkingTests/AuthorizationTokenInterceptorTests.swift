@@ -1,6 +1,6 @@
 //
 //  AuthorizationTokenInterceptorTests.swift
-//  
+//
 //
 //  Created by Matej Molnár on 02.02.2023.
 //
@@ -26,7 +26,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         let adaptedRequest = try await authTokenInterceptor.adapt(request, for: endpointRequest)
         
-        XCTAssertEqual(adaptedRequest.allHTTPHeaderFields![HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(validAuthData.accessToken)")
+        XCTAssertEqual(adaptedRequest.allHTTPHeaderFields?[HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(validAuthData.accessToken)")
     }
     
     func testFailedRequestAuthorization() async throws {
@@ -40,7 +40,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         do {
             _ = try await authTokenInterceptor.adapt(request, for: endpointRequest)
         } catch {
-            XCTAssertEqual(error as! AuthorizationError, AuthorizationError.missingAuthorizationData)
+            XCTAssertEqual(error as? AuthorizationError, AuthorizationError.missingAuthorizationData)
         }
     }
     
@@ -77,7 +77,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         let adaptedRequest = try await authTokenInterceptor.adapt(request, for: endpointRequest)
         
-        XCTAssertEqual(adaptedRequest.allHTTPHeaderFields![HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(refreshedAuthData.accessToken)")
+        XCTAssertEqual(adaptedRequest.allHTTPHeaderFields?[HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(refreshedAuthData.accessToken)")
     }
     
     func testFailedTokenRefresh() async throws {
@@ -94,7 +94,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         do {
             _ = try await authTokenInterceptor.adapt(request, for: endpointRequest)
         } catch {
-            XCTAssertEqual(error as! AuthorizationError, AuthorizationError.expiredAccessToken)
+            XCTAssertEqual(error as? AuthorizationError, AuthorizationError.expiredAccessToken)
         }
     }
     
@@ -121,7 +121,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
                 group.addTask {
                     do {
                         let request = try await authTokenInterceptor.adapt(request, for: endpointRequest)
-                        XCTAssertEqual(request.allHTTPHeaderFields![HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(refreshedAuthData.accessToken)")
+                        XCTAssertEqual(request.allHTTPHeaderFields?[HTTPHeader.HeaderField.authorization.rawValue], "Bearer \(refreshedAuthData.accessToken)")
                     } catch {
                         XCTAssert(false, "function shouldn't throw and error: \(error)")
                     }
@@ -151,7 +151,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
                         _ = try await authTokenInterceptor.adapt(request, for: endpointRequest)
                         XCTAssert(false, "function didn't throw an error even though it should have")
                     } catch {
-                        XCTAssertEqual(error as! AuthorizationError, AuthorizationError.expiredAccessToken)
+                        XCTAssertEqual(error as? AuthorizationError, AuthorizationError.expiredAccessToken)
                     }
                 }
             }
@@ -202,6 +202,7 @@ private enum MockRouter: Requestable {
     case testAuthenticationNotRequired
     
     var baseURL: URL {
+        // swiftlint:disable:next force_unwrapping
         URL(string: "test.com")!
     }
 

@@ -15,7 +15,6 @@ enum SampleAuthRouter: Requestable {
     case status
     
     var baseURL: URL {
-        /// sample API host
         // swiftlint:disable:next force_unwrapping
         return URL(string: SampleAPIConstants.authHost)!
     }
