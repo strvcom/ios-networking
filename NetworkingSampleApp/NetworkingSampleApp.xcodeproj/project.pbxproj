@@ -278,7 +278,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				230A9F9C2AA8FD8500773B2F /* PBXTargetDependency */,
+				23204AB02AAF381000F8D6A7 /* PBXTargetDependency */,
 			);
 			name = NetworkingSampleApp;
 			packageProductDependencies = (
@@ -313,7 +313,7 @@
 			);
 			mainGroup = 23A575A825F8B9DA00617551;
 			packageReferences = (
-				230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */,
+				23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */,
 			);
 			productRefGroup = 23A575B225F8B9DA00617551 /* Products */;
 			projectDirPath = "";
@@ -380,9 +380,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		230A9F9C2AA8FD8500773B2F /* PBXTargetDependency */ = {
+		23204AB02AAF381000F8D6A7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 230A9F9B2AA8FD8500773B2F /* SwiftLint */;
+			productRef = 23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -578,9 +578,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */ = {
+		23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lukepistrol/SwiftLintPlugin";
+			repositoryURL = "https://github.com/realm/SwiftLint.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.52.4;
@@ -593,10 +593,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
 		};
-		230A9F9B2AA8FD8500773B2F /* SwiftLint */ = {
+		23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 230A9F9A2AA8FD5F00773B2F /* XCRemoteSwiftPackageReference "SwiftLintPlugin" */;
-			productName = "plugin:SwiftLint";
+			package = 23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
