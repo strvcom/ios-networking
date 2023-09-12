@@ -28,7 +28,8 @@ let package = Package(
         .testTarget(
             name: "NetworkingTests",
             dependencies: ["Networking"],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         )
     ]
 )
