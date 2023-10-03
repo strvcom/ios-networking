@@ -25,16 +25,16 @@ final class AssociatedArrayQueryTests: XCTestCase {
           var urlParameters: [String: Any]? {
             switch self {
             case .single:
-                return ["filter": 1]
+                ["filter": 1]
                 
             case .arrayIndividual:
-                return ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
+                ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
                 
             case .arraySeparated:
-                return ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .commaSeparated)]
+                ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .commaSeparated)]
                 
             case .both:
-                return ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual), "data": 5]
+                ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual), "data": 5]
             }
         }
     }

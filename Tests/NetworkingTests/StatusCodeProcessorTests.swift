@@ -24,22 +24,22 @@ final class StatusCodeProcessorTests: XCTestCase {
         var path: String {
             switch self {
             case .emptyAcceptStatuses:
-                return "emptyAcceptStatuses"
+                "emptyAcceptStatuses"
             case .regularAcceptStatuses:
-                return "regularAcceptStatuses"
+                "regularAcceptStatuses"
             case .irregularAcceptStatuses:
-                return "irregularAcceptStatuses"
+                "irregularAcceptStatuses"
             }
         }
 
         var acceptableStatusCodes: Range<HTTPStatusCode>? {
             switch self {
             case .emptyAcceptStatuses:
-                return nil
+                nil
             case .regularAcceptStatuses:
-                return HTTPStatusCode.successAndRedirectCodes
+                HTTPStatusCode.successAndRedirectCodes
             case .irregularAcceptStatuses:
-                return 400 ..< 500
+                400 ..< 500
             }
         }
     }

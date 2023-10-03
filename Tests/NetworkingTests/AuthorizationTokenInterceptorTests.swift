@@ -213,9 +213,9 @@ private enum MockRouter: Requestable {
     var isAuthenticationRequired: Bool {
         switch self {
         case .testAuthenticationRequired:
-            return true
+            true
         case .testAuthenticationNotRequired:
-            return false
+            false
         }
     }
 }

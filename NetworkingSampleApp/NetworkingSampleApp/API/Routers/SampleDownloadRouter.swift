@@ -15,14 +15,14 @@ enum SampleDownloadRouter: Requestable {
     var baseURL: URL {
         switch self {
         case let .download(url):
-            return url
+            url
         }
     }
 
     var path: String {
         switch self {
         case .download:
-            return ""
+            ""
         }
     }
 }

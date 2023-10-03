@@ -19,13 +19,13 @@ final class ErrorProcessorTests: XCTestCase {
             switch self {
             case .testMockSimpleError:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://reqres.in/api")!
+                URL(string: "https://reqres.in/api")!
             case .testURLError:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://nonexistenturladdress")!
+                URL(string: "https://nonexistenturladdress")!
             case .testErrorProcessing:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://sample.com")!
+                URL(string: "https://sample.com")!
             }
         }
 
