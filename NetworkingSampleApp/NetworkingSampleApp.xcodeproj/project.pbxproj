@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -51,7 +51,6 @@
 		23A575C025F8B9DB00617551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23A575C225F8B9DB00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
-		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRouter.swift; sourceTree = "<group>"; };
 		23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIConstants.swift; sourceTree = "<group>"; };
 		23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIError.swift; sourceTree = "<group>"; };
@@ -104,7 +103,6 @@
 			children = (
 				23C16B78276B5AFD00C0B4F1 /* Packages */,
 				23A575B325F8B9DA00617551 /* NetworkingSampleApp */,
-				23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */,
 				23A575B225F8B9DA00617551 /* Products */,
 				23A575E725F8BA3600617551 /* Frameworks */,
 			);
@@ -157,14 +155,6 @@
 				23C16B79276B5AFD00C0B4F1 /* ios-networking */,
 			);
 			name = Packages;
-			sourceTree = "<group>";
-		};
-		23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */ = {
-			isa = PBXGroup;
-			children = (
-				23D8FA2D261DA21200DE1800 /* Info.plist */,
-			);
-			path = NetworkingSampleAppTests;
 			sourceTree = "<group>";
 		};
 		23EA9CE7292FB70A00B8E418 /* API */ = {
@@ -278,6 +268,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				23204AB02AAF381000F8D6A7 /* PBXTargetDependency */,
 			);
 			name = NetworkingSampleApp;
 			packageProductDependencies = (
@@ -293,8 +284,9 @@
 		23A575A925F8B9DA00617551 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					23A575B025F8B9DA00617551 = {
 						CreatedOnToolsVersion = 12.4;
@@ -311,6 +303,7 @@
 			);
 			mainGroup = 23A575A825F8B9DA00617551;
 			packageReferences = (
+				23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */,
 			);
 			productRefGroup = 23A575B225F8B9DA00617551 /* Products */;
 			projectDirPath = "";
@@ -376,6 +369,13 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		23204AB02AAF381000F8D6A7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -425,6 +425,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -486,6 +487,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -567,10 +569,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/SwiftLint.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.53.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2305D1E5261E595E003632D9 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
+		};
+		23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

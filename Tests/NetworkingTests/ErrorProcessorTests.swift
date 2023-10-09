@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ErrorProcessorTests.swift
+//
 //
 //  Created by Dominika Gajdová on 05.12.2022.
 //
@@ -19,13 +19,13 @@ final class ErrorProcessorTests: XCTestCase {
             switch self {
             case .testMockSimpleError:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://reqres.in/api")!
+                URL(string: "https://reqres.in/api")!
             case .testURLError:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://nonexistenturladdress")!
+                URL(string: "https://nonexistenturladdress")!
             case .testErrorProcessing:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://sample.com")!
+                URL(string: "https://sample.com")!
             }
         }
 
@@ -36,9 +36,10 @@ final class ErrorProcessorTests: XCTestCase {
     // Our mocked error processors don't utilise the endpointRequest parameter so we can use the same mocked endpointRequest for all tests
     private let mockEndpointRequest = EndpointRequest(MockRouter.testErrorProcessing, sessionId: "sessionId_error_process")
     
-    // swiftlint:disable:next force_unwrapping
+    
     private var testUrl: URL {
-        URL(string: "http://sometesturl.com")!
+        // swiftlint:disable:next force_unwrapping
+        URL(string: "https://sometesturl.com")!
     }
     
     func test_errorProcessing_process_mappingUnacceptableToSimpleErrorShouldSucceed() {

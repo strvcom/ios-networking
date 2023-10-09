@@ -14,17 +14,18 @@ enum SampleUploadRouter: Requestable {
     case multipart(boundary: String)
 
     var baseURL: URL {
+        // swiftlint:disable:next force_unwrapping
         URL(string: SampleAPIConstants.uploadHost)!
     }
 
     var headers: [String: String]? {
         switch self {
         case .image:
-            return ["Content-Type": "image/png"]
+            ["Content-Type": "image/png"]
         case let .file(url):
-            return ["Content-Type": url.mimeType]
+            ["Content-Type": url.mimeType]
         case let .multipart(boundary):
-            return ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
+            ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
         }
     }
 

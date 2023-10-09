@@ -62,11 +62,11 @@ struct DownloadProgressState {
 private extension URLSessionTask.State {
     var title: String {
         switch self {
-        case .canceling: return "cancelling"
-        case .completed: return "completed"
-        case .running: return "running"
-        case .suspended: return "suspended"
-        @unknown default: return ""
+        case .canceling: "cancelling"
+        case .completed: "completed"
+        case .running: "running"
+        case .suspended: "suspended"
+        @unknown default: ""
         }
     }
 }

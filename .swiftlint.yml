@@ -4,6 +4,8 @@
 # Feel free to send pull request or suggest improvements!
 # 
 
+analyzer_rules:
+  - unused_import
 
 #
 # Rule identifiers to exclude from running.
@@ -30,7 +32,6 @@ opt_in_rules:
   - contains_over_first_not_nil
   - convenience_type
   - fallthrough
-  - unused_import
   - unavailable_function
   - strict_fileprivate
   - explicit_init
@@ -42,9 +43,9 @@ opt_in_rules:
 # Paths to include during linting. `--path` is ignored if present.
 #
 included:
-  - ./
-  - ../Sources
-  - ../Tests
+  - NetworkingSampleApp
+  - Sources
+  - Tests
 
 #
 # Paths to ignore during linting. Takes precedence over `included`.
@@ -52,7 +53,6 @@ included:
 excluded:
   - Carthage
   - Pods
-  - Tests
   - Scripts
   - vendor
   - fastlane

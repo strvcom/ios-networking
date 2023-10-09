@@ -1,6 +1,6 @@
 //
 //  DownloadAPIManager.swift
-//  
+//
 //
 //  Created by Matej Molnár on 07.03.2023.
 //

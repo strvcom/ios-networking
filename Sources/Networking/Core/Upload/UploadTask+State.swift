@@ -1,6 +1,6 @@
 //
 //  UploadTask+State.swift
-//  
+//
 //
 //  Created by Tony Ngo on 12.06.2023.
 //

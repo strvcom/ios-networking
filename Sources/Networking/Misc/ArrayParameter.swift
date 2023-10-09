@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ArrayParameter.swift
+//
 //
 //  Created by Dominika Gajdová on 08.05.2023.
 //

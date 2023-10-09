@@ -1,6 +1,6 @@
 //
 //  Retryable.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 09.05.2023.
 //
