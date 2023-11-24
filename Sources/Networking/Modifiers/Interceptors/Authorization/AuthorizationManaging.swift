@@ -9,7 +9,7 @@ import Foundation
 
 /// AuthorizationManaging authorizes requests and manages refresh token mechanism
 /// AuthorizationStorageManaging is required to read & store `AuthorizationData`
-public protocol AuthorizationManaging {
+public protocol AuthorizationManaging: Actor {
     var storage: any AuthorizationStorageManaging { get }
     
     func refreshAuthorizationData(with refreshToken: String) async throws -> AuthorizationData
