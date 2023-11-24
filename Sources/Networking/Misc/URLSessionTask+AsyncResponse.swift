@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import Combine
+// The @preconcurrency suppresses capture of non-sendable type 'AnyCancellables' warning, which doesn't yet conform to Sendable.
+@preconcurrency import Combine
 
 extension URLSessionTask {
     func asyncResponse() async throws -> URLResponse {
