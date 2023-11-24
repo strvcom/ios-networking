@@ -27,20 +27,30 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
-    private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
-        #if DEBUG
-        // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
-        guard let multiPeerSharingConfig = config.multiPeerSharing else {
+
+    // This would ideally also be a lazy var, however it has to be async.
+    private var _multipeerConnectivityManager: MultipeerConnectivityManager?
+    private var multipeerConnectivityManager: MultipeerConnectivityManager? {
+        get async {
+            #if DEBUG
+            // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
+            guard _multipeerConnectivityManager == nil else {
+                return _multipeerConnectivityManager
+            }
+
+            guard let multiPeerSharingConfig = config.multiPeerSharing else {
+                return nil
+            }
+
+            let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
+            _multipeerConnectivityManager = await MultipeerConnectivityManager(buffer: initialBuffer)
+            return _multipeerConnectivityManager
+            #else
             return nil
+            #endif
         }
-        
-        let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
-        return .init(buffer: initialBuffer)
-        #else
-        return nil
-        #endif
-    }()
-    
+    }
+
     // MARK: Default shared instance
     public static let shared = EndpointRequestStorageProcessor(
         config: .init(
@@ -183,7 +193,7 @@ private extension EndpointRequestStorageProcessor {
                 fileUrl: self.createFileUrl(endpointRequest)
             )
             
-            multipeerConnectivityManager?.send(model: storageModel)
+            await multipeerConnectivityManager?.send(model: storageModel)
         }
     }
 

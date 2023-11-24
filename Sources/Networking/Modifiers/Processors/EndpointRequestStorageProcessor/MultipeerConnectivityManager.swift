@@ -19,36 +19,43 @@ open class MultipeerConnectivityManager: NSObject {
     
     private var buffer: [EndpointRequestStorageModel]
     private var peers = Set<MCPeerID>()
-    private lazy var myPeerId: MCPeerID = {
-        #if os(macOS)
-        let deviceName = Host.current().localizedName ?? "macOS"
-        #else
-        let deviceName = UIDevice.current.name
-        #endif
-        
-        #if targetEnvironment(simulator)
-        return MCPeerID(displayName: "Simulator - " + deviceName)
-        #else
-        return MCPeerID(displayName: deviceName)
-        #endif
-    }()
-    
-    private lazy var session = MCSession(
-        peer: myPeerId,
-        securityIdentity: nil,
-        encryptionPreference: .none
-    )
-    private lazy var nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(
-        peer: myPeerId,
-        discoveryInfo: nil,
-        serviceType: MultipeerConnectivityManager.service
-    )
-    
-    init(buffer: [EndpointRequestStorageModel]) {
+
+    private let session: MCSession
+    private let nearbyServiceAdvertiser: MCNearbyServiceAdvertiser
+
+    // The init has to be async because of @MainActor UIDevice usage.
+    init(buffer: [EndpointRequestStorageModel]) async {
         self.buffer = buffer
+        let deviceName = await { @MainActor in
+            #if os(macOS)
+            return Host.current().localizedName ?? "macOS"
+            #else
+            return UIDevice.current.name
+            #endif
+        }()
+
+        let myPeerId: MCPeerID = {
+            #if targetEnvironment(simulator)
+            return MCPeerID(displayName: "Simulator - " + deviceName)
+            #else
+            return MCPeerID(displayName: deviceName)
+            #endif
+        }()
+
+        self.session = MCSession(
+            peer: myPeerId,
+            securityIdentity: nil,
+            encryptionPreference: .none
+        )
         
+        self.nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(
+            peer: myPeerId,
+            discoveryInfo: nil,
+            serviceType: MultipeerConnectivityManager.service
+        )
+
         super.init()
-         
+
         session.delegate = self
         nearbyServiceAdvertiser.delegate = self
         nearbyServiceAdvertiser.startAdvertisingPeer()
