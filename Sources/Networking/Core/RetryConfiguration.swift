@@ -27,23 +27,25 @@ public struct RetryConfiguration {
     }
     
     // default configuration ignores
-    public static var `default` = RetryConfiguration(
-        retries: 3,
-        delay: .constant(2)
-    ) { error in
-        /// Do not retry authorization errors.
-        if error is AuthorizationError {
-            return false
-        }
-        
-        /// But retry certain HTTP errors.
-        guard let networkError = error as? NetworkError,
-              case let .unacceptableStatusCode(statusCode, _, _) = networkError
-        else {
-            return true
-        }
+    public static var `default`: RetryConfiguration {
+        .init(
+            retries: 3,
+            delay: .constant(2)
+        ) { error in
+            /// Do not retry authorization errors.
+            if error is AuthorizationError {
+                return false
+            }
 
-        return !(HTTPStatusCode.nonRetriableCodes ~= statusCode)
+            /// But retry certain HTTP errors.
+            guard let networkError = error as? NetworkError,
+                  case let .unacceptableStatusCode(statusCode, _, _) = networkError
+            else {
+                return true
+            }
+
+            return !(HTTPStatusCode.nonRetriableCodes ~= statusCode)
+        }
     }
 }
 
