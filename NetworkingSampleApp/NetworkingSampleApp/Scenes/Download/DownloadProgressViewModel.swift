@@ -19,7 +19,7 @@ final class DownloadProgressViewModel: ObservableObject {
     }
     
     func startObservingDownloadProgress() async {
-        let stream = DownloadAPIManager.shared.progressStream(for: task)
+        let stream = await DownloadAPIManager.shared.progressStream(for: task)
 
         for try await downloadState in stream {
             var newState = DownloadProgressState()

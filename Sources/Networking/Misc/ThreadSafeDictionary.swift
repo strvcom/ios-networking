@@ -35,3 +35,6 @@ actor ThreadSafeDictionary<Key: Hashable, Value> {
         }
     }
 }
+
+// KeyPaths are not yet conforming to Sendable (https://github.com/apple/swift/issues/68943), hence we at least suppress the non-sendable warning.
+extension WritableKeyPath: @unchecked Sendable {}
