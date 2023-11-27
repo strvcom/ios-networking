@@ -7,8 +7,10 @@
 
 import Foundation
 import Networking
+// This import suppresses warning: Non-sendable type 'AsyncPublisher<AnyPublisher<UploadTask.State, Never>>' ...
+@preconcurrency import Combine
 
-final class UploadService {
+final class UploadService: Sendable {
     private let uploadManager: UploadAPIManaging
 
     init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
@@ -16,7 +18,9 @@ final class UploadService {
     }
 
     deinit {
-        uploadManager.invalidateSession(shouldFinishTasks: false)
+        Task {
+            await uploadManager.invalidateSession(shouldFinishTasks: false)
+        }
     }
 }
 

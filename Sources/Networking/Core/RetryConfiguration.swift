@@ -51,7 +51,7 @@ public struct RetryConfiguration: Sendable {
 
 public extension RetryConfiguration {
     /// A type that defines the delay strategy for retry logic.
-    enum DelayConfiguration : Sendable {
+    enum DelayConfiguration: Sendable {
         /// The delay cumulatively increases after each retry.
         case progressive(TimeInterval)
         /// The delay is the same after each retry.

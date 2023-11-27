@@ -6,6 +6,8 @@
 //
 
 import Foundation
+// This import suppresses warning: Non-sendable type 'AsyncPublisher<AnyPublisher<UploadTask.State, Never>>' ...
+@preconcurrency import Combine
 
 @MainActor
 final class UploadItemViewModel: ObservableObject {

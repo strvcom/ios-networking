@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public protocol UploadAPIManaging {
+public protocol UploadAPIManaging: Actor {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
     /// Currently active upload tasks.

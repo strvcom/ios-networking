@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 /// Default upload API manager
-open class UploadAPIManager: NSObject {
+public actor UploadAPIManager: NSObject {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
         get async {
@@ -61,7 +61,7 @@ open class UploadAPIManager: NSObject {
 
 // MARK: URLSessionDataDelegate
 extension UploadAPIManager: URLSessionDataDelegate {
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive data: Data
@@ -93,7 +93,7 @@ extension UploadAPIManager: URLSessionDataDelegate {
 
 // MARK: - URLSessionTaskDelegate
 extension UploadAPIManager: URLSessionTaskDelegate {
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didSendBodyData bytesSent: Int64,
@@ -107,7 +107,7 @@ extension UploadAPIManager: URLSessionTaskDelegate {
         }
     }
         
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didCompleteWithError error: Error?
