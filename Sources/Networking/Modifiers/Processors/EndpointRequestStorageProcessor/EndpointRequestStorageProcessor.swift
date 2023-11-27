@@ -19,14 +19,13 @@ import Foundation
 ///
 /// The filename is created from a sessionId and a corresponding request identifier.
 /// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
-open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
+public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
     private let config: Config
-    
-    private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
-    private lazy var requestCounter = Counter()
+    private let responsesDirectory: URL
+    private let requestCounter = Counter()
 
     // This would ideally also be a lazy var, however it has to be async.
     private var _multipeerConnectivityManager: MultipeerConnectivityManager?
@@ -67,8 +66,10 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         self.fileManager = fileManager
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
-        
-        deleteStoredSessionsExceedingLimit()
+        self.responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
+        Task {
+            await deleteStoredSessionsExceedingLimit()
+        }
     }
     
     /// Stores the `Response` in file system on background thread and returns unmodified response.
@@ -111,7 +112,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 // MARK: - Config
 
 public extension EndpointRequestStorageProcessor {
-    struct Config {
+    struct Config: Sendable {
         public static let `default` = Config()
         
         /// If `nil` the MultiPeerConnectivity session won't get initialised.
@@ -128,7 +129,7 @@ public extension EndpointRequestStorageProcessor {
         }
     }
     
-    struct MultiPeerSharingConfig {
+    struct MultiPeerSharingConfig: Sendable {
         /// If `true` it loads all stored responses and shares them at the start.
         /// If `false` it only shares the responses from the current session.
         let shareHistory: Bool
@@ -153,7 +154,7 @@ private extension EndpointRequestStorageProcessor {
                 return
             }
 
-            self.createFolderIfNeeded(endpointRequest.sessionId)
+            await self.createFolderIfNeeded(endpointRequest.sessionId)
 
             // for http responses read headers
             let httpResponse = response.response as? HTTPURLResponse
