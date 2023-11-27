@@ -8,7 +8,7 @@
 import Foundation
 
 /// A type that is able to customize error returned after failed network request.
-public protocol ErrorProcessing {
+public protocol ErrorProcessing: Sendable {
     /// Modifies a given `Error`.
     /// - Parameters:
     ///   - error: The error to be processed.

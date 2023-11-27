@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Modifying the request before it's been sent
 
 /// A type that is able to modify a request before sending it to an API.
-public protocol RequestAdapting {
+public protocol RequestAdapting: Sendable {
     /// Modifies a given `URLRequest`.
     /// - Parameters:
     ///   - request: The request to be adapted.
