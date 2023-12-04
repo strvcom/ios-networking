@@ -33,7 +33,7 @@ final class MultipartFormDataEncoderTests: XCTestCase {
 
     func test_encode_encodesDataAsExpected() throws {
         let sut = makeSUT()
-        let formData = MultipartFormData(boundary: "--boundary--123")
+        var formData = MultipartFormData(boundary: "--boundary--123")
 
         let data1 = Data("Hello".utf8)
         formData.append(data1, name: "first-data")
@@ -56,7 +56,7 @@ final class MultipartFormDataEncoderTests: XCTestCase {
 
     func test_encode_encodesToFileAsExpected() throws {
         let sut = makeSUT()
-        let formData = MultipartFormData(boundary: "--boundary--123")
+        var formData = MultipartFormData(boundary: "--boundary--123")
 
         let data = Data("Hello".utf8)
         formData.append(data, name: "first-data")
