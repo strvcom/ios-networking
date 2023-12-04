@@ -21,7 +21,7 @@ import Foundation
 /// The filename is created from a sessionId and a corresponding request identifier.
 /// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
 
-public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
+public actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder

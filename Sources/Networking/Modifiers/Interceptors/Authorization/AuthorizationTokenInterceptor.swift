@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Defines authentication handling in requests
-public final actor AuthorizationTokenInterceptor: RequestInterceptor {
+public actor AuthorizationTokenInterceptor: RequestInterceptor {
     private var authorizationManager: AuthorizationManaging
     private var refreshTask: Task<Void, Error>?
     
