@@ -24,16 +24,11 @@ public actor MultipeerConnectivityManager: NSObject {
     private let session: MCSession
     private let nearbyServiceAdvertiser: MCNearbyServiceAdvertiser
 
-    // The init has to be async because of @MainActor UIDevice usage.
-    init(buffer: [EndpointRequestStorageModel]) async {
+    init(
+        buffer: [EndpointRequestStorageModel],
+        deviceName: String
+    ) {
         self.buffer = buffer
-        let deviceName = await { @MainActor in
-            #if os(macOS)
-            return Host.current().localizedName ?? "macOS"
-            #else
-            return UIDevice.current.name
-            #endif
-        }()
 
         let myPeerId: MCPeerID = {
             #if targetEnvironment(simulator)

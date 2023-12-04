@@ -11,6 +11,7 @@ import Foundation
     import os
 #else
     import OSLog
+    import UIKit
 #endif
 
 // MARK: - Modifier storing endpoint requests
@@ -19,6 +20,7 @@ import Foundation
 ///
 /// The filename is created from a sessionId and a corresponding request identifier.
 /// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
+
 public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager
@@ -27,12 +29,12 @@ public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorPro
     private let responsesDirectory: URL
     private let requestCounter = Counter()
 
-    // This would ideally also be a lazy var, however it has to be async.
+    // This would ideally also be a lazy var, however it has to be async, because UIDevice.current.name needs to be called on MainActor.
     private var _multipeerConnectivityManager: MultipeerConnectivityManager?
     private var multipeerConnectivityManager: MultipeerConnectivityManager? {
         get async {
-            #if DEBUG
             // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
+            #if DEBUG
             guard _multipeerConnectivityManager == nil else {
                 return _multipeerConnectivityManager
             }
@@ -42,12 +44,17 @@ public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorPro
             }
 
             let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
-            _multipeerConnectivityManager = await MultipeerConnectivityManager(buffer: initialBuffer)
+
+            _multipeerConnectivityManager = MultipeerConnectivityManager(
+                buffer: initialBuffer,
+                deviceName: await MainActor.run { UIDevice.current.name }
+            )
             return _multipeerConnectivityManager
             #else
             return nil
             #endif
         }
+
     }
 
     // MARK: Default shared instance
@@ -67,6 +74,7 @@ public final actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorPro
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
         self.responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
+
         Task {
             await deleteStoredSessionsExceedingLimit()
         }
@@ -149,7 +157,7 @@ private extension EndpointRequestStorageProcessor {
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
     ) {
-        Task(priority: .background) { [weak self] in
+        Task.detached(priority: .background) { [weak self] in
             guard let self else {
                 return
             }
