@@ -26,8 +26,8 @@ public actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessin
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
     private let config: Config
-    private let responsesDirectory: URL
-    private let requestCounter = Counter()
+    private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
+    private lazy var requestCounter = Counter()
 
     // This would ideally also be a lazy var, however it has to be async, because UIDevice.current.name needs to be called on MainActor.
     private var _multipeerConnectivityManager: MultipeerConnectivityManager?
@@ -73,7 +73,6 @@ public actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessin
         self.fileManager = fileManager
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
-        self.responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
 
         Task {
             await deleteStoredSessionsExceedingLimit()
