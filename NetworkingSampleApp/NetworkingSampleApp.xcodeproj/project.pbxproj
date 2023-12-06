@@ -206,10 +206,10 @@
 		58C3E75B29B78ED3004FD1CD /* Download */ = {
 			isa = PBXGroup;
 			children = (
-				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
-				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
 				58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */,
+				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
 				58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */,
+				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
 			);
 			path = Download;
 			sourceTree = "<group>";

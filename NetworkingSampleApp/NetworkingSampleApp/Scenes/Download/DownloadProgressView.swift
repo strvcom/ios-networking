@@ -11,19 +11,10 @@ struct DownloadProgressView: View {
     @StateObject var viewModel: DownloadProgressViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            content
-        }
-        .task {
-            await viewModel.startObservingDownloadProgress()
-        }
-        .padding(10)
-        .background(
-            Color.white
-                .cornerRadius(15)
-                .shadow(radius: 10)
-        )
-        .padding(15)
+        content
+            .task {
+                await viewModel.startObservingDownloadProgress()
+            }
     }
 }
 
@@ -31,45 +22,65 @@ struct DownloadProgressView: View {
 private extension DownloadProgressView {
     @ViewBuilder
     var content: some View {
-        Text(viewModel.state.title)
-            .padding(.bottom, 8)
-        
-        Text("Status: \(viewModel.state.statusTitle)")
-        Text("\(String(format: "%.1f", viewModel.state.percentCompleted))% of \(String(format: "%.1f", viewModel.state.totalMegaBytes))MB")
-        
-        if let errorTitle = viewModel.state.errorTitle {
-            Text("Error: \(errorTitle)")
-        }
-        
-        if let fileURL = viewModel.state.fileURL {
-            Text("FileURL: \(fileURL)")
-        }
-        
-        downloadState
-    }
-    
-    @ViewBuilder
-    var downloadState: some View {
-        if viewModel.state.status != .completed {
-            HStack {
-                Button {
-                    viewModel.suspend()
-                } label: {
-                    Text("Suspend")
+        VStack(alignment: .leading, spacing: 8) {
+            Text(viewModel.state.title)
+                .truncationMode(.middle)
+                .lineLimit(1)
+                .padding(.bottom, 8)
+            
+            Group {
+                if let errorTitle = viewModel.state.errorTitle {
+                    Text("Error: \(errorTitle)")
+                } else {
+                    Text("Status: \(viewModel.state.statusTitle)")
                 }
                 
-                Button {
-                    viewModel.resume()
-                } label: {
-                    Text("Resume")
+                if let fileURL = viewModel.state.fileURL {
+                    Text("FileURL: \(fileURL)")
                 }
-                
-                Button {
-                    viewModel.cancel()
-                } label: {
-                    Text("Cancel")
+
+                HStack {
+                    ProgressView(value: viewModel.state.percentCompleted, total: 100)
+                        .progressViewStyle(.linear)
+                        .frame(width: 150)
+
+                    Text("\(String(format: "%.1f", viewModel.state.megaBytesCompleted))MB")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+
+                    Spacer()
+
+                    button(
+                        symbol: viewModel.state.status == .suspended ? "play" : "pause",
+                        color: .blue,
+                        action: { viewModel.state.status == .suspended ? viewModel.resume() : viewModel.suspend() }
+                    )
+
+                    button(
+                        symbol: "x",
+                        color: .red,
+                        action: { viewModel.cancel() }
+                    )
                 }
             }
+            .font(.footnote)
+            .foregroundColor(.gray)
         }
     }
+
+    func button(symbol: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(
+            action: action,
+            label: {
+                Image(systemName: symbol)
+                    .symbolVariant(.circle.fill)
+                    .font(.title2)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(color)
+            }
+        )
+        .buttonStyle(.plain)
+        .contentShape(Circle())
+    }
 }
+

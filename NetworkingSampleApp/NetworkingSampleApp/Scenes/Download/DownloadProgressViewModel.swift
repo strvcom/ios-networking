@@ -56,6 +56,9 @@ struct DownloadProgressState {
     var totalMegaBytes: Double = 0
     var errorTitle: String?
     var fileURL: String?
+    var megaBytesCompleted: Double {
+        totalMegaBytes * (percentCompleted / 100)
+    }
 }
 
 // MARK: URLSessionTask states
