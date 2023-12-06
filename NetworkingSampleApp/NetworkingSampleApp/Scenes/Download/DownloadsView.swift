@@ -36,5 +36,8 @@ struct DownloadsView: View {
             }
         }
         .navigationTitle("Downloads")
+        .onAppear {
+            viewModel.loadTasks()
+        }
     }
 }
