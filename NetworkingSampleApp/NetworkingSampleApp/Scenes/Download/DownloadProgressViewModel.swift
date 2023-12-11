@@ -24,7 +24,7 @@ final class DownloadProgressViewModel: ObservableObject {
         for try await downloadState in stream {
             var newState = DownloadProgressState()
             newState.percentCompleted = downloadState.fractionCompleted * 100
-            newState.totalMegaBytes = Double(downloadState.totalBytes) / 1_000_000
+            newState.downloadedBytes = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: downloadState.downloadedBytes)
             newState.status = downloadState.taskState
             newState.statusTitle = downloadState.taskState.title
             newState.errorTitle = downloadState.error?.localizedDescription
@@ -53,12 +53,9 @@ struct DownloadProgressState {
     var status: URLSessionTask.State = .running
     var statusTitle: String = ""
     var percentCompleted: Double = 0
-    var totalMegaBytes: Double = 0
+    var downloadedBytes: String = ""
     var errorTitle: String?
     var fileURL: String?
-    var megaBytesCompleted: Double {
-        totalMegaBytes * (percentCompleted / 100)
-    }
 }
 
 // MARK: URLSessionTask states

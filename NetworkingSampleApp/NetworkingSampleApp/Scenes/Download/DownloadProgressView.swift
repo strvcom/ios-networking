@@ -44,7 +44,7 @@ private extension DownloadProgressView {
                         .progressViewStyle(.linear)
                         .frame(width: 150)
 
-                    Text("\(String(format: "%.1f", viewModel.state.megaBytesCompleted))MB")
+                    Text(viewModel.state.downloadedBytes)
                         .font(.footnote)
                         .foregroundColor(.gray)
 
