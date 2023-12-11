@@ -48,7 +48,7 @@ private extension UsersView {
             } footer: {
                 Button("Get Users") {
                     viewModel.getUsers(
-                        in: fromUserID...toUserID, 
+                        in: fromUserID...toUserID,
                         parallelFetch: parallelise
                     )
                 }

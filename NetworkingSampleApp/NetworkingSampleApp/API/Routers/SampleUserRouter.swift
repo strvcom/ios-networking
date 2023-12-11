@@ -22,7 +22,7 @@ enum SampleUserRouter: Requestable {
     var path: String {
         switch self {
         case .users, .createUser:
-            "users"
+            return "users"
         case let .user(userId):
             return "users/\(userId)"
         }
@@ -42,7 +42,7 @@ enum SampleUserRouter: Requestable {
         case .createUser:
             return .post
         case .users, .user:
-            .get
+            return .get
         }
     }
 
@@ -51,7 +51,7 @@ enum SampleUserRouter: Requestable {
         case let .createUser(user):
             return .encodable(user)
         case .users, .user:
-            nil
+            return nil
         }
     }
 
