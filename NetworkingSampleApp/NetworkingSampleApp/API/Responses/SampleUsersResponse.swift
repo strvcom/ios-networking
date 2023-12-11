@@ -7,8 +7,7 @@
 
 import Foundation
 
-/// Data structure of sample API user list response
-struct SampleUsersResponse: Codable {
-    let page: Int
-    let data: [SampleUserResponse]
+/// Data structure of sample API get user response
+struct SampleUserResponse: Codable {
+    let data: User
 }

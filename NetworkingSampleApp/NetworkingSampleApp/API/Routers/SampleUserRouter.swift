@@ -13,7 +13,6 @@ enum SampleUserRouter: Requestable {
     case users(page: Int)
     case user(userId: Int)
     case createUser(user: SampleUserRequest)
-    case registerUser(user: SampleUserAuthRequest)
     
     var baseURL: URL {
         // swiftlint:disable:next force_unwrapping
@@ -25,25 +24,23 @@ enum SampleUserRouter: Requestable {
         case .users, .createUser:
             "users"
         case let .user(userId):
-            "user/\(userId)"
-        case .registerUser:
-            "register"
+            return "users/\(userId)"
         }
     }
 
     var urlParameters: [String: Any]? {
         switch self {
         case let .users(page):
-            ["page": page]
-        case .createUser, .registerUser, .user:
-            nil
+            return ["page": page]
+        case .createUser, .user:
+            return nil
         }
     }
 
     var method: HTTPMethod {
         switch self {
-        case .createUser, .registerUser:
-            .post
+        case .createUser:
+            return .post
         case .users, .user:
             .get
         }
@@ -52,9 +49,7 @@ enum SampleUserRouter: Requestable {
     var dataType: RequestDataType? {
         switch self {
         case let .createUser(user):
-            .encodable(user)
-        case let .registerUser(user):
-            .encodable(user)
+            return .encodable(user)
         case .users, .user:
             nil
         }
@@ -62,10 +57,8 @@ enum SampleUserRouter: Requestable {
 
     var isAuthenticationRequired: Bool {
         switch self {
-        case .registerUser:
-            false
         case .createUser, .users, .user:
-            true
+            return false
         }
     }
 }
