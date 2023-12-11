@@ -18,6 +18,7 @@
 		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
+		587CD0EF2B27713700E3CB71 /* TaskButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587CD0EE2B27713700E3CB71 /* TaskButton.swift */; };
 		58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */; };
 		58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */; };
 		58C3E76129B79259004FD1CD /* SampleDownloadRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */; };
@@ -59,6 +60,7 @@
 		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
+		587CD0EE2B27713700E3CB71 /* TaskButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskButton.swift; sourceTree = "<group>"; };
 		58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsView.swift; sourceTree = "<group>"; };
 		58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsViewModel.swift; sourceTree = "<group>"; };
 		58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDownloadRouter.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				587CD0ED2B27712B00E3CB71 /* UIElements */,
 				DD6E48742A0E2CC70025AD05 /* Extensions */,
 				58FB80CC29895A8D0031FC59 /* Resources */,
 				23EA9CE7292FB70A00B8E418 /* API */,
@@ -201,6 +204,14 @@
 				DDE8884429476AC300DD3BFF /* SampleRefreshTokenRequest.swift */,
 			);
 			path = Requests;
+			sourceTree = "<group>";
+		};
+		587CD0ED2B27712B00E3CB71 /* UIElements */ = {
+			isa = PBXGroup;
+			children = (
+				587CD0EE2B27713700E3CB71 /* TaskButton.swift */,
+			);
+			path = UIElements;
 			sourceTree = "<group>";
 		};
 		58C3E75B29B78ED3004FD1CD /* Download */ = {
@@ -332,6 +343,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				587CD0EF2B27713700E3CB71 /* TaskButton.swift in Sources */,
 				58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */,
 				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,

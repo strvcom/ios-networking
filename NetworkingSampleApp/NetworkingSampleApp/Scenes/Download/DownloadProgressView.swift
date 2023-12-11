@@ -50,37 +50,17 @@ private extension DownloadProgressView {
 
                     Spacer()
 
-                    button(
-                        symbol: viewModel.state.status == .suspended ? "play" : "pause",
-                        color: .blue,
-                        action: { viewModel.state.status == .suspended ? viewModel.resume() : viewModel.suspend() }
-                    )
+                    TaskButton(config: viewModel.state.status == .suspended ? .play : .pause) {
+                        viewModel.state.status == .suspended ? viewModel.resume() : viewModel.suspend()
+                    }
 
-                    button(
-                        symbol: "x",
-                        color: .red,
-                        action: { viewModel.cancel() }
-                    )
+                    TaskButton(config: .cancel) {
+                        viewModel.cancel()
+                    }
                 }
             }
             .font(.footnote)
             .foregroundColor(.gray)
         }
     }
-
-    func button(symbol: String, color: Color, action: @escaping () -> Void) -> some View {
-        Button(
-            action: action,
-            label: {
-                Image(systemName: symbol)
-                    .symbolVariant(.circle.fill)
-                    .font(.title2)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(color)
-            }
-        )
-        .buttonStyle(.plain)
-        .contentShape(Circle())
-    }
 }
-
