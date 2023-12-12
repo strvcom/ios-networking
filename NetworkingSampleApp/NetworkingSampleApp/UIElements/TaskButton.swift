@@ -13,23 +13,19 @@ struct TaskButton: View {
 
         var imageName: String {
             switch self {
-            case .play:
-                return "play"
-            case .pause:
-                return "pause"
-            case .retry:
-                return "repeat"
-            case .cancel:
-                return "x"
+            case .play: "play"
+            case .pause: "pause"
+            case .retry: "repeat"
+            case .cancel: "x"
             }
         }
 
         var color: Color {
             switch self {
             case .play, .pause, .retry:
-                return .blue
-            case .cancel:
-                return .red
+                .blue
+            case .cancel: 
+                .red
             }
         }
     }
