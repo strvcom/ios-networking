@@ -22,43 +22,43 @@ enum SampleUserRouter: Requestable {
     var path: String {
         switch self {
         case .users, .createUser:
-            return "users"
+            "users"
         case let .user(userId):
-            return "users/\(userId)"
+            "users/\(userId)"
         }
     }
 
     var urlParameters: [String: Any]? {
         switch self {
         case let .users(page):
-            return ["page": page]
+            ["page": page]
         case .createUser, .user:
-            return nil
+            nil
         }
     }
 
     var method: HTTPMethod {
         switch self {
         case .createUser:
-            return .post
+            .post
         case .users, .user:
-            return .get
+            .get
         }
     }
 
     var dataType: RequestDataType? {
         switch self {
         case let .createUser(user):
-            return .encodable(user)
+            .encodable(user)
         case .users, .user:
-            return nil
+            nil
         }
     }
 
     var isAuthenticationRequired: Bool {
         switch self {
         case .createUser, .users, .user:
-            return false
+            false
         }
     }
 }
