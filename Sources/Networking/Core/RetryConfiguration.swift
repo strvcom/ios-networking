@@ -25,19 +25,18 @@ public struct RetryConfiguration: Sendable {
         self.delay = delay
         self.retryHandler = retryHandler
     }
-    
-    // default configuration ignores
+
     public static var `default`: RetryConfiguration {
         .init(
             retries: 3,
             delay: .constant(2)
         ) { error in
-            /// Do not retry authorization errors.
+            // Do not retry authorization errors.
             if error is AuthorizationError {
                 return false
             }
 
-            /// But retry certain HTTP errors.
+            // But retry certain HTTP errors.
             guard let networkError = error as? NetworkError,
                   case let .unacceptableStatusCode(statusCode, _, _) = networkError
             else {
