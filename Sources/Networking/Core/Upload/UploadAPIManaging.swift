@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public protocol UploadAPIManaging: Actor {
+public protocol UploadAPIManaging: Sendable {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
     /// Currently active upload tasks.
@@ -69,7 +69,7 @@ public protocol UploadAPIManaging: Actor {
     ///
     /// The internal implementation uses Apple's delegate pattern which retains a strong reference to the delegate. You must call this method to allow the manager to be released from the memory, otherwise your app will be leaking until your app exits or the session is invalidated.
     /// - Parameter shouldFinishTasks: Determines whether all outstanding tasks should finish before invalidating the session or be immediately cancelled.
-    func invalidateSession(shouldFinishTasks: Bool)
+    func invalidateSession(shouldFinishTasks: Bool) async
 }
 
 public extension UploadAPIManaging {

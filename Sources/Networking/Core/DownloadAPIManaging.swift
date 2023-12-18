@@ -13,14 +13,14 @@ public typealias DownloadResult = (URLSessionDownloadTask, Response)
 /// A definition of an API layer with methods for handling data downloading.
 /// Recommended to be used as singleton.
 /// If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
-public protocol DownloadAPIManaging: Actor {
+public protocol DownloadAPIManaging: Sendable {
     /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
     
     /// Invalidates urlSession instance.
     /// - Parameters:
     ///   - shouldFinishTasks: Indicates whether all currently active tasks should be able to finish before invalidating. Otherwise they will be cancelled.
-    func invalidateSession(shouldFinishTasks: Bool)
+    func invalidateSession(shouldFinishTasks: Bool) async
     
     /// Initiates a download request for a given endpoint, with optional resumable data and retry configuration.
     /// - Parameters:
@@ -38,7 +38,7 @@ public protocol DownloadAPIManaging: Actor {
     /// Provides real time download updates for a given `URLSessionTask`
     /// - Parameter task: The task whose updates are requested.
     /// - Returns: An async stream of download states describing the task's download progress.
-    func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
+    func progressStream(for task: URLSessionTask) async -> AsyncStream<URLSessionTask.DownloadState>
 }
 
 // MARK: - Provide request with default nil resumable data, retry configuration

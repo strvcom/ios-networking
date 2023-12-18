@@ -5,7 +5,7 @@
 //  Created by Tony Ngo on 12.06.2023.
 //
 
-import Combine
+@preconcurrency import Combine
 import Foundation
 
 /// Default upload API manager
