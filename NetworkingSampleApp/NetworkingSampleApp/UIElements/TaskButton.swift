@@ -24,14 +24,19 @@ struct TaskButton: View {
             switch self {
             case .play, .pause, .retry:
                 .blue
-            case .cancel: 
+            case .cancel:
                 .red
             }
         }
     }
 
-    let config: Config
-    let action: () -> Void
+    private let config: Config
+    private let action: () -> Void
+
+    init(config: Config, action: @escaping () -> Void) {
+        self.config = config
+        self.action = action
+    }
 
     var body: some View {
         Button(
