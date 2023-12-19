@@ -21,18 +21,6 @@ public protocol DownloadAPIManaging {
     /// - Parameters:
     ///   - shouldFinishTasks: Indicates whether all currently active tasks should be able to finish before invalidating. Otherwise they will be cancelled.
     func invalidateSession(shouldFinishTasks: Bool)
-    
-    /// Initiates a download request for a given fileURL, with optional resumable data and retry configuration.
-    /// - Parameters:
-    ///   - fileURL: A URL of a file which will be downloaded.
-    ///   - resumableData: Optional data the download request will be resumed with.
-    ///   - retryConfiguration: Configuration for retrying behaviour.
-    /// - Returns: A download result consisting of `URLSessionDownloadTask` and `Response`
-    func downloadRequest(
-        _ fileURL: URL,
-        resumableData: Data?,
-        retryConfiguration: RetryConfiguration?
-    ) async throws -> DownloadResult
 
     /// Initiates a download request for a given endpoint, with optional resumable data and retry configuration.
     /// - Parameters:
@@ -53,22 +41,28 @@ public protocol DownloadAPIManaging {
     func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
 }
 
-// MARK: - Provide request with default nil resumable data, retry configuration
 public extension DownloadAPIManaging {
-    func downloadRequest(
-        _ endpoint: Requestable,
-        resumableData: Data? = nil,
-        retryConfiguration: RetryConfiguration? = .default
-    ) async throws -> DownloadResult {
-        try await downloadRequest(endpoint, resumableData: resumableData, retryConfiguration: retryConfiguration)
-    }
-
+    /// Initiates a download request for a given fileURL, with optional resumable data and retry configuration.
+    /// - Parameters:
+    ///   - fileURL: A URL of a file which will be downloaded.
+    ///   - resumableData: Optional data the download request will be resumed with.
+    ///   - retryConfiguration: Configuration for retrying behaviour.
+    /// - Returns: A download result consisting of `URLSessionDownloadTask` and `Response`
     func downloadRequest(
         _ fileURL: URL,
         resumableData: Data? = nil,
         retryConfiguration: RetryConfiguration? = .default
     ) async throws -> DownloadResult {
         try await downloadRequest(DownloadRouter(fileURL: fileURL), resumableData: resumableData, retryConfiguration: retryConfiguration)
+    }
+
+    // Provide request with default nil resumable data, retry configuration
+    func downloadRequest(
+        _ endpoint: Requestable,
+        resumableData: Data? = nil,
+        retryConfiguration: RetryConfiguration? = .default
+    ) async throws -> DownloadResult {
+        try await downloadRequest(endpoint, resumableData: resumableData, retryConfiguration: retryConfiguration)
     }
 }
 
