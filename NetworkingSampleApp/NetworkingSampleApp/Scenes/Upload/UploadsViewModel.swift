@@ -26,10 +26,7 @@ extension UploadsViewModel {
         Task {
             do {
                 if let imageData = try result.get() {
-                    let uploadItem = try await uploadService.uploadImage(
-                        imageData,
-                        fileName: "image.jpg"
-                    )
+                    let uploadItem = try await uploadService.upload(.data(imageData, contentType: "image/png"))
                     uploadItemViewModels.append(UploadItemViewModel(
                         item: uploadItem,
                         uploadService: uploadService
@@ -47,7 +44,7 @@ extension UploadsViewModel {
         Task {
             do {
                 let fileUrl = try result.get()
-                let uploadItem = try await uploadService.uploadFile(fileUrl)
+                let uploadItem = try await uploadService.upload(.file(fileUrl))
                 uploadItemViewModels.append(UploadItemViewModel(
                     item: uploadItem,
                     uploadService: uploadService

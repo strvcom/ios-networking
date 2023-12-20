@@ -16,39 +16,11 @@ public protocol UploadAPIManaging {
 
     /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:
-    ///   - data: The data to send to the server.
+    ///   - type: The data to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
-        data: Data,
-        to endpoint: Requestable
-    ) async throws -> UploadTask
-
-    /// Initiates a file upload request for the specified endpoint.
-    /// - Parameters:
-    ///   - fileUrl: The file's URL to send to the server.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        fromFile fileUrl: URL,
-        to endpoint: Requestable
-    ) async throws -> UploadTask
-
-    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
-    ///
-    /// If the size of the `MultipartFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
-    ///
-    /// When uploaded from disk, a temporary file is created on the file system. This file is deleted when the upload task completes or errors out after all retry attempts.
-    ///
-    /// - Parameters:
-    ///   - multipartFormData: The multipart form data to upload.
-    ///   - sizeThreshold: The size threshold, in bytes, above which the data is streamed from disk rather than being loaded into memory all at once.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    ///
-    /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        multipartFormData: MultipartFormData,
-        sizeThreshold: UInt64,
+        _ type: UploadType,
         to endpoint: Requestable
     ) async throws -> UploadTask
 
@@ -73,29 +45,46 @@ public protocol UploadAPIManaging {
 }
 
 public extension UploadAPIManaging {
-    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
-    ///
-    /// If the size of the `MultipartFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
-    /// To specify different data threshold, use ``upload(multipartFormData:sizeThreshold:to:)``.
-    ///
+    /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:
-    ///   - multipartFormData: The multipart form data to upload.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    ///
+    ///   - type: The data to send to the server.
+    ///   - uploadURL: The URL where data will be sent.
     /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        multipartFormData: MultipartFormData,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        try await upload(
-            multipartFormData: multipartFormData,
-            sizeThreshold: 10_000_000,
-            to: endpoint
-        )
+    func upload(_ type: UploadType, to uploadURL: URL) async throws -> UploadTask {
+        try await upload(type, to: UploadRouter(url: uploadURL, uploadType: type))
     }
-    
+
     /// Returns an active ``UploadTask`` specified by its identifier.
     func task(with id: UploadTask.ID) async -> UploadTask? {
         await activeTasks.first { $0.id == id }
+    }
+}
+
+/// A Router for basic use case of uploading file/data/multiPartForm to a given URL.
+private struct UploadRouter: Requestable {
+    let url: URL
+    let uploadType: UploadType
+
+    var baseURL: URL {
+        url
+    }
+
+    var headers: [String: String]? {
+        switch uploadType {
+        case let .data(_, contentType):
+            ["Content-Type": contentType]
+        case let .file(url):
+            ["Content-Type": url.mimeType]
+        case let .multipart( data, _):
+            ["Content-Type": "multipart/form-data; boundary=\(data.boundary)"]
+        }
+    }
+
+    var path: String {
+        ""
+    }
+
+    var method: HTTPMethod {
+        .post
     }
 }

@@ -37,7 +37,7 @@ extension FormUploadsViewModel {
         Task {
             do {
                 let multipartFormData = try createMultipartFormData()
-                let uploadItem = try await uploadService.uploadFormData(multipartFormData)
+                let uploadItem = try await uploadService.upload(.multipart(data: multipartFormData, sizeThreshold: 10_000_000))
 
                 uploadItemViewModels.append(UploadItemViewModel(
                     item: uploadItem,

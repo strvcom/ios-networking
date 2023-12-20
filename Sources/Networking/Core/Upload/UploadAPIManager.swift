@@ -131,61 +131,48 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 
 // MARK: - UploadAPIManaging
 extension UploadAPIManager: UploadAPIManaging {
+    public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+
+        switch type {
+        case let .data(data, _):
+            return try await uploadRequest(
+                .data(data),
+                request: endpointRequest
+            )
+        case let .file(fileUrl):
+            return try await uploadRequest(
+                .file(fileUrl),
+                request: endpointRequest
+            )
+        case let .multipart(multipartFormData, sizeThreshold):
+            // Determine if the session configuration is background.
+            let usesBackgroundSession = urlSessionConfiguration.sessionSendsLaunchEvents
+
+            // Encode in-memory and upload directly if the payload's size is less than the threshold,
+            // otherwise we write the payload to the disk first and upload by reading the file content.
+            if multipartFormData.size < sizeThreshold && !usesBackgroundSession {
+                let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
+                return try await uploadRequest(
+                    .data(encodedMultipartFormData),
+                    request: endpointRequest
+                )
+            } else {
+                let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
+                try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
+                return try await uploadRequest(
+                    .file(temporaryFileUrl, removeOnComplete: true),
+                    request: endpointRequest
+                )
+            }
+        }
+    }
+    
     public func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
             urlSession.finishTasksAndInvalidate()
         } else {
             urlSession.invalidateAndCancel()
-        }
-    }
-
-    public func upload(
-        data: Data,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(
-            .data(data),
-            request: endpointRequest
-        )
-    }
-
-    public func upload(
-        fromFile fileUrl: URL,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(
-            .file(fileUrl),
-            request: endpointRequest
-        )
-    }
-
-    public func upload(
-        multipartFormData: MultipartFormData,
-        sizeThreshold: UInt64 = 10_000_000,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        
-        // Determine if the session configuration is background.
-        let usesBackgroundSession = urlSessionConfiguration.sessionSendsLaunchEvents
-
-        // Encode in-memory and upload directly if the payload's size is less than the threshold,
-        // otherwise we write the payload to the disk first and upload by reading the file content.
-        if multipartFormData.size < sizeThreshold && !usesBackgroundSession {
-            let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
-            return try await uploadRequest(
-                .data(encodedMultipartFormData),
-                request: endpointRequest
-            )
-        } else {
-            let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
-            try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
-            return try await uploadRequest(
-                .file(temporaryFileUrl, removeOnComplete: true),
-                request: endpointRequest
-            )
         }
     }
 

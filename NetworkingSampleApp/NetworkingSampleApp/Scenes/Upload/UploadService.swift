@@ -11,7 +11,7 @@ import Networking
 final class UploadService {
     private let uploadManager: UploadAPIManaging
 
-    init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
+    init(uploadManager: UploadAPIManaging = UploadAPIManager(requestAdapters: [LoggingInterceptor.shared])) {
         self.uploadManager = uploadManager
     }
 
@@ -20,42 +20,28 @@ final class UploadService {
     }
 }
 
+private extension UploadType {
+    var fileName: String {
+        switch self {
+        case let .data(_, contentType):
+            return contentType
+        case let .file(url):
+            return url.lastPathComponent
+        case let .multipart(data, _):
+            let dataSize = Int64(data.size)
+            let formattedDataSize = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: dataSize)
+            return "Form upload of size \(formattedDataSize)"
+        }
+    }
+}
+
 extension UploadService {
-    func uploadImage(_ data: Data, fileName: String) async throws -> UploadItem {
-        let task = try await uploadManager.upload(
-            data: data,
-            to: SampleUploadRouter.image
-        )
+    func upload(_ type: UploadType) async throws -> UploadItem {
+        let task = try await uploadManager.upload(type, to: SampleAPIConstants.uploadURL)
 
         return UploadItem(
             id: task.id,
-            fileName: fileName
-        )
-    }
-
-    func uploadFile(_ fileUrl: URL) async throws -> UploadItem {
-        let task = try await uploadManager.upload(
-            fromFile: fileUrl,
-            to: SampleUploadRouter.file(fileUrl)
-        )
-        return UploadItem(
-            id: task.id,
-            fileName: fileUrl.lastPathComponent
-        )
-    }
-
-    func uploadFormData(_ data: MultipartFormData) async throws -> UploadItem {
-        let task = try await uploadManager.upload(
-            multipartFormData: data,
-            to: SampleUploadRouter.multipart(boundary: data.boundary)
-        )
-
-        let dataSize = Int64(data.size)
-        let formattedDataSize = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: dataSize)
-
-        return UploadItem(
-            id: task.id,
-            fileName: "Form upload of size \(formattedDataSize)"
+            fileName: type.fileName
         )
     }
    
