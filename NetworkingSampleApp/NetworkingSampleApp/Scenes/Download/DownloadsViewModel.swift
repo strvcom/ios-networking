@@ -20,6 +20,12 @@ final class DownloadsViewModel: ObservableObject {
             await downloadItem()
         }
     }
+
+    func loadTasks() {
+        Task {
+            tasks = await downloadAPIManager.allTasks
+        }
+    }
 }
 
 private extension DownloadsViewModel {
