@@ -10,7 +10,6 @@ import SwiftUI
 
 struct UploadsView: View {
     @StateObject var viewModel = UploadsViewModel()
-    @StateObject var formViewModel = FormUploadsViewModel()
 
     @State var isPhotosPickerPresented = false
     @State var isFileImporterPresented = false
@@ -20,25 +19,13 @@ struct UploadsView: View {
     var body: some View {
         Form {
             singleUpload
+            multipartUpload
 
             if !viewModel.uploadItemViewModels.isEmpty {
-                Section("Single upload progress") {
+                Section("Uploads") {
                     VStack {
                         ForEach(viewModel.uploadItemViewModels.indices, id: \.self) { index in
                             let viewModel = viewModel.uploadItemViewModels[index]
-                            UploadItemView(viewModel: viewModel)
-                        }
-                    }
-                }
-            }
-
-            multipartUpload
-
-            if !formViewModel.uploadItemViewModels.isEmpty {
-                Section("Multi part upload progress") {
-                    VStack {
-                        ForEach(formViewModel.uploadItemViewModels.indices, id: \.self) { index in
-                            let viewModel = formViewModel.uploadItemViewModels[index]
                             UploadItemView(viewModel: viewModel)
                         }
                     }
@@ -53,14 +40,9 @@ struct UploadsView: View {
                 Text(viewModel.error?.localizedDescription ?? "")
             }
         )
-        .alert(
-            "Error",
-            isPresented: $formViewModel.isErrorAlertPresented,
-            actions: {},
-            message: {
-                Text(formViewModel.error?.localizedDescription ?? "")
-            }
-        )
+        .onAppear {
+            viewModel.loadTasks()
+        }
         .navigationTitle("Uploads")
     }
 }
@@ -93,27 +75,27 @@ private extension UploadsView {
     var multipartUpload: some View {
         Section(
             content: {
-                TextField("Enter username", text: $formViewModel.username)
+                TextField("Enter username", text: $viewModel.formUsername)
 
                 HStack {
-                    if formViewModel.fileUrl == nil {
+                    if viewModel.formFileUrl == nil {
                         Button("Add attachment") { isFormFileImporterPresented = true }
                             .fileImporter(
                                 isPresented: $isFormFileImporterPresented,
-                                allowedContentTypes: [.mp3, .mpeg4Movie]
+                                allowedContentTypes: [.mp3, .mpeg4Movie, .jpeg]
                             ) { result in
-                                formViewModel.fileUrl = try? result.get()
+                                viewModel.formFileUrl = try? result.get()
                             }
                     }
 
 
-                    Text(formViewModel.selectedFileName)
+                    Text(viewModel.formSelectedFileName)
 
                     Spacer()
 
-                    if formViewModel.fileUrl != nil {
+                    if viewModel.formFileUrl != nil {
                         Button(
-                            action: { formViewModel.fileUrl = nil },
+                            action: { viewModel.formFileUrl = nil },
                             label: {
                                 Image(systemName: "x")
                                     .symbolVariant(.circle.fill)
@@ -132,7 +114,7 @@ private extension UploadsView {
             },
             footer: {
                 Button("Upload") {
-                    formViewModel.uploadForm()
+                    viewModel.uploadForm()
                 }
                 .buttonStyle(.borderedProminent)
                 .frame(maxWidth: .infinity)

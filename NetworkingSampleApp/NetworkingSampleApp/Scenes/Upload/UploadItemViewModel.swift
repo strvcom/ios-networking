@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Networking
 
 @MainActor
 final class UploadItemViewModel: ObservableObject {
@@ -26,20 +27,18 @@ final class UploadItemViewModel: ObservableObject {
     let fileName: String
     let totalProgress = 100.0
 
-    private let item: UploadItem
-    private let uploadService: UploadService
+    private let task: UploadTask
+    private let uploadManager = UploadAPIManager.shared
 
-    init(item: UploadItem, uploadService: UploadService) {
-        self.item = item
-        self.fileName = item.fileName
-        self.uploadService = uploadService
+    init(task: UploadTask) {
+        self.task = task
+        self.fileName = task.id
     }
 }
 
 extension UploadItemViewModel {
     func observeProgress() async {
-        let uploadStateStream = await uploadService.uploadStateStream(for: item.id)
-        for await state in uploadStateStream {
+        for await state in await uploadManager.stateStream(for: task.id) {
             progress = state.fractionCompleted * 100
             formattedProgress = String(format: "%.2f", progress) + "%"
             isPaused = state.isSuspended
@@ -50,7 +49,7 @@ extension UploadItemViewModel {
 
     func pause() {
         Task {
-            await uploadService.pause(taskId: item.id)
+            task.pause()
             isPaused = true
             isRetryable = false
         }
@@ -58,7 +57,7 @@ extension UploadItemViewModel {
 
     func resume() {
         Task {
-            await uploadService.resume(taskId: item.id)
+            task.resume()
             isPaused = false
             isRetryable = false
         }
@@ -66,7 +65,7 @@ extension UploadItemViewModel {
 
     func cancel() {
         Task {
-            await uploadService.cancel(taskId: item.id)
+            task.cancel()
             isCancelled = true
             isRetryable = true
         }
@@ -74,7 +73,7 @@ extension UploadItemViewModel {
 
     func retry() {
         Task {
-            try await uploadService.retry(item)
+            try await uploadManager.retry(taskId: task.id)
             await observeProgress()
         }
     }
