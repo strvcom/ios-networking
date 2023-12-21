@@ -1,26 +1,26 @@
 //
-//  DownloadAPIManager+SharedInstance.swift
+//  UploadAPIManager+SharedInstance.swift
 //  NetworkingSampleApp
 //
-//  Created by Dominika Gajdová on 12.05.2023.
+//  Created by Matej Molnár on 21.12.2023.
 //
 
 import Networking
 
-extension DownloadAPIManager {
-    static var shared: DownloadAPIManaging = {
+extension UploadAPIManager {
+    static var shared: UploadAPIManaging = {
         var responseProcessors: [ResponseProcessing] = [
             LoggingInterceptor.shared,
             StatusCodeProcessor.shared
         ]
         var errorProcessors: [ErrorProcessing] = [LoggingInterceptor.shared]
-        
+
     #if DEBUG
         responseProcessors.append(EndpointRequestStorageProcessor.shared)
         errorProcessors.append(EndpointRequestStorageProcessor.shared)
     #endif
-        
-        return DownloadAPIManager(
+
+        return UploadAPIManager(
             urlSessionConfiguration: .default,
             requestAdapters: [
                 LoggingInterceptor.shared
