@@ -53,7 +53,11 @@ public extension DownloadAPIManaging {
         resumableData: Data? = nil,
         retryConfiguration: RetryConfiguration? = .default
     ) async throws -> DownloadResult {
-        try await downloadRequest(DownloadRouter(fileURL: fileURL), resumableData: resumableData, retryConfiguration: retryConfiguration)
+        try await downloadRequest(
+            DownloadRouter(fileURL: fileURL),
+            resumableData: resumableData,
+            retryConfiguration: retryConfiguration
+        )
     }
 
     // Provide request with default nil resumable data, retry configuration
@@ -62,7 +66,11 @@ public extension DownloadAPIManaging {
         resumableData: Data? = nil,
         retryConfiguration: RetryConfiguration? = .default
     ) async throws -> DownloadResult {
-        try await downloadRequest(endpoint, resumableData: resumableData, retryConfiguration: retryConfiguration)
+        try await downloadRequest(
+            endpoint,
+            resumableData: resumableData,
+            retryConfiguration: retryConfiguration
+        )
     }
 }
 
