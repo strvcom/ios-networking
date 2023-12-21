@@ -13,7 +13,7 @@ import Networking
 final class UploadsViewModel: ObservableObject {
     @Published var formUsername = ""
     @Published var formFileUrl: URL?
-    @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
+    @Published private(set) var uploadTasks: [UploadTask] = []
     @Published private(set) var error: Error?
     @Published var isErrorAlertPresented = false
 
@@ -31,7 +31,7 @@ final class UploadsViewModel: ObservableObject {
 extension UploadsViewModel {
     func loadTasks() {
         Task {
-            uploadItemViewModels = await uploadManager.activeTasks.map { .init(task: $0) }
+            uploadTasks = await uploadManager.activeTasks
         }
     }
 
@@ -40,7 +40,7 @@ extension UploadsViewModel {
             do {
                 if let imageData = try result.get() {
                     let uploadTask = try await uploadManager.upload(.data(imageData, contentType: "image/png"), to: SampleAPIConstants.uploadURL)
-                    uploadItemViewModels.append(.init(task: uploadTask))
+                    uploadTasks.append(uploadTask)
                 }
             } catch {
                 os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
@@ -55,7 +55,7 @@ extension UploadsViewModel {
             do {
                 let fileUrl = try result.get()
                 let uploadTask = try await uploadManager.upload(.file(fileUrl), to: SampleAPIConstants.uploadURL)
-                uploadItemViewModels.append(.init(task: uploadTask))
+                uploadTasks.append(uploadTask)
             } catch {
                 os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
@@ -72,7 +72,7 @@ extension UploadsViewModel {
                     .multipart(data: multipartFormData, sizeThreshold: 10_000_000),
                     to: SampleAPIConstants.uploadURL
                 )
-                uploadItemViewModels.append(.init(task: uploadTask))
+                uploadTasks.append(uploadTask)
 
                 formUsername = ""
                 formFileUrl = nil

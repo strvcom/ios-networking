@@ -21,12 +21,11 @@ struct UploadsView: View {
             singleUpload
             multipartUpload
 
-            if !viewModel.uploadItemViewModels.isEmpty {
-                Section("Uploads") {
+            if !viewModel.uploadTasks.isEmpty {
+                Section("Active Uploads") {
                     VStack {
-                        ForEach(viewModel.uploadItemViewModels.indices, id: \.self) { index in
-                            let viewModel = viewModel.uploadItemViewModels[index]
-                            UploadItemView(viewModel: viewModel)
+                        ForEach(viewModel.uploadTasks, id: \.id) { task in
+                            TaskProgressView(viewModel: UploadProgressViewModel(task: task))
                         }
                     }
                 }

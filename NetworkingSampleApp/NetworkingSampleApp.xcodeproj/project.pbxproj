@@ -28,15 +28,15 @@
 		58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */; };
 		58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */; };
 		58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0F029850E86000ACBC0 /* ContentView.swift */; };
+		58F0D3312B346A6400CC2581 /* TaskProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F0D3302B346A6400CC2581 /* TaskProgressView.swift */; };
+		58F0D3332B346ACE00CC2581 /* URLSessionTask.State+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F0D3322B346ACE00CC2581 /* URLSessionTask.State+Convenience.swift */; };
 		58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58FB80C6298521FF0031FC59 /* AuthorizationView.swift */; };
 		58FB80CE29895ABF0031FC59 /* TestData.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58FB80CD29895ABF0031FC59 /* TestData.xcassets */; };
 		B52674C12A370DFF006D3B9C /* UploadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C02A370DFF006D3B9C /* UploadsViewModel.swift */; };
-		B52674C32A370E35006D3B9C /* UploadItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */; };
+		B52674C32A370E35006D3B9C /* UploadProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C22A370E35006D3B9C /* UploadProgressViewModel.swift */; };
 		B52674C52A37102D006D3B9C /* UploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C42A37102D006D3B9C /* UploadsView.swift */; };
-		B52674C72A371046006D3B9C /* UploadItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52674C62A371046006D3B9C /* UploadItemView.swift */; };
 		B58162F72A4F23420074A115 /* ByteCountFormatter+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */; };
 		DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */; };
-		DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */; };
 		DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */; };
 		DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */; };
 		DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */; };
@@ -68,15 +68,15 @@
 		58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationStorageManager.swift; sourceTree = "<group>"; };
 		58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleApp.swift; sourceTree = "<group>"; };
 		58E4E0F029850E86000ACBC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		58F0D3302B346A6400CC2581 /* TaskProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskProgressView.swift; sourceTree = "<group>"; };
+		58F0D3322B346ACE00CC2581 /* URLSessionTask.State+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionTask.State+Convenience.swift"; sourceTree = "<group>"; };
 		58FB80C6298521FF0031FC59 /* AuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationView.swift; sourceTree = "<group>"; };
 		58FB80CD29895ABF0031FC59 /* TestData.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestData.xcassets; sourceTree = "<group>"; };
 		B52674C02A370DFF006D3B9C /* UploadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsViewModel.swift; sourceTree = "<group>"; };
-		B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadItemViewModel.swift; sourceTree = "<group>"; };
+		B52674C22A370E35006D3B9C /* UploadProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProgressViewModel.swift; sourceTree = "<group>"; };
 		B52674C42A37102D006D3B9C /* UploadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsView.swift; sourceTree = "<group>"; };
-		B52674C62A371046006D3B9C /* UploadItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadItemView.swift; sourceTree = "<group>"; };
 		B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteCountFormatter+Convenience.swift"; sourceTree = "<group>"; };
 		DD410D6E293F2E6E006D8E31 /* AuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewModel.swift; sourceTree = "<group>"; };
-		DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadProgressView.swift; sourceTree = "<group>"; };
 		DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownloadAPIManager+SharedInstance.swift"; sourceTree = "<group>"; };
 		DD88777F293E33850065ED03 /* SampleErrorProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleErrorProcessor.swift; sourceTree = "<group>"; };
 		DDD3AD1E2950E794006CB777 /* SampleAuthRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthRouter.swift; sourceTree = "<group>"; };
@@ -205,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				587CD0EE2B27713700E3CB71 /* TaskButton.swift */,
+				58F0D3302B346A6400CC2581 /* TaskProgressView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -215,7 +216,6 @@
 				58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */,
 				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
 				58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */,
-				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
 			);
 			path = Download;
 			sourceTree = "<group>";
@@ -250,10 +250,9 @@
 		B52674BB2A370D0D006D3B9C /* Upload */ = {
 			isa = PBXGroup;
 			children = (
-				B52674C62A371046006D3B9C /* UploadItemView.swift */,
-				B52674C22A370E35006D3B9C /* UploadItemViewModel.swift */,
-				B52674C42A37102D006D3B9C /* UploadsView.swift */,
 				B52674C02A370DFF006D3B9C /* UploadsViewModel.swift */,
+				B52674C42A37102D006D3B9C /* UploadsView.swift */,
+				B52674C22A370E35006D3B9C /* UploadProgressViewModel.swift */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -263,6 +262,7 @@
 			children = (
 				DD6E48752A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift */,
 				B58162F62A4F23420074A115 /* ByteCountFormatter+Convenience.swift */,
+				58F0D3322B346ACE00CC2581 /* URLSessionTask.State+Convenience.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -355,6 +355,7 @@
 				23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */,
 				B58162F72A4F23420074A115 /* ByteCountFormatter+Convenience.swift in Sources */,
 				58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */,
+				58F0D3332B346ACE00CC2581 /* URLSessionTask.State+Convenience.swift in Sources */,
 				58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */,
 				23EA9CF9292FB70A00B8E418 /* User.swift in Sources */,
 				DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */,
@@ -366,15 +367,14 @@
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
 				58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */,
 				DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */,
-				58D697712B21FF8E00E6C529 /* UsersViewModel.swift in Sources */,
-				B52674C72A371046006D3B9C /* UploadItemView.swift in Sources */,
 				58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */,
 				58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */,
+				B52674C32A370E35006D3B9C /* UploadProgressViewModel.swift in Sources */,
+				58D697712B21FF8E00E6C529 /* UsersViewModel.swift in Sources */,
 				587CD0EC2B271CF800E3CB71 /* SampleCreateUserResponse.swift in Sources */,
-				B52674C32A370E35006D3B9C /* UploadItemViewModel.swift in Sources */,
 				B52674C12A370DFF006D3B9C /* UploadsViewModel.swift in Sources */,
+				58F0D3312B346A6400CC2581 /* TaskProgressView.swift in Sources */,
 				B52674C52A37102D006D3B9C /* UploadsView.swift in Sources */,
-				DD6E48732A0E24D30025AD05 /* DownloadProgressView.swift in Sources */,
 				23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
