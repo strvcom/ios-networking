@@ -10,14 +10,11 @@ import Networking
 // This import suppresses warning: Non-sendable type 'AsyncPublisher<AnyPublisher<UploadTask.State, Never>>' ...
 @preconcurrency import Combine
 
+@NetworkingActor
 final class UploadService: Sendable {
     static let shared = UploadService()
 
-    private let uploadManager: UploadAPIManaging
-
-    init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
-        self.uploadManager = uploadManager
-    }
+    private let uploadManager = UploadAPIManager()
 }
 
 extension UploadService {

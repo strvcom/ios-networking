@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@NetworkingActor
 public protocol UploadAPIManaging: Sendable {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
@@ -63,7 +64,7 @@ public protocol UploadAPIManaging: Sendable {
     /// i.e., `UploadTask.State.error` is non-nil. In such case, you can call `retry(taskId:)` to re-activate the stream for the specified `uploadTaskId`.
     /// - Parameter uploadTaskId: The identifier of the task to observe.
     /// - Returns: An asynchronous stream of upload state. If there is no such upload task the return stream finishes immediately.
-    func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream
+    func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream
 
     /// Invalidates the session with the option to wait for all outstanding (active) tasks.
     ///

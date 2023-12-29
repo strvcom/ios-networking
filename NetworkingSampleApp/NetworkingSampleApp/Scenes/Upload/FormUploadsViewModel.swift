@@ -25,11 +25,7 @@ final class FormUploadsViewModel: ObservableObject {
         return fileName
     }
 
-    private let uploadService: UploadService
-
-    init(uploadService: UploadService = .init()) {
-        self.uploadService = uploadService
-    }
+    private let uploadService = UploadService.shared
 }
 
 extension FormUploadsViewModel {
