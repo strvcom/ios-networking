@@ -8,7 +8,7 @@
 import Networking
 
 extension DownloadAPIManager {
-    static let shared: DownloadAPIManaging = {
+    static let shared: DownloadAPIManager = {
         var responseProcessors: [ResponseProcessing] = [
             LoggingInterceptor.shared,
             StatusCodeProcessor.shared

@@ -10,16 +10,21 @@ import Foundation
 @preconcurrency import Combine
 
 /// Default Download API manager
-public actor DownloadAPIManager: NSObject, Retryable {
+@NetworkingActor
+open class DownloadAPIManager: NSObject, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
     private let sessionId: String
     private let downloadStateDictSubject = CurrentValueSubject<[URLSessionTask: URLSessionTask.DownloadState], Never>([:])
     private var urlSession = URLSession(configuration: .default)
-    private var taskStateCancellables = ThreadSafeDictionary<URLSessionTask, AnyCancellable>()
-    private var downloadStateDict = ThreadSafeDictionary<URLSessionTask, URLSessionTask.DownloadState>()
-    
+    private var taskStateCancellables = [URLSessionTask: AnyCancellable]()
+    private var downloadStateDict = [URLSessionTask: URLSessionTask.DownloadState]() {
+        didSet {
+            downloadStateDictSubject.send(downloadStateDict)
+        }
+    }
+
     let retryCounter = Counter()
     
     public var allTasks: [URLSessionDownloadTask] {
@@ -129,7 +134,7 @@ private extension DownloadAPIManager {
             let response = try await responseProcessors.process((Data(), urlResponse), with: request, for: endpointRequest)
             
             /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
+            retryCounter.reset(for: endpointRequest.id)
             
             /// create download AsyncStream
             return (downloadTask, response)
@@ -158,9 +163,9 @@ private extension DownloadAPIManager {
     /// Every `downloadStateDict` update triggers an event to the `downloadStateDictSubject`
     /// which then leads to a task state update from `progressStream`.
     func updateTasks() async {
-        for task in await allTasks where await downloadStateDict.getValue(for: task) == nil {
+        for task in await allTasks where downloadStateDict[task] == nil {
             /// In case there is no DownloadState for a given task in the dictionary, we need to create one.
-            await downloadStateDict.set(value: .init(task: task), for: task)
+            downloadStateDict[task] = .init(task: task)
 
             /// We need to observe URLSessionTask.State via KVO individually for each task, because there is no delegate callback for the state change.
             let cancellable = task
@@ -171,16 +176,18 @@ private extension DownloadAPIManager {
                     }
 
                     Task {
-                        await self.downloadStateDict.update(task: task, for: \.taskState, with: state)
-                        self.downloadStateDictSubject.send(await self.downloadStateDict.getValues())
+                        var mutableTask = self.downloadStateDict[task]
+                        mutableTask?.taskState = state
+                        self.downloadStateDict[task] = mutableTask
+                        self.downloadStateDictSubject.send(self.downloadStateDict)
 
                         if state == .completed {
-                            await self.taskStateCancellables.set(value: nil, for: task)
+                            self.taskStateCancellables[task] = nil
                         }
                     }
                 }
 
-            await taskStateCancellables.set(value: cancellable, for: task)
+            taskStateCancellables[task] = cancellable
         }
     }
 }
@@ -188,10 +195,11 @@ private extension DownloadAPIManager {
 // MARK: URLSession Delegate
 extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     nonisolated public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        Task {
-            await downloadStateDict.update(task: downloadTask, for: \.downloadedBytes, with: totalBytesWritten)
-            await downloadStateDict.update(task: downloadTask, for: \.totalBytes, with: totalBytesExpectedToWrite)
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
+        Task { @NetworkingActor in
+            var mutableTask = downloadStateDict[downloadTask]
+            mutableTask?.downloadedBytes = totalBytesWritten
+            mutableTask?.totalBytes = totalBytesExpectedToWrite
+            downloadStateDict[downloadTask] = mutableTask
         }
     }
     
@@ -203,22 +211,26 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
             
             // Move downloaded contents to documents as location will be unavailable after scope of this method.
             let tempURL = try location.moveContentsToDocuments(response: response)
-            Task {
-                await downloadStateDict.update(task: downloadTask, for: \.downloadedFileURL, with: tempURL)
-                downloadStateDictSubject.send(await downloadStateDict.getValues())
+            Task { @NetworkingActor in
+                var mutableTask = downloadStateDict[downloadTask]
+                mutableTask?.downloadedFileURL = tempURL
+                downloadStateDict[downloadTask] = mutableTask
                 await updateTasks()
             }
         } catch {
-            Task {
-                await downloadStateDict.update(task: downloadTask, for: \.error, with: error)
+            Task { @NetworkingActor in
+                var mutableTask = downloadStateDict[downloadTask]
+                mutableTask?.error = error
+                downloadStateDict[downloadTask] = mutableTask
             }
         }
     }
     
     nonisolated public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        Task {
-            await downloadStateDict.update(task: task, for: \.error, with: error)
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
+        Task { @NetworkingActor in
+            var mutableTask = downloadStateDict[task]
+            mutableTask?.error = error
+            downloadStateDict[task] = mutableTask
             await updateTasks()
         }
     }
