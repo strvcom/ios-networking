@@ -8,6 +8,7 @@
 import Foundation
 
 /// Default API manager
+@NetworkingActor
 open class APIManager: APIManaging, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
@@ -69,7 +70,7 @@ private extension APIManager {
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
                         
             /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
+            retryCounter.reset(for: endpointRequest.id)
             
             return response
         } catch {

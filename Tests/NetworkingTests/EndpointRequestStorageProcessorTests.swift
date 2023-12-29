@@ -12,6 +12,7 @@ import XCTest
 
 // MARK: - Test Endpoint request storage processor
 
+@NetworkingActor
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
     private let fileManager = FileManager.default

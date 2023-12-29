@@ -22,6 +22,7 @@ final class UsersViewModel: ObservableObject {
         return decoder
     }()
 
+    @NetworkingActor
     private lazy var apiManager: APIManager = {
         var responseProcessors: [ResponseProcessing] = [
             LoggingInterceptor.shared,

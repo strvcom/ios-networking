@@ -8,7 +8,8 @@
 import Foundation
 
 /// A thread safe wrapper for count dictionary.
-actor Counter {
+@NetworkingActor
+final class Counter {
     private var dict = [String: Int]()
     
     func count(for key: String) -> Int {

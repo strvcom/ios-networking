@@ -9,7 +9,9 @@ import Foundation
 import Networking
 
 final class AuthorizationViewModel: ObservableObject {
+    @NetworkingActor
     private lazy var authManager = SampleAuthorizationManager()
+    @NetworkingActor
     private lazy var apiManager: APIManager = {
         let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         

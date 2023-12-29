@@ -20,8 +20,8 @@ import Foundation
 ///
 /// The filename is created from a sessionId and a corresponding request identifier.
 /// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
-
-public actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
+@NetworkingActor
+public class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
@@ -74,9 +74,7 @@ public actor EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessin
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
 
-        Task {
-            await deleteStoredSessionsExceedingLimit()
-        }
+        deleteStoredSessionsExceedingLimit()
     }
     
     /// Stores the `Response` in file system on background thread and returns unmodified response.
@@ -219,8 +217,8 @@ private extension EndpointRequestStorageProcessor {
     }
 
     func createFileUrl(_ endpointRequest: EndpointRequest) async -> URL {
-        let count = await requestCounter.count(for: endpointRequest.endpoint.identifier)
-        await requestCounter.increment(for: endpointRequest.endpoint.identifier)
+        let count = requestCounter.count(for: endpointRequest.endpoint.identifier)
+        requestCounter.increment(for: endpointRequest.endpoint.identifier)
         
         let fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)_\(count)"
 
