@@ -46,9 +46,11 @@ final class APIManagerTests: XCTestCase {
         let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: mockSessionId)
         let apiManager = APIManager(
             responseProvider: mockResponseProvider,
+            // Since one of the mocked responses returns 400 we don't want the test fail.
             responseProcessors: []
         )
 
+        // Create 15 parallel requests on multiple threads to test the managers thread safety.
         try await withThrowingTaskGroup(of: Void.self) { group in
             for _ in 0..<15 {
                 group.addTask {
