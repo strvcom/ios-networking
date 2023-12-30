@@ -11,6 +11,7 @@ import Foundation
 // MARK: - Defines modifying the response after it's been received
 
 /// A type that is able to modify a ``Response`` when it's received from the network layer.
+@NetworkingActor
 public protocol ResponseProcessing: Sendable {
     /// Modifies a given ``Response``.
     /// - Parameters:

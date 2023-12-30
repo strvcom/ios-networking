@@ -8,7 +8,7 @@
 import Foundation
 
 /// Data structure of sample API user response
-struct User: Codable, Identifiable {
+struct User: Codable, Identifiable, Sendable {
     enum CodingKeys: String, CodingKey {
         case id
         case email

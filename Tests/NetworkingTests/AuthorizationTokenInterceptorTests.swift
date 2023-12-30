@@ -9,7 +9,7 @@
 import XCTest
 
 // MARK: - Tests
-
+@NetworkingActor
 final class AuthorizationTokenInterceptorTests: XCTestCase {
     let mockSessionId = "mockSessionId"
     
@@ -69,7 +69,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        await authManager.setRefreshedAuthorizationData(refreshedAuthData)
+        authManager.setRefreshedAuthorizationData(refreshedAuthData)
 
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -105,12 +105,12 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
-        await authManager.setSleepNanoseconds(500_000_000)
+        authManager.setSleepNanoseconds(500_000_000)
         try await authManager.storage.saveData(expiredAuthData)
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        await authManager.setRefreshedAuthorizationData(refreshedAuthData)
+        authManager.setRefreshedAuthorizationData(refreshedAuthData)
 
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
@@ -137,7 +137,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
-        await authManager.setSleepNanoseconds(500_000_000)
+        authManager.setSleepNanoseconds(500_000_000)
         try await authManager.storage.saveData(expiredAuthData)
         
         let requestable = MockRouter.testAuthenticationRequired
@@ -160,7 +160,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
 }
 
 // MARK: - Mock helper classes
-private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
+private class MockAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
     func saveData(_ data: AuthorizationData) async throws {
@@ -180,7 +180,7 @@ private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
     }
 }
 
-private actor MockAuthorizationManager: AuthorizationManaging {
+private class MockAuthorizationManager: AuthorizationManaging {
     let storage: AuthorizationStorageManaging = MockAuthorizationStorageManager()
     
     private var sleepNanoseconds: UInt64 = 0

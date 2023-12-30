@@ -7,8 +7,6 @@
 
 import Foundation
 import Networking
-// This import suppresses warning: Non-sendable type 'AsyncPublisher<AnyPublisher<UploadTask.State, Never>>' ...
-@preconcurrency import Combine
 
 @NetworkingActor
 final class UploadService: Sendable {
@@ -57,7 +55,7 @@ extension UploadService {
     }
    
     func uploadStateStream(for uploadTaskId: String) async -> UploadAPIManaging.StateStream {
-        await uploadManager.stateStream(for: uploadTaskId)
+        uploadManager.stateStream(for: uploadTaskId)
     }
 
     func pause(taskId: String) async {

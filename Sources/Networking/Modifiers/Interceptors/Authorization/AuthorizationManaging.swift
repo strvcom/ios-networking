@@ -9,6 +9,7 @@ import Foundation
 
 /// AuthorizationManaging authorizes requests and manages refresh token mechanism
 /// AuthorizationStorageManaging is required to read & store `AuthorizationData`
+@NetworkingActor
 public protocol AuthorizationManaging: Sendable {
     var storage: any AuthorizationStorageManaging { get }
     

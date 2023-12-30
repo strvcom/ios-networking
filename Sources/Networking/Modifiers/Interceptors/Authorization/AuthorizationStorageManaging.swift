@@ -9,6 +9,7 @@ import Foundation
 
 /// Basic operations to store `AuthorizationData`
 /// To keep consistency all operations are async
+@NetworkingActor
 public protocol AuthorizationStorageManaging: Sendable {
     func saveData(_ data: AuthorizationData) async throws
     func getData() async throws -> AuthorizationData

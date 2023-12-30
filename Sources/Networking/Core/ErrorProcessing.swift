@@ -8,6 +8,7 @@
 import Foundation
 
 /// A type that is able to customize error returned after failed network request.
+@NetworkingActor
 public protocol ErrorProcessing: Sendable {
     /// Modifies a given `Error`.
     /// - Parameters:

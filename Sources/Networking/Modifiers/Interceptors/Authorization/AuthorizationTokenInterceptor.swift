@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Defines authentication handling in requests
-public actor AuthorizationTokenInterceptor: RequestInterceptor {
+open class AuthorizationTokenInterceptor: RequestInterceptor {
     private var authorizationManager: AuthorizationManaging
     private var refreshTask: Task<Void, Error>?
     
@@ -79,10 +79,10 @@ private extension AuthorizationTokenInterceptor {
                 /// Perform the actual refresh logic.
                 try await self?.authorizationManager.refreshAuthorizationData()
                 /// Make sure to clear refreshTask property after refreshing finishes.
-                await self?.clearRefreshTask()
+                self?.clearRefreshTask()
             } catch {
                 /// Make sure to clear refreshTask property after refreshing finishes.
-                await self?.clearRefreshTask()
+                self?.clearRefreshTask()
                 throw error
             }
         }

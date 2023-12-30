@@ -8,7 +8,6 @@
 import Foundation
 
 /// Default API manager
-@NetworkingActor
 open class APIManager: APIManaging, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]

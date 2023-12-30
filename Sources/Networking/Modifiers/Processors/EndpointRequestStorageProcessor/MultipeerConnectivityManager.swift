@@ -14,7 +14,8 @@
 // @preconcurrency suppresses a swift concurrency warning: Non-sendable type ...
 @preconcurrency import MultipeerConnectivity
 
-public actor MultipeerConnectivityManager: NSObject {
+@NetworkingActor
+public final class MultipeerConnectivityManager: NSObject {
     public static let service = "networking-jobs"
     public static let macOSAppDisplayName = "networking-macos-app"
     

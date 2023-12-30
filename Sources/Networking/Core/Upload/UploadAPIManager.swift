@@ -9,8 +9,7 @@ import Combine
 import Foundation
 
 /// Default upload API manager
-@NetworkingActor
-open class UploadAPIManager: NSObject {
+open class UploadAPIManager: NSObject, UploadAPIManaging {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
         get async {
@@ -128,8 +127,8 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 }
 
 // MARK: - UploadAPIManaging
-extension UploadAPIManager: UploadAPIManaging {
-    public func invalidateSession(shouldFinishTasks: Bool) {
+public extension UploadAPIManager {
+    func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
             urlSession.finishTasksAndInvalidate()
         } else {
@@ -137,7 +136,7 @@ extension UploadAPIManager: UploadAPIManaging {
         }
     }
 
-    public func upload(
+    func upload(
         data: Data,
         to endpoint: Requestable
     ) async throws -> UploadTask {
@@ -148,7 +147,7 @@ extension UploadAPIManager: UploadAPIManaging {
         )
     }
 
-    public func upload(
+    func upload(
         fromFile fileUrl: URL,
         to endpoint: Requestable
     ) async throws -> UploadTask {
@@ -159,7 +158,7 @@ extension UploadAPIManager: UploadAPIManaging {
         )
     }
 
-    public func upload(
+    func upload(
         multipartFormData: MultipartFormData,
         sizeThreshold: UInt64 = 10_000_000,
         to endpoint: Requestable
@@ -187,7 +186,7 @@ extension UploadAPIManager: UploadAPIManaging {
         }
     }
 
-    public func retry(taskId: String) async throws {
+    func retry(taskId: String) async throws {
         // Get stored upload task to invoke the request with the same arguments
         guard let existingUploadTask = uploadTasks[taskId] else {
             throw NetworkError.unknown
@@ -203,7 +202,7 @@ extension UploadAPIManager: UploadAPIManaging {
         )
     }
 
-    public func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
+    func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
         let uploadTask = uploadTasks.values.first { $0.id == uploadTaskId }
 
         return uploadTask?.stateStream ?? Empty().eraseToAnyPublisher().values

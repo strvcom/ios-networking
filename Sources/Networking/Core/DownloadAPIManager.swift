@@ -10,7 +10,6 @@ import Foundation
 @preconcurrency import Combine
 
 /// Default Download API manager
-@NetworkingActor
 open class DownloadAPIManager: NSObject, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
