@@ -58,7 +58,13 @@ extension UsersViewModel {
                         }
                     }
 
-                    return try await group.reduce(into: [User]()) { $0.append($1) }
+                    var results = [User]()
+
+                    for try await value in group {
+                        results.append(value)
+                    }
+
+                    return results
                 }
             } else {
                 // Fetch user add it to users array and wait for 0.5 seconds, before fetching the next one.
