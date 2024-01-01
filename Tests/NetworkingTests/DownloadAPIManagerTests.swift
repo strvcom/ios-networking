@@ -29,8 +29,12 @@ final class DownloadAPIManagerTests: XCTestCase {
     }
     
     func testMultiThreadRequests() async throws {
-        // Set empty response processors since the mock download requests return status code 0 and we don't want the test fail.
-        let apiManager = DownloadAPIManager(responseProcessors: [])
+        let apiManager = DownloadAPIManager(
+            // A session configuration that uses no persistent storage for caches, cookies, or credentials.
+            urlSessionConfiguration: .ephemeral,
+            // Set empty response processors since the mock download requests return status code 0 and we don't want the test fail.
+            responseProcessors: []
+        )
 
         // We can simulate the download even with a local file.
         guard let downloadUrl = Bundle.module.url(forResource: "download_test", withExtension: "txt") else {
