@@ -42,7 +42,7 @@ final class DownloadAPIManagerTests: XCTestCase {
             return
         }
 
-        // Create 15 parallel requests on multiple threads to test the managers thread safety.
+        // Create 15 parallel requests on multiple threads to test the manager's thread safety.
         try await withThrowingTaskGroup(of: Void.self) { group in
             for _ in 0..<15 {
                 group.addTask {
