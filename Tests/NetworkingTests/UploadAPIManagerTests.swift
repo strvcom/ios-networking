@@ -27,7 +27,7 @@ final class UploadAPIManagerTests: XCTestCase {
         }
     }
 
-    func testMultiThreadRequests2() async throws {
+    func testMultiThreadRequests() async throws {
         let apiManager = UploadAPIManager(
             // A session configuration that uses no persistent storage for caches, cookies, or credentials.
             urlSessionConfiguration: .ephemeral
