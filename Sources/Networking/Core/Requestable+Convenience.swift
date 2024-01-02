@@ -56,7 +56,6 @@ public extension Requestable {
         
         // encode url parameters
         if let urlParameters {
-            
             urlComponents.queryItems = buildQueryItems(urlParameters: urlParameters)
         }
         
