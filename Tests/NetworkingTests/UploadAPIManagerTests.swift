@@ -27,22 +27,28 @@ final class UploadAPIManagerTests: XCTestCase {
         }
     }
 
-    func testMultiThreadRequests() async throws {
+    func testMultiThreadRequests() {
         let apiManager = UploadAPIManager(
             // A session configuration that uses no persistent storage for caches, cookies, or credentials.
             urlSessionConfiguration: .ephemeral
         )
         let data = Data("Test data".utf8)
+        let expectation = XCTestExpectation(description: "Uploads completed")
 
-        // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for _ in 0..<15 {
-                group.addTask {
-                    _ = try await apiManager.upload(data: data, to: UploadRouter.mock)
+        Task {
+            // Create 15 parallel requests on multiple threads to test the manager's thread safety.
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                for _ in 0..<15 {
+                    group.addTask {
+                        _ = try await apiManager.upload(data: data, to: UploadRouter.mock)
+                    }
                 }
-            }
 
-            try await group.waitForAll()
+                try await group.waitForAll()
+                expectation.fulfill()
+            }
         }
+
+        wait(for: [expectation], timeout: 1)
     }
 }

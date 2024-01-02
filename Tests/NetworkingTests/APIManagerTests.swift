@@ -42,7 +42,7 @@ final class APIManagerTests: XCTestCase {
 
     private let mockSessionId = "2023-01-04T16:15:29Z"
 
-    func testMultiThreadRequests() async throws {
+    func testMultiThreadRequests() {
         let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: mockSessionId)
         let apiManager = APIManager(
             responseProvider: mockResponseProvider,
@@ -50,15 +50,22 @@ final class APIManagerTests: XCTestCase {
             responseProcessors: []
         )
 
-        // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for _ in 0..<15 {
-                group.addTask {
-                    try await apiManager.request(UserRouter.users(page: 2))
-                }
-            }
+        let expectation = XCTestExpectation(description: "Requests completed")
 
-            try await group.waitForAll()
+        Task {
+            // Create 15 parallel requests on multiple threads to test the manager's thread safety.
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                for _ in 0..<15 {
+                    group.addTask {
+                        try await apiManager.request(UserRouter.users(page: 2))
+                    }
+                }
+
+                try await group.waitForAll()
+                expectation.fulfill()
+            }
         }
+
+        wait(for: [expectation], timeout: 1)
     }
 }

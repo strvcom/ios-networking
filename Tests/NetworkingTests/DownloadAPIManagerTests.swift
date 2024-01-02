@@ -28,7 +28,7 @@ final class DownloadAPIManagerTests: XCTestCase {
         }
     }
     
-    func testMultiThreadRequests() async throws {
+    func testMultiThreadRequests() {
         let apiManager = DownloadAPIManager(
             // A session configuration that uses no persistent storage for caches, cookies, or credentials.
             urlSessionConfiguration: .ephemeral,
@@ -41,19 +41,26 @@ final class DownloadAPIManagerTests: XCTestCase {
             XCTFail("Resource not found")
             return
         }
+        
+        let expectation = XCTestExpectation(description: "Downloads completed")
 
-        // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for _ in 0..<15 {
-                group.addTask {
-                    _ = try await apiManager.downloadRequest(
-                        DownloadRouter.download(url: downloadUrl),
-                        retryConfiguration: nil
-                    )
+        Task {
+            // Create 15 parallel requests on multiple threads to test the manager's thread safety.
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                for _ in 0..<15 {
+                    group.addTask {
+                        _ = try await apiManager.downloadRequest(
+                            DownloadRouter.download(url: downloadUrl),
+                            retryConfiguration: nil
+                        )
+                    }
                 }
-            }
 
-            try await group.waitForAll()
+                try await group.waitForAll()
+                expectation.fulfill()
+            }
         }
+
+        wait(for: [expectation], timeout: 1)
     }
 }
