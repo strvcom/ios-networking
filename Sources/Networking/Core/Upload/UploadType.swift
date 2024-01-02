@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  UploadType.swift
+//
 //
 //  Created by Matej Molnár on 20.12.2023.
 //
