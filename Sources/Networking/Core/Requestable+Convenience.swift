@@ -56,7 +56,7 @@ public extension Requestable {
 
         // encode url parameters
         if let urlParameters {
-            urlComponents.queryItems = buildQueryItems(urlParameters: urlParameters)
+            urlComponents.percentEncodedQueryItems = buildPercentEncodedQueryItems(urlParameters: urlParameters)
         }
         
         return urlComponents
@@ -108,36 +108,68 @@ public extension Requestable {
 
 // MARK: Build Query Items
 private extension Requestable {
-    func buildQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
+    func buildPercentEncodedQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
         urlParameters
             .map { key, value -> [URLQueryItem] in
-                buildQueryItems(key: key, value: value)
+                buildPercentEncodedQueryItems(key: key, value: value)
             }
             .flatMap { $0 }
     }
-    
-    func buildQueryItems(key: String, value: Any) -> [URLQueryItem] {
-        if let arrayType = value as? ArrayParameter {
-            var queryItems: [URLQueryItem] = []
-            
-            switch arrayType.arrayEncoding {
-            case .commaSeparated:
-                queryItems = [URLQueryItem(
+
+    func buildPercentEncodedQueryItems(key: String, value: Any) -> [URLQueryItem] {
+        switch value {
+        case let parameter as ArrayParameter:
+            return buildArrayParameter(
+                key: key,
+                parameter: parameter
+            )
+            .map { $0.percentEncoded() }
+        case let parameter as PercentEncodedParameter:
+            return [
+                URLQueryItem(name: key, value: parameter.value)
+            ]
+        default:
+            return [
+                URLQueryItem(
                     name: key,
-                    value: arrayType.values.map { String(describing: $0) }.joined(separator: ",")
-                )]
-                
-            case .individual:
-                for parameter in arrayType.values {
-                    queryItems.append(URLQueryItem(
-                        name: key,
-                        value: String(describing: parameter)
-                    ))
-                }
-            }
-            return queryItems
+                    value: String(describing: value)
+                )
+                .percentEncoded()
+            ]
         }
-        
-        return [URLQueryItem(name: key, value: String(describing: value))]
+    }
+
+    func buildArrayParameter(
+        key: String,
+        parameter: ArrayParameter
+    ) -> [URLQueryItem] {
+        var queryItems: [URLQueryItem] = []
+
+        switch parameter.arrayEncoding {
+        case .commaSeparated:
+            queryItems = [URLQueryItem(
+                name: key,
+                value: parameter.values.map { String(describing: $0) }.joined(separator: ",")
+            )]
+
+        case .individual:
+            for parameter in parameter.values {
+                queryItems.append(URLQueryItem(
+                    name: key,
+                    value: String(describing: parameter)
+                ))
+            }
+        }
+        return queryItems
+    }
+}
+
+// MARK: - URLQueryItem convenience
+private extension URLQueryItem {
+    func percentEncoded() -> URLQueryItem {
+        var newQueryItem = self
+        newQueryItem.value = value?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+
+        return newQueryItem
     }
 }
