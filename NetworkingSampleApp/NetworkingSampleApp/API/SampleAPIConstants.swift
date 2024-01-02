@@ -11,7 +11,7 @@ import Foundation
 enum SampleAPIConstants {
     static let userHost = "https://reqres.in/api"
     static let authHost = "https://nonexistentmockauth.com/api"
-    // swiftlint:disable:next force_unwrapping
+    // swiftlint:disable:next force_unwrapping force_https
     static let uploadURL = URL(string: "https://httpbin.org/post")!
     static let validEmail = "eve.holt@reqres.in"
     static let validPassword = "cityslicka"
