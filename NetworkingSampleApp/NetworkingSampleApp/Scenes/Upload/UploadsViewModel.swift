@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import OSLog
 import Networking
+import OSLog
 
 @MainActor
 final class UploadsViewModel: ObservableObject {
