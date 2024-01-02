@@ -26,9 +26,17 @@ import Foundation
 ///     // Request URL "https://test.com?specialCharacter=>"
 ///
 public struct PercentEncodedParameter {
-    let value: String
+    // Library provides plus sign percent encoding
+    public enum PercentEncoding {
+        case plusSign
+        case custom
+    }
 
-    public init(_ value: String) {
+    let value: String
+    let percentEncoding: PercentEncoding
+
+    public init(_ value: String, percentEncoding: PercentEncoding = .plusSign) {
         self.value = value
+        self.percentEncoding = percentEncoding
     }
 }
