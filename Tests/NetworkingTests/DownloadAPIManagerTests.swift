@@ -46,18 +46,22 @@ final class DownloadAPIManagerTests: XCTestCase {
 
         Task {
             // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                for _ in 0..<15 {
-                    group.addTask {
-                        _ = try await apiManager.downloadRequest(
-                            DownloadRouter.download(url: downloadUrl),
-                            retryConfiguration: nil
-                        )
+            do {
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    for _ in 0..<15 {
+                        group.addTask {
+                            _ = try await apiManager.downloadRequest(
+                                DownloadRouter.download(url: downloadUrl),
+                                retryConfiguration: nil
+                            )
+                        }
                     }
-                }
 
-                try await group.waitForAll()
-                expectation.fulfill()
+                    try await group.waitForAll()
+                    expectation.fulfill()
+                }
+            } catch {
+                XCTFail(error.localizedDescription)
             }
         }
 

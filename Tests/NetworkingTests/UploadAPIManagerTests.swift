@@ -36,16 +36,20 @@ final class UploadAPIManagerTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Uploads completed")
 
         Task {
-            // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                for _ in 0..<15 {
-                    group.addTask {
-                        _ = try await apiManager.upload(data: data, to: UploadRouter.mock)
+            do {
+                // Create 15 parallel requests on multiple threads to test the manager's thread safety.
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    for _ in 0..<15 {
+                        group.addTask {
+                            _ = try await apiManager.upload(data: data, to: UploadRouter.mock)
+                        }
                     }
-                }
 
-                try await group.waitForAll()
-                expectation.fulfill()
+                    try await group.waitForAll()
+                    expectation.fulfill()
+                }
+            } catch {
+                XCTFail(error.localizedDescription)
             }
         }
 

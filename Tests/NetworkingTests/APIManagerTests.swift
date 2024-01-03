@@ -53,16 +53,20 @@ final class APIManagerTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Requests completed")
 
         Task {
-            // Create 15 parallel requests on multiple threads to test the manager's thread safety.
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                for _ in 0..<15 {
-                    group.addTask {
-                        try await apiManager.request(UserRouter.users(page: 2))
+            do {
+                // Create 15 parallel requests on multiple threads to test the manager's thread safety.
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    for _ in 0..<15 {
+                        group.addTask {
+                            try await apiManager.request(UserRouter.users(page: 2))
+                        }
                     }
-                }
 
-                try await group.waitForAll()
-                expectation.fulfill()
+                    try await group.waitForAll()
+                    expectation.fulfill()
+                }
+            } catch {
+                XCTFail(error.localizedDescription)
             }
         }
 
