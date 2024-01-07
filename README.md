@@ -1,8 +1,8 @@
 # Networking
 
-[![Coverage](https://img.shields.io/badge/Coverage-100%25-darkgreen?style=flat-square)]
-[![Platforms](https://img.shields.io/badge/Platforms-iOS_iPadOS_macOS_watchOS-lightgrey?style=flat-square)]
-[![Swift](https://img.shields.io/badge/Swift-5.9+-blue?style=flat-square)]
+![Coverage](https://img.shields.io/badge/Coverage-100%25-darkgreen?style=flat-square)
+![Platforms](https://img.shields.io/badge/Platforms-iOS_iPadOS_macOS_watchOS-lightgrey?style=flat-square)
+![Swift](https://img.shields.io/badge/Swift-5.9+-blue?style=flat-square)
 
 A networking layer using native `URLSession` and Swift concurrency.
 
