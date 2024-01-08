@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Modifier handling validity of response http status codes
 
 /// A response processor validating ``Response`` http status code against ``Requestable`` API endpoint definition.
-public final class StatusCodeProcessor: ResponseProcessing {
+open class StatusCodeProcessor: ResponseProcessing {
     // MARK: Default shared instance
     public static let shared = StatusCodeProcessor()
     

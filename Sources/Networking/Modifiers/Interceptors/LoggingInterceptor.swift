@@ -15,7 +15,7 @@ import Foundation
 // MARK: - Pretty logging modifier
 
 /// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
-public final class LoggingInterceptor: RequestInterceptor {
+open class LoggingInterceptor: RequestInterceptor {
     // MARK: Default shared instance
     public static let shared = LoggingInterceptor()
     
