@@ -54,7 +54,7 @@ public extension DownloadAPIManaging {
         retryConfiguration: RetryConfiguration? = .default
     ) async throws -> DownloadResult {
         try await downloadRequest(
-            DownloadRouter(fileURL: fileURL),
+            BasicDownloadRouter(fileURL: fileURL),
             resumableData: resumableData,
             retryConfiguration: retryConfiguration
         )
@@ -71,22 +71,5 @@ public extension DownloadAPIManaging {
             resumableData: resumableData,
             retryConfiguration: retryConfiguration
         )
-    }
-}
-
-/// A Router used for basic use case of downloading a file from a URL.
-private struct DownloadRouter: Requestable {
-    private let fileURL: URL
-
-    init(fileURL: URL) {
-        self.fileURL = fileURL
-    }
-
-    var baseURL: URL {
-        fileURL
-    }
-
-    var path: String {
-        ""
     }
 }
