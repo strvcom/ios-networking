@@ -10,22 +10,22 @@ A networking layer using native `URLSession` and Swift concurrency.
 - [Installation](#installation)
 - [Overview](#overview)
 - [Basics](#basics)
-    - [Making requests](#makingRequests)
-    - [Downloading files](#downloadingFiles)
-    - [Uploading files](#uploadingFiles)
-    - [Request authorization](#requestAuthorization)
+    - [Making requests](#making-requests)
+    - [Downloading files](#downloading-files)
+    - [Uploading files](#uploading-files)
+    - [Request authorization](#request-authorization)
 - [Requestable](#requestable)
-- [APIManager](#apiManager)
-- [DownloadAPIManager](#downloadManager)
-- [UploadAPIManager](#uploadManager)
+- [APIManager](#apimanager)
+- [DownloadAPIManager](#downloadapimanager)
+- [UploadAPIManager](#uploadapimanager)
 - [Modifiers](#modifiers)
 - [Interceptors](#interceptors)
-    - [LoggingInterceptor](#loggingInterceptor)
-    - [AuthorizationTokenInterceptor](#authorizationTokenInterceptor)
+    - [LoggingInterceptor](#logginginterceptor)
+    - [AuthorizationTokenInterceptor](#authorizationtokeninterceptor)
 - [Processors](#processors)
-    - [StatusCodeProcessor](#statusCodeProcessor)
-    - [EndpointRequestStorageProcessor](#endpointRequestStorageProcessor)
-- [Associated array query parameters](#arrayQueryParameters)
+    - [StatusCodeProcessor](#statuscodeprocessor)
+    - [EndpointRequestStorageProcessor](#endpointrequeststorageprocessor)
+- [Associated array query parameters](#associated-array-query-parameters)
 
 ## Requirements
 
@@ -33,7 +33,7 @@ A networking layer using native `URLSession` and Swift concurrency.
 - Xcode 14+
 - Swift 5.9+
 
-## Installation <a name="installation"></a>
+## Installation
 
 You can install the library with [Swift Package Manager](https://swift.org/package-manager/). Once you have your Swift package set up, adding Dependency Injection as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
@@ -43,12 +43,12 @@ dependencies: [
 ]
 ```
 
-## Overview <a name="overview"></a>
+## Overview
 Heavily inspired by Moya, the networking layer's philosophy is focused on creating individual endpoint routers, transforming them into a valid URLRequest objects and applying optional adapters and processors in the network call pipeline utilising native `URLSession` under the hood.
 
-## Basics <a name="basics"></a>
+## Basics
 
-### Making requests <a name="makingRequests"></a>
+### Making requests
 There is no 1 line way of making a request from scratch in order to ensure consistency and better structure. First we need to define a Router by conforming to [Requestable](#requestable) protocol. Which in the simplest form can look like this:
 ```swift
 enum UserRouter: Requestable {
@@ -72,18 +72,18 @@ enum UserRouter: Requestable {
 }
 ```
 
-Then we can make a request on an [APIManager](#apiManager) instance, which is responsible for handling the whole request flow.
+Then we can make a request on an [APIManager](#apimanager) instance, which is responsible for handling the whole request flow.
 ```swift
 let response = try await APIManager().request(UserRouter.getUser)
 ```
-If you specify object type, the [APIManager](#apiManager) will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
+If you specify object type, the [APIManager](#apimanager) will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
 
 ```swift
 let userResponse: UserResponse = try await apiManager.request(UserRouter.getUser)
 ```
 
-### Downloading files <a name="downloadingFiles"></a>
-Downloads are being handled by a designated [DownloadAPIManager](#downloadManager). Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and `Response` (result for the HTTP handshake).
+### Downloading files
+Downloads are being handled by a designated [DownloadAPIManager](#downloadapimanager). Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and `Response` (result for the HTTP handshake).
 ```swift
 let (task, response) = try await DownloadAPIManager().request(url: URL)
 ```
@@ -95,10 +95,10 @@ for try await downloadState in downloadAPIManager.shared.progressStream(for: tas
 }
 ```
 
-In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](#requestable) protocol and pass that to the [DownloadAPIManager](#downloadManager) instead of the `URL`.
+In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](#requestable) protocol and pass that to the [DownloadAPIManager](#downloadapimanager) instead of the `URL`.
 
-### Uploading files <a name="uploadingFiles"></a>
-Uploads are being handled by a designated [UploadAPIManager](#uploadManager). Here is an example of a basic form of file upload to a `URL`. It returns an `UploadTask` which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
+### Uploading files
+Uploads are being handled by a designated [UploadAPIManager](#uploadapimanager). Here is an example of a basic form of file upload to a `URL`. It returns an `UploadTask` which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
 ```swift
 let uploadTask = try await uploadManager.upload(.file(fileUrl), to: "https://upload.com/file")
 ```
@@ -110,12 +110,12 @@ for await uploadState in await uploadManager.stateStream(for: task.id) {
 }
 ```
 
-In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](#requestable) protocol and pass that to the [UploadAPIManager](#uploadManager) instead of the upload `URL`.
+In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](#requestable) protocol and pass that to the [UploadAPIManager](#uploadapimanager) instead of the upload `URL`.
 
-### Request authorization <a name="requestAuthorization"></a>
+### Request authorization
 Networking provides a default authorization handling for OAuth scenarios. In order to utilise this we
-have to first create our own implementation of `AuthorizationManaging` which we inject into to  [AuthorizationTokenInterceptor](#authorizationTokenInterceptor) and then pass
-it to the [APIManager](#apiManager) as both adapter and processor.
+have to first create our own implementation of `AuthorizationManaging` which we inject into to  [AuthorizationTokenInterceptor](#authorizationtokeninterceptor) and then pass
+it to the [APIManager](#apimanager) as both adapter and processor.
 
 ```swift
 let authManager = AuthorizationManager()
@@ -149,7 +149,7 @@ extension UserRouter: Requestable {
 }
 ```
 
-## Requestable <a name="requestable"></a>
+## Requestable
 By conforming to the ``Requestable`` protocol, you can define endpoint definitions containing the elementary HTTP request components necessary to create valid HTTP requests.
 <br>**Recommendation:** Follow the `Router` naming convention to explicitly indicate the usage of a router pattern.
 
@@ -206,7 +206,7 @@ extension UserRouter: Requestable {
 
 Some of the properties have default implementations defined in the `Requestable+Convenience` extension.
 
-## APIManager <a name="apiManager"></a>
+## APIManager
 APIManager is responsible for the creation and management of a network call. It conforms to the ``APIManaging`` protocol which allows you to define your own custom APIManager if needed.
 
 There are two ways to initialise the ``APIManager`` object:
@@ -266,7 +266,7 @@ let userResponse: UserResponse = try await apiManager.request(
 )
 ```
 
-## DownloadAPIManager <a name="downloadManager"></a>
+## DownloadAPIManager
 DownloadAPIManager is responsible for the creation and management of a network file download. It conforms to the ``DownloadAPIManaging`` protocol which allows you to define your own custom DownloadAPIManager if needed. Multiple parallel downloads are supported.
 
 The initialisation is equivalent to APIManager, except the session is created for the user based on a given `URLSessionConfiguration`:
@@ -315,7 +315,7 @@ func invalidateSession(shouldFinishTasks: Bool = false)
 ```
 DownloadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the DownloadAPIManager, don't forget to invalidate the session if it is not needed anymore.
 
-## UploadAPIManager <a name="uploadManager"></a>
+## UploadAPIManager
 Similarly to DownloadAPIManager we have an UploadAPIManager responsible for the creation and management of a network file uploads. It conforms to the ``UploadAPIManaging`` protocol which allows you to define your own custom UploadAPIManager if needed. Multiple parallel uploads are supported.
 
 The initialisation is equivalent to APIManager, except the session is created for the user based on a given `URLSessionConfiguration`:
@@ -374,7 +374,7 @@ let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { e
 }
 ```
 
-## Modifiers <a name="modifiers"></a>
+## Modifiers
 Modifiers are useful pieces of code that modify request/response in the network request pipeline.
 ![Interceptors diagram](interceptors-diagram.png)
 
@@ -398,9 +398,9 @@ Interceptors handle both adapting and response/error processing.
 
 By conforming to these protocols, you can create your own adaptors/processors/interceptors. In the following part, modifiers provided by Networking are introduced.
 
-## Interceptors <a name="interceptors"></a>
+## Interceptors
 
-### LoggingInterceptor <a name="loggingInterceptor"></a>
+### LoggingInterceptor
 Networking provides a default ``LoggingInterceptor`` which internally uses `os_log` to pretty print requests/responses. You can utilise it to get logging console output either for requests, responses or both.
 
 ```swift
@@ -413,7 +413,7 @@ APIManager(
 )
 ```
 
-### AuthorizationTokenInterceptor <a name="authorizationTokenInterceptor"></a>
+### AuthorizationTokenInterceptor
 Networking provides a default authorization handling for OAuth scenarios. Use the default ``AuthorizationTokenInterceptor`` with the APIManager to obtain the behaviour of JWT Bearer authorization header injection and access token expiration refresh flow.
 
 Start by implementing an authorization manager by conforming to ``AuthorizationManaging``. This manager requires you to provide storage defined by ``AuthorizationStorageManaging`` (where OAuth credentials will be stored) and a refresh method that will perform the refresh token network call to obtain a new OAuth pair. Optionally, you can provide custom implementations for ``AuthorizationManaging/authorizeRequest(_:)`` (by default, this method sets the authorization header) or access token getter (by default, this method returns the access token saved in provided storage).
@@ -443,9 +443,9 @@ final class CustomAuthorizationManager: AuthorizationManaging {
 }
 ```
 
-## Processors <a name="processors"></a>
+## Processors
 
-### StatusCodeProcessor <a name="statusCodeProcessor"></a>
+### StatusCodeProcessor
 Each ``Requestable`` endpoint definition contains an ``Requestable/acceptableStatusCodes`` range of acceptable status codes. By default, these are set to `200..<400`. Networking provides a default status code processor that makes sure the received response's HTTP code is an acceptable one, otherwise an ``NetworkError/unacceptableStatusCode(statusCode:acceptedStatusCodes:response:)`` error is thrown.
 
 ```swift
@@ -456,7 +456,7 @@ APIManager(
 )
 ```
 
-### EndpointRequestStorageProcessor <a name="endpointRequestStorageProcessor"></a>
+### EndpointRequestStorageProcessor
 Networking provides an ``EndpointRequestStorageProcessor`` which allows for requests and responses to be saved locally into the file system. Requests are stored in a sequential manner. Each session is kept in its own dedicated folder. The ``EndpointRequestStorageModel`` includes both successful and erroneous data.
 
 Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to set optionally a multiPeerSharing configuration if you wish to utilise the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
@@ -469,7 +469,7 @@ init(
 )
 ```
 
-## Associated array query parameters <a name="arrayQueryParameters"></a>
+## Associated array query parameters
 When specifying urlParameters in the endpoint definition, use an ``ArrayParameter`` to define multiple values for a single URL query parameter. The struct lets you decide which ``ArrayEncoding`` will be used during the creation of the URL.
 
 There are two currently supported encodings:
