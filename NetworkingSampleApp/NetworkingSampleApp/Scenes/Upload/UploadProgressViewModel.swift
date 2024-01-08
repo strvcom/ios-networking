@@ -25,10 +25,8 @@ final class UploadProgressViewModel: TaskProgressViewModel {
         self.task = task
     }
 
-    func onAppear() {
-        Task {
-            await observeProgress()
-        }
+    func onAppear() async {
+        await observeProgress()
     }
     
     func observeProgress() async {

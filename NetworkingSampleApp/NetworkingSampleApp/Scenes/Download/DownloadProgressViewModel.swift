@@ -23,29 +23,27 @@ final class DownloadProgressViewModel: TaskProgressViewModel {
         self.task = task
     }
     
-    func onAppear() {
-        Task {
-            let stream = DownloadAPIManager.shared.progressStream(for: task)
+    func onAppear() async {
+        let stream = DownloadAPIManager.shared.progressStream(for: task)
 
-            for try await downloadState in stream {
-                title = task.currentRequest?.url?.absoluteString ?? "-"
-                percentCompleted = downloadState.fractionCompleted * 100
-                downloadedBytes = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: downloadState.downloadedBytes)
-                state = downloadState.taskState
-                status = {
-                    if let error = downloadState.error {
-                        return "Error: \(error.localizedDescription)"
-                    }
+        for try await downloadState in stream {
+            title = task.currentRequest?.url?.absoluteString ?? "-"
+            percentCompleted = downloadState.fractionCompleted * 100
+            downloadedBytes = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: downloadState.downloadedBytes)
+            state = downloadState.taskState
+            status = {
+                if let error = downloadState.error {
+                    return "Error: \(error.localizedDescription)"
+                }
 
-                    if let downloadedFileURL = downloadState.downloadedFileURL {
-                        return "Downloaded at: \(downloadedFileURL.absoluteString)"
-                    }
+                if let downloadedFileURL = downloadState.downloadedFileURL {
+                    return "Downloaded at: \(downloadedFileURL.absoluteString)"
+                }
 
-                    return downloadState.taskState.title
-                }()
+                return downloadState.taskState.title
+            }()
 
-                objectWillChange.send()
-            }
+            objectWillChange.send()
         }
     }
     

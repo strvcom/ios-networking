@@ -29,10 +29,8 @@ final class UploadsViewModel: ObservableObject {
 }
 
 extension UploadsViewModel {
-    func loadTasks() {
-        Task {
-            uploadTasks = await uploadManager.activeTasks
-        }
+    func loadTasks() async {
+        uploadTasks = await uploadManager.activeTasks
     }
 
     func uploadImage(result: Result<Data?, Error>) {
