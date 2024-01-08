@@ -376,7 +376,7 @@ let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { e
 
 ## Modifiers
 Modifiers are useful pieces of code that modify request/response in the network request pipeline.
-![Interceptors diagram](interceptors-diagram.png)
+![Interceptors diagram](Sources/Networking/Documentation.docc/Resources/interceptors-diagram.png)
 
 There are three types you can leverage:<br>
 
