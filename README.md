@@ -27,7 +27,7 @@ A networking layer using native `URLSession` and Swift concurrency.
     - [EndpointRequestStorageProcessor](#endpointRequestStorageProcessor)
 - [Associated array query parameters](#arrayQueryParameters)
 
-## Requirements <a name="requirements"></a>
+## Requirements
 
 - iOS/iPadOS 15.0+, macOS 12.0+, watchOS 9.0+
 - Xcode 14+
