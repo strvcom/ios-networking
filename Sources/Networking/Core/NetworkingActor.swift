@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  NetworkingActor.swift
 //
 //
 //  Created by Matej Molnár on 29.12.2023.
