@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AuthorizationData {
+public struct AuthorizationData: Codable {
     public let accessToken: String
     public let refreshToken: String
     public let expiresIn: Date?
