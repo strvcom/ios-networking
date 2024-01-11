@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class MultipartFormDataEncoder {
+open class MultipartFormDataEncoder: @unchecked Sendable {
     /// A string representing a carriage return and line feed.
     private let crlf = "\r\n"
 
