@@ -34,7 +34,13 @@ open class DownloadAPIManager: NSObject, Retryable {
         errorProcessors: [ErrorProcessing] = []
     ) {
         /// generate session id in readable format
-        sessionId = Date().ISO8601Format()
+        if #unavailable(iOS 15) {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            sessionId = dateFormatter.string(from: Date())
+        } else {
+            sessionId = Date().ISO8601Format()
+        }
         
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
