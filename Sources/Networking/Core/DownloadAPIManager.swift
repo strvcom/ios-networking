@@ -121,17 +121,15 @@ private extension DownloadAPIManager {
                     return urlSession.downloadTask(with: request)
                 }
             }()
-            
+
             /// downloadTask must be initiated by resume() before we try to await a response from downloadObserver, because it gets the response from URLSessionDownloadDelegate methods
-            downloadTask.resume()
-            
-            await updateTasks()
-            
-            let urlResponse = try await downloadTask.asyncResponse()
-            
+            let urlResponse = try await downloadTask.resumeWithResponse()
+
             /// process response
             let response = try await responseProcessors.process((Data(), urlResponse), with: request, for: endpointRequest)
             
+            await updateTasks()
+
             /// reset retry count
             retryCounter.reset(for: endpointRequest.id)
             
@@ -214,7 +212,6 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
                 var mutableTask = downloadStateDict[downloadTask]
                 mutableTask?.downloadedFileURL = tempURL
                 downloadStateDict[downloadTask] = mutableTask
-                await updateTasks()
             }
         } catch {
             Task { @NetworkingActor in
@@ -230,7 +227,6 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
             var mutableTask = downloadStateDict[task]
             mutableTask?.error = error
             downloadStateDict[task] = mutableTask
-            await updateTasks()
         }
     }
 }
