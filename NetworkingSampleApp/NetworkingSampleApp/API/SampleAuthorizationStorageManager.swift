@@ -7,7 +7,7 @@
 
 import Networking
 
-actor SampleAuthorizationStorageManager: AuthorizationStorageManaging {
+final class SampleAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
     func saveData(_ data: AuthorizationData) async throws {

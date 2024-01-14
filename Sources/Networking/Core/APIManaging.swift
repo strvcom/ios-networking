@@ -11,7 +11,8 @@ import Foundation
 // MARK: - Defines API managing
 
 /// A definition of an API layer with methods for handling API requests.
-public protocol APIManaging {
+@NetworkingActor
+public protocol APIManaging: Sendable {
     /// A default JSONDecoder used for all requests.
     var defaultDecoder: JSONDecoder { get }
     

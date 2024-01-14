@@ -25,11 +25,7 @@ final class FormUploadsViewModel: ObservableObject {
         return fileName
     }
 
-    private let uploadService: UploadService
-
-    init(uploadService: UploadService = .init()) {
-        self.uploadService = uploadService
-    }
+    private let uploadService = UploadService.shared
 }
 
 extension FormUploadsViewModel {
@@ -58,7 +54,7 @@ extension FormUploadsViewModel {
 // MARK: - Prepare multipartForm data
 private extension FormUploadsViewModel {
     func createMultipartFormData() throws -> MultipartFormData {
-        let multipartFormData = MultipartFormData()
+        var multipartFormData = MultipartFormData()
         multipartFormData.append(Data(username.utf8), name: "username-textfield")
         if let fileUrl {
             try multipartFormData.append(from: fileUrl, name: "attachment")

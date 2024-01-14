@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Struct wrapping one call to the API endpoint
 
 /// A wrapper structure which contains API endpoint with additional info about the session within which it's being called and an API call identifier.
-public struct EndpointRequest: Identifiable {
+public struct EndpointRequest: Identifiable, Sendable {
     public let id: String
     public let sessionId: String
     public let endpoint: Requestable

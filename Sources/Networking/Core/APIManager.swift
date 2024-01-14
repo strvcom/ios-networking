@@ -14,8 +14,8 @@ open class APIManager: APIManaging, Retryable {
     private let errorProcessors: [ErrorProcessing]
     private let responseProvider: ResponseProviding
     private let sessionId: String
-    internal var retryCounter = Counter()
-    
+    let retryCounter = Counter()
+
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
@@ -69,7 +69,7 @@ private extension APIManager {
             response = try await responseProcessors.process(response, with: request, for: endpointRequest)
                         
             /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
+            retryCounter.reset(for: endpointRequest.id)
             
             return response
         } catch {

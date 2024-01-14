@@ -8,6 +8,7 @@
 import Networking
 import Foundation
 
+@NetworkingActor
 final class SampleAuthorizationManager: AuthorizationManaging {
     // MARK: Public properties
     let storage: AuthorizationStorageManaging = SampleAuthorizationStorageManager()

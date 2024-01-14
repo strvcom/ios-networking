@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Endpoint definition
 
 /// A type that represents an API endpoint.
-public protocol Requestable: EndpointIdentifiable {
+public protocol Requestable: EndpointIdentifiable, Sendable {
     /// The host URL of REST API.
     var baseURL: URL { get }
 

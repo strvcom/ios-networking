@@ -8,16 +8,11 @@
 import Foundation
 import Networking
 
-final class UploadService {
-    private let uploadManager: UploadAPIManaging
+@NetworkingActor
+final class UploadService: Sendable {
+    static let shared = UploadService()
 
-    init(uploadManager: UploadAPIManaging = UploadAPIManager()) {
-        self.uploadManager = uploadManager
-    }
-
-    deinit {
-        uploadManager.invalidateSession(shouldFinishTasks: false)
-    }
+    private let uploadManager = UploadAPIManager()
 }
 
 extension UploadService {
@@ -60,7 +55,7 @@ extension UploadService {
     }
    
     func uploadStateStream(for uploadTaskId: String) async -> UploadAPIManaging.StateStream {
-        await uploadManager.stateStream(for: uploadTaskId)
+        uploadManager.stateStream(for: uploadTaskId)
     }
 
     func pause(taskId: String) async {
