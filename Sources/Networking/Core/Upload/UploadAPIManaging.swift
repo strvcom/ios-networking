@@ -53,40 +53,11 @@ public extension UploadAPIManaging {
     ///   - uploadURL: The URL where data will be sent.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(_ type: UploadType, to uploadURL: URL) async throws -> UploadTask {
-        try await upload(type, to: UploadRouter(url: uploadURL, uploadType: type))
+        try await upload(type, to: BasicUploadRouter(url: uploadURL, uploadType: type))
     }
 
     /// Returns an active ``UploadTask`` specified by its identifier.
     func task(with id: UploadTask.ID) async -> UploadTask? {
         await activeTasks.first { $0.id == id }
-    }
-}
-
-/// A Router for basic use case of uploading file/data/multiPartForm to a given URL.
-private struct UploadRouter: Requestable {
-    let url: URL
-    let uploadType: UploadType
-
-    var baseURL: URL {
-        url
-    }
-
-    var headers: [String: String]? {
-        switch uploadType {
-        case let .data(_, contentType):
-            ["Content-Type": contentType]
-        case let .file(url):
-            ["Content-Type": url.mimeType]
-        case let .multipart( data, _):
-            ["Content-Type": "multipart/form-data; boundary=\(data.boundary)"]
-        }
-    }
-
-    var path: String {
-        ""
-    }
-
-    var method: HTTPMethod {
-        .post
     }
 }

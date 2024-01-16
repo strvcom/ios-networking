@@ -39,8 +39,8 @@ struct UploadsView: View {
                 Text(viewModel.error?.localizedDescription ?? "")
             }
         )
-        .onAppear {
-            viewModel.loadTasks()
+        .task {
+            await viewModel.loadTasks()
         }
         .navigationTitle("Uploads")
     }

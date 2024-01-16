@@ -20,7 +20,7 @@ protocol TaskProgressViewModel: ObservableObject {
     func resume()
     func cancel()
     func retry()
-    func onAppear()
+    func onAppear() async
 }
 
 struct TaskProgressView<ViewModel: TaskProgressViewModel>: View {
@@ -63,8 +63,8 @@ struct TaskProgressView<ViewModel: TaskProgressViewModel>: View {
                 }
             }
         }
-        .onAppear {
-            viewModel.onAppear()
+        .task {
+            await viewModel.onAppear()
         }
     }
 }
