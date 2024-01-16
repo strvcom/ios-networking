@@ -1,6 +1,6 @@
 //
 //  AuthorizationData.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 20.12.2022.
 //
@@ -23,8 +23,8 @@ public struct AuthorizationData: Codable, Sendable {
 }
 
 // MARK: Computed propeties
-extension AuthorizationData {
-    public var isExpired: Bool {
+public extension AuthorizationData {
+    var isExpired: Bool {
         guard let expiresIn else {
             /// If there is no information about expiration, always assume it is not expired.
             return false

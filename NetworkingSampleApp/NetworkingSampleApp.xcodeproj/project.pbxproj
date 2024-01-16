@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,13 +15,17 @@
 		23EA9CF6292FB70A00B8E418 /* SampleAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */; };
 		23EA9CF7292FB70A00B8E418 /* SampleUserAuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */; };
 		23EA9CF8292FB70A00B8E418 /* SampleUsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */; };
-		23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */; };
+		23EA9CF9292FB70A00B8E418 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CEF292FB70A00B8E418 /* User.swift */; };
 		23EA9CFA292FB70A00B8E418 /* SampleUserAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */; };
 		23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */; };
+		587CD0EF2B27713700E3CB71 /* TaskButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587CD0EE2B27713700E3CB71 /* TaskButton.swift */; };
+		587CD0EC2B271CF800E3CB71 /* SampleCreateUserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587CD0EB2B271CF800E3CB71 /* SampleCreateUserResponse.swift */; };
 		58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */; };
 		58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */; };
 		58C3E76129B79259004FD1CD /* SampleDownloadRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */; };
 		58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */; };
+		58D6976F2B21FF8300E6C529 /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D6976E2B21FF8300E6C529 /* UsersView.swift */; };
+		58D697712B21FF8E00E6C529 /* UsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D697702B21FF8E00E6C529 /* UsersViewModel.swift */; };
 		58E4E0ED2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */; };
 		58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */; };
 		58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E4E0F029850E86000ACBC0 /* ContentView.swift */; };
@@ -51,19 +55,22 @@
 		23A575C025F8B9DB00617551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		23A575C225F8B9DB00617551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23C16B79276B5AFD00C0B4F1 /* ios-networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "ios-networking"; path = ..; sourceTree = "<group>"; };
-		23D8FA2D261DA21200DE1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23EA9CE9292FB70A00B8E418 /* SampleUserRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRouter.swift; sourceTree = "<group>"; };
 		23EA9CEA292FB70A00B8E418 /* SampleAPIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIConstants.swift; sourceTree = "<group>"; };
 		23EA9CEB292FB70A00B8E418 /* SampleAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAPIError.swift; sourceTree = "<group>"; };
 		23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthResponse.swift; sourceTree = "<group>"; };
 		23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUsersResponse.swift; sourceTree = "<group>"; };
-		23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserResponse.swift; sourceTree = "<group>"; };
+		23EA9CEF292FB70A00B8E418 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		23EA9CF1292FB70A00B8E418 /* SampleUserAuthRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserAuthRequest.swift; sourceTree = "<group>"; };
 		23EA9CF2292FB70A00B8E418 /* SampleUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleUserRequest.swift; sourceTree = "<group>"; };
+		587CD0EB2B271CF800E3CB71 /* SampleCreateUserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCreateUserResponse.swift; sourceTree = "<group>"; };
+		587CD0EE2B27713700E3CB71 /* TaskButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskButton.swift; sourceTree = "<group>"; };
 		58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsView.swift; sourceTree = "<group>"; };
 		58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsViewModel.swift; sourceTree = "<group>"; };
 		58C3E76029B79259004FD1CD /* SampleDownloadRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDownloadRouter.swift; sourceTree = "<group>"; };
 		58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadProgressViewModel.swift; sourceTree = "<group>"; };
+		58D6976E2B21FF8300E6C529 /* UsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersView.swift; sourceTree = "<group>"; };
+		58D697702B21FF8E00E6C529 /* UsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewModel.swift; sourceTree = "<group>"; };
 		58E4E0EC2982D884000ACBC0 /* SampleAuthorizationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAuthorizationStorageManager.swift; sourceTree = "<group>"; };
 		58E4E0EE29843B42000ACBC0 /* NetworkingSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingSampleApp.swift; sourceTree = "<group>"; };
 		58E4E0F029850E86000ACBC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -104,7 +111,6 @@
 			children = (
 				23C16B78276B5AFD00C0B4F1 /* Packages */,
 				23A575B325F8B9DA00617551 /* NetworkingSampleApp */,
-				23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */,
 				23A575B225F8B9DA00617551 /* Products */,
 				23A575E725F8BA3600617551 /* Frameworks */,
 			);
@@ -121,6 +127,7 @@
 		23A575B325F8B9DA00617551 /* NetworkingSampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				587CD0ED2B27712B00E3CB71 /* UIElements */,
 				DD6E48742A0E2CC70025AD05 /* Extensions */,
 				58FB80CC29895A8D0031FC59 /* Resources */,
 				23EA9CE7292FB70A00B8E418 /* API */,
@@ -144,6 +151,7 @@
 		23A575ED25F8BF0E00617551 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				58D6976D2B21FF6A00E6C529 /* Users */,
 				58FB80C5298521DA0031FC59 /* Authorization */,
 				58C3E75B29B78ED3004FD1CD /* Download */,
 				B52674BB2A370D0D006D3B9C /* Upload */,
@@ -157,14 +165,6 @@
 				23C16B79276B5AFD00C0B4F1 /* ios-networking */,
 			);
 			name = Packages;
-			sourceTree = "<group>";
-		};
-		23D8FA2A261DA21200DE1800 /* NetworkingSampleAppTests */ = {
-			isa = PBXGroup;
-			children = (
-				23D8FA2D261DA21200DE1800 /* Info.plist */,
-			);
-			path = NetworkingSampleAppTests;
 			sourceTree = "<group>";
 		};
 		23EA9CE7292FB70A00B8E418 /* API */ = {
@@ -198,7 +198,7 @@
 			children = (
 				23EA9CED292FB70A00B8E418 /* SampleUserAuthResponse.swift */,
 				23EA9CEE292FB70A00B8E418 /* SampleUsersResponse.swift */,
-				23EA9CEF292FB70A00B8E418 /* SampleUserResponse.swift */,
+				587CD0EB2B271CF800E3CB71 /* SampleCreateUserResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -213,15 +213,33 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		587CD0ED2B27712B00E3CB71 /* UIElements */ = {
+			isa = PBXGroup;
+			children = (
+				587CD0EE2B27713700E3CB71 /* TaskButton.swift */,
+			);
+			path = UIElements;
+			sourceTree = "<group>";
+		};
 		58C3E75B29B78ED3004FD1CD /* Download */ = {
 			isa = PBXGroup;
 			children = (
-				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
-				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
 				58C3E75D29B78ED3004FD1CD /* DownloadsViewModel.swift */,
+				58C3E75C29B78ED3004FD1CD /* DownloadsView.swift */,
 				58C3E76429B7D709004FD1CD /* DownloadProgressViewModel.swift */,
+				DD6E48722A0E24D30025AD05 /* DownloadProgressView.swift */,
 			);
 			path = Download;
+			sourceTree = "<group>";
+		};
+		58D6976D2B21FF6A00E6C529 /* Users */ = {
+			isa = PBXGroup;
+			children = (
+				23EA9CEF292FB70A00B8E418 /* User.swift */,
+				58D697702B21FF8E00E6C529 /* UsersViewModel.swift */,
+				58D6976E2B21FF8300E6C529 /* UsersView.swift */,
+			);
+			path = Users;
 			sourceTree = "<group>";
 		};
 		58FB80C5298521DA0031FC59 /* Authorization */ = {
@@ -278,6 +296,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				23204AB02AAF381000F8D6A7 /* PBXTargetDependency */,
 			);
 			name = NetworkingSampleApp;
 			packageProductDependencies = (
@@ -293,8 +312,9 @@
 		23A575A925F8B9DA00617551 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					23A575B025F8B9DA00617551 = {
 						CreatedOnToolsVersion = 12.4;
@@ -311,6 +331,7 @@
 			);
 			mainGroup = 23A575A825F8B9DA00617551;
 			packageReferences = (
+				23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */,
 			);
 			productRefGroup = 23A575B225F8B9DA00617551 /* Products */;
 			projectDirPath = "";
@@ -339,6 +360,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				587CD0EF2B27713700E3CB71 /* TaskButton.swift in Sources */,
 				58E4E0EF29843B42000ACBC0 /* NetworkingSampleApp.swift in Sources */,
 				DD6E48762A0E2CD30025AD05 /* DownloadAPIManager+SharedInstance.swift in Sources */,
 				DDE8884529476AC300DD3BFF /* SampleRefreshTokenRequest.swift in Sources */,
@@ -351,7 +373,7 @@
 				58E4E0F129850E86000ACBC0 /* ContentView.swift in Sources */,
 				B52674BD2A370D1D006D3B9C /* UploadService.swift in Sources */,
 				58C3E76529B7D709004FD1CD /* DownloadProgressViewModel.swift in Sources */,
-				23EA9CF9292FB70A00B8E418 /* SampleUserResponse.swift in Sources */,
+				23EA9CF9292FB70A00B8E418 /* User.swift in Sources */,
 				DDD3AD1F2950E794006CB777 /* SampleAuthRouter.swift in Sources */,
 				DD887780293E33850065ED03 /* SampleErrorProcessor.swift in Sources */,
 				23EA9CFB292FB70A00B8E418 /* SampleUserRequest.swift in Sources */,
@@ -359,13 +381,16 @@
 				58C3E76129B79259004FD1CD /* SampleDownloadRouter.swift in Sources */,
 				23EA9CF4292FB70A00B8E418 /* SampleUserRouter.swift in Sources */,
 				B52674BF2A370D33006D3B9C /* UploadItem.swift in Sources */,
+				58D6976F2B21FF8300E6C529 /* UsersView.swift in Sources */,
 				23EA9CF5292FB70A00B8E418 /* SampleAPIConstants.swift in Sources */,
 				58FB80C7298521FF0031FC59 /* AuthorizationView.swift in Sources */,
 				DD410D6F293F2E6E006D8E31 /* AuthorizationViewModel.swift in Sources */,
 				B52674BA2A370C15006D3B9C /* SampleUploadRouter.swift in Sources */,
+				58D697712B21FF8E00E6C529 /* UsersViewModel.swift in Sources */,
 				B52674C72A371046006D3B9C /* UploadItemView.swift in Sources */,
 				58C3E75F29B78EE8004FD1CD /* DownloadsViewModel.swift in Sources */,
 				58C3E75E29B78EE6004FD1CD /* DownloadsView.swift in Sources */,
+				587CD0EC2B271CF800E3CB71 /* SampleCreateUserResponse.swift in Sources */,
 				B52674C32A370E35006D3B9C /* UploadItemViewModel.swift in Sources */,
 				B52674C12A370DFF006D3B9C /* UploadsViewModel.swift in Sources */,
 				B52674C52A37102D006D3B9C /* UploadsView.swift in Sources */,
@@ -375,6 +400,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		23204AB02AAF381000F8D6A7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		23A575BF25F8B9DB00617551 /* LaunchScreen.storyboard */ = {
@@ -425,6 +457,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -486,6 +519,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -567,10 +601,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/SwiftLint.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.53.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		2305D1E5261E595E003632D9 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
+		};
+		23204AAF2AAF381000F8D6A7 /* SwiftLintPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 23204AAE2AAF380700F8D6A7 /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

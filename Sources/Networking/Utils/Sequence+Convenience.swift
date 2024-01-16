@@ -1,6 +1,6 @@
 //
 //  Sequence+Convenience.swift
-//  
+//
 //
 //  Created by Tomas Cejka on 15.11.2022.
 //

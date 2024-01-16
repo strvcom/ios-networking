@@ -175,6 +175,46 @@ func invalidateSession(shouldFinishTasks: Bool = false)
 ```
 DownloadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the DownloadAPIManager, don't forget to invalidate the session if it is not needed anymore.
 
+## UploadAPIManager
+Similarly to DownloadAPIManager we have an UploadAPIManager responsible for the creation and management of network file uploads. It conforms to the ``UploadAPIManaging`` protocol which allows you to define your own custom UploadAPIManager if needed. Multiple parallel uploads are supported.
+
+The initialisation is equivalent to APIManager, except the session is created for the user based on a given `URLSessionConfiguration`:
+```swift
+init(
+    urlSessionConfiguration: URLSessionConfiguration = .default,
+    requestAdapters: [RequestAdapting] = [],
+    responseProcessors: [ResponseProcessing] = [StatusCodeProcessor.shared],
+    errorProcessors: [ErrorProcessing] = []
+)
+```
+
+Adapters and processors are passed during initialisation and cannot be changed afterwards.
+
+The UploadAPIManager contains a public property that enables you to keep track of current tasks in progress.
+```swift
+var activeTasks: [UploadTask] { get async }
+```
+``UploadAPIManaging`` defines three methods for upload based on the upload type `Data`, file `URL` and `MultipartFormData`. Each of these methods return an `UploadTask`.
+An `UploadTask` is a struct which under the hood represents + manages a URLSessionUploadTask and provides its state.
+
+After firing an upload by one of these three methods, you can get a StateStream either from the `UploadTask` itself or from the manager with the following method. 
+```swift
+func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream
+```
+The `StateStream` is a typealias for `AsyncPublisher<AnyPublisher<UploadTask.State, Never>>`.
+The `UploadTask.State` struct provides you with information about the upload itself, including bytes uploaded, total byte size of the file being uploaded or the error if any occurs.
+
+The manager also allows for retries of uploads.
+```swift
+    func retry(taskId: String) async throws
+```
+
+You should invalidate upload session in case UploadAPIManager is not used as singleton to prevent memory leaks.
+```swift
+func invalidateSession(shouldFinishTasks: Bool = false)
+```
+UploadAPIManager is not deallocated from memory since URLSession is holding a reference to it. If you wish to use new instances of the UploadAPIManager, don't forget to invalidate the session if it is not needed anymore.
+
 ## Retry ability
 Both APIManager and DownloadAPIManager allow for configurable retry mechanism.
 

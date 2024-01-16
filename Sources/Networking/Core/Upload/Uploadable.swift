@@ -1,6 +1,6 @@
 //
 //  Uploadable.swift
-//  
+//
 //
 //  Created by Tony Ngo on 13.06.2023.
 //

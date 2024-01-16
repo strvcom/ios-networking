@@ -1,6 +1,6 @@
 //
 //  EndpointRequestStorageProcessorTests.swift
-//  
+//
 //
 //  Created by Matej Molnár on 12.12.2022.
 //
@@ -33,44 +33,44 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         var path: String {
             switch self {
             case .testStoringGet:
-                return "storing"
+                "storing"
             case .testStoringPost:
-                return "storing"
+                "storing"
             case .testStoringImage:
-                return "image"
+                "image"
             case .testStoringError:
-                return "error"
+                "error"
             }
         }
         
         var method: HTTPMethod {
             switch self {
             case .testStoringGet, .testStoringImage, .testStoringError:
-                return .get
+                .get
             case .testStoringPost:
-                return .post
+                .post
             }
         }
-        var urlParameters: [String : Any]? {
+        var urlParameters: [String: Any]? {
             switch self {
             case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
-                return ["query": "mock"]
+                ["query": "mock"]
             }
         }
         
-        var headers: [String : String]? {
+        var headers: [String: String]? {
             switch self {
             case .testStoringGet, .testStoringPost, .testStoringImage, .testStoringError:
-                return ["mockRequestHeader": "mock"]
+                ["mockRequestHeader": "mock"]
             }
         }
         
         var dataType: RequestDataType? {
             switch self {
             case .testStoringGet, .testStoringImage, .testStoringError:
-                return nil
+                nil
             case .testStoringPost:
-                return .encodable(MockBody(parameter: "mock"))
+                .encodable(MockBody(parameter: "mock"))
             }
         }
     }
@@ -278,13 +278,13 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
     }
     
+    // swiftlint:enable force_unwrapping
     static var allTests = [
         ("testResponseStaysTheSameAfterStoringData", testResponseStaysTheSameAfterStoringData),
         ("testStoredDataForGetRequestWithJSONResponse", testStoredDataForGetRequestWithJSONResponse),
         ("testStoredDataForGetRequestWithImageResponse", testStoredDataForGetRequestWithImageResponse),
         ("testStoredDataForGetRequestWithErrorResponse", testStoredDataForGetRequestWithErrorResponse),
-        ("testStoredDataForPostRequest", testStoredDataForPostRequest),
-        
+        ("testStoredDataForPostRequest", testStoredDataForPostRequest)
     ]
 }
 

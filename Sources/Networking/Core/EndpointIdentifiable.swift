@@ -85,8 +85,7 @@ private extension EndpointIdentifiable {
         // the items need to be sorted because the final identifier should be the same no matter the order of query items in the URL
         if let queryItems = urlComponents.queryItems?
             .sorted(by: { $0.name < $1.name })
-            .flatMap({ [$0.name, $0.value ?? ""] })
-        {
+            .flatMap({ [$0.name, $0.value ?? ""] }) {
             components.append(contentsOf: queryItems)
         }
 
@@ -96,4 +95,3 @@ private extension EndpointIdentifiable {
         return components
     }
 }
-

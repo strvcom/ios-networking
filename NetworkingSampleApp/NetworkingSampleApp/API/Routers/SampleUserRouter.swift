@@ -9,14 +9,12 @@ import Foundation
 import Networking
 
 /// Implementation of sample API router
-enum SampleUserRouter: Requestable {        
+enum SampleUserRouter: Requestable {
     case users(page: Int)
     case user(userId: Int)
     case createUser(user: SampleUserRequest)
-    case registerUser(user: SampleUserAuthRequest)
     
     var baseURL: URL {
-        /// sample API host
         // swiftlint:disable:next force_unwrapping
         URL(string: SampleAPIConstants.userHost)!
     }
@@ -24,49 +22,43 @@ enum SampleUserRouter: Requestable {
     var path: String {
         switch self {
         case .users, .createUser:
-            return "users"
+            "users"
         case let .user(userId):
-            return "user/\(userId)"
-        case .registerUser:
-            return "register"
+            "users/\(userId)"
         }
     }
 
     var urlParameters: [String: Any]? {
         switch self {
         case let .users(page):
-            return ["page": page]
-        case .createUser, .registerUser, .user:
-            return nil
+            ["page": page]
+        case .createUser, .user:
+            nil
         }
     }
 
     var method: HTTPMethod {
         switch self {
-        case .createUser, .registerUser:
-            return .post
+        case .createUser:
+            .post
         case .users, .user:
-            return .get
+            .get
         }
     }
 
     var dataType: RequestDataType? {
         switch self {
         case let .createUser(user):
-            return .encodable(user)
-        case let .registerUser(user):
-            return .encodable(user)
+            .encodable(user)
         case .users, .user:
-            return nil
+            nil
         }
     }
 
     var isAuthenticationRequired: Bool {
         switch self {
-        case .registerUser:
-            return false
         case .createUser, .users, .user:
-            return true
+            false
         }
     }
 }

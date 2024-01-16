@@ -1,6 +1,6 @@
 //
 //  AuthorizationTokenInterceptor.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 08.12.2022.
 //
