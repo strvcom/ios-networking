@@ -63,6 +63,7 @@ public extension UploadTask {
 }
 
 // MARK: - Internal API
+@available(iOS 15.0, *)
 extension UploadTask {
     /// The identifier of the underlying `URLSessionUploadTask`.
     var taskIdentifier: Int {

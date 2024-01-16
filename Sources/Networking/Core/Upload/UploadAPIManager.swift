@@ -9,6 +9,7 @@ import Combine
 import Foundation
 
 /// Default upload API manager
+@available(iOS 15.0, *)
 open class UploadAPIManager: NSObject {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
@@ -60,6 +61,7 @@ open class UploadAPIManager: NSObject {
 }
 
 // MARK: URLSessionDataDelegate
+@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionDataDelegate {
     public func urlSession(
         _ session: URLSession,
@@ -92,6 +94,7 @@ extension UploadAPIManager: URLSessionDataDelegate {
 }
 
 // MARK: - URLSessionTaskDelegate
+@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionTaskDelegate {
     public func urlSession(
         _ session: URLSession,
@@ -130,6 +133,7 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 }
 
 // MARK: - UploadAPIManaging
+@available(iOS 15.0, *)
 extension UploadAPIManager: UploadAPIManaging {
     public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
@@ -203,6 +207,7 @@ extension UploadAPIManager: UploadAPIManaging {
 }
 
 // MARK: - Private API
+@available(iOS 15.0, *)
 private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
