@@ -26,9 +26,9 @@ jobs:
           - name: 'MacOS 13, Xcode 15.1, Swift 5.9.0'
             xcode: 'Xcode_15.1'
             runsOn: 'macos-13'
-          - name: 'MacOS 12, Xcode 14.3.1, Swift 5.8.0'
+          - name: 'MacOS 13, Xcode 14.3.1, Swift 5.8.0'
             xcode: 'Xcode_14.3.1'
-            runsOn: 'macos-12'
+            runsOn: 'macos-13'
     steps:
     - uses: actions/checkout@v4
 
@@ -52,9 +52,12 @@ jobs:
           - name: 'iOS 16.4'
             destination: 'OS=16.4,name=iPhone 14 Pro'
             xcode: 'Xcode_14.3.1'
-            runsOn: macos-12
+            runsOn: macos-13
     steps:
       - uses: actions/checkout@v4
 
       - name: ${{ matrix.name }}
-        run: set -o pipefail && xcodebuild -scheme "Networking" -destination "${{ matrix.destination }}" clean test 2>&1 | xcpretty
+        run: |
+            set -o pipefail && \
+            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean test | xcpretty
+
