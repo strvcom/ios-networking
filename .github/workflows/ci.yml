@@ -63,9 +63,11 @@ jobs:
       - name: ${{ matrix.name }}
         run: |
             set -o pipefail && \
-            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath TestResults test | xcpretty
+            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | xcpretty
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
-          path: TestResults.xcresult
+          path: 'TestResults-${{ matrix.name }}.xcresult'
+          title: '${{ matrix.name }} Test Results'
+          upload-bundles: 'failure'
         if: success() || failure()
