@@ -59,7 +59,7 @@ jobs:
             runsOn: macos-13
           - name: 'MacOS'
             destination: 'OS=macOS'
-            xcode: 'Xcode_15.2'
+            xcode: 'Xcode_15.1'
             runsOn: macos-13
     steps:
       - uses: actions/checkout@v4
