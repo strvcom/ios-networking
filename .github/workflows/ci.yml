@@ -33,7 +33,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: ${{ matrix.name }}
-      run: swift test
+      run: swift test --parallel --xunit-output "TestResults-${{ matrix.name }}"
 
   iOS:
     name: ${{ matrix.name }}
