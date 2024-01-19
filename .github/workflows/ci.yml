@@ -31,16 +31,17 @@ jobs:
 #            destination: 'OS=16.4,name=iPhone 14 Pro'
 #            xcode: 'Xcode_14.3.1'
 #            runsOn: macos-13
-          - name: 'macOS 13, Xcode 15.1'
+          - name: 'macOS 13, Xcode 15.2'
             destination: 'OS=macOS'
-            xcode: 'Xcode_15.1'
+            xcode: 'Xcode_15.2'
             runsOn: macos-13
     steps:
+      - uses: actions/checkout@v4
+
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild -list
-            xcodebuild -skipPackagePluginValidation -scheme Networking -destination "${{ matrix.destination }}" test
+            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | xcpretty
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
