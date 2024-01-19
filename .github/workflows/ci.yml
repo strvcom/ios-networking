@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: 'iOS 17.0'
+          - name: 'iOS 17.2'
             destination: 'OS=17.2,name=iPhone 15 Pro'
             xcode: 'Xcode_15.2'
             runsOn: macos-13
@@ -39,7 +39,7 @@ jobs:
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | xcpretty
+            xcodebuild -skipPackagePluginValidation -scheme Networking -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
