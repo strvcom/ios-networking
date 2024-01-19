@@ -57,9 +57,9 @@ jobs:
             destination: 'OS=16.4,name=iPhone 14 Pro'
             xcode: 'Xcode_15.2'
             runsOn: macos-13
-          - name: 'MacOS'
+          - name: 'MacOS 13, Xcode 15.2'
             destination: 'OS=macOS'
-            xcode: 'Xcode_15.1'
+            xcode: 'Xcode_15.2'
             runsOn: macos-13
     steps:
       - uses: actions/checkout@v4
