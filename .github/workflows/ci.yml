@@ -54,3 +54,4 @@ jobs:
         with:
           name: 'build-log-${{ matrix.name }}'
           path: 'build-log-${{ matrix.name }}.txt'
+        if: success() || failure()
