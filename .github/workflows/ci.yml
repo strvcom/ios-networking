@@ -41,17 +41,16 @@ jobs:
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | xcpretty
+            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | tee "build-log-${{ matrix.name }}.txt" | xcpretty
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
           path: 'TestResults-${{ matrix.name }}.xcresult'
           title: '${{ matrix.name }} Test Results'
-          upload-bundles: 'failure'
         if: success() || failure()
 
-      - name: 'Upload xcresult Artifact'
+      - name: 'Upload Build Log'
         uses: actions/upload-artifact@v3
         with:
-          name: 'xcresult-${{ matrix.name }}'
-          path: 'TestResults-${{ matrix.name }}.xcresult'
+          name: 'build-log-${{ matrix.name }}'
+          path: 'build-log-${{ matrix.name }}.txt'
