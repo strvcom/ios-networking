@@ -1,6 +1,6 @@
 //
 //  UploadTask.swift
-//  
+//
 //
 //  Created by Tony Ngo on 12.06.2023.
 //
@@ -10,6 +10,7 @@ import Foundation
 
 /// Represents and manages an upload task and provides its state.
 public struct UploadTask {
+    // swiftlint:disable:next type_name
     public typealias ID = String
 
     /// The session task this object represents.
@@ -62,6 +63,7 @@ public extension UploadTask {
 }
 
 // MARK: - Internal API
+@available(iOS 15.0, *)
 extension UploadTask {
     /// The identifier of the underlying `URLSessionUploadTask`.
     var taskIdentifier: Int {

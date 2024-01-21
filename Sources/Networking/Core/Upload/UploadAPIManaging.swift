@@ -1,6 +1,6 @@
 //
 //  UploadAPIManaging.swift
-//  
+//
 //
 //  Created by Tony Ngo on 12.06.2023.
 //
@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@available(iOS 15.0, *)
 public protocol UploadAPIManaging {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
@@ -72,6 +73,7 @@ public protocol UploadAPIManaging {
     func invalidateSession(shouldFinishTasks: Bool)
 }
 
+@available(iOS 15.0, *)
 public extension UploadAPIManaging {
     /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
     ///

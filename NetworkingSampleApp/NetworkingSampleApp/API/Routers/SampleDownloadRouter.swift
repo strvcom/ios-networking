@@ -1,6 +1,6 @@
 //
 //  SampleDownloadRouter.swift
-//  
+//
 //
 //  Created by Matej Molnár on 07.03.2023.
 //
@@ -15,14 +15,14 @@ enum SampleDownloadRouter: Requestable {
     var baseURL: URL {
         switch self {
         case let .download(url):
-            return url
+            url
         }
     }
 
     var path: String {
         switch self {
         case .download:
-            return ""
+            ""
         }
     }
 }

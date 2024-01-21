@@ -1,6 +1,6 @@
 //
 //  DownloadAPIManaging.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 12.05.2023.
 //

@@ -1,13 +1,13 @@
 //
 //  AuthorizationData.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 20.12.2022.
 //
 
 import Foundation
 
-public struct AuthorizationData {
+public struct AuthorizationData: Codable, Sendable {
     public let accessToken: String
     public let refreshToken: String
     public let expiresIn: Date?
@@ -23,8 +23,8 @@ public struct AuthorizationData {
 }
 
 // MARK: Computed propeties
-extension AuthorizationData {
-    public var isExpired: Bool {
+public extension AuthorizationData {
+    var isExpired: Bool {
         guard let expiresIn else {
             /// If there is no information about expiration, always assume it is not expired.
             return false

@@ -1,6 +1,6 @@
 //
 //  AuthorizationManaging.swift
-//  
+//
 //
 //  Created by Dominika Gajdová on 20.12.2022.
 //

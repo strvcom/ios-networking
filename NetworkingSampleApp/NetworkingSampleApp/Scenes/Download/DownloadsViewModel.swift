@@ -1,6 +1,6 @@
 //
 //  DownloadsViewModel.swift
-//  
+//
 //
 //  Created by Matej Molnár on 07.03.2023.
 //
@@ -18,6 +18,12 @@ final class DownloadsViewModel: ObservableObject {
     func startDownload() {
         Task {
             await downloadItem()
+        }
+    }
+
+    func loadTasks() {
+        Task {
+            tasks = await downloadAPIManager.allTasks
         }
     }
 }

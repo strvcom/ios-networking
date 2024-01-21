@@ -25,18 +25,18 @@ final class EndpointIdentifiableTests: XCTestCase {
         var path: String {
             switch self {
             case .testPlain:
-                return "testPlain"
+                "testPlain"
             case .testMethod:
-                return "testMethod"
+                "testMethod"
             case .testParameters:
-                return "testParameters"
+                "testParameters"
             }
         }
 
         var urlParameters: [String: Any]? {
             switch self {
             case .testParameters:
-                return [
+                [
                     "page": 1,
                     "limit": 20,
                     "empty": "",
@@ -44,16 +44,16 @@ final class EndpointIdentifiableTests: XCTestCase {
                     "alphabetically": true
                 ]
             default:
-                return nil
+                nil
             }
         }
 
         var method: HTTPMethod {
             switch self {
             case .testMethod:
-                return .delete
+                .delete
             default:
-                return .get
+                .get
             }
         }
 
@@ -61,13 +61,13 @@ final class EndpointIdentifiableTests: XCTestCase {
             switch self {
             case .testPlain:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://identifiable.tests/testPlain")!
+                URL(string: "https://identifiable.tests/testPlain")!
             case .testMethod:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://identifiable.tests/testMethod")!
+                URL(string: "https://identifiable.tests/testMethod")!
             case .testParameters:
                 // swiftlint:disable:next force_unwrapping
-                return URL(string: "https://identifiable.tests/testParameters?page=1&limit=20&empty=&string=!test!&alphabetically=true")!
+                URL(string: "https://identifiable.tests/testParameters?page=1&limit=20&empty=&string=!test!&alphabetically=true")!
             }
         }
     }

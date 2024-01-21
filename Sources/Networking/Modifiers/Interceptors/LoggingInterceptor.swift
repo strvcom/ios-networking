@@ -1,6 +1,6 @@
 //
 //  LoggingInterceptor.swift
-//  
+//
 //
 //  Created by Matej Molnár on 01.12.2022.
 //
@@ -73,9 +73,7 @@ private extension LoggingInterceptor {
             let requestBody = request.httpBody,
             let object = try? JSONSerialization.jsonObject(with: requestBody, options: []),
             let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-            let body = String(data: data, encoding: .utf8)
-        {
-            // swiftlint:disable:previous opening_brace
+            let body = String(data: data, encoding: .utf8) {
             os_log("👉 Body: %{public}@", type: .info, body)
         }
         
@@ -131,4 +129,3 @@ private extension LoggingInterceptor {
         os_log("❌❌❌ ERROR END ❌❌❌", type: .error)
     }
 }
-

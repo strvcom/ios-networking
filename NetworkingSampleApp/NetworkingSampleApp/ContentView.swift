@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum NetworkingFeature: String, Hashable, CaseIterable {
+    case users
     case authorization
     case downloads
     case uploads
@@ -24,6 +25,8 @@ struct ContentView: View {
             .navigationTitle("Examples")
             .navigationDestination(for: NetworkingFeature.self) { feature in
                 switch feature {
+                case .users:
+                    UsersView()
                 case .authorization:
                     AuthorizationView()
                 case .downloads:

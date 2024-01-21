@@ -1,6 +1,6 @@
 //
 //  MultipartFormDataEncoderTests.swift
-//  
+//
 //
 //  Created by Tony Ngo on 18.06.2023.
 //
@@ -77,6 +77,7 @@ final class MultipartFormDataEncoderTests: XCTestCase {
     func test_encode_throwsInvalidFileUrl() {
         let sut = makeSUT()
         let formData = MultipartFormData()
+        // swiftlint:disable:next force_unwrapping
         let tmpFileUrl = URL(string: "invalid/path")!
 
         do {
@@ -84,7 +85,7 @@ final class MultipartFormDataEncoderTests: XCTestCase {
             XCTFail("Encoding should have failed.")
         } catch MultipartFormData.EncodingError.invalidFileUrl {
         } catch {
-            XCTFail("Should have failed with MultipartFormData.EncodingError.fileAlreadyExists")
+            XCTFail("Should have failed with MultipartFormData.EncodingError.invalidFileUrl")
         }
     }
 

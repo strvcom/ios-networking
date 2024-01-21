@@ -25,24 +25,18 @@ struct UploadItemView: View {
 
                 if !viewModel.isCancelled && !viewModel.isRetryable && !viewModel.isCompleted {
                     HStack {
-                        button(
-                            symbol: viewModel.isPaused ? "play" : "pause",
-                            color: .blue,
-                            action: { viewModel.isPaused ? viewModel.resume() : viewModel.pause() }
-                        )
+                        TaskButton(config: viewModel.isPaused ? .play : .pause) {
+                            viewModel.isPaused ? viewModel.resume() : viewModel.pause()
+                        }
 
-                        button(
-                            symbol: "x",
-                            color: .red,
-                            action: { viewModel.cancel() }
-                        )
+                        TaskButton(config: .cancel) {
+                            viewModel.cancel()
+                        }
                     }
                 } else if viewModel.isRetryable {
-                    button(
-                        symbol: "repeat",
-                        color: .blue,
-                        action: { viewModel.retry() }
-                    )
+                    TaskButton(config: .retry) {
+                        viewModel.retry()
+                    }
                 }
             }
 
@@ -54,22 +48,5 @@ struct UploadItemView: View {
         .animation(.easeOut(duration: 0.3), value: viewModel.progress)
         .padding(.vertical, 8)
         .task { await viewModel.observeProgress() }
-    }
-}
-
-private extension UploadItemView {
-    func button(symbol: String, color: Color, action: @escaping () -> Void) -> some View {
-        Button(
-            action: action,
-            label: {
-                Image(systemName: symbol)
-                    .symbolVariant(.circle.fill)
-                    .font(.title2)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(color)
-            }
-        )
-        .buttonStyle(.plain)
-        .contentShape(Circle())
     }
 }
