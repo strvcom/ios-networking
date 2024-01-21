@@ -41,7 +41,7 @@ jobs:
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean -resultBundlePath "TestResults-${{ matrix.name }}" test | tee "build-log-${{ matrix.name }}.txt" | xcpretty
+            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean test | tee "build-log-${{ matrix.name }}.txt" | xcpretty
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
