@@ -32,8 +32,8 @@ jobs:
 #            xcode: 'Xcode_14.3.1'
 #            runsOn: macos-13
           - name: 'macOS 13, Xcode 15.0.1'
-            destination: 'OS=macOS,name=Any Mac'
-            xcode: 'Xcode_15.0.1' #
+            destination: 'platform=macOS'
+            xcode: 'Xcode_15.0.1'
             runsOn: macos-13
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" clean test | tee "build-log-${{ matrix.name }}.txt" | xcpretty
+            xcodebuild clean test -resultBundlePath "TestResults-${{ matrix.name }}" -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" | tee "build-log-${{ matrix.name }}.txt" | xcpretty
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
