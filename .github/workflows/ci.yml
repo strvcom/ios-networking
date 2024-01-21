@@ -49,3 +49,9 @@ jobs:
           title: '${{ matrix.name }} Test Results'
           upload-bundles: 'failure'
         if: success() || failure()
+
+      - name: 'Upload xcresult Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'xcresult-${{ matrix.name }}'
+          path: 'TestResults-${{ matrix.name }}.xcresult'
