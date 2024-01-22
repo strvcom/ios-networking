@@ -8,7 +8,25 @@
 import Foundation
 import Combine
 
-/// Default Download API manager
+/** Default download API manager which is responsible for the creation and management of network file downloads.
+
+ You can define your own custom `DownloadAPIManager` if needed by conforming to ``DownloadAPIManaging``.
+
+ The initialisation is equivalent to ``APIManager/init(urlSession:requestAdapters:responseProcessors:errorProcessors:)``, except the session is created for the user based on a given `URLSessionConfiguration` ``init(urlSessionConfiguration:requestAdapters:responseProcessors:errorProcessors:)``.
+
+ ## Usage
+
+ 1. Request download for a given endpoint with ``downloadRequest(_:resumableData:retryConfiguration:)`` It creates a `URLSessionDownloadTask` and returns it along with ``Response``. The ``Response`` does not include the actual downloaded file, it solely an HTTP response received after the download is initiated.
+ 2. The ``allTasks`` property enables you to keep track of current tasks in progress.
+ 3. In order to observe progress of a specific task you can obtain an `AsyncStream` of ``Foundation/URLSessionTask/DownloadState`` with ``progressStream(for:)``.
+ Example:
+ ```swift
+ for try await downloadState in downloadAPIManager.shared.progressStream(for: task) {
+     ...
+ }
+ ```
+ 4. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `DownloadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
+ */
 open class DownloadAPIManager: NSObject, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]

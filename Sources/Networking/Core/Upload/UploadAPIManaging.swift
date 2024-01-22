@@ -8,6 +8,9 @@
 import Combine
 import Foundation
 
+/// A definition of an API layer with methods for handling data uploading.
+///
+/// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
 @available(iOS 15.0, *)
 public protocol UploadAPIManaging {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>

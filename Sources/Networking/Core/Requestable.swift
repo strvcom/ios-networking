@@ -8,9 +8,65 @@
 
 import Foundation
 
-// MARK: - Endpoint definition
+/** A type that represents an API endpoint.
 
-/// A type that represents an API endpoint.
+ By conforming to the ``Requestable`` protocol, you can define endpoint definitions containing the elementary HTTP request components necessary to create valid HTTP requests.
+ <br>**Recommendation:** Follow the `Router` naming convention to explicitly indicate the usage of a router pattern.
+
+ ### Example
+ ```swift
+ enum UserRouter {
+     case getUser
+     case updateUser(UpdateUserRequest)
+ }
+
+ extension UserRouter: Requestable {
+     // The base URL address used for the HTTP call.
+     var baseURL: URL {
+         URL(string: Constants.baseHost)!
+     }
+
+     // Path will be appended to the base URL.
+     var path: String {
+         switch self {
+         case .getUser, .updateUser:
+             return "/user"
+         }
+     }
+
+     // HTTPMethod used for each endpoint.
+     var method: HTTPMethod {
+         switch self {
+         case .getUser:
+             return .get
+         case .updateUser:
+             return .post
+         }
+     }
+
+     // Optional body data encoded in JSON by default.
+     var dataType: RequestDataType? {
+         switch self {
+         case .getUser:
+             return nil
+         case let .updateUser(data):
+             return .encodable(data)
+         }
+     }
+
+     // Optional authentication requirement if AuthorizationInterceptor is used.
+     var isAuthenticationRequired: Bool {
+         switch self {
+         case .getUser, .updateUser:
+             return true
+         }
+     }
+ }
+ ```
+
+ Some of the properties have default implementations defined in the `Requestable+Convenience` extension.
+*/
+
 public protocol Requestable: EndpointIdentifiable {
     /// The host URL of REST API.
     var baseURL: URL { get }

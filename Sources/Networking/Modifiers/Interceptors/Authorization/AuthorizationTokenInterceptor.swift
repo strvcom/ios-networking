@@ -8,6 +8,10 @@
 import Foundation
 
 // MARK: - Defines authentication handling in requests
+/** An interceptor which handles the authorisation process of requests.
+
+ It makes sure that ``AuthorizationManaging/refreshAuthorizationData()`` is triggered in case the ``AuthorizationData`` is expired and that it won't get triggered multiple times at once.
+ */
 public final actor AuthorizationTokenInterceptor: RequestInterceptor {
     private var authorizationManager: AuthorizationManaging
     private var refreshTask: Task<Void, Error>?
@@ -27,8 +31,8 @@ public extension AuthorizationTokenInterceptor {
         do {
             return try await authorizationManager.authorizeRequest(request)
         } catch {
-            /// If authorization fails due to expiredAccessToken we should perform refresh
-            /// and then retry the request authorization again.
+            // If authorization fails due to expiredAccessToken we should perform refresh
+            // and then retry the request authorization again.
             guard case AuthorizationError.expiredAccessToken = error else {
                 throw error
             }
@@ -51,12 +55,12 @@ public extension AuthorizationTokenInterceptor {
             return response
         }
         
-        /// Since the request failed due to 401 unauthorized while requiring valid authorization, it means that the currently used auth data are probably invalid,
-        /// hence we can try to refresh the auth data.
+        // Since the request failed due to 401 unauthorized while requiring valid authorization, it means that the currently used auth data are probably invalid,
+        // hence we can try to refresh the auth data.
         try await refreshAuthorizationData()
         
-        /// We return the failed response anyway, because we can't retry the request here in the process function.
-        /// The decision wether to retry or not should be left to the APIManager.
+        // We return the failed response anyway, because we can't retry the request here in the process function.
+        // The decision wether to retry or not should be left to the APIManager.
         return response
     }
     
@@ -68,20 +72,20 @@ public extension AuthorizationTokenInterceptor {
 // MARK: Private methods
 private extension AuthorizationTokenInterceptor {
     func refreshAuthorizationData() async throws {
-        /// In case the refresh is already in progress await it.
+        // In case the refresh is already in progress await it.
         if let refreshTask {
             return try await refreshTask.value
         }
 
-        /// Otherwise create a new refresh task.
+        // Otherwise create a new refresh task.
         let newRefreshTask = Task { [weak self] () throws -> Void in
             do {
-                /// Perform the actual refresh logic.
+                // Perform the actual refresh logic.
                 try await self?.authorizationManager.refreshAuthorizationData()
-                /// Make sure to clear refreshTask property after refreshing finishes.
+                // Make sure to clear refreshTask property after refreshing finishes.
                 await self?.clearRefreshTask()
             } catch {
-                /// Make sure to clear refreshTask property after refreshing finishes.
+                // Make sure to clear refreshTask property after refreshing finishes.
                 await self?.clearRefreshTask()
                 throw error
             }
@@ -89,7 +93,7 @@ private extension AuthorizationTokenInterceptor {
 
         refreshTask = newRefreshTask
 
-        /// Await the newly created refresh task.
+        // Await the newly created refresh task.
         return try await newRefreshTask.value
     }
     
