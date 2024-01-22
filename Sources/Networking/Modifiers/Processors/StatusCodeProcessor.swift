@@ -7,8 +7,6 @@
 
 import Foundation
 
-// MARK: - Modifier handling validity of response http status codes
-
 /** A response processor validating ``Response`` http status code against ``Requestable`` API endpoint definition.
 
  Each ``Requestable`` endpoint definition contains a ``Requestable/acceptableStatusCodes`` range of acceptable status codes. By default, these are set to `200..<400`. This processor makes sure that the received response's HTTP code is an acceptable one, otherwise an ``NetworkError/unacceptableStatusCode(statusCode:acceptedStatusCodes:response:)`` error is thrown.
@@ -25,7 +23,6 @@ import Foundation
  ```
  */
 open class StatusCodeProcessor: ResponseProcessing {
-    // MARK: Default shared instance
     public static let shared = StatusCodeProcessor()
     
     public init() {}

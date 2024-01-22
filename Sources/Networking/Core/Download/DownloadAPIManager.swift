@@ -74,7 +74,7 @@ open class DownloadAPIManager: NSObject, Retryable {
     }
 }
 
-// MARK: Public API
+// MARK: - Public
 extension DownloadAPIManager: DownloadAPIManaging {
     public func invalidateSession(shouldFinishTasks: Bool = false) {
         if shouldFinishTasks {
@@ -118,7 +118,7 @@ extension DownloadAPIManager: DownloadAPIManaging {
     }
 }
 
-// MARK: Private
+// MARK: - Private
 private extension DownloadAPIManager {
     func downloadRequest(
         _ endpointRequest: EndpointRequest,
@@ -210,7 +210,7 @@ private extension DownloadAPIManager {
     }
 }
 
-// MARK: URLSession Delegate
+// MARK: - URLSession Delegate
 extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         Task {
@@ -249,6 +249,7 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
     }
 }
 
+// MARK: - URL extensions
 extension URL {
     enum FileError: Error {
         case documentsDirectoryUnavailable

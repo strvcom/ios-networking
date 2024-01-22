@@ -7,9 +7,10 @@
 
 import Foundation
 
-// MARK: - Defines Download API managing
 /// A download result consisting of `URLSessionDownloadTask` and ``Response``
 public typealias DownloadResult = (URLSessionDownloadTask, Response)
+
+// MARK: - Defines Download API managing
 
 /// A definition of an API layer with methods for handling data downloading.
 ///
