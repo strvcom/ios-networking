@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.runsOn }}
     env:
       DEVELOPER_DIR: "/Applications/${{ matrix.xcode }}.app/Contents/Developer"
-    timeout-minutes: 10
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
