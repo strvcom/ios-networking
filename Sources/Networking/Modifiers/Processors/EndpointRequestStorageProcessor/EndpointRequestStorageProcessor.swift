@@ -68,7 +68,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The original ``Response``.
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
-        storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+        await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         return response
     }
     
@@ -87,9 +87,9 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         
         switch error {
         case let .unacceptableStatusCode(_, _, response):
-            storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+            await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         case let .noStatusCode(response):
-            storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+            await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         case .headerIsInvalid, .underlying, .unknown:
             break
         }
@@ -137,8 +137,8 @@ private extension EndpointRequestStorageProcessor {
         _ response: Response,
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
-    ) {
-        Task(priority: .background) { [weak self] in
+    ) async {
+        await Task(priority: .background) { [weak self] in
             guard let self else {
                 return
             }
@@ -184,7 +184,7 @@ private extension EndpointRequestStorageProcessor {
             )
             
             multipeerConnectivityManager?.send(model: storageModel)
-        }
+        }.value
     }
 
     func createFolderIfNeeded(_ sessionId: String?) {

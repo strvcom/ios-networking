@@ -14,8 +14,8 @@ import XCTest
 
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
-    private let fileManager = FileManager.default
-    
+    private let fileManager = MockFileManager()
+
     struct MockBody: Codable {
         let parameter: String
     }
@@ -104,10 +104,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         
         let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
+
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
         guard let data = fileManager.contents(atPath: fileUrl.path) else {
@@ -157,10 +154,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         
         let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
+
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
         guard let data = fileManager.contents(atPath: fileUrl.path) else {
@@ -206,10 +200,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         
         let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
         _ = await processor.process(mockError, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
+
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
         guard let data = fileManager.contents(atPath: fileUrl.path) else {
@@ -251,9 +242,6 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
         guard let data = fileManager.contents(atPath: fileUrl.path) else {
