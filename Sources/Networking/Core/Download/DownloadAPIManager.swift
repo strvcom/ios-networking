@@ -16,7 +16,7 @@ import Combine
 
  ## Usage
 
- 1. Request download for a given endpoint with ``downloadRequest(_:resumableData:retryConfiguration:)`` It creates a `URLSessionDownloadTask` and returns it along with ``Response``. The ``Response`` does not include the actual downloaded file, it solely an HTTP response received after the download is initiated.
+ 1. Request download for a given endpoint with ``downloadRequest(_:resumableData:retryConfiguration:)`` or ``DownloadAPIManaging/downloadRequest(_:resumableData:retryConfiguration:)-5dbs2`` It creates a `URLSessionDownloadTask` and returns it along with ``Response``. The ``Response`` does not include the actual downloaded file, it solely an HTTP response received after the download is initiated.
  2. The ``allTasks`` property enables you to keep track of current tasks in progress.
  3. In order to observe progress of a specific task you can obtain an `AsyncStream` of ``Foundation/URLSessionTask/DownloadState`` with ``progressStream(for:)``.
  Example:

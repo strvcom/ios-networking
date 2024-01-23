@@ -12,11 +12,11 @@ import Foundation
 
  You can define your own custom `UploadAPIManager` if needed by conforming to ``UploadAPIManaging``.
 
- The initialisation is similar to ``APIManager/init(urlSession:requestAdapters:responseProcessors:errorProcessors:)``, except the session is created for the user based on a given `URLSessionConfiguration` + you can also inject ``MultipartFormDataEncoding`` and ``FileManager``  ``init(urlSessionConfiguration:multipartFormDataEncoder:fileManager:requestAdapters:responseProcessors:errorProcessors:)``.
+ The initialisation is similar to ``APIManager/init(urlSession:requestAdapters:responseProcessors:errorProcessors:)``, except the session is created for the user based on a given `URLSessionConfiguration` + you can also inject ``MultipartFormDataEncoding`` and `FileManager`  ``init(urlSessionConfiguration:multipartFormDataEncoder:fileManager:requestAdapters:responseProcessors:errorProcessors:)``.
 
  ## Usage
 
- 1. Start a download by calling the `upload` function and passing ``UploadType`` which defines three types of resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
+ 1. Start a download by calling the ``upload(_:to:)`` function and passing ``UploadType`` which defines three types of possible resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
  2. The ``activeTasks`` property enables you to keep track of current tasks in progress.
  3. In order to observe progress of a specific task you can obtain a ``UploadAPIManaging/StateStream`` which is an `AsyncPublisher` of ``UploadTask/State`` with ``stateStream(for:)``.
 
