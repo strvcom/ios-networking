@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Foundation
 import XCTest
 
 /// A subclass of `FileManager` where the file existence is based on a dictionary whose key is the file path.
