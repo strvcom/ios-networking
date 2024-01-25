@@ -36,6 +36,10 @@ final class MockFileManager: FileManager {
 
         return attributes
     }
+
+    func reset() {
+        dataByFilePath = [:]
+    }
 }
 
 // MARK: - Mocking

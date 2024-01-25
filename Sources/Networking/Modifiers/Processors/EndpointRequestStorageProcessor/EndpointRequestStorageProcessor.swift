@@ -23,6 +23,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
+    private let fileDataWriter: FileDataWriterProtocol
     private let config: Config
     
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
@@ -51,13 +52,15 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     public init(
         fileManager: FileManager = .default,
+        fileDataWriter: FileDataWriterProtocol = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
         config: Config = .default
     ) {
         self.fileManager = fileManager
+        self.fileDataWriter = fileDataWriter
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
-        
+
         deleteStoredSessionsExceedingLimit()
     }
     
@@ -68,7 +71,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     ///   - endpointRequest: An endpoint request wrapper.
     /// - Returns: The original ``Response``.
     public func process(_ response: Response, with urlRequest: URLRequest, for endpointRequest: EndpointRequest) async throws -> Response {
-        await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+        storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         return response
     }
     
@@ -87,9 +90,9 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         
         switch error {
         case let .unacceptableStatusCode(_, _, response):
-            await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+            storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         case let .noStatusCode(response):
-            await storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
+            storeResponse(response, endpointRequest: endpointRequest, urlRequest: urlRequest)
         case .headerIsInvalid, .underlying, .unknown:
             break
         }
@@ -137,8 +140,8 @@ private extension EndpointRequestStorageProcessor {
         _ response: Response,
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
-    ) async {
-        await Task(priority: .background) { [weak self] in
+    ) {
+        Task.detached(priority: .background) { [weak self] in
             guard let self else {
                 return
             }
@@ -184,7 +187,7 @@ private extension EndpointRequestStorageProcessor {
             )
             
             multipeerConnectivityManager?.send(model: storageModel)
-        }.value
+        }
     }
 
     func createFolderIfNeeded(_ sessionId: String?) {
@@ -214,7 +217,7 @@ private extension EndpointRequestStorageProcessor {
     func store(_ model: EndpointRequestStorageModel, fileUrl: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
-            try jsonData.write(to: fileUrl)
+            try fileDataWriter.write(jsonData, to: fileUrl)
             os_log("🎈 Response saved %{public}@ bytes at %{public}@", type: .info, "\(jsonData.count)", fileUrl.path)
         } catch {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
