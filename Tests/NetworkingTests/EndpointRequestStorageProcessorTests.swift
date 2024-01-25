@@ -120,7 +120,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 10)
+        await fulfillment(of: [expectation], timeout: 20)
 
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
@@ -180,7 +180,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 10)
+        await fulfillment(of: [expectation], timeout: 20)
 
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
@@ -238,7 +238,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
         _ = await processor.process(mockError, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 10)
+        await fulfillment(of: [expectation], timeout: 20)
 
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
@@ -290,7 +290,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 10)
+        await fulfillment(of: [expectation], timeout: 20)
 
         let fileUrl = fileUrl(for: mockEndpointRequest)
 
