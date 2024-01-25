@@ -50,7 +50,7 @@ jobs:
         if: success() || failure()
 
       - name: 'Upload Build Log'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'build-log-${{ matrix.name }}'
           path: 'build-log-${{ matrix.name }}.txt'
