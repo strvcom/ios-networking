@@ -141,7 +141,7 @@ private extension EndpointRequestStorageProcessor {
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
     ) {
-        Task.detached(priority: .background) { [weak self] in
+        Task.detached(priority: .utility) { [weak self] in
             guard let self else {
                 return
             }
