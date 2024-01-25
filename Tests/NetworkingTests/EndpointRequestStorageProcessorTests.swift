@@ -108,7 +108,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        let fileDataWriterSpy = FileDataWriterSpy()
+        let fileDataWriterSpy = MockFileDataWriter()
         fileDataWriterSpy.writeClosure = {
             expectation.fulfill()
         }
@@ -165,7 +165,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let mockResponse = (mockResponseData, mockURLResponse)
         let expectation = expectation(description: "Data was written")
 
-        let fileDataWriterSpy = FileDataWriterSpy()
+        let fileDataWriterSpy = MockFileDataWriter()
         fileDataWriterSpy.writeClosure = {
             expectation.fulfill()
         }
@@ -222,7 +222,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
         let expectation = expectation(description: "Data was written")
 
-        let fileDataWriterSpy = FileDataWriterSpy()
+        let fileDataWriterSpy = MockFileDataWriter()
         fileDataWriterSpy.writeClosure = {
             expectation.fulfill()
         }
@@ -275,7 +275,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
         let expectation = expectation(description: "Data was written")
 
-        let fileDataWriterSpy = FileDataWriterSpy()
+        let fileDataWriterSpy = MockFileDataWriter()
         fileDataWriterSpy.writeClosure = {
             expectation.fulfill()
         }

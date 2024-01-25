@@ -23,7 +23,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
-    private let fileDataWriter: FileDataWriterProtocol
+    private let fileDataWriter: FileDataWriting
     private let config: Config
     
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
@@ -52,7 +52,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     public init(
         fileManager: FileManager = .default,
-        fileDataWriter: FileDataWriterProtocol = FileDataWriter(),
+        fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
         config: Config = .default
     ) {

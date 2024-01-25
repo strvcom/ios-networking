@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol FileDataWriterProtocol {
+/// A protocol defining an interface for writing data to a file.
+public protocol FileDataWriting {
     /// Writes the given data to the specified URL.
     ///
     /// - Parameters:
@@ -17,7 +18,9 @@ public protocol FileDataWriterProtocol {
     func write(_ data: Data, to url: URL) throws
 }
 
-public class FileDataWriter: FileDataWriterProtocol {
+
+/// A class that implements data writing functionality.
+public class FileDataWriter: FileDataWriting {
     public init() {}
 
     public func write(_ data: Data, to url: URL) throws {
