@@ -1,5 +1,5 @@
 //
-//  FileWriter.swift
+//  FileDataWriter.swift
 //
 //
 //  Created by Jan Kodeš on 24.01.2024.
