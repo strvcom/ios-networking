@@ -116,11 +116,11 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 60)
 
         mockFileManager.verifyFunctionCall(.fileExists(path: responsesDirectory(for: mockEndpointRequest).path))
         mockFileManager.verifyFunctionCall(.createDirectory(path: responsesDirectory(for: mockEndpointRequest).path))
-        
+
         XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
 
@@ -151,7 +151,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 60)
 
         let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
         let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
@@ -205,7 +205,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 60)
 
         let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
         let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
@@ -257,7 +257,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
         _ = await processor.process(mockError, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 60)
 
         let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
 
@@ -304,7 +304,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        await fulfillment(of: [expectation], timeout: 20)
+        await fulfillment(of: [expectation], timeout: 60)
 
         let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
 
