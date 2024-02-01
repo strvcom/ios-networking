@@ -20,7 +20,6 @@ final class MockFileDataWriter: FileDataWriting {
         writeCalled = true
         receivedData = data
         receivedURL = url
-        try data.write(to: url)
 
         writeClosure?()
     }
