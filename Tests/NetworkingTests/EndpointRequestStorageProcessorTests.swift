@@ -166,6 +166,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         XCTAssertEqual(model.responseBody, mockResponseData)
         XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
         XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForGetRequestWithImageResponse() async throws {
@@ -220,6 +222,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         XCTAssertEqual(model.responseBody, mockResponseData)
         XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
         XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForGetRequestWithErrorResponse() async throws {
@@ -273,6 +277,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         XCTAssertEqual(model.responseBody, mockResponseData)
         XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
         XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForPostRequest() async throws {
@@ -309,7 +315,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
 
         let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
-        let mockRequestBody = try mockEndpointRequest.endpoint.encodeBody()!
+        let mockRequestBody = try XCTUnwrap(try mockEndpointRequest.endpoint.encodeBody())
 
         XCTAssertEqual(model.statusCode, 200)
         XCTAssertEqual(model.method, "POST")
@@ -321,6 +327,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         XCTAssertEqual(model.responseBody, mockResponseData)
         XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
         XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     // swiftlint:enable force_unwrapping
