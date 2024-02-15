@@ -8,12 +8,8 @@
 
 import Foundation
 
-// MARK: - HTTPStatusCode
-
 /// A status code included in an HTTP response.
 public typealias HTTPStatusCode = Int
-
-// MARK: - HTTP status code ranges
 
 /// Ranges for the most common HTTP status codes.
 public extension HTTPStatusCode {

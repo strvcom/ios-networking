@@ -9,12 +9,11 @@ import Networking
 import Foundation
 
 final class SampleAuthorizationManager: AuthorizationManaging {
-    // MARK: Public properties
     let storage: AuthorizationStorageManaging = SampleAuthorizationStorageManager()
-    
-    // MARK: Private properties
-    /// For refresh token logic we create new instance of APIManager without injecting `AuthorizationTokenInterceptor` to avoid cycling in refreshes
-    /// We use mock data to simulate real API requests here
+
+    // For refresh token logic we create new instance of APIManager without 
+    // injecting `AuthorizationTokenInterceptor` in order to avoid cycling in refreshes.
+    // We use mock data to simulate real API requests here.
     private let apiManager: APIManager = {
         APIManager(
             responseProvider: StoredResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),

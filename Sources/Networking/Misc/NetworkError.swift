@@ -8,8 +8,6 @@
 
 import Foundation
 
-// MARK: - Defines networking errors
-
 /// An error that occurs during ``Response`` processing or an underlaying ``Networking`` error.
 public enum NetworkError: Error, LocalizedError {
     /// An indication that the received HTTP status code in not accepted as valid.

@@ -15,10 +15,12 @@ import Foundation
 
 // MARK: - Modifier storing endpoint requests
 
-/// A response processor which stores all responses & related requests data into files.
-///
-/// The filename is created from a sessionId and a corresponding request identifier.
-/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
+/** A response processor which stores all responses & related requests data into files.
+
+The filename is created from a sessionId and a corresponding request identifier. Requests are stored in a sequential manner. Each session is kept in its own dedicated folder. The ``EndpointRequestStorageModel`` includes both successful and erroneous data.
+
+Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to optionally set a ``EndpointRequestStorageProcessor/MultiPeerSharingConfig`` if you wish to utilise the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
+*/
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager

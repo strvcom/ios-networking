@@ -33,7 +33,7 @@ struct DownloadsView: View {
                 Section("Active downloads") {
                     List {
                         ForEach(viewModel.tasks, id: \.taskIdentifier) { task in
-                            DownloadProgressView(viewModel: .init(task: task))
+                            TaskProgressView(viewModel: DownloadProgressViewModel(task: task))
                         }
                     }
                 }

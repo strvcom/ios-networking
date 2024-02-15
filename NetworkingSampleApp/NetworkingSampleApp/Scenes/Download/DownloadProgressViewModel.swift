@@ -9,28 +9,41 @@ import Foundation
 import Networking
 
 @MainActor
-final class DownloadProgressViewModel: ObservableObject {
+final class DownloadProgressViewModel: TaskProgressViewModel {
     private let task: URLSessionTask
     
-    @Published var state: DownloadProgressState = .init()
-    
+    let isRetryable = false
+    private(set) var title: String = ""
+    private(set) var status: String = ""
+    private(set) var downloadedBytes: String = ""
+    private(set) var state: URLSessionTask.State = .running
+    private(set) var percentCompleted: Double = 0
+
     init(task: URLSessionTask) {
         self.task = task
     }
     
-    func startObservingDownloadProgress() async {
+    func onAppear() async {
         let stream = DownloadAPIManager.shared.progressStream(for: task)
 
         for try await downloadState in stream {
-            var newState = DownloadProgressState()
-            newState.percentCompleted = downloadState.fractionCompleted * 100
-            newState.downloadedBytes = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: downloadState.downloadedBytes)
-            newState.status = downloadState.taskState
-            newState.statusTitle = downloadState.taskState.title
-            newState.errorTitle = downloadState.error?.localizedDescription
-            newState.fileURL = downloadState.downloadedFileURL?.absoluteString
-            newState.title = task.currentRequest?.url?.absoluteString ?? "-"
-            state = newState
+            title = task.currentRequest?.url?.absoluteString ?? "-"
+            percentCompleted = downloadState.fractionCompleted * 100
+            downloadedBytes = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: downloadState.downloadedBytes)
+            state = downloadState.taskState
+            status = {
+                if let error = downloadState.error {
+                    return "Error: \(error.localizedDescription)"
+                }
+
+                if let downloadedFileURL = downloadState.downloadedFileURL {
+                    return "Downloaded at: \(downloadedFileURL.absoluteString)"
+                }
+
+                return downloadState.taskState.title
+            }()
+
+            objectWillChange.send()
         }
     }
     
@@ -45,28 +58,6 @@ final class DownloadProgressViewModel: ObservableObject {
     func cancel() {
         task.cancel()
     }
-}
 
-// MARK: Download state
-struct DownloadProgressState {
-    var title: String = ""
-    var status: URLSessionTask.State = .running
-    var statusTitle: String = ""
-    var percentCompleted: Double = 0
-    var downloadedBytes: String = ""
-    var errorTitle: String?
-    var fileURL: String?
-}
-
-// MARK: URLSessionTask states
-private extension URLSessionTask.State {
-    var title: String {
-        switch self {
-        case .canceling: "cancelling"
-        case .completed: "completed"
-        case .running: "running"
-        case .suspended: "suspended"
-        @unknown default: ""
-        }
-    }
+    func retry() {}
 }

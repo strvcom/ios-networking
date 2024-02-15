@@ -6,34 +6,39 @@
 //
 
 import Foundation
+import Networking
 import OSLog
 
 @MainActor
 final class UploadsViewModel: ObservableObject {
-    @Published var isErrorAlertPresented = false
+    @Published var formUsername = ""
+    @Published var formFileUrl: URL?
+    @Published private(set) var uploadTasks: [UploadTask] = []
     @Published private(set) var error: Error?
-    @Published private(set) var uploadItemViewModels: [UploadItemViewModel] = []
+    @Published var isErrorAlertPresented = false
 
-    private let uploadService: UploadService
-
-    init(uploadService: UploadService = UploadService()) {
-        self.uploadService = uploadService
+    var formSelectedFileName: String {
+        let fileSize = Int64(formFileUrl?.fileSize ?? 0)
+        var fileName = formFileUrl?.lastPathComponent ?? ""
+        let formattedFileSize = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: fileSize)
+        if fileSize > 0 { fileName += "\n\(formattedFileSize)" }
+        return fileName
     }
+
+    private let uploadManager = UploadAPIManager.shared
 }
 
 extension UploadsViewModel {
+    func loadTasks() async {
+        uploadTasks = await uploadManager.activeTasks
+    }
+
     func uploadImage(result: Result<Data?, Error>) {
         Task {
             do {
                 if let imageData = try result.get() {
-                    let uploadItem = try await uploadService.uploadImage(
-                        imageData,
-                        fileName: "image.jpg"
-                    )
-                    uploadItemViewModels.append(UploadItemViewModel(
-                        item: uploadItem,
-                        uploadService: uploadService
-                    ))
+                    let uploadTask = try await uploadManager.upload(.data(imageData, contentType: "image/png"), to: SampleAPIConstants.uploadURL)
+                    uploadTasks.append(uploadTask)
                 }
             } catch {
                 os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
@@ -47,16 +52,45 @@ extension UploadsViewModel {
         Task {
             do {
                 let fileUrl = try result.get()
-                let uploadItem = try await uploadService.uploadFile(fileUrl)
-                uploadItemViewModels.append(UploadItemViewModel(
-                    item: uploadItem,
-                    uploadService: uploadService
-                ))
+                let uploadTask = try await uploadManager.upload(.file(fileUrl), to: SampleAPIConstants.uploadURL)
+                uploadTasks.append(uploadTask)
             } catch {
                 os_log("❌ UploadsViewModel failed to upload with error: \(error.localizedDescription)")
                 self.error = error
                 self.isErrorAlertPresented = true
             }
         }
+    }
+
+    func uploadForm() {
+        Task {
+            do {
+                let multipartFormData = try createMultipartFormData()
+                let uploadTask = try await uploadManager.upload(
+                    .multipart(data: multipartFormData, sizeThreshold: 10_000_000),
+                    to: SampleAPIConstants.uploadURL
+                )
+                uploadTasks.append(uploadTask)
+
+                formUsername = ""
+                formFileUrl = nil
+            } catch {
+                os_log("❌ FormUploadsViewModel failed to upload form with error: \(error.localizedDescription)")
+                self.error = error
+                self.isErrorAlertPresented = true
+            }
+        }
+    }
+}
+
+// MARK: - Prepare multipartForm data
+private extension UploadsViewModel {
+    func createMultipartFormData() throws -> MultipartFormData {
+        let multipartFormData = MultipartFormData()
+        multipartFormData.append(Data(formUsername.utf8), name: "username-textfield")
+        if let formFileUrl {
+            try multipartFormData.append(from: formFileUrl, name: "attachment")
+        }
+        return multipartFormData
     }
 }
