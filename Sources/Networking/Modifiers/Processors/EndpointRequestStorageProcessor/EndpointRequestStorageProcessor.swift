@@ -23,6 +23,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
+    private let fileDataWriter: FileDataWriting
     private let config: Config
     
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
@@ -51,13 +52,15 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     public init(
         fileManager: FileManager = .default,
+        fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
         config: Config = .default
     ) {
         self.fileManager = fileManager
+        self.fileDataWriter = fileDataWriter
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
-        
+
         deleteStoredSessionsExceedingLimit()
     }
     
@@ -138,7 +141,7 @@ private extension EndpointRequestStorageProcessor {
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
     ) {
-        Task(priority: .background) { [weak self] in
+        Task.detached(priority: .utility) { [weak self] in
             guard let self else {
                 return
             }
@@ -214,7 +217,7 @@ private extension EndpointRequestStorageProcessor {
     func store(_ model: EndpointRequestStorageModel, fileUrl: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
-            try jsonData.write(to: fileUrl)
+            try fileDataWriter.write(jsonData, to: fileUrl)
             os_log("🎈 Response saved %{public}@ bytes at %{public}@", type: .info, "\(jsonData.count)", fileUrl.path)
         } catch {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
