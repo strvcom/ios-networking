@@ -17,12 +17,16 @@ let package = Package(
             targets: ["Networking"]
         )
     ],
-    dependencies: [.package(url: "https://github.com/realm/SwiftLint.git", exact: "0.53.0")],
+    dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", exact: "0.53.0"),
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Networking",
+            swiftSettings: [.unsafeFlags(["-emit-extension-block-symbols"])],
             plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .testTarget(

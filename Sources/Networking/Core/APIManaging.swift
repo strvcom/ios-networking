@@ -12,7 +12,7 @@ import Foundation
 
 /// A definition of an API layer with methods for handling API requests.
 public protocol APIManaging {
-    /// A default JSONDecoder used for all requests.
+    /// A default `JSONDecoder` used for all requests.
     var defaultDecoder: JSONDecoder { get }
     
     /// Creates a network request for an API endpoint defined by ``Requestable``.
@@ -76,7 +76,7 @@ public extension APIManaging {
     /// Default implementation trying to decode data from response.
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition.
-    ///   - decoder: a JSONDecoder used for decoding the response data.
+    ///   - decoder: a `JSONDecoder` used for decoding the response data.
     ///   - retryConfiguration: configuration for retrying behavior.
     /// - Returns: an object decoded from the response data.
     func request<DecodableResponse: Decodable>(
@@ -93,6 +93,6 @@ public extension APIManaging {
 // MARK: - JSONDecoder static extension
 
 private extension JSONDecoder {
-    /// A static JSONDecoder instance used by default implementation of APIManaging
+    /// A static `JSONDecoder` instance used by default implementation of `APIManaging`
     static let `default` = JSONDecoder()
 }

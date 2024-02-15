@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A struct which holds all necessary values for OAuth authorization.
 public struct AuthorizationData: Codable, Sendable {
     public let accessToken: String
     public let refreshToken: String
@@ -22,14 +23,13 @@ public struct AuthorizationData: Codable, Sendable {
     }
 }
 
-// MARK: Computed propeties
 public extension AuthorizationData {
     var isExpired: Bool {
         guard let expiresIn else {
-            /// If there is no information about expiration, always assume it is not expired.
+            // If there is no information about expiration, always assume it is not expired.
             return false
         }
-        /// Adding a safe offset so the access token can be pre-emptively refreshed.
+        // Adding a safe offset so the access token can be pre-emptively refreshed.
         return expiresIn < Date().addingTimeInterval(expirationOffset)
     }
 }

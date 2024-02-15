@@ -7,8 +7,6 @@
 
 import Foundation
 
-// MARK: - Defines data model storing full endpoint request
-
 /// A model containing all necessary info about request and related response to be replayed as mocked data.
 public struct EndpointRequestStorageModel: Codable {
     public let sessionId: String

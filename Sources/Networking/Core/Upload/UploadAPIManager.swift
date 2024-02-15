@@ -8,7 +8,26 @@
 import Combine
 import Foundation
 
-/// Default upload API manager
+/** Default upload API manager which is responsible for the creation and management of network file uploads.
+
+ You can define your own custom `UploadAPIManager` if needed by conforming to ``UploadAPIManaging``.
+
+ The initialisation is similar to ``APIManager/init(urlSession:requestAdapters:responseProcessors:errorProcessors:)``, except the session is created for the user based on a given `URLSessionConfiguration` + you can also inject ``MultipartFormDataEncoding`` and `FileManager`  ``init(urlSessionConfiguration:multipartFormDataEncoder:fileManager:requestAdapters:responseProcessors:errorProcessors:)``.
+
+ ## Usage
+
+ 1. Start a download by calling the ``upload(_:to:)`` function and passing ``UploadType`` which defines three types of possible resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
+ 2. The ``activeTasks`` property enables you to keep track of current tasks in progress.
+ 3. In order to observe progress of a specific task you can obtain a ``UploadAPIManaging/StateStream`` which is an `AsyncPublisher` of ``UploadTask/State`` with ``stateStream(for:)``.
+
+ ```swift
+ for await uploadState in await uploadManager.stateStream(for: task.id) {
+ ...
+ }
+ ```
+ 4. You can retry a specific task in case of failure with ``retry(taskId:)``
+ 5. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `UploadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
+ */
 @available(iOS 15.0, *)
 open class UploadAPIManager: NSObject {
     // MARK: - Public Properties

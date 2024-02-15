@@ -7,8 +7,6 @@
 
 import Foundation
 
-// MARK: - Constants for http header
-
 /// A namespace for constants of HTTP header keys or values.
 public enum HTTPHeader {
     /// Constants that describe HTTP header keys.

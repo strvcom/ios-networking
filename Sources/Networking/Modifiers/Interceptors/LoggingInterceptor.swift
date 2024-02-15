@@ -13,10 +13,20 @@ import Foundation
 #endif
 
 // MARK: - Pretty logging modifier
+/** A default <doc:LoggingInterceptor> which internally uses `os_log` to pretty print requests/responses. You can utilise it to get logging console output either for requests, responses or both.
 
-/// ``RequestInterceptor`` which logs requests & responses info into console in pretty way
+Typical usage would be to inject the shared instance into adapters and processors of an ``APIManager``
+```swift
+APIManager(
+    //
+    requestAdapters: [LoggingInterceptor.shared],
+    responseProcessors: [LoggingInterceptor.shared],
+    errorProcessors: [LoggingInterceptor.shared]
+    //
+)
+```
+ */
 open class LoggingInterceptor: RequestInterceptor {
-    // MARK: Default shared instance
     public static let shared = LoggingInterceptor()
     
     public init() {}
@@ -54,7 +64,6 @@ open class LoggingInterceptor: RequestInterceptor {
 }
 
 // MARK: - Private pretty logging
-
 private extension LoggingInterceptor {
     func prettyRequestLog(_ request: URLRequest, from endpoint: Requestable) {
         os_log("🔽🔽🔽 REQUEST  🔽🔽🔽", type: .info)

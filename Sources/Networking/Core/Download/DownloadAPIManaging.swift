@@ -7,12 +7,14 @@
 
 import Foundation
 
-// MARK: - Defines Download API managing
+/// A download result consisting of `URLSessionDownloadTask` and ``Response``
 public typealias DownloadResult = (URLSessionDownloadTask, Response)
 
+// MARK: - Defines Download API managing
+
 /// A definition of an API layer with methods for handling data downloading.
-/// Recommended to be used as singleton.
-/// If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
+///
+/// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
 public protocol DownloadAPIManaging {
     /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
@@ -27,7 +29,7 @@ public protocol DownloadAPIManaging {
     ///   - endpoint: API endpoint requestable definition.
     ///   - resumableData: Optional data the download request will be resumed with.
     ///   - retryConfiguration: Configuration for retrying behaviour.
-    /// - Returns: A download result consisting of `URLSessionDownloadTask` and `Response`
+    /// - Returns: A download result consisting of `URLSessionDownloadTask` and ``Response``
     func downloadRequest(
         _ endpoint: Requestable,
         resumableData: Data?,
