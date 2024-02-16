@@ -37,7 +37,7 @@ dependencies: [
 Heavily inspired by Moya, the networking layer's philosophy is focused on creating individual endpoint routers, transforming them into a valid URLRequest objects and applying optional adapters and processors in the network call pipeline utilising native `URLSession` under the hood.
 
 ## Making requests
-There is no 1 line way of making a request from scratch in order to ensure consistency and better structure. First we need to define a Router by conforming to [Requestable](https://strv.github.io/ios-networking/documentation/networking/requestable) protocol. Which in the simplest form can look like this:
+There is no 1 line way of making a request from scratch in order to ensure consistency and better structure. First we need to define a Router by conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol. Which in the simplest form can look like this:
 ```swift
 enum UserRouter: Requestable {
     case getUser
@@ -60,18 +60,18 @@ enum UserRouter: Requestable {
 }
 ```
 
-Then we can make a request on an [APIManager](https://strv.github.io/ios-networking/documentation/networking/apimanager) instance, which is responsible for handling the whole request flow.
+Then we can make a request on an [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) instance, which is responsible for handling the whole request flow.
 ```swift
 let response = try await APIManager().request(UserRouter.getUser)
 ```
-If you specify object type, the [APIManager](https://strv.github.io/ios-networking/documentation/networking/apimanager) will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
+If you specify object type, the [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
 
 ```swift
 let userResponse: UserResponse = try await apiManager.request(UserRouter.getUser)
 ```
 
 ## Downloading files
-Downloads are being handled by a designated [DownloadAPIManager](https://strv.github.io/ios-networking/documentation/networking/downloadapimanager). Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and [Response](https://strv.github.io/ios-networking/documentation/networking/response) (result for the HTTP handshake).
+Downloads are being handled by a designated [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager). Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and [Response](https://strvcom.github.io/ios-networking/documentation/networking/response) (result for the HTTP handshake).
 ```swift
 let (task, response) = try await DownloadAPIManager().request(url: URL)
 ```
@@ -83,25 +83,25 @@ for try await downloadState in downloadAPIManager.shared.progressStream(for: tas
 }
 ```
 
-In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strv.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [DownloadAPIManager](https://strv.github.io/ios-networking/documentation/networking/downloadapimanager) instead of the `URL`.
+In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) instead of the `URL`.
 
 ## Uploading files
-Uploads are being handled by a designated [UploadAPIManager](https://strv.github.io/ios-networking/documentation/networking/uploadapimanager). Here is an example of a basic form of file upload to a `URL`. It returns an [UploadTask](https://strv.github.io/ios-networking/documentation/networking/uploadtask) which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
+Uploads are being handled by a designated [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager). Here is an example of a basic form of file upload to a `URL`. It returns an [UploadTask](https://strvcom.github.io/ios-networking/documentation/networking/uploadtask) which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
 ```swift
 let uploadTask = try await uploadManager.upload(.file(fileUrl), to: "https://upload.com/file")
 ```
 
-You can then observe the upload progress for a given [UploadTask](https://strv.github.io/ios-networking/documentation/networking/uploadtask)
+You can then observe the upload progress for a given [UploadTask](https://strvcom.github.io/ios-networking/documentation/networking/uploadtask)
 ```swift
 for await uploadState in await uploadManager.stateStream(for: task.id) {
 ...
 }
 ```
 
-In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strv.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [UploadAPIManager](https://strv.github.io/ios-networking/documentation/networking/uploadapimanager) instead of the upload `URL`.
+In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager) instead of the upload `URL`.
 
 ## Retry-ability
-Both [APIManager](https://strv.github.io/ios-networking/documentation/networking/apimanager) and [DownloadAPIManager](https://strv.github.io/ios-networking/documentation/networking/downloadapimanager) allow for configurable retry mechanism. You can provide a custom after failure [RetryConfiguration](https://strv.github.io/ios-networking/documentation/networking/retryconfiguration), specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, [RetryConfiguration.default](https://strv.github.io/ios-networking/documentation/networking/retryconfiguration/default) configuration is used.
+Both [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) and [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) allow for configurable retry mechanism. You can provide a custom after failure [RetryConfiguration](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration), specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, [RetryConfiguration.default](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration/default) configuration is used.
 
 ```swift
 let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
@@ -119,34 +119,34 @@ Modifiers are useful pieces of code that modify request/response in the network 
 
 There are three types you can leverage:<br>
 
-[RequestAdapting](https://strv.github.io/ios-networking/documentation/networking/requestadapting)
+[RequestAdapting](https://strvcom.github.io/ios-networking/documentation/networking/requestadapting)
 
 Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
 
-[ResponseProcessing](https://strv.github.io/ios-networking/documentation/networking/responseprocessing)
+[ResponseProcessing](https://strvcom.github.io/ios-networking/documentation/networking/responseprocessing)
 
 Response processors are handling the ``Response`` received after a successful network request.
 
-[ErrorProcessing](https://strv.github.io/ios-networking/documentation/networking/errorprocessing)
+[ErrorProcessing](https://strvcom.github.io/ios-networking/documentation/networking/errorprocessing)
 
 Error processors are handling the `Error` received after a failed network request.
 
-[RequestInterceptor](https://strv.github.io/ios-networking/documentation/networking/requestinterceptor)
+[RequestInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/requestinterceptor)
 
 Interceptors handle both adapting and response/error processing.
 
 By conforming to these protocols, you can create your own adaptors/processors/interceptors.
 
 Here is list of classes provided by this library which implement these protocols:
-- [StatusCodeProcessor](https://strv.github.io/ios-networking/documentation/networking/statuscodeprocessor)
-- [EndpointRequestStorageProcessor](https://strv.github.io/ios-networking/documentation/networking/endpointrequeststorageprocessor)
-- [LoggingInterceptor](https://strv.github.io/ios-networking/documentation/networking/logginginterceptor)
-- [AuthorizationTokenInterceptor](https://strv.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor)
+- [StatusCodeProcessor](https://strvcom.github.io/ios-networking/documentation/networking/statuscodeprocessor)
+- [EndpointRequestStorageProcessor](https://strvcom.github.io/ios-networking/documentation/networking/endpointrequeststorageprocessor)
+- [LoggingInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/logginginterceptor)
+- [AuthorizationTokenInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor)
 
 ## Request authorization
 Networking provides a default authorization handling for OAuth scenarios. In order to utilise this we
-have to first create our own implementation of [AuthorizationStorageManaging](https://strv.github.io/ios-networking/documentation/networking/authorizationstoragemanaging) and [AuthorizationManaging](https://strv.github.io/ios-networking/documentation/networking/authorizationmanaging) which we inject into to  [AuthorizationTokenInterceptor](https://strv.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor) and then pass
-it to the [APIManager](https://strv.github.io/ios-networking/documentation/networking/apimanager) as both adapter and processor.
+have to first create our own implementation of [AuthorizationStorageManaging](https://strvcom.github.io/ios-networking/documentation/networking/authorizationstoragemanaging) and [AuthorizationManaging](https://strvcom.github.io/ios-networking/documentation/networking/authorizationmanaging) which we inject into to  [AuthorizationTokenInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor) and then pass
+it to the [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) as both adapter and processor.
 
 ```swift
 let authManager = AuthorizationManager()
@@ -157,7 +157,7 @@ let apiManager = APIManager(
         )
 ```
 
-After login we have to save the [AuthorizationData](https://strv.github.io/ios-networking/documentation/networking/authorizationdata) to the [AuthorizationManager](https://strv.github.io/ios-networking/documentation/networking/authorizationmanager).
+After login we have to save the [AuthorizationData](https://strvcom.github.io/ios-networking/documentation/networking/authorizationdata) to the [AuthorizationManager](https://strvcom.github.io/ios-networking/documentation/networking/authorizationmanager).
 
 ```swift
 let response: UserAuthResponse = try await apiManager.request(
@@ -166,7 +166,7 @@ let response: UserAuthResponse = try await apiManager.request(
 try await authManager.storage.saveData(response.authData)
 ```
 
-Then we can simply define which request should be authorised via `isAuthenticationRequired` property of [Requestable](https://strv.github.io/ios-networking/documentation/networking/requestable) protocol.  
+Then we can simply define which request should be authorised via `isAuthenticationRequired` property of [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol.  
 
 ```swift
 extension UserRouter: Requestable {
@@ -181,7 +181,7 @@ extension UserRouter: Requestable {
 ```
 
 ## Associated array query parameters
-When specifying urlParameters in the endpoint definition, use an [ArrayParameter](https://strv.github.io/ios-networking/documentation/networking/arrayparameter) to define multiple values for a single URL query parameter. The struct lets you decide which [ArrayEncoding](https://strv.github.io/ios-networking/documentation/networking/arrayencoding) will be used during the creation of the URL.
+When specifying urlParameters in the endpoint definition, use an [ArrayParameter](https://strvcom.github.io/ios-networking/documentation/networking/arrayparameter) to define multiple values for a single URL query parameter. The struct lets you decide which [ArrayEncoding](https://strvcom.github.io/ios-networking/documentation/networking/arrayencoding) will be used during the creation of the URL.
 
 There are two currently supported encodings:
 
