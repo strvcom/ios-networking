@@ -1,5 +1,5 @@
 //
-//  PercentEncodedParameter.swift
+//  CustomEncodedParameter.swift
 //
 //
 //  Created by Matej Molnár on 01.01.2024.
@@ -25,18 +25,11 @@ import Foundation
 ///
 ///     // Request URL "https://test.com?specialCharacter=>"
 ///
-public struct PercentEncodedParameter {
-    // Library provides plus sign percent encoding
-    public enum PercentEncoding {
-        case plusSign
-        case custom
-    }
 
-    let value: String
-    let percentEncoding: PercentEncoding
+public struct CustomEncodedParameter {
+    let encodedValue: String
 
-    public init(_ value: String, percentEncoding: PercentEncoding = .plusSign) {
-        self.value = value
-        self.percentEncoding = percentEncoding
+    public init(_ encodedValue: String) {
+        self.encodedValue = encodedValue
     }
 }

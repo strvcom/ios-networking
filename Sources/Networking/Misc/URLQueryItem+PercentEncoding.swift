@@ -9,18 +9,12 @@ import Foundation
 
 /// Convenience methods to provide custom percent encoding for URLQueryItem
 extension URLQueryItem {
-    func plusSignPercentEncoded() -> URLQueryItem {
+    
+    func percentEncoded() -> URLQueryItem {
         var newQueryItem = self
         newQueryItem.value = value?
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?
-            .replacingOccurrences(of: "+", with: "%2B")
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         
-        return newQueryItem
-    }
-    
-    func customPercentEncoded(_ value: String) -> URLQueryItem {
-        var newQueryItem = self
-        newQueryItem.value = value
         return newQueryItem
     }
 }
