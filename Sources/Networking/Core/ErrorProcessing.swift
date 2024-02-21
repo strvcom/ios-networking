@@ -17,7 +17,7 @@ public protocol ErrorProcessing {
     func process(_ error: Error, for endpointRequest: EndpointRequest) async -> Error
 }
 
-// MARK: - Array extension to avoid boilerplate
+/// Array extension to avoid boilerplate
 public extension Array where Element == ErrorProcessing {
     /// Applies the process method to all objects in a sequence.
     /// - Parameters:

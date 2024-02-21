@@ -8,6 +8,10 @@
 import Combine
 import Foundation
 
+/// A definition of an API layer with methods for handling data uploading.
+///
+/// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
+@available(iOS 15.0, *)
 public protocol UploadAPIManaging {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
@@ -16,39 +20,11 @@ public protocol UploadAPIManaging {
 
     /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:
-    ///   - data: The data to send to the server.
+    ///   - type: The data to send to the server.
     ///   - endpoint: The API endpoint to where data will be sent.
     /// - Returns: An `UploadTask` that represents this request.
     func upload(
-        data: Data,
-        to endpoint: Requestable
-    ) async throws -> UploadTask
-
-    /// Initiates a file upload request for the specified endpoint.
-    /// - Parameters:
-    ///   - fileUrl: The file's URL to send to the server.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        fromFile fileUrl: URL,
-        to endpoint: Requestable
-    ) async throws -> UploadTask
-
-    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
-    ///
-    /// If the size of the `MultipartFormData` exceeds the given `sizeThreshold`, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
-    ///
-    /// When uploaded from disk, a temporary file is created on the file system. This file is deleted when the upload task completes or errors out after all retry attempts.
-    ///
-    /// - Parameters:
-    ///   - multipartFormData: The multipart form data to upload.
-    ///   - sizeThreshold: The size threshold, in bytes, above which the data is streamed from disk rather than being loaded into memory all at once.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    ///
-    /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        multipartFormData: MultipartFormData,
-        sizeThreshold: UInt64,
+        _ type: UploadType,
         to endpoint: Requestable
     ) async throws -> UploadTask
 
@@ -72,28 +48,17 @@ public protocol UploadAPIManaging {
     func invalidateSession(shouldFinishTasks: Bool)
 }
 
+@available(iOS 15.0, *)
 public extension UploadAPIManaging {
-    /// Initiates a `multipart/form-data` upload request to the specified `endpoint`.
-    ///
-    /// If the size of the `MultipartFormData` exceeds 10MB, the data is uploaded from disk rather than being loaded into memory all at once. This can help reduce memory usage when uploading large amounts of data.
-    /// To specify different data threshold, use ``upload(multipartFormData:sizeThreshold:to:)``.
-    ///
+    /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:
-    ///   - multipartFormData: The multipart form data to upload.
-    ///   - endpoint: The API endpoint to where data will be sent.
-    ///
+    ///   - type: The data to send to the server.
+    ///   - uploadURL: The URL where data will be sent.
     /// - Returns: An `UploadTask` that represents this request.
-    func upload(
-        multipartFormData: MultipartFormData,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        try await upload(
-            multipartFormData: multipartFormData,
-            sizeThreshold: 10_000_000,
-            to: endpoint
-        )
+    func upload(_ type: UploadType, to uploadURL: URL) async throws -> UploadTask {
+        try await upload(type, to: BasicUploadRouter(url: uploadURL, uploadType: type))
     }
-    
+
     /// Returns an active ``UploadTask`` specified by its identifier.
     func task(with id: UploadTask.ID) async -> UploadTask? {
         await activeTasks.first { $0.id == id }

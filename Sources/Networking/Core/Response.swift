@@ -6,7 +6,5 @@
 
 import Foundation
 
-// MARK: - Defines complete response
-
 /// A default `URLSession` response tuple.
 public typealias Response = (data: Data, response: URLResponse)

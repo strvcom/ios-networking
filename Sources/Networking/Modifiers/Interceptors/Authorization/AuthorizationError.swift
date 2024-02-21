@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Defines base authorization errors
+/// Defines base authorization errors
 public enum AuthorizationError: Error, LocalizedError {
     case unauthorized
     case missingAuthorizationData

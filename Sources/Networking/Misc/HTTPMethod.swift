@@ -8,8 +8,6 @@
 
 import Foundation
 
-// MARK: - HTTP request methods
-
 /// An HTTP request method.
 public enum HTTPMethod: String {
     case get = "GET"

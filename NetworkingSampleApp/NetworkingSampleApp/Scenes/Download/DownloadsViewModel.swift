@@ -36,7 +36,7 @@ private extension DownloadsViewModel {
         
         do {
             let (task, _) = try await downloadAPIManager.downloadRequest(
-                SampleDownloadRouter.download(url: url),
+                url,
                 resumableData: nil,
                 retryConfiguration: RetryConfiguration.default
             )

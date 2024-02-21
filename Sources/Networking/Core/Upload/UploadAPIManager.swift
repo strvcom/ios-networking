@@ -8,7 +8,27 @@
 import Combine
 import Foundation
 
-/// Default upload API manager
+/** Default upload API manager which is responsible for the creation and management of network file uploads.
+
+ You can define your own custom `UploadAPIManager` if needed by conforming to ``UploadAPIManaging``.
+
+ The initialisation is similar to ``APIManager/init(urlSession:requestAdapters:responseProcessors:errorProcessors:)``, except the session is created for the user based on a given `URLSessionConfiguration` + you can also inject ``MultipartFormDataEncoding`` and `FileManager`  ``init(urlSessionConfiguration:multipartFormDataEncoder:fileManager:requestAdapters:responseProcessors:errorProcessors:)``.
+
+ ## Usage
+
+ 1. Start a download by calling the ``upload(_:to:)`` function and passing ``UploadType`` which defines three types of possible resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
+ 2. The ``activeTasks`` property enables you to keep track of current tasks in progress.
+ 3. In order to observe progress of a specific task you can obtain a ``UploadAPIManaging/StateStream`` which is an `AsyncPublisher` of ``UploadTask/State`` with ``stateStream(for:)``.
+
+ ```swift
+ for await uploadState in await uploadManager.stateStream(for: task.id) {
+ ...
+ }
+ ```
+ 4. You can retry a specific task in case of failure with ``retry(taskId:)``
+ 5. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `UploadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
+ */
+@available(iOS 15.0, *)
 open class UploadAPIManager: NSObject {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
@@ -60,6 +80,7 @@ open class UploadAPIManager: NSObject {
 }
 
 // MARK: URLSessionDataDelegate
+@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionDataDelegate {
     public func urlSession(
         _ session: URLSession,
@@ -92,6 +113,7 @@ extension UploadAPIManager: URLSessionDataDelegate {
 }
 
 // MARK: - URLSessionTaskDelegate
+@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionTaskDelegate {
     public func urlSession(
         _ session: URLSession,
@@ -130,62 +152,50 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 }
 
 // MARK: - UploadAPIManaging
+@available(iOS 15.0, *)
 extension UploadAPIManager: UploadAPIManaging {
+    public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
+        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
+
+        switch type {
+        case let .data(data, _):
+            return try await uploadRequest(
+                .data(data),
+                request: endpointRequest
+            )
+        case let .file(fileUrl):
+            return try await uploadRequest(
+                .file(fileUrl),
+                request: endpointRequest
+            )
+        case let .multipart(multipartFormData, sizeThreshold):
+            // Determine if the session configuration is background.
+            let usesBackgroundSession = urlSessionConfiguration.sessionSendsLaunchEvents
+
+            // Encode in-memory and upload directly if the payload's size is less than the threshold,
+            // otherwise we write the payload to the disk first and upload by reading the file content.
+            if multipartFormData.size < sizeThreshold && !usesBackgroundSession {
+                let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
+                return try await uploadRequest(
+                    .data(encodedMultipartFormData),
+                    request: endpointRequest
+                )
+            } else {
+                let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
+                try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
+                return try await uploadRequest(
+                    .file(temporaryFileUrl, removeOnComplete: true),
+                    request: endpointRequest
+                )
+            }
+        }
+    }
+    
     public func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
             urlSession.finishTasksAndInvalidate()
         } else {
             urlSession.invalidateAndCancel()
-        }
-    }
-
-    public func upload(
-        data: Data,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(
-            .data(data),
-            request: endpointRequest
-        )
-    }
-
-    public func upload(
-        fromFile fileUrl: URL,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await uploadRequest(
-            .file(fileUrl),
-            request: endpointRequest
-        )
-    }
-
-    public func upload(
-        multipartFormData: MultipartFormData,
-        sizeThreshold: UInt64 = 10_000_000,
-        to endpoint: Requestable
-    ) async throws -> UploadTask {
-        let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        
-        // Determine if the session configuration is background.
-        let usesBackgroundSession = urlSessionConfiguration.sessionSendsLaunchEvents
-
-        // Encode in-memory and upload directly if the payload's size is less than the threshold,
-        // otherwise we write the payload to the disk first and upload by reading the file content.
-        if multipartFormData.size < sizeThreshold && !usesBackgroundSession {
-            let encodedMultipartFormData = try multipartFormDataEncoder.encode(multipartFormData)
-            return try await uploadRequest(
-                .data(encodedMultipartFormData),
-                request: endpointRequest
-            )
-        } else {
-            let temporaryFileUrl = try temporaryFileUrl(for: endpointRequest)
-            try multipartFormDataEncoder.encode(multipartFormData, to: temporaryFileUrl)
-            return try await uploadRequest(
-                .file(temporaryFileUrl, removeOnComplete: true),
-                request: endpointRequest
-            )
         }
     }
 
@@ -216,6 +226,7 @@ extension UploadAPIManager: UploadAPIManaging {
 }
 
 // MARK: - Private API
+@available(iOS 15.0, *)
 private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
