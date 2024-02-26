@@ -1,5 +1,5 @@
 //
-//  MockResponseProviderTests.swift
+//  StoredResponseProviderTests.swift
 //
 //
 //  Created by Matej Molnár on 05.01.2023.
@@ -8,7 +8,7 @@
 @testable import Networking
 import XCTest
 
-final class MockResponseProviderTests: XCTestCase {
+final class StoredResponseProviderTests: XCTestCase {
     // swiftlint:disable:next force_unwrapping
     private lazy var mockUrlRequest = URLRequest(url: URL(string: "https://reqres.in/api/users?page=2")!)
     private let mockSessionId = "2023-01-04T16:15:29Z"
@@ -33,12 +33,12 @@ final class MockResponseProviderTests: XCTestCase {
     ]
     
     func testLoadingData() async throws {
-        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: mockSessionId)
-        
+        let storedResponseProvider = StoredResponseProvider(with: Bundle.module, sessionId: mockSessionId)
+
         // call request multiple times, 6 testing data files
         // test reading correct file
         for index in 0...10 {
-            let response = try await mockResponseProvider.response(for: mockUrlRequest)
+            let response = try await storedResponseProvider.response(for: mockUrlRequest)
 
             XCTAssert(response.response is HTTPURLResponse)
 
@@ -69,14 +69,14 @@ final class MockResponseProviderTests: XCTestCase {
     }
     
     func testUnableToLoadAssetError() async {
-        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: "NonexistentSessionId")
+        let storedResponseProvider = StoredResponseProvider(with: Bundle.module, sessionId: "NonexistentSessionId")
         
         do {
-            _ = try await mockResponseProvider.response(for: mockUrlRequest)
+            _ = try await storedResponseProvider.response(for: mockUrlRequest)
             XCTAssert(false, "function didn't throw an error even though it should have")
         } catch {
             var correctError = false
-            if case NetworkError.underlying(error: MockResponseProviderError.unableToLoadAssetData) = error {
+            if case NetworkError.underlying(error: StoredResponseProviderError.unableToLoadAssetData) = error {
                 correctError = true
             }
             XCTAssert(correctError, "function threw an incorrect error")
@@ -84,14 +84,14 @@ final class MockResponseProviderTests: XCTestCase {
     }
     
     func testUnableToConstructResponseError() async {
-        let mockResponseProvider = MockResponseProvider(with: Bundle.module, sessionId: "2023-01-04T16:15:29Z(corrupted)")
+        let storedResponseProvider = StoredResponseProvider(with: Bundle.module, sessionId: "2023-01-04T16:15:29Z(corrupted)")
         
         do {
-            _ = try await mockResponseProvider.response(for: mockUrlRequest)
+            _ = try await storedResponseProvider.response(for: mockUrlRequest)
             XCTAssert(false, "function didn't throw an error even though it should have")
         } catch {
             var correctError = false
-            if case NetworkError.underlying(error: MockResponseProviderError.unableToConstructResponse) = error {
+            if case NetworkError.underlying(error: StoredResponseProviderError.unableToConstructResponse) = error {
                 correctError = true
             }
             XCTAssert(correctError, "function threw an incorrect error")

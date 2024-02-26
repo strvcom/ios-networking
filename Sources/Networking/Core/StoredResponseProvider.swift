@@ -1,5 +1,5 @@
 //
-//  MockResponseProvider.swift
+//  StoredResponseProvider.swift
 //
 //
 //  Created by Matej Molnár on 04.01.2023.
@@ -14,10 +14,8 @@ import Foundation
     import UIKit
 #endif
 
-// MARK: - MockResponseProvider definition
-
 /// A response provider which creates responses for requests from corresponding data files stored in Assets.
-open class MockResponseProvider: ResponseProviding {
+open class StoredResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
     private let requestCounter = Counter()
@@ -36,7 +34,7 @@ open class MockResponseProvider: ResponseProviding {
     /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
         guard let model = try? await loadModel(for: request) else {
-            throw NetworkError.underlying(error: MockResponseProviderError.unableToLoadAssetData)
+            throw NetworkError.underlying(error: StoredResponseProviderError.unableToLoadAssetData)
         }
 
         guard
@@ -49,7 +47,7 @@ open class MockResponseProvider: ResponseProviding {
                 headerFields: model.responseHeaders
             )
         else {
-            throw NetworkError.underlying(error: MockResponseProviderError.unableToConstructResponse)
+            throw NetworkError.underlying(error: StoredResponseProviderError.unableToConstructResponse)
         }
         
         return Response(model.responseBody ?? Data(), httpResponse)
@@ -58,7 +56,7 @@ open class MockResponseProvider: ResponseProviding {
 
 // MARK: Private helper functions
 
-private extension MockResponseProvider {
+private extension StoredResponseProvider {
     /// Loads a corresponding file from Assets for a given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
         // counting from 0, check storage request processing

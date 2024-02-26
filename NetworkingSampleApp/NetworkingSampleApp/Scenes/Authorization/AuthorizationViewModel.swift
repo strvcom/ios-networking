@@ -26,7 +26,7 @@ final class AuthorizationViewModel: ObservableObject {
 #endif
         
         return APIManager(
-            responseProvider: MockResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
+            responseProvider: StoredResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
             requestAdapters: [
                 LoggingInterceptor.shared,
                 authorizationInterceptor

@@ -16,7 +16,7 @@ final class SampleAuthorizationManager: AuthorizationManaging {
     // We use mock data to simulate real API requests here.
     private let apiManager: APIManager = {
         APIManager(
-            responseProvider: MockResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
+            responseProvider: StoredResponseProvider(with: Bundle.main, sessionId: "2023-01-31T15:08:08Z"),
             requestAdapters: [LoggingInterceptor.shared],
             responseProcessors: [
                 LoggingInterceptor.shared,
