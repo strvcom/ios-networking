@@ -12,8 +12,8 @@ extension URLQueryItem {
     
     func percentEncoded() -> URLQueryItem {
         var newQueryItem = self
-        newQueryItem.value = value?
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        newQueryItem.name = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name
+        newQueryItem.value = value?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         
         return newQueryItem
     }

@@ -32,10 +32,12 @@ final class URLParametersTests: XCTestCase {
     }
     
     func testDefaultEncoding() async throws {
-        let nameString = "name]surname"
-        let namePercentEncodedString = "name%5Dsurname"
-        
-        let router = Router.urlParameters(["name": nameString])
+        let keyString = "name[first]"
+        let keyPercentEncodedString = "name%5Bfirst%5D"
+        let valueString = "name]surname"
+        let valuePercentEncodedString = "name%5Dsurname"
+
+        let router = Router.urlParameters([keyString: valueString])
         let request = try router.asRequest()
         
         guard let url = request.url else {
@@ -44,9 +46,10 @@ final class URLParametersTests: XCTestCase {
         }
         
         let queryItems = percentEncodedQueryItems(from: url)
+        
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "name" })?.value,
-            namePercentEncodedString
+            queryItems.first(where: { $0.name == keyPercentEncodedString })?.value,
+            valuePercentEncodedString
         )
     }
 
