@@ -109,9 +109,12 @@ public extension Requestable {
 // MARK: Build Query Items
 private extension Requestable {
     func buildPercentEncodedQueryItems(urlParameters: [String: Any]) -> [URLQueryItem] {
-        urlParameters
-            .map { key, value -> [URLQueryItem] in
-                buildPercentEncodedQueryItem(key: key, value: value)
+        urlParameters.keys.sorted()
+            .map { key -> [URLQueryItem] in
+                guard let value = urlParameters[key] else {
+                    return []
+                }
+                return buildPercentEncodedQueryItem(key: key, value: value)
             }
             .flatMap { $0 }
     }
