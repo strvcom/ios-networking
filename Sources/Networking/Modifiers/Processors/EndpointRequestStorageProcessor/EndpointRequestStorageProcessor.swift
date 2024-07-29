@@ -5,13 +5,10 @@
 //  Created by Matej Molnár on 12.12.2022.
 //
 
-import Foundation
+#if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
 
-#if os(watchOS)
-    import os
-#else
-    import OSLog
-#endif
+import Foundation
+import OSLog
 
 // MARK: - Modifier storing endpoint requests
 
@@ -293,3 +290,5 @@ private extension JSONEncoder {
         return encoder
     }()
 }
+
+#endif
