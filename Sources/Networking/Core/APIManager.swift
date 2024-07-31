@@ -39,11 +39,19 @@ import Foundation
  ```
  */
 open class APIManager: APIManaging, Retryable {
+    // MARK: Public variables
+    /// Default JSONDecoder implementation
+    public var defaultDecoder: JSONDecoder {
+        JSONDecoder()
+    }
+    
+    // MARK: Private variables
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
     private let responseProvider: ResponseProviding
     private let sessionId: String
+
     internal var retryCounter = Counter()
     
     public init(

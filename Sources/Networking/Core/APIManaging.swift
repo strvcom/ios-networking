@@ -39,11 +39,6 @@ public protocol APIManaging {
 // MARK: - Provide request with default json decoder, retry configuration
 
 public extension APIManaging {
-    /// Default JSONDecoder implementation.
-    var defaultDecoder: JSONDecoder {
-        JSONDecoder.default
-    }
-    
     /// Simplifies request using a default ``RetryConfiguration``.
     /// - Parameter endpoint: API endpoint requestable definition.
     /// - Returns: ``Response``.
@@ -87,12 +82,4 @@ public extension APIManaging {
         let response = try await request(endpoint, retryConfiguration: retryConfiguration)
         return try decoder.decode(DecodableResponse.self, from: response.data)
     }
-}
-
-
-// MARK: - JSONDecoder static extension
-
-private extension JSONDecoder {
-    /// A static `JSONDecoder` instance used by default implementation of `APIManaging`
-    static let `default` = JSONDecoder()
 }
