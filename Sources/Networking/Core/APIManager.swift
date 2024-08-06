@@ -41,7 +41,7 @@ import Foundation
 open class APIManager: APIManaging, Retryable {
     // MARK: Public variables
     /// Default JSONDecoder implementation
-    public var defaultDecoder: JSONDecoder {
+    open var defaultDecoder: JSONDecoder {
         JSONDecoder()
     }
     
