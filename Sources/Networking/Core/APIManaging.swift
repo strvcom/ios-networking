@@ -33,7 +33,7 @@ public protocol APIManaging: URLSessionInvalidatable {
         _ endpoint: Requestable,
         decoder: JSONDecoder,
         retryConfiguration: RetryConfiguration?
-    ) async throws -> DecodableResponse    
+    ) async throws -> DecodableResponse
 }
 
 // MARK: - Provide request with default json decoder, retry configuration
