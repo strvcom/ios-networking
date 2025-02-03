@@ -30,8 +30,6 @@ open class StoredResponseProvider: ResponseProviding {
         self.sessionId = sessionId
     }
 
-    public func invalidate() async {}
-
     /// Creates a ``Response`` for a given `URLRequest` based on data from a corresponding file stored in Assets.
     /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
