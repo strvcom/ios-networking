@@ -50,7 +50,8 @@ open class APIManager: APIManaging, Retryable {
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
     private let sessionId: String
-    private var _responseProvider: ResponseProviding
+    private var responseProvider: ResponseProviding
+    private var _urlSessionIsInvalidated: Bool = false
 
     internal var retryCounter = Counter()
 
@@ -69,7 +70,7 @@ open class APIManager: APIManaging, Retryable {
             sessionId = Date().ISO8601Format()
         }
         
-        self._responseProvider = urlSession
+        self.responseProvider = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -89,7 +90,7 @@ open class APIManager: APIManaging, Retryable {
         } else {
             sessionId = Date().ISO8601Format()
         }
-        self._responseProvider = responseProvider
+        self.responseProvider = responseProvider
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -103,15 +104,25 @@ open class APIManager: APIManaging, Retryable {
     }
 }
 
-// MARK: Response provider
+// MARK: URL Session Invalidation
 
 public extension APIManager {
-    var responseProvider: ResponseProviding {
-        _responseProvider
+    var urlSessionIsInvalidated: Bool {
+        _urlSessionIsInvalidated
     }
 
-    func setResponseProvider(_ provider: ResponseProviding) {
-        self._responseProvider = provider
+    var urlSession: URLSession? {
+        responseProvider as? URLSession
+    }
+
+    func setUrlSession(_ urlSession: URLSession) {
+        responseProvider = urlSession
+    }
+
+    func invalidateUrlSession() async {
+        await urlSession?.allTasks.forEach { $0.cancel() }
+        urlSession?.invalidateAndCancel()
+        _urlSessionIsInvalidated = true
     }
 }
 

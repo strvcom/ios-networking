@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Defines API managing
 
 /// A definition of an API layer with methods for handling API requests.
-public protocol APIManaging {
+public protocol APIManaging: URLSessionInvalidatable {
     /// A default `JSONDecoder` used for all requests.
     var defaultDecoder: JSONDecoder { get }
 
@@ -33,13 +33,7 @@ public protocol APIManaging {
         _ endpoint: Requestable,
         decoder: JSONDecoder,
         retryConfiguration: RetryConfiguration?
-    ) async throws -> DecodableResponse
-
-    /// Invalidates and response provider to gracefully clear out all its tasks.
-    var responseProvider: ResponseProviding { get }
-
-    /// Replaces the response provider instance used by APIManager.
-    func setResponseProvider(_ provider: ResponseProviding)
+    ) async throws -> DecodableResponse    
 }
 
 // MARK: - Provide request with default json decoder, retry configuration
