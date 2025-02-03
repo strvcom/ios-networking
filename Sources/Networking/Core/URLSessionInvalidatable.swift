@@ -2,9 +2,6 @@ import Foundation
 
 /// Adds capability for `URLSession` to be invalidated and recreated.
 public protocol URLSessionInvalidatable {
-    /// Invalidates urlSession to gracefully clear out all its tasks.
-    var urlSession: URLSession? { get }
-
     /// Returns `true` if session has been invalidate and is no longer suitable for usage.
     /// Any other usage of this urlSession will lead to runtime error.
     var urlSessionIsInvalidated: Bool { get }

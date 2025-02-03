@@ -55,6 +55,10 @@ open class APIManager: APIManaging, Retryable {
 
     internal var retryCounter = Counter()
 
+    var urlSession: URLSession? {
+        responseProvider as? URLSession
+    }
+
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
@@ -111,12 +115,9 @@ public extension APIManager {
         _urlSessionIsInvalidated
     }
 
-    var urlSession: URLSession? {
-        responseProvider as? URLSession
-    }
-
     func setUrlSession(_ urlSession: URLSession) {
         responseProvider = urlSession
+        _urlSessionIsInvalidated = false
     }
 
     func invalidateUrlSession() async {
