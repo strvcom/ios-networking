@@ -55,10 +55,6 @@ open class APIManager: APIManaging, Retryable {
 
     internal var retryCounter = Counter()
 
-    var urlSession: URLSession? {
-        responseProvider as? URLSession
-    }
-
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
@@ -121,8 +117,13 @@ public extension APIManager {
     }
 
     func invalidateUrlSession() async {
-        await urlSession?.allTasks.forEach { $0.cancel() }
-        urlSession?.invalidateAndCancel()
+        // Cannot invalidate urlSession if using a different ResponseProvider.
+        guard let urlSession = responseProvider as? URLSession else {
+            return
+        }
+
+        await urlSession.allTasks.forEach { $0.cancel() }
+        urlSession.invalidateAndCancel()
         _urlSessionIsInvalidated = true
     }
 }
@@ -135,7 +136,11 @@ private extension APIManager {
             
             // adapt request with all adapters
             request = try await requestAdapters.adapt(request, for: endpointRequest)
-            
+
+            guard !urlSessionIsInvalidated else {
+                throw APIManagerError.invalidUrlSession
+            }
+
             // get response for given request (usually fires a network request via URLSession)
             var response = try await responseProvider.response(for: request)
             
