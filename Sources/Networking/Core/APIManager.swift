@@ -49,11 +49,11 @@ open class APIManager: APIManaging, Retryable {
     private let requestAdapters: [RequestAdapting]
     private let responseProcessors: [ResponseProcessing]
     private let errorProcessors: [ErrorProcessing]
-    private let responseProvider: ResponseProviding
     private let sessionId: String
+    private var _responseProvider: ResponseProviding
 
     internal var retryCounter = Counter()
-    
+
     public init(
         urlSession: URLSession = .init(configuration: .default),
         requestAdapters: [RequestAdapting] = [],
@@ -69,7 +69,7 @@ open class APIManager: APIManaging, Retryable {
             sessionId = Date().ISO8601Format()
         }
         
-        self.responseProvider = urlSession
+        self._responseProvider = urlSession
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -89,7 +89,7 @@ open class APIManager: APIManaging, Retryable {
         } else {
             sessionId = Date().ISO8601Format()
         }
-        self.responseProvider = responseProvider
+        self._responseProvider = responseProvider
         self.requestAdapters = requestAdapters
         self.responseProcessors = responseProcessors
         self.errorProcessors = errorProcessors
@@ -100,6 +100,18 @@ open class APIManager: APIManaging, Retryable {
         // create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
         return try await request(endpointRequest, retryConfiguration: retryConfiguration)
+    }
+}
+
+// MARK: Response provider
+
+public extension APIManager {
+    var responseProvider: ResponseProviding {
+        _responseProvider
+    }
+
+    func setResponseProvider(_ provider: ResponseProviding) {
+        self._responseProvider = provider
     }
 }
 

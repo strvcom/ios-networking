@@ -14,7 +14,7 @@ import Foundation
 public protocol APIManaging {
     /// A default `JSONDecoder` used for all requests.
     var defaultDecoder: JSONDecoder { get }
-    
+
     /// Creates a network request for an API endpoint defined by ``Requestable``.
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition.
@@ -34,6 +34,12 @@ public protocol APIManaging {
         decoder: JSONDecoder,
         retryConfiguration: RetryConfiguration?
     ) async throws -> DecodableResponse
+
+    /// Invalidates and response provider to gracefully clear out all its tasks.
+    var responseProvider: ResponseProviding { get }
+
+    /// Replaces the response provider instance used by APIManager.
+    func setResponseProvider(_ provider: ResponseProviding)
 }
 
 // MARK: - Provide request with default json decoder, retry configuration
