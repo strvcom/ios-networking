@@ -51,7 +51,7 @@ open class APIManager: APIManaging, Retryable {
     private let errorProcessors: [ErrorProcessing]
     private let sessionId: String
     private var responseProvider: ResponseProviding
-    private var _urlSessionIsInvalidated: Bool = false
+    public private(set) var urlSessionIsInvalidated = false
 
     internal var retryCounter = Counter()
 
@@ -107,24 +107,20 @@ open class APIManager: APIManaging, Retryable {
 // MARK: URL Session Invalidation
 
 public extension APIManager {
-    var urlSessionIsInvalidated: Bool {
-        _urlSessionIsInvalidated
-    }
-
-    func setUrlSession(_ urlSession: URLSession) {
-        responseProvider = urlSession
-        _urlSessionIsInvalidated = false
+    func setResponseProvider(_ provider: ResponseProviding) {
+        responseProvider = provider
+        urlSessionIsInvalidated = false
     }
 
     func invalidateUrlSession() async {
-        // Cannot invalidate urlSession if using a different ResponseProvider.
+        // Cannot invalidate urlSession if using a different ResponseProviding implementation.
         guard let urlSession = responseProvider as? URLSession else {
             return
         }
 
         await urlSession.allTasks.forEach { $0.cancel() }
         urlSession.invalidateAndCancel()
-        _urlSessionIsInvalidated = true
+        urlSessionIsInvalidated = true
     }
 }
 

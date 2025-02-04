@@ -176,3 +176,8 @@ var urlParameters: [String: Any]? {
      ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
 }
 ```
+
+## Invalidating URLSession
+APIManager exposes a method for invalidating the current URLSession in case the current response provider is using one. THis can me handy in times it's necessary to terminate all URLSession operations and prevent URLSession from entering an broken/undefined state (this can happen for example if your app is suspended prematurely).
+
+After calling the `invalidateUrlSession` method, a flag `urlSessionIsInvalidated` is set indicating whether the current session is invalidated or not. In case it has been invalidated, it is no longer possible to use the previously created urlSession and all usages will lead to a crash. New session has to be created and passed to APIManager instance by using the `setResponseProvider` method.
