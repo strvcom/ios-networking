@@ -14,7 +14,11 @@ import Foundation
 public protocol APIManaging {
     /// A default `JSONDecoder` used for all requests.
     var defaultDecoder: JSONDecoder { get }
-    
+
+    /// Returns `true` if session has been invalidate and is no longer suitable for usage.
+    /// Any other usage of this urlSession will lead to runtime error.
+    var urlSessionIsInvalidated: Bool { get }
+
     /// Creates a network request for an API endpoint defined by ``Requestable``.
     /// - Parameters:
     ///   - endpoint: API endpoint requestable definition.
@@ -34,6 +38,14 @@ public protocol APIManaging {
         decoder: JSONDecoder,
         retryConfiguration: RetryConfiguration?
     ) async throws -> DecodableResponse
+
+    /// Replaces the responseProvider instance used by APIManager.
+    func setResponseProvider(_ provider: ResponseProviding)
+
+    /// Invalidates the current urlSession.
+    /// Warning: urlSession must be recreated before further usage
+    /// otherwise runtime error is encountered as accessing invalidated session is illegal.
+    func invalidateUrlSession() async
 }
 
 // MARK: - Provide request with default json decoder, retry configuration
