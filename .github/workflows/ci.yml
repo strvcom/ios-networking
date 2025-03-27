@@ -1,0 +1,57 @@
+name: "Networking CI"
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runsOn }}
+    env:
+      DEVELOPER_DIR: "/Applications/${{ matrix.xcode }}.app/Contents/Developer"
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'iOS 17.2'
+            destination: 'OS=17.2,name=iPhone 15 Pro'
+            xcode: 'Xcode_15.2'
+            runsOn: macos-14
+#          - name: 'iOS 16.4'
+#            destination: 'OS=16.4,name=iPhone 14 Pro'
+#            xcode: 'Xcode_14.3.1'
+#            runsOn: macos-13
+          - name: 'macOS 13, Xcode 15.2'
+            destination: 'platform=macOS'
+            xcode: 'Xcode_15.2'
+            runsOn: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Running unit tests on ${{ matrix.name }}'
+        run: |
+            set -o pipefail && \
+            xcodebuild clean test -resultBundlePath "TestResults-${{ matrix.name }}" -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" | tee "build-log-${{ matrix.name }}.txt" | xcpretty
+
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: 'TestResults-${{ matrix.name }}.xcresult'
+          title: '${{ matrix.name }} Test Results'
+        if: success() || failure()
+
+      - name: 'Upload Build Log'
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'build-log-${{ matrix.name }}'
+          path: 'build-log-${{ matrix.name }}.txt'
+        if: success() || failure()

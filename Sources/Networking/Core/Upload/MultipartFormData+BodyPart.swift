@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension InputStream: @unchecked Sendable {}
+extension InputStream: @unchecked @retroactive Sendable {}
 
 public extension MultipartFormData {
     /// Represents an individual part of the `multipart/form-data`.

@@ -8,4 +8,4 @@
 import Foundation
 
 // FileManager does not yet conforming to Sendable, hence we at least suppress the non-sendable warning.
-extension FileManager: @unchecked Sendable {}
+extension FileManager: @unchecked @retroactive Sendable {}

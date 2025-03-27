@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Networking",
     platforms: [
-        .iOS(SupportedPlatform.IOSVersion.v15),
+        .iOS(SupportedPlatform.IOSVersion.v14),
         .macOS(SupportedPlatform.MacOSVersion.v12),
         .watchOS(SupportedPlatform.WatchOSVersion.v9)
     ],
@@ -17,20 +17,23 @@ let package = Package(
             targets: ["Networking"]
         )
     ],
-    dependencies: [.package(url: "https://github.com/realm/SwiftLint.git", exact: "0.53.0")],
+    dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", exact: "0.58.2"),
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Networking",
             swiftSettings: [.enableExperimentalFeature("StrictConcurrency")],
-            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
         ),
         .testTarget(
             name: "NetworkingTests",
             dependencies: ["Networking"],
             resources: [.process("Resources")],
-            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]
         )
     ]
 )

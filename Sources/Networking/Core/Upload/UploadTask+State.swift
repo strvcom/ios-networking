@@ -23,7 +23,7 @@ public extension UploadTask {
         public var response: Response?
 
         /// The internal state of the `URLSessionTask`.
-        let taskState: URLSessionTask.State
+        public let taskState: URLSessionTask.State
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Basic operations to store `AuthorizationData`
+/// A definition of a manager which handles operations related to storing ``AuthorizationData`` for example in a KeyChain.
 /// To keep consistency all operations are async
 @NetworkingActor
 public protocol AuthorizationStorageManaging: Sendable {

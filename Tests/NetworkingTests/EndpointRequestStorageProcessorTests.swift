@@ -15,8 +15,8 @@ import XCTest
 @NetworkingActor
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
-    private let fileManager = FileManager.default
-    
+    private let mockFileManager = MockFileManager()
+
     struct MockBody: Codable {
         let parameter: String
     }
@@ -76,6 +76,12 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         }
     }
 
+    override func tearDown() {
+        mockFileManager.reset()
+
+        super.tearDown()
+    }
+
     func testResponseStaysTheSameAfterStoringData() async throws {
         let mockEndpointRequest = EndpointRequest(MockRouter.testStoringGet, sessionId: sessionId)
         let mockURLRequest = URLRequest(url: MockRouter.testStoringGet.baseURL)
@@ -85,7 +91,38 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let response = try await EndpointRequestStorageProcessor().process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
         // test storing data processor doesn't effect response in anyway
-        XCTAssert(response.data == mockResponse.0 && response.response == mockResponse.1)
+        XCTAssertEqual(response.data, mockResponse.0)
+        XCTAssertEqual(response.response, mockResponse.1)
+    }
+
+    func testProcessCreatesCorrectFolder() async throws {
+        let mockEndpointRequest = EndpointRequest(MockRouter.testStoringGet, sessionId: sessionId)
+        let mockURLRequest = URLRequest(url: MockRouter.testStoringGet.baseURL)
+        let mockURLResponse: URLResponse = HTTPURLResponse(url: MockRouter.testStoringGet.baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
+        let mockResponse = (Data(), mockURLResponse)
+
+        let expectation = expectation(description: "Data was written")
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let mockFileDataWriter = MockFileDataWriter()
+        mockFileDataWriter.writeClosure = {
+            expectation.fulfill()
+        }
+
+        let processor = EndpointRequestStorageProcessor(
+            fileManager: mockFileManager,
+            fileDataWriter: mockFileDataWriter,
+            jsonEncoder: encoder
+        )
+        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+
+        await fulfillment(of: [expectation], timeout: 60)
+
+        mockFileManager.verifyFunctionCall(.fileExists(path: responsesDirectory(for: mockEndpointRequest).path))
+        mockFileManager.verifyFunctionCall(.createDirectory(path: responsesDirectory(for: mockEndpointRequest).path))
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
 
     func testStoredDataForGetRequestWithJSONResponse() async throws {
@@ -99,37 +136,39 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )!
         let mockResponseData = "Mock data".data(using: .utf8)!
         let mockResponse = (mockResponseData, mockURLResponse)
-        
+        let expectation = expectation(description: "Data was written")
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
-        
-        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
-        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
-        let fileUrl = fileUrl(for: mockEndpointRequest)
-
-        guard let data = fileManager.contents(atPath: fileUrl.path) else {
-            XCTAssert(false, "File doesn't exist")
-            return
+        let mockFileDataWriter = MockFileDataWriter()
+        mockFileDataWriter.writeClosure = {
+            expectation.fulfill()
         }
-        
-        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
-        
-        XCTAssert(
-            model.statusCode == 200 &&
-            model.method == "GET" &&
-            model.path == mockEndpointRequest.endpoint.path &&
-            model.parameters == ["query": "mock"] &&
-            model.requestBody == nil &&
-            model.requestBodyString == nil &&
-            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
-            model.responseBody == mockResponseData &&
-            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
-            model.responseHeaders == ["mockResponseHeader": "mock"]
+
+        let processor = EndpointRequestStorageProcessor(
+            fileManager: mockFileManager,
+            fileDataWriter: mockFileDataWriter,
+            jsonEncoder: encoder
         )
+        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+
+        await fulfillment(of: [expectation], timeout: 60)
+
+        let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
+
+        XCTAssertEqual(model.statusCode, 200)
+        XCTAssertEqual(model.method, "GET")
+        XCTAssertEqual(model.path, mockEndpointRequest.endpoint.path)
+        XCTAssertEqual(model.parameters, ["query": "mock"])
+        XCTAssertNil(model.requestBody)
+        XCTAssertNil(model.requestBodyString)
+        XCTAssertEqual(model.requestHeaders, mockURLRequest.allHTTPHeaderFields)
+        XCTAssertEqual(model.responseBody, mockResponseData)
+        XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
+        XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForGetRequestWithImageResponse() async throws {
@@ -152,37 +191,40 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         #endif
         
         let mockResponse = (mockResponseData, mockURLResponse)
-        
+        let expectation = expectation(description: "Data was written")
+
+        let mockFileDataWriter = MockFileDataWriter()
+        mockFileDataWriter.writeClosure = {
+            expectation.fulfill()
+        }
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         
-        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
-        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
-        let fileUrl = fileUrl(for: mockEndpointRequest)
-
-        guard let data = fileManager.contents(atPath: fileUrl.path) else {
-            XCTAssert(false, "File doesn't exist")
-            return
-        }
-        
-        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
-        
-        XCTAssert(
-            model.statusCode == 200 &&
-            model.method == "GET" &&
-            model.path == mockEndpointRequest.endpoint.path &&
-            model.parameters == ["query": "mock"] &&
-            model.requestBody == nil &&
-            model.requestBodyString == nil &&
-            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
-            model.responseBody == mockResponseData &&
-            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
-            model.responseHeaders == ["mockResponseHeader": "mock"]
+        let processor = EndpointRequestStorageProcessor(
+            fileManager: mockFileManager,
+            fileDataWriter: mockFileDataWriter,
+            jsonEncoder: encoder
         )
+        _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+
+        await fulfillment(of: [expectation], timeout: 60)
+
+        let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
+
+        XCTAssertEqual(model.statusCode, 200)
+        XCTAssertEqual(model.method, "GET")
+        XCTAssertEqual(model.path, mockEndpointRequest.endpoint.path)
+        XCTAssertEqual(model.parameters, ["query": "mock"])
+        XCTAssertNil(model.requestBody)
+        XCTAssertNil(model.requestBodyString)
+        XCTAssertEqual(model.requestHeaders, mockURLRequest.allHTTPHeaderFields)
+        XCTAssertEqual(model.responseBody, mockResponseData)
+        XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
+        XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForGetRequestWithErrorResponse() async throws {
@@ -201,37 +243,43 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             acceptedStatusCodes: HTTPStatusCode.successCodes,
             response: mockResponse
         )
-        
+
+        let expectation = expectation(description: "Data was written")
+
+        let mockFileDataWriter = MockFileDataWriter()
+        mockFileDataWriter.writeClosure = {
+            expectation.fulfill()
+        }
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         
-        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
-        _ = await processor.process(mockError, for: mockEndpointRequest)
-        
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
-        let fileUrl = fileUrl(for: mockEndpointRequest)
-
-        guard let data = fileManager.contents(atPath: fileUrl.path) else {
-            XCTAssert(false, "File doesn't exist")
-            return
-        }
-        
-        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
-        
-        XCTAssert(
-            model.statusCode == 404 &&
-            model.method == "GET" &&
-            model.path == mockEndpointRequest.endpoint.path &&
-            model.parameters == ["query": "mock"] &&
-            model.requestBody == nil &&
-            model.requestBodyString == nil &&
-            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
-            model.responseBody == mockResponseData &&
-            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
-            model.responseHeaders == ["mockResponseHeader": "mock"]
+        let processor = EndpointRequestStorageProcessor(
+            fileManager: mockFileManager,
+            fileDataWriter: mockFileDataWriter,
+            jsonEncoder: encoder
         )
+
+        _ = await processor.process(mockError, for: mockEndpointRequest)
+
+        await fulfillment(of: [expectation], timeout: 60)
+
+        let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
+
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
+
+        XCTAssertEqual(model.statusCode, 404)
+        XCTAssertEqual(model.method, "GET")
+        XCTAssertEqual(model.path, mockEndpointRequest.endpoint.path)
+        XCTAssertEqual(model.parameters, ["query": "mock"])
+        XCTAssertNil(model.requestBody)
+        XCTAssertNil(model.requestBodyString)
+        XCTAssertEqual(model.requestHeaders, mockURLRequest.allHTTPHeaderFields)
+        XCTAssertEqual(model.responseBody, mockResponseData)
+        XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
+        XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     func testStoredDataForPostRequest() async throws {
@@ -245,38 +293,43 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         )!
         let mockResponseData = "Mock data".data(using: .utf8)!
         let mockResponse = (mockResponseData, mockURLResponse)
-        
+
+        let expectation = expectation(description: "Data was written")
+
+        let mockFileDataWriter = MockFileDataWriter()
+        mockFileDataWriter.writeClosure = {
+            expectation.fulfill()
+        }
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         
-        let processor = EndpointRequestStorageProcessor(fileManager: fileManager, jsonEncoder: encoder)
+        let processor = EndpointRequestStorageProcessor(
+            fileManager: mockFileManager,
+            fileDataWriter: mockFileDataWriter,
+            jsonEncoder: encoder
+        )
         _ = try await processor.process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
-        // The storing runs on background thread so we need to wait before reading the file
-        try await Task.sleep(nanoseconds: 1000000000)
-        
-        let fileUrl = fileUrl(for: mockEndpointRequest)
+        await fulfillment(of: [expectation], timeout: 60)
 
-        guard let data = fileManager.contents(atPath: fileUrl.path) else {
-            XCTAssert(false, "File doesn't exist")
-            return
-        }
-                
-        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: data)
-        let mockRequestBody = try mockEndpointRequest.endpoint.encodeBody()!
-        
-        XCTAssert(
-            model.statusCode == 200 &&
-            model.method == "POST" &&
-            model.path == mockEndpointRequest.endpoint.path &&
-            model.parameters == ["query": "mock"] &&
-            model.requestBody == mockRequestBody &&
-            model.requestBodyString == String(data: mockRequestBody, encoding: .utf8) &&
-            model.requestHeaders == mockURLRequest.allHTTPHeaderFields &&
-            model.responseBody == mockResponseData &&
-            model.responseBodyString == String(data: mockResponseData, encoding: .utf8) &&
-            model.responseHeaders == ["mockResponseHeader": "mock"]
-        )
+        let receivedData = try XCTUnwrap(mockFileDataWriter.receivedData)
+
+        let model = try JSONDecoder().decode(EndpointRequestStorageModel.self, from: receivedData)
+        let mockRequestBody = try XCTUnwrap(try mockEndpointRequest.endpoint.encodeBody())
+
+        XCTAssertEqual(model.statusCode, 200)
+        XCTAssertEqual(model.method, "POST")
+        XCTAssertEqual(model.path, mockEndpointRequest.endpoint.path)
+        XCTAssertEqual(model.parameters, ["query": "mock"])
+        XCTAssertEqual(model.requestBody, mockRequestBody)
+        XCTAssertEqual(model.requestBodyString, String(data: mockRequestBody, encoding: .utf8))
+        XCTAssertEqual(model.requestHeaders, mockURLRequest.allHTTPHeaderFields)
+        XCTAssertEqual(model.responseBody, mockResponseData)
+        XCTAssertEqual(model.responseBodyString, String(data: mockResponseData, encoding: .utf8))
+        XCTAssertEqual(model.responseHeaders, ["mockResponseHeader": "mock"])
+
+        XCTAssertEqual(mockFileDataWriter.receivedURL, fileUrl(for: mockEndpointRequest))
     }
     
     // swiftlint:enable force_unwrapping
@@ -291,10 +344,14 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
 
 private extension EndpointRequestStorageProcessorTests {
     func fileUrl(for endpointRequest: EndpointRequest) -> URL {
-        let responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
         let fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)_0"
+        return responsesDirectory(for: endpointRequest)
+            .appendingPathComponent("\(fileName).json")
+    }
+
+    func responsesDirectory(for endpointRequest: EndpointRequest) -> URL {
+        let responsesDirectory = mockFileManager.temporaryDirectory.appendingPathComponent("responses")
         return responsesDirectory
             .appendingPathComponent(endpointRequest.sessionId)
-            .appendingPathComponent("\(fileName).json")
     }
 }

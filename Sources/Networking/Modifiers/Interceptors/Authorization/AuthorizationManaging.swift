@@ -7,8 +7,29 @@
 
 import Foundation
 
-/// AuthorizationManaging authorizes requests and manages refresh token mechanism
-/// AuthorizationStorageManaging is required to read & store `AuthorizationData`
+/** A definition of manager which authorizes requests and manages refresh token mechanism.
+
+ This manager requires you to provide a storage defined by ``AuthorizationStorageManaging`` (where OAuth credentials will be stored) and a ``refreshAuthorizationData(with:)`` method that will perform the refresh token network call to obtain a new OAuth pair. This should be handled on a separate ``APIManager`` instance which doesn't inject ``AuthorizationTokenInterceptor`` in order to avoid a dead loop.
+
+ Optionally, you can provide custom implementations for ``authorizeRequest(_:)`` (by default, this method sets the authorization header) or ``getValidAccessToken()`` (by default, this method returns the access token saved in provided storage).
+
+ Example implementation:
+ ```swift
+ final class AuthorizationManager: AuthorizationManaging {
+     let storage: AuthorizationStorageManaging = AuthorizationStorageManager()
+
+     private let apiManager: APIManager = APIManager()
+
+     func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
+         let request = RefreshTokenRequest(refreshToken: refreshToken)
+         let response: AuthResponse = try await apiManager.request(
+             AuthRouter.refreshToken(request)
+         )
+         return response.authData
+     }
+ }
+ ```
+ */
 @NetworkingActor
 public protocol AuthorizationManaging: Sendable {
     var storage: any AuthorizationStorageManaging { get }
@@ -22,7 +43,7 @@ public extension AuthorizationManaging {
     func authorizeRequest(_ request: URLRequest) async throws -> URLRequest {
         let accessToken = try await getValidAccessToken()
         
-        /// Append authentication header to request and return it.
+        // Append authentication header to request and return it.
         var mutableRequest = request
         mutableRequest.setValue(
             "Bearer \(accessToken)",

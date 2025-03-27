@@ -5,25 +5,25 @@
 //  Created by Matej Molnár on 12.12.2022.
 //
 
-import Foundation
+#if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
 
-#if os(watchOS)
-    import os
-#else
-    import OSLog
-    import UIKit
-#endif
+import Foundation
+import OSLog
+import UIKit
 
 // MARK: - Modifier storing endpoint requests
 
-/// A response processor which stores all responses & related requests data into files.
-///
-/// The filename is created from a sessionId and a corresponding request identifier.
-/// Stored files are stored under session folder and can be added to NSAssetCatalog and read via `SampleDataNetworking` to replay whole session.
+/** A response processor which stores all responses & related requests data into files.
+
+The filename is created from a sessionId and a corresponding request identifier. Requests are stored in a sequential manner. Each session is kept in its own dedicated folder. The ``EndpointRequestStorageModel`` includes both successful and erroneous data.
+
+Initialise by optionally providing a `FileManager` instance, `JSONEncoder` to be used during request/response data encoding and a configuration. The configuration allows you to optionally set a ``EndpointRequestStorageProcessor/MultiPeerSharingConfig`` if you wish to utilise the multipeer connectivity feature for sharing the ``EndpointRequestStorageModel`` with devices using the `MultipeerConnectivity` framework.
+*/
 open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing {
     // MARK: Private variables
     private let fileManager: FileManager
     private let jsonEncoder: JSONEncoder
+    private let fileDataWriter: FileDataWriting
     private let config: Config
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
@@ -66,10 +66,12 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     
     public init(
         fileManager: FileManager = .default,
+        fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
         config: Config = .default
     ) {
         self.fileManager = fileManager
+        self.fileDataWriter = fileDataWriter
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
 
@@ -153,7 +155,7 @@ private extension EndpointRequestStorageProcessor {
         endpointRequest: EndpointRequest,
         urlRequest: URLRequest
     ) {
-        Task.detached(priority: .background) { [weak self] in
+        Task.detached(priority: .utility) { [weak self] in
             guard let self else {
                 return
             }
@@ -229,7 +231,7 @@ private extension EndpointRequestStorageProcessor {
     func store(_ model: EndpointRequestStorageModel, fileUrl: URL) {
         do {
             let jsonData = try jsonEncoder.encode(model)
-            try jsonData.write(to: fileUrl)
+            try fileDataWriter.write(jsonData, to: fileUrl)
             os_log("🎈 Response saved %{public}@ bytes at %{public}@", type: .info, "\(jsonData.count)", fileUrl.path)
         } catch {
             os_log("❌ Can't store response %{public}@ %{public}@ %{public}@", type: .error, model.method, model.path, error.localizedDescription)
@@ -303,3 +305,5 @@ private extension JSONEncoder {
         return encoder
     }()
 }
+
+#endif

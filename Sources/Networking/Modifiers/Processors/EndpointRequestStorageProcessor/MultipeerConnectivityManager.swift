@@ -5,14 +5,11 @@
 //  Created by Jaroslav Janda on 12.10.2021.
 //
 
-#if os(watchOS)
-    import os
-#else
-    import OSLog
-#endif
+#if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
 
 // @preconcurrency suppresses a swift concurrency warning: Non-sendable type ...
 @preconcurrency import MultipeerConnectivity
+import OSLog
 
 @NetworkingActor
 public final class MultipeerConnectivityManager: NSObject {
@@ -129,3 +126,5 @@ extension MultipeerConnectivityManager: MCSessionDelegate {
     nonisolated public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
     nonisolated public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
 }
+
+#endif
