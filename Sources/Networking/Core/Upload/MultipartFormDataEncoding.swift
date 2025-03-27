@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol MultipartFormDataEncoding {
+public protocol MultipartFormDataEncoding: Sendable {
     /// Encodes the specified `MultipartFormData` object into a `Data` object.
     /// - Parameter multipartFormData: The `MultipartFormData` object to encode.
     /// - Returns: A `Data` object containing the encoded `multipartFormData`.

@@ -15,6 +15,7 @@ import Foundation
 #endif
 
 /// A response provider which creates responses for requests from corresponding data files stored in Assets.
+@NetworkingActor
 open class StoredResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
@@ -60,11 +61,11 @@ private extension StoredResponseProvider {
     /// Loads a corresponding file from Assets for a given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
         // counting from 0, check storage request processing
-        let count = await requestCounter.count(for: request.identifier)
+        let count = requestCounter.count(for: request.identifier)
 
         if let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count)", bundle: bundle)?.data {
             // store info about next indexed api call
-            await requestCounter.increment(for: request.identifier)
+            requestCounter.increment(for: request.identifier)
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }
         

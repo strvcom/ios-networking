@@ -7,9 +7,11 @@
 
 import Foundation
 
+extension InputStream: @unchecked @retroactive Sendable {}
+
 public extension MultipartFormData {
     /// Represents an individual part of the `multipart/form-data`.
-    struct BodyPart {
+    struct BodyPart: Sendable {
         /// The input stream containing the data of the part's body.
         let dataStream: InputStream
 

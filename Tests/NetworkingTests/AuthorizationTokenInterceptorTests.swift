@@ -9,7 +9,7 @@
 import XCTest
 
 // MARK: - Tests
-
+@NetworkingActor
 final class AuthorizationTokenInterceptorTests: XCTestCase {
     let mockSessionId = "mockSessionId"
     
@@ -69,8 +69,8 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        authManager.refreshedAuthorizationData = refreshedAuthData
-        
+        authManager.setRefreshedAuthorizationData(refreshedAuthData)
+
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
         let endpointRequest = EndpointRequest(requestable, sessionId: mockSessionId)
@@ -105,13 +105,13 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
-        authManager.sleepNanoseconds = 500_000_000
+        authManager.setSleepNanoseconds(500_000_000)
         try await authManager.storage.saveData(expiredAuthData)
         
         let refreshedAuthData = AuthorizationData.makeValidAuthorizationData()
         
-        authManager.refreshedAuthorizationData = refreshedAuthData
-        
+        authManager.setRefreshedAuthorizationData(refreshedAuthData)
+
         let requestable = MockRouter.testAuthenticationRequired
         let request = URLRequest(url: requestable.baseURL)
         let endpointRequest = EndpointRequest(requestable, sessionId: mockSessionId)
@@ -137,7 +137,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
         let expiredAuthData = AuthorizationData.makeExpiredAuthorizationData()
         
         /// Token refresh is going to take 0.5 seconds in order to test wether other requests actually wait for the refresh to finish.
-        authManager.sleepNanoseconds = 500_000_000
+        authManager.setSleepNanoseconds(500_000_000)
         try await authManager.storage.saveData(expiredAuthData)
         
         let requestable = MockRouter.testAuthenticationRequired
@@ -160,7 +160,7 @@ final class AuthorizationTokenInterceptorTests: XCTestCase {
 }
 
 // MARK: - Mock helper classes
-private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
+private class MockAuthorizationStorageManager: AuthorizationStorageManaging {
     private var storage: AuthorizationData?
     
     func saveData(_ data: AuthorizationData) async throws {
@@ -183,9 +183,17 @@ private actor MockAuthorizationStorageManager: AuthorizationStorageManaging {
 private class MockAuthorizationManager: AuthorizationManaging {
     let storage: AuthorizationStorageManaging = MockAuthorizationStorageManager()
     
-    var sleepNanoseconds: UInt64 = 0
-    var refreshedAuthorizationData: AuthorizationData?
+    private var sleepNanoseconds: UInt64 = 0
+    private var refreshedAuthorizationData: AuthorizationData?
     
+    func setSleepNanoseconds(_ nanoseconds: UInt64) {
+        sleepNanoseconds = nanoseconds
+    }
+
+    func setRefreshedAuthorizationData(_ authorisationData: AuthorizationData) {
+        refreshedAuthorizationData = authorisationData
+    }
+
     func refreshAuthorizationData(with refreshToken: String) async throws -> Networking.AuthorizationData {
         try await Task.sleep(nanoseconds: sleepNanoseconds)
         

@@ -12,7 +12,8 @@ import Foundation
 ///
 /// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
 @available(iOS 15.0, *)
-public protocol UploadAPIManaging {
+@NetworkingActor
+public protocol UploadAPIManaging: Sendable {
     typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
 
     /// Currently active upload tasks.
@@ -39,13 +40,13 @@ public protocol UploadAPIManaging {
     /// i.e., `UploadTask.State.error` is non-nil. In such case, you can call `retry(taskId:)` to re-activate the stream for the specified `uploadTaskId`.
     /// - Parameter uploadTaskId: The identifier of the task to observe.
     /// - Returns: An asynchronous stream of upload state. If there is no such upload task the return stream finishes immediately.
-    func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream
+    func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream
 
     /// Invalidates the session with the option to wait for all outstanding (active) tasks.
     ///
     /// The internal implementation uses Apple's delegate pattern which retains a strong reference to the delegate. You must call this method to allow the manager to be released from the memory, otherwise your app will be leaking until your app exits or the session is invalidated.
     /// - Parameter shouldFinishTasks: Determines whether all outstanding tasks should finish before invalidating the session or be immediately cancelled.
-    func invalidateSession(shouldFinishTasks: Bool)
+    func invalidateSession(shouldFinishTasks: Bool) async
 }
 
 @available(iOS 15.0, *)

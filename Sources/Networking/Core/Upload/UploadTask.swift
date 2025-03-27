@@ -5,11 +5,12 @@
 //  Created by Tony Ngo on 12.06.2023.
 //
 
-import Combine
+// The @preconcurrency suppresses non-sendable warning for CurrentValueSubject.
+@preconcurrency import Combine
 import Foundation
 
 /// Represents and manages an upload task and provides its state.
-public struct UploadTask {
+public struct UploadTask: Sendable {
     // swiftlint:disable:next type_name
     public typealias ID = String
 

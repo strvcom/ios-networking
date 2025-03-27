@@ -17,6 +17,8 @@ final class UploadsViewModel: ObservableObject {
     @Published private(set) var error: Error?
     @Published var isErrorAlertPresented = false
 
+    private let uploadService: UploadService
+
     var formSelectedFileName: String {
         let fileSize = Int64(formFileUrl?.fileSize ?? 0)
         var fileName = formFileUrl?.lastPathComponent ?? ""
@@ -25,7 +27,9 @@ final class UploadsViewModel: ObservableObject {
         return fileName
     }
 
-    private let uploadManager = UploadAPIManager.shared
+    init(uploadService: UploadService = .shared) {
+        self.uploadService = uploadService    
+    }
 }
 
 extension UploadsViewModel {
