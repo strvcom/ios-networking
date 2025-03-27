@@ -9,7 +9,6 @@
 
 import Foundation
 import OSLog
-import UIKit
 
 // MARK: - Modifier storing endpoint requests
 
@@ -25,6 +24,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     private let jsonEncoder: JSONEncoder
     private let fileDataWriter: FileDataWriting
     private let config: Config
+    private let deviceName: String
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
 
@@ -46,7 +46,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 
             _multipeerConnectivityManager = MultipeerConnectivityManager(
                 buffer: initialBuffer,
-                deviceName: await MainActor.run { UIDevice.current.name }
+                deviceName: deviceName
             )
             return _multipeerConnectivityManager
             #else
@@ -56,24 +56,18 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 
     }
 
-    // MARK: Default shared instance
-    public static let shared = EndpointRequestStorageProcessor(
-        config: .init(
-            multiPeerSharing: .init(shareHistory: true),
-            storedSessionsLimit: 5
-        )
-    )
-    
     public init(
         fileManager: FileManager = .default,
         fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
-        config: Config = .default
+        config: Config = .default,
+        deviceName: String
     ) {
         self.fileManager = fileManager
         self.fileDataWriter = fileDataWriter
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
+        self.deviceName = deviceName
 
         deleteStoredSessionsExceedingLimit()
     }

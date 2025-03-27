@@ -102,14 +102,14 @@ private extension MultipeerConnectivityManager {
 }
 
 // MARK: - MCNearbyServiceAdvertiserDelegate
-extension MultipeerConnectivityManager: MCNearbyServiceAdvertiserDelegate {
-    nonisolated public func advertiser(
+extension MultipeerConnectivityManager: @preconcurrency MCNearbyServiceAdvertiserDelegate {
+    public func advertiser(
         _ advertiser: MCNearbyServiceAdvertiser,
         didReceiveInvitationFromPeer peerID: MCPeerID,
         withContext context: Data?,
         invitationHandler: @escaping (Bool, MCSession?) -> Void
     ) {
-        invitationHandler(true, self.session)
+        invitationHandler(true, session)
     }
 }
 
