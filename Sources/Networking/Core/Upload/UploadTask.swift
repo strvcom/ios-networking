@@ -5,8 +5,6 @@
 //  Created by Tony Ngo on 12.06.2023.
 //
 
-// The @preconcurrency suppresses non-sendable warning for CurrentValueSubject.
-@preconcurrency import Combine
 import Foundation
 
 /// Represents and manages an upload task and provides its state.
@@ -23,8 +21,11 @@ public struct UploadTask: Sendable {
     /// The uploadable data associated with this task.
     let uploadable: Uploadable
 
-    /// Use this publisher to emit a new state of the task.
-    let statePublisher: CurrentValueSubject<State, Never>
+    /// An asynchronous sequence of the upload task' state.
+    let stateStream: AsyncStream<State>
+
+    /// Use this stream to emit a new state of the task
+    let stateContinuation: AsyncStream<State>.Continuation
 }
 
 // MARK: - Public API
@@ -34,7 +35,7 @@ public extension UploadTask {
     func resume() {
         if task.state == .suspended {
             task.resume()
-            statePublisher.send(State(task: task))
+            stateContinuation.yield(State(task: task))
         }
     }
 
@@ -44,7 +45,7 @@ public extension UploadTask {
     /// - Note: While paused (suspended state), the task is still subject to timeouts.
     func pause() {
         task.suspend()
-        statePublisher.send(State(task: task))
+        stateContinuation.yield(State(task: task))
     }
 
     /// Cancels the task.
@@ -53,7 +54,8 @@ public extension UploadTask {
     /// and set the task to the `URLSessionTask.State.cancelled` state.
     func cancel() {
         task.cancel()
-        statePublisher.send(State(task: task))
+        stateContinuation.yield(State(task: task))
+        stateContinuation.finish()
     }
     
     func cleanup() async {
@@ -71,22 +73,17 @@ extension UploadTask {
         task.taskIdentifier
     }
 
-    /// An asynchronous sequence of the upload task' state.
-    var stateStream: AsyncPublisher<AnyPublisher<UploadTask.State, Never>> {
-        statePublisher.eraseToAnyPublisher().values
-    }
-
     /// Completes the upload task by emitting the latest state and completing the state stream.
     /// - Parameters:
     ///   - state: The latest state to emit before completing the task.
     ///   - delay: The delay between the emitting the `state` and completion in nanoseconds. Defaults to 0.2 seconds.
     func complete(with state: State, delay: TimeInterval = 20_000_000) async {
-        statePublisher.send(state)
+        stateContinuation.yield(State(task: task))
 
         // Publishing value and completion one after another might cause the completion
         // cancelling the whole stream before the client can process the emitted value.
         try? await Task.sleep(nanoseconds: UInt64(delay))
-        statePublisher.send(completion: .finished)
+        stateContinuation.finish()
     }
 }
 
@@ -99,7 +96,10 @@ extension UploadTask {
         self.task = sessionUploadTask
         self.endpointRequest = endpointRequest
         self.uploadable = uploadable
-        self.statePublisher = .init(State(task: sessionUploadTask))
+
+        let (stream, continuation) = AsyncStream.makeStream(of: State.self)
+        self.stateStream = stream
+        self.stateContinuation = continuation
     }
 }
 

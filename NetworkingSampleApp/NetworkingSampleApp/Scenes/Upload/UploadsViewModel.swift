@@ -17,7 +17,8 @@ final class UploadsViewModel: ObservableObject {
     @Published private(set) var error: Error?
     @Published var isErrorAlertPresented = false
 
-    private let uploadService: UploadService
+    @NetworkingActor
+    private lazy var uploadManager = UploadAPIManager.shared
 
     var formSelectedFileName: String {
         let fileSize = Int64(formFileUrl?.fileSize ?? 0)
@@ -25,10 +26,6 @@ final class UploadsViewModel: ObservableObject {
         let formattedFileSize = ByteCountFormatter.megaBytesFormatter.string(fromByteCount: fileSize)
         if fileSize > 0 { fileName += "\n\(formattedFileSize)" }
         return fileName
-    }
-
-    init(uploadService: UploadService = .shared) {
-        self.uploadService = uploadService    
     }
 }
 
@@ -41,7 +38,13 @@ extension UploadsViewModel {
         Task {
             do {
                 if let imageData = try result.get() {
-                    let uploadTask = try await uploadManager.upload(.data(imageData, contentType: "image/png"), to: SampleAPIConstants.uploadURL)
+                    let uploadTask = try await uploadManager.upload(
+                        .data(
+                            imageData,
+                            contentType: "image/png"
+                        ),
+                        to: SampleAPIConstants.uploadURL
+                    )
                     uploadTasks.append(uploadTask)
                 }
             } catch {
@@ -90,7 +93,7 @@ extension UploadsViewModel {
 // MARK: - Prepare multipartForm data
 private extension UploadsViewModel {
     func createMultipartFormData() throws -> MultipartFormData {
-        let multipartFormData = MultipartFormData()
+        var multipartFormData = MultipartFormData()
         multipartFormData.append(Data(formUsername.utf8), name: "username-textfield")
         if let formFileUrl {
             try multipartFormData.append(from: formFileUrl, name: "attachment")

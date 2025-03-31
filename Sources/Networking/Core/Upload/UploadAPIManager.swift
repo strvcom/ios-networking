@@ -120,9 +120,8 @@ extension UploadAPIManager: URLSessionTaskDelegate {
         totalBytesExpectedToSend: Int64
     ) {
         Task {
-            await uploadTask(for: task)?
-                .statePublisher
-                .send(UploadTask.State(task: task))
+            let uploadTask = await uploadTask(for: task)
+            uploadTask?.stateContinuation.yield(UploadTask.State(task: task))
         }
     }
         
@@ -132,14 +131,13 @@ extension UploadAPIManager: URLSessionTaskDelegate {
         didCompleteWithError error: Error?
     ) {
         Task {
-            await uploadTask(for: task)?
-                .statePublisher
-                .send(UploadTask.State(task: task))
-
             guard let uploadTask = await uploadTask(for: task) else {
                 return
             }
-                        
+
+            uploadTask.stateContinuation.yield(UploadTask.State(task: task))
+            uploadTask.stateContinuation.finish()
+
             await handleUploadTaskError(
                 uploadTask: uploadTask,
                 error: error
@@ -215,7 +213,7 @@ extension UploadAPIManager: UploadAPIManaging {
     public func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
         let uploadTask = uploadTasks.values.first { $0.id == uploadTaskId }
 
-        return uploadTask?.stateStream ?? Empty().eraseToAnyPublisher().values
+        return uploadTask?.stateStream ?? AsyncStream.makeStream(of: UploadTask.State.self).stream
     }
 }
 

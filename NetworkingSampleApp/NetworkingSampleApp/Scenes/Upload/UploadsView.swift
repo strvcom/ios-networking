@@ -5,6 +5,7 @@
 //  Created by Tony Ngo on 12.06.2023.
 //
 
+import Networking
 import PhotosUI
 import SwiftUI
 
@@ -57,7 +58,9 @@ private extension UploadsView {
                 )
                 .onChange(of: selectedPhotoPickerItem) { photo in
                     photo?.loadTransferable(type: Data.self) { result in
-                        viewModel.uploadImage(result: result)
+                        Task {
+                            await viewModel.uploadImage(result: result)
+                        }
                     }
                 }
 

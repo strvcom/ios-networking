@@ -14,7 +14,7 @@ import Foundation
 @available(iOS 15.0, *)
 @NetworkingActor
 public protocol UploadAPIManaging: Sendable {
-    typealias StateStream = AsyncPublisher<AnyPublisher<UploadTask.State, Never>>
+    typealias StateStream = AsyncStream<UploadTask.State>
 
     /// Currently active upload tasks.
     var activeTasks: [UploadTask] { get async }

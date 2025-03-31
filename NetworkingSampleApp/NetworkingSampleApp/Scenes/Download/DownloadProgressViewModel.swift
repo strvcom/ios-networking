@@ -23,7 +23,7 @@ final class DownloadProgressViewModel: TaskProgressViewModel {
         self.task = task
     }
     
-    func startObservingDownloadProgress() async {
+    func onAppear() async {
         let stream = await DownloadAPIManager.shared.progressStream(for: task)
 
         for try await downloadState in stream {

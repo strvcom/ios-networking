@@ -53,8 +53,16 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
             return nil
             #endif
         }
-
     }
+
+    // MARK: Default shared instance
+    public static let shared = EndpointRequestStorageProcessor(
+        config: .init(
+            multiPeerSharing: .init(shareHistory: true),
+            storedSessionsLimit: 5
+        ),
+        deviceName: UUID().uuidString
+    )
 
     public init(
         fileManager: FileManager = .default,
