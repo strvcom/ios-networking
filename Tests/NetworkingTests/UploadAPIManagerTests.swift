@@ -9,6 +9,7 @@
 import XCTest
 
 @NetworkingActor
+@available(iOS 15.0, *)
 final class UploadAPIManagerTests: XCTestCase {
     enum UploadRouter: Requestable {
         case mock
@@ -41,7 +42,10 @@ final class UploadAPIManagerTests: XCTestCase {
                 try await withThrowingTaskGroup(of: Void.self) { group in
                     for _ in 0..<15 {
                         group.addTask {
-                            _ = try await apiManager.upload(data: data, to: UploadRouter.mock)
+                            _ = try await apiManager.upload(
+                                .data(data, contentType: "text"),
+                                to: UploadRouter.mock
+                            )
                         }
                     }
 

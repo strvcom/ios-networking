@@ -150,8 +150,8 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 
 // MARK: - UploadAPIManaging
 @available(iOS 15.0, *)
-extension UploadAPIManager {
-    public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
+public extension UploadAPIManager {
+    func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
 
         switch type {
@@ -188,7 +188,7 @@ extension UploadAPIManager {
         }
     }
     
-    public func invalidateSession(shouldFinishTasks: Bool) {
+    func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
             urlSession.finishTasksAndInvalidate()
         } else {
@@ -196,7 +196,7 @@ extension UploadAPIManager {
         }
     }
 
-    public func retry(taskId: String) async throws {
+    func retry(taskId: String) async throws {
         // Get stored upload task to invoke the request with the same arguments
         guard let existingUploadTask = uploadTasks[taskId] else {
             throw NetworkError.unknown
@@ -212,7 +212,7 @@ extension UploadAPIManager {
         )
     }
 
-    public func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
+    func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
         let uploadTask = uploadTasks.values.first { $0.id == uploadTaskId }
 
         return uploadTask?.stateStream ?? AsyncStream.makeStream(of: UploadTask.State.self).stream

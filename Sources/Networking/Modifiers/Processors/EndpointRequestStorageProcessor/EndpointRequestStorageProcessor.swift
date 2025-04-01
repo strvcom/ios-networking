@@ -60,8 +60,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         config: .init(
             multiPeerSharing: .init(shareHistory: true),
             storedSessionsLimit: 5
-        ),
-        deviceName: UUID().uuidString
+        )
     )
 
     public init(
@@ -69,7 +68,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
         fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
         config: Config = .default,
-        deviceName: String
+        deviceName: String = UUID().uuidString
     ) {
         self.fileManager = fileManager
         self.fileDataWriter = fileDataWriter
