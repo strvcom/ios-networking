@@ -90,7 +90,9 @@ extension UploadAPIManager: URLSessionDataDelegate {
             }
             
             if let originalRequest = dataTask.originalRequest,
-               let response = dataTask.response {
+               let response = dataTask.response,
+               dataTask.state == .completed
+            {
                 do {
                     try await handleUploadTaskCompletion(
                         uploadTask: uploadTask,
@@ -148,7 +150,7 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 
 // MARK: - UploadAPIManaging
 @available(iOS 15.0, *)
-extension UploadAPIManager: UploadAPIManaging {
+extension UploadAPIManager {
     public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
 
