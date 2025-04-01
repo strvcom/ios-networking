@@ -39,11 +39,13 @@ jobs:
             set -o pipefail && \
             xcodebuild clean test -resultBundlePath "TestResults-${{ matrix.name }}" -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" | tee "build-log-${{ matrix.name }}.txt" | xcpretty
 
-      - uses: kishikawakatsumi/xcresulttool@v1
-        with:
-          path: 'TestResults-${{ matrix.name }}.xcresult'
-          title: '${{ matrix.name }} Test Results'
-        if: success() || failure()
+      # Missing Xcode 16 support
+      # https://github.com/kishikawakatsumi/xcresulttool/issues/765
+      # - uses: kishikawakatsumi/xcresulttool@v1
+      #   with:
+      #     path: 'TestResults-${{ matrix.name }}.xcresult'
+      #     title: '${{ matrix.name }} Test Results'
+      #   if: success() || failure()
 
       - name: 'Upload Build Log'
         uses: actions/upload-artifact@v4
