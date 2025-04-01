@@ -46,7 +46,7 @@ public protocol UploadAPIManaging: Sendable {
     ///
     /// The internal implementation uses Apple's delegate pattern which retains a strong reference to the delegate. You must call this method to allow the manager to be released from the memory, otherwise your app will be leaking until your app exits or the session is invalidated.
     /// - Parameter shouldFinishTasks: Determines whether all outstanding tasks should finish before invalidating the session or be immediately cancelled.
-    func invalidateSession(shouldFinishTasks: Bool) async
+    func invalidateSession(shouldFinishTasks: Bool)
 }
 
 @available(iOS 15.0, *)

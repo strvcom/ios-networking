@@ -36,12 +36,11 @@ public protocol DownloadAPIManaging: Sendable {
         resumableData: Data?,
         retryConfiguration: RetryConfiguration?
     ) async throws -> DownloadResult
-    
-    
+
     /// Provides real time download updates for a given `URLSessionTask`
     /// - Parameter task: The task whose updates are requested.
     /// - Returns: An async stream of download states describing the task's download progress.
-    func progressStream(for task: URLSessionTask) async -> AsyncStream<URLSessionTask.DownloadState>
+    func progressStream(for task: URLSessionTask) -> AsyncStream<URLSessionTask.DownloadState>
 }
 
 public extension DownloadAPIManaging {

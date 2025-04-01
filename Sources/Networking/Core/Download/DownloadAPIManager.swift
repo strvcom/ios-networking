@@ -96,7 +96,11 @@ extension DownloadAPIManager: DownloadAPIManaging {
     ) async throws -> DownloadResult {
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
+        return try await downloadRequest(
+            endpointRequest,
+            resumableData: resumableData,
+            retryConfiguration: retryConfiguration
+        )
     }
     
     /// Creates an async stream of download state updates for a given task.
