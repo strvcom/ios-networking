@@ -8,7 +8,7 @@
 import Foundation
 
 /// A model containing all necessary info about request and related response to be replayed as mocked data.
-public struct EndpointRequestStorageModel: Codable {
+public struct EndpointRequestStorageModel: Codable, Sendable {
     public let sessionId: String
     public let date: Date
     public let path: String

@@ -8,6 +8,7 @@
 @testable import Networking
 import XCTest
 
+@NetworkingActor
 final class StatusCodeProcessorTests: XCTestCase {
     private let sessionId = "sessionId_status_code"
 

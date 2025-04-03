@@ -12,7 +12,7 @@ private let baseURLString = "https://requestable.tests"
 
 final class URLParametersTests: XCTestCase {
     enum Router: Requestable {
-        case urlParameters([String: Any])
+        case urlParameters([String: any Sendable])
 
         var baseURL: URL {
             // swiftlint:disable:next force_unwrapping

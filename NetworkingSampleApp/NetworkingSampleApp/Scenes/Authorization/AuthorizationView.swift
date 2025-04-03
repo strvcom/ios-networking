@@ -23,12 +23,10 @@ struct AuthorizationView: View {
 private extension AuthorizationView {
     var loginButton: some View {
         Button {
-            Task {
-                try await viewModel.login(
-                    email: SampleAPIConstants.validEmail,
-                    password: SampleAPIConstants.validPassword
-                )
-            }
+            viewModel.login(
+                email: SampleAPIConstants.validEmail,
+                password: SampleAPIConstants.validPassword
+            )
         } label: {
             Text("Login")
         }
@@ -36,9 +34,7 @@ private extension AuthorizationView {
     
     var getStatusButton: some View {
         Button {
-            Task {
-                try await viewModel.checkAuthorizationStatus()
-            }
+            viewModel.checkAuthorizationStatus()
         } label: {
             Text("Get Status")
         }

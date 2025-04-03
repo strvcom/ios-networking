@@ -8,7 +8,7 @@
 import Foundation
 
 /// A type which represents data that can be uploaded.
-public enum UploadType {
+public enum UploadType: Sendable {
     /// - data: The data to send to the server.
     /// - contentType: Content type which should be set as a header in the upload request.
     case data(Data, contentType: String)

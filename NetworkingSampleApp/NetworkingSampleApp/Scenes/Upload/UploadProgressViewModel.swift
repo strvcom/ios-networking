@@ -11,7 +11,9 @@ import Networking
 @MainActor
 final class UploadProgressViewModel: TaskProgressViewModel {
     private let task: UploadTask
-    private let uploadManager = UploadAPIManager.shared
+    
+    @NetworkingActor
+    private lazy var uploadManager = UploadAPIManager.shared
 
     let isRetryable = true
 

@@ -9,7 +9,7 @@ import Foundation
 
 /// The `MultipartFormData` class provides a convenient way to handle multipart form data.
 /// It allows you to construct a multipart form data payload by adding multiple body parts, each representing a separate piece of data.
-open class MultipartFormData {
+public struct MultipartFormData: Sendable {
     /// The total size of the `multipart/form-data`.
     /// It is calculated as the sum of sizes of all the body parts added to the `MultipartFormData` instance.
     public var size: UInt64 {
@@ -39,7 +39,7 @@ public extension MultipartFormData {
     ///   - name: The name parameter of the `Content-Disposition` header field associated with this body part.
     ///   - fileName: An optional filename parameter of the `Content-Disposition` header field associated with this body part.
     ///   - mimeType: An optional MIME type of the body part.
-    func append(
+    mutating func append(
         _ data: Data,
         name: String,
         fileName: String? = nil,
@@ -62,7 +62,7 @@ public extension MultipartFormData {
     ///   - name: The name parameter of the `Content-Disposition` header field associated with this body part.
     ///   - fileName: An optional filename parameter of the `Content-Disposition` header field associated with this body part. If not provided, the last path component of the fileUrl is used as the filename (if any).
     ///   - mimeType: An optional MIME type of the body part. If not provided, the MIME type is inferred from the file extension of the file.
-    func append(
+    mutating func append(
         from fileUrl: URL,
         name: String,
         fileName: String? = nil,
@@ -97,7 +97,7 @@ public extension MultipartFormData {
 
 // MARK: - Private
 private extension MultipartFormData {
-    func append(
+    mutating func append(
         dataStream: InputStream,
         name: String,
         size: UInt64,

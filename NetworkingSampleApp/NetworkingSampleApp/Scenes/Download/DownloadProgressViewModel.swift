@@ -24,7 +24,7 @@ final class DownloadProgressViewModel: TaskProgressViewModel {
     }
     
     func onAppear() async {
-        let stream = DownloadAPIManager.shared.progressStream(for: task)
+        let stream = await DownloadAPIManager.shared.progressStream(for: task)
 
         for try await downloadState in stream {
             title = task.currentRequest?.url?.absoluteString ?? "-"

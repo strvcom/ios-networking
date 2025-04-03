@@ -13,7 +13,9 @@ import OSLog
 final class DownloadsViewModel: ObservableObject {
     @Published var tasks: [URLSessionTask] = []
     @Published var urlText: String = SampleAPIConstants.videoUrl
-    private let downloadAPIManager = DownloadAPIManager.shared
+
+    @NetworkingActor
+    private lazy var downloadAPIManager = DownloadAPIManager.shared
 
     func startDownload() {
         Task {

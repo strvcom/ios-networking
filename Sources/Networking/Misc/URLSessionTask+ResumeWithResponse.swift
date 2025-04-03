@@ -1,20 +1,21 @@
 //
-//  URLSessionTask+AsyncResponse.swift
+//  URLSessionTask+ResumeWithResponse.swift
 //
 //
 //  Created by Dominika Gajdová on 12.05.2023.
 //
 
 import Foundation
-import Combine
+// The @preconcurrency suppresses capture of non-sendable type 'AnyCancellables' warning, which doesn't yet conform to Sendable.
+@preconcurrency import Combine
 
 extension URLSessionTask {
-    func asyncResponse() async throws -> URLResponse {
+    func resumeWithResponse() async throws -> URLResponse {
         var cancellable: AnyCancellable?
-        
+
         return try await withTaskCancellationHandler(
             operation: {
-                try await withCheckedThrowingContinuation { continuation in
+                return try await withCheckedThrowingContinuation { continuation in
                     cancellable = Publishers.CombineLatest(
                         publisher(for: \.response),
                         publisher(for: \.error)
@@ -29,6 +30,8 @@ extension URLSessionTask {
                             continuation.resume(returning: response)
                         }
                     }
+
+                    resume()
                 }
             },
             onCancel: { [cancellable] in

@@ -8,8 +8,11 @@
 import Foundation
 import Networking
 
+@MainActor
 final class AuthorizationViewModel: ObservableObject {
+    @NetworkingActor
     private lazy var authManager = SampleAuthorizationManager()
+    @NetworkingActor
     private lazy var apiManager: APIManager = {
         let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
         
@@ -38,20 +41,24 @@ final class AuthorizationViewModel: ObservableObject {
 }
 
 extension AuthorizationViewModel {
-    func login(email: String?, password: String?) async throws {
-        let request = SampleUserAuthRequest(email: email, password: password)
-        let response: SampleUserAuthResponse = try await apiManager.request(
-            SampleAuthRouter.loginUser(request)
-        )
-        
-        let data = response.authData
-        // Save login token data to auth storage.
-        try await authManager.storage.saveData(data)
+    func login(email: String?, password: String?) {
+        Task {
+            let request = SampleUserAuthRequest(email: email, password: password)
+            let response: SampleUserAuthResponse = try await apiManager.request(
+                SampleAuthRouter.loginUser(request)
+            )
+
+            let data = response.authData
+            // Save login token data to auth storage.
+            try await authManager.storage.saveData(data)
+        }
     }
 
-    func checkAuthorizationStatus() async throws {
-        try await apiManager.request(
-            SampleAuthRouter.status
-        )
+    func checkAuthorizationStatus() {
+        Task {
+            try await apiManager.request(
+                SampleAuthRouter.status
+            )
+        }
     }
 }

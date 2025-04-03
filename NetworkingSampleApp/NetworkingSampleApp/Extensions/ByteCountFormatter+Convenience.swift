@@ -8,6 +8,7 @@
 import Foundation
 
 extension ByteCountFormatter {
+    @MainActor
     static let megaBytesFormatter: ByteCountFormatter = {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useMB]
