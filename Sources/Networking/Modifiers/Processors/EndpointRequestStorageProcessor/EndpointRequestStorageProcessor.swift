@@ -28,32 +28,22 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
 
-    // This would ideally also be a lazy var, however it has to be async, because UIDevice.current.name needs to be called on MainActor.
-    private var _multipeerConnectivityManager: MultipeerConnectivityManager?
-    private var multipeerConnectivityManager: MultipeerConnectivityManager? {
-        get async {
-            // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
-            #if DEBUG
-            guard _multipeerConnectivityManager == nil else {
-                return _multipeerConnectivityManager
-            }
-
-            guard let multiPeerSharingConfig = config.multiPeerSharing else {
-                return nil
-            }
-
-            let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
-
-            _multipeerConnectivityManager = MultipeerConnectivityManager(
-                buffer: initialBuffer,
-                deviceName: deviceName
-            )
-            return _multipeerConnectivityManager
-            #else
+    private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
+        #if DEBUG
+        guard let multipeerSharingConfig = config.multiPeerSharing else {
             return nil
-            #endif
         }
-    }
+
+        let initialBuffer = multipeerSharingConfig.shareHistory ? getAllStoredModels() : []
+
+        return MultipeerConnectivityManager(
+            buffer: initialBuffer,
+            deviceName: deviceName
+        )
+        #else
+        return nil
+        #endif
+    }()
 
     // MARK: Default shared instance
     public static let shared = EndpointRequestStorageProcessor(
