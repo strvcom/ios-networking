@@ -10,8 +10,8 @@ import Foundation
 
 /// Maps NetworkError's unacceptableStatusCode 400 error to SampleAPIError.
 final class SampleErrorProcessor: ErrorProcessing {
-    private lazy var decoder = JSONDecoder()
-    
+    private let decoder = JSONDecoder()
+
     func process(_ error: Error, for endpointRequest: EndpointRequest) -> Error {
         guard let networkError = error as? NetworkError,
               case let .unacceptableStatusCode(statusCode, _, response) = networkError,

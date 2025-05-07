@@ -10,7 +10,8 @@ import Foundation
 /// A type is able to provide a ``Response`` for a given `URLRequest`.
 ///
 /// By default the Networking library uses `URLSession` to make API calls.
-public protocol ResponseProviding {
+@NetworkingActor
+public protocol ResponseProviding: Sendable {
     /// Creates a ``Response`` for a given `URLRequest`.
     func response(for request: URLRequest) async throws -> Response
 }

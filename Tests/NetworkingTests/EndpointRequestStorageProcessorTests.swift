@@ -12,6 +12,7 @@ import XCTest
 
 // MARK: - Test Endpoint request storage processor
 
+@NetworkingActor
 final class EndpointRequestStorageProcessorTests: XCTestCase {
     private let sessionId = "sessionId_request_storage"
     private let mockFileManager = MockFileManager()
@@ -87,7 +88,8 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
         let mockURLResponse: URLResponse = HTTPURLResponse(url: MockRouter.testStoringGet.baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let mockResponse = (Data(), mockURLResponse)
 
-        let response = try await EndpointRequestStorageProcessor().process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
+        let response = try await EndpointRequestStorageProcessor()
+            .process(mockResponse, with: mockURLRequest, for: mockEndpointRequest)
 
         // test storing data processor doesn't effect response in anyway
         XCTAssertEqual(response.data, mockResponse.0)
@@ -133,7 +135,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             httpVersion: nil,
             headerFields: ["mockResponseHeader": "mock"]
         )!
-        let mockResponseData = "Mock data".data(using: .utf8)!
+        let mockResponseData = Data("Mock data".utf8)
         let mockResponse = (mockResponseData, mockURLResponse)
         let expectation = expectation(description: "Data was written")
 
@@ -235,7 +237,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             httpVersion: nil,
             headerFields: ["mockResponseHeader": "mock"]
         )!
-        let mockResponseData = "Not found".data(using: .utf8)!
+        let mockResponseData = Data("Not found".utf8)
         let mockResponse = (mockResponseData, mockURLResponse)
         let mockError = NetworkError.unacceptableStatusCode(
             statusCode: 404,
@@ -290,7 +292,7 @@ final class EndpointRequestStorageProcessorTests: XCTestCase {
             httpVersion: nil,
             headerFields: ["mockResponseHeader": "mock"]
         )!
-        let mockResponseData = "Mock data".data(using: .utf8)!
+        let mockResponseData = Data("Mock data".utf8)
         let mockResponse = (mockResponseData, mockURLResponse)
 
         let expectation = expectation(description: "Data was written")

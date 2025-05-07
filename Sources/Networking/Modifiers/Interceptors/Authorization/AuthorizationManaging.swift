@@ -30,7 +30,8 @@ import Foundation
  }
  ```
  */
-public protocol AuthorizationManaging {
+@NetworkingActor
+public protocol AuthorizationManaging: Sendable {
     var storage: any AuthorizationStorageManaging { get }
     
     func refreshAuthorizationData(with refreshToken: String) async throws -> AuthorizationData

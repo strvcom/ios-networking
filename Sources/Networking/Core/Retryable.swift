@@ -6,6 +6,7 @@
 //
 
 /// Provides retry utility functionality to subjects that require it.
+@NetworkingActor
 protocol Retryable {
     /// Keeps count of executed retries so far given by `RetryConfiguration.retries`.
     var retryCounter: Counter { get }
@@ -26,7 +27,7 @@ protocol Retryable {
 
 extension Retryable {
     func sleepIfRetry(for error: Error, endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws {
-        let retryCount = await retryCounter.count(for: endpointRequest.id)
+        let retryCount = retryCounter.count(for: endpointRequest.id)
         
         guard
             let retryConfiguration = retryConfiguration,
@@ -34,12 +35,12 @@ extension Retryable {
             retryConfiguration.retries > retryCount
         else {
             /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
+            retryCounter.reset(for: endpointRequest.id)
             throw error
         }
                 
         /// count the delay for retry
-        await retryCounter.increment(for: endpointRequest.id)
+        retryCounter.increment(for: endpointRequest.id)
         
         var sleepDuration: UInt64
         switch retryConfiguration.delay {

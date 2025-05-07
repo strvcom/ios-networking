@@ -12,7 +12,7 @@ import Foundation
 
  It makes sure that ``AuthorizationManaging/refreshAuthorizationData()`` is triggered in case the ``AuthorizationData`` is expired and that it won't get triggered multiple times at once.
  */
-public final actor AuthorizationTokenInterceptor: RequestInterceptor {
+open class AuthorizationTokenInterceptor: RequestInterceptor {
     private var authorizationManager: AuthorizationManaging
     private var refreshTask: Task<Void, Error>?
     
@@ -78,15 +78,15 @@ private extension AuthorizationTokenInterceptor {
         }
 
         // Otherwise create a new refresh task.
-        let newRefreshTask = Task { [weak self] () throws -> Void in
+        let newRefreshTask = Task { [weak self] () throws in
             do {
                 // Perform the actual refresh logic.
                 try await self?.authorizationManager.refreshAuthorizationData()
-                // Make sure to clear refreshTask property after refreshing finishes.
-                await self?.clearRefreshTask()
+                /// Make sure to clear refreshTask property after refreshing finishes.
+                self?.clearRefreshTask()
             } catch {
-                // Make sure to clear refreshTask property after refreshing finishes.
-                await self?.clearRefreshTask()
+                /// Make sure to clear refreshTask property after refreshing finishes.
+                self?.clearRefreshTask()
                 throw error
             }
         }

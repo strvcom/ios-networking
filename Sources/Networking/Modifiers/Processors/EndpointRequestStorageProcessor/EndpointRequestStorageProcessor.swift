@@ -24,23 +24,27 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
     private let jsonEncoder: JSONEncoder
     private let fileDataWriter: FileDataWriting
     private let config: Config
-    
+    private let deviceName: String
     private lazy var responsesDirectory = fileManager.temporaryDirectory.appendingPathComponent("responses")
     private lazy var requestCounter = Counter()
+
     private lazy var multipeerConnectivityManager: MultipeerConnectivityManager? = {
         #if DEBUG
-        // Initialise only in DEBUG mode otherwise it could pose a security risk for production apps.
-        guard let multiPeerSharingConfig = config.multiPeerSharing else {
+        guard let multipeerSharingConfig = config.multiPeerSharing else {
             return nil
         }
-        
-        let initialBuffer = multiPeerSharingConfig.shareHistory ? getAllStoredModels() : []
-        return .init(buffer: initialBuffer)
+
+        let initialBuffer = multipeerSharingConfig.shareHistory ? getAllStoredModels() : []
+
+        return MultipeerConnectivityManager(
+            buffer: initialBuffer,
+            deviceName: deviceName
+        )
         #else
         return nil
         #endif
     }()
-    
+
     // MARK: Default shared instance
     public static let shared = EndpointRequestStorageProcessor(
         config: .init(
@@ -48,17 +52,19 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
             storedSessionsLimit: 5
         )
     )
-    
+
     public init(
         fileManager: FileManager = .default,
         fileDataWriter: FileDataWriting = FileDataWriter(),
         jsonEncoder: JSONEncoder? = nil,
-        config: Config = .default
+        config: Config = .default,
+        deviceName: String = UUID().uuidString
     ) {
         self.fileManager = fileManager
         self.fileDataWriter = fileDataWriter
         self.jsonEncoder = jsonEncoder ?? .default
         self.config = config
+        self.deviceName = deviceName
 
         deleteStoredSessionsExceedingLimit()
     }
@@ -103,7 +109,7 @@ open class EndpointRequestStorageProcessor: ResponseProcessing, ErrorProcessing 
 // MARK: - Config
 
 public extension EndpointRequestStorageProcessor {
-    struct Config {
+    struct Config: Sendable {
         public static let `default` = Config()
         
         /// If `nil` the MultiPeerConnectivity session won't get initialised.
@@ -120,7 +126,7 @@ public extension EndpointRequestStorageProcessor {
         }
     }
     
-    struct MultiPeerSharingConfig {
+    struct MultiPeerSharingConfig: Sendable {
         /// If `true` it loads all stored responses and shares them at the start.
         /// If `false` it only shares the responses from the current session.
         let shareHistory: Bool
@@ -145,7 +151,7 @@ private extension EndpointRequestStorageProcessor {
                 return
             }
 
-            self.createFolderIfNeeded(endpointRequest.sessionId)
+            await self.createFolderIfNeeded(endpointRequest.sessionId)
 
             // for http responses read headers
             let httpResponse = response.response as? HTTPURLResponse
@@ -185,7 +191,7 @@ private extension EndpointRequestStorageProcessor {
                 fileUrl: self.createFileUrl(endpointRequest)
             )
             
-            multipeerConnectivityManager?.send(model: storageModel)
+            await multipeerConnectivityManager?.send(model: storageModel)
         }
     }
 
@@ -203,8 +209,8 @@ private extension EndpointRequestStorageProcessor {
     }
 
     func createFileUrl(_ endpointRequest: EndpointRequest) async -> URL {
-        let count = await requestCounter.count(for: endpointRequest.endpoint.identifier)
-        await requestCounter.increment(for: endpointRequest.endpoint.identifier)
+        let count = requestCounter.count(for: endpointRequest.endpoint.identifier)
+        requestCounter.increment(for: endpointRequest.endpoint.identifier)
         
         let fileName = "\(endpointRequest.sessionId)_\(endpointRequest.endpoint.identifier)_\(count)"
 

@@ -9,7 +9,7 @@ import Foundation
 
 public extension URLSessionTask {
     /// A struct which provides you with information about a download, including bytes downloaded, total byte size of the file being downloaded or the error if any occurs.
-    struct DownloadState {
+    struct DownloadState: Sendable {
         public var downloadedBytes: Int64
         public var totalBytes: Int64
         public var taskState: URLSessionTask.State
