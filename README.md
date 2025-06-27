@@ -73,75 +73,62 @@ let userResponse: UserResponse = try await apiManager.request(UserRouter.getUser
 ## Downloading files
 Downloads are being handled by a designated [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager). Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and [Response](https://strvcom.github.io/ios-networking/documentation/networking/response) (result for the HTTP handshake).
 ```swift
-let (task, response) = try await DownloadAPIManager().request(url: URL)
+let (task, response) = try await DownloadAPIManager.shared.downloadRequest(url: URL)
 ```
 
 You can then observe the download progress for a given `URLSessionDownloadTask`
 ```swift
 for try await downloadState in downloadAPIManager.shared.progressStream(for: task) {
-    ...
+    // Handle download state updates
+    // downloadState.downloadedBytes - current progress
+    // downloadState.totalBytes - total size
+    // downloadState.downloadedFileURL - final file location when complete
+    // downloadState.error - any error that occurred
 }
 ```
 
-In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) instead of the `URL`.
+In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) instead of the `URL`. You can also configure retry behavior and handle resumable downloads:
+
+```swift
+let (task, response) = try await DownloadAPIManager.shared.downloadRequest(
+    endpoint,
+    resumableData: resumeData, // Optional data to resume a previous download
+    retryConfiguration: RetryConfiguration.default
+)
+```
 
 ## Uploading files
-Uploads are being handled by a designated [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager). Here is an example of a basic form of file upload to a `URL`. It returns an [UploadTask](https://strvcom.github.io/ios-networking/documentation/networking/uploadtask) which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
+Uploads are being handled by a designated [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager). Here is an example of a basic form of file upload to a `URL`. It returns an [UploadTask](https://strvcom.github.io/ios-networking/documentation/networking/uploadtask) which is a struct that represents and manages a `URLSessionUploadTask` and provides its state.
+
 ```swift
+// Upload a file from URL
 let uploadTask = try await uploadManager.upload(.file(fileUrl), to: "https://upload.com/file")
+
+// Upload raw data
+let uploadTask = try await uploadManager.upload(.data(data), to: "https://upload.com/file")
+
+// Upload multipart form data
+let formData = MultipartFormData()
+formData.append(fileUrl, withName: "file")
+let uploadTask = try await uploadManager.upload(.multipartFormData(formData), to: "https://upload.com/file")
 ```
 
 You can then observe the upload progress for a given [UploadTask](https://strvcom.github.io/ios-networking/documentation/networking/uploadtask)
 ```swift
 for await uploadState in await uploadManager.stateStream(for: task.id) {
-...
+    // Handle upload state updates
+    // uploadState.progress - current progress (0.0 to 1.0)
+    // uploadState.error - any error that occurred
+    // uploadState.response - response when complete
 }
 ```
 
+The [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager) also provides:
+- `activeTasks` property to track current uploads
+- `retry(taskId:)` method to retry failed uploads
+- `invalidateSession(shouldFinishTasks:)` to clean up resources when done
+
 In case you need to provide some specific info in the request, you can define a type conforming to [Requestable](https://strvcom.github.io/ios-networking/documentation/networking/requestable) protocol and pass that to the [UploadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/uploadapimanager) instead of the upload `URL`.
-
-## Retry-ability
-Both [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) and [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) allow for configurable retry mechanism. You can provide a custom after failure [RetryConfiguration](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration), specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, [RetryConfiguration.default](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration/default) configuration is used.
-
-```swift
-let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
-    // custom logic here
-}
-let userResponse: UserResponse = try await apiManager.request(
-    UserRouter.getUser,
-    retryConfiguration: retryConfiguration
-)
-``` 
-
-## Modifiers
-Modifiers are useful pieces of code that modify request/response in the network request pipeline.
-![Interceptors diagram](Sources/Networking/Documentation.docc/Resources/interceptors-diagram.png)
-
-There are three types you can leverage:<br>
-
-[RequestAdapting](https://strvcom.github.io/ios-networking/documentation/networking/requestadapting)
-
-Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
-
-[ResponseProcessing](https://strvcom.github.io/ios-networking/documentation/networking/responseprocessing)
-
-Response processors are handling the ``Response`` received after a successful network request.
-
-[ErrorProcessing](https://strvcom.github.io/ios-networking/documentation/networking/errorprocessing)
-
-Error processors are handling the `Error` received after a failed network request.
-
-[RequestInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/requestinterceptor)
-
-Interceptors handle both adapting and response/error processing.
-
-By conforming to these protocols, you can create your own adaptors/processors/interceptors.
-
-Here is list of classes provided by this library which implement these protocols:
-- [StatusCodeProcessor](https://strvcom.github.io/ios-networking/documentation/networking/statuscodeprocessor)
-- [EndpointRequestStorageProcessor](https://strvcom.github.io/ios-networking/documentation/networking/endpointrequeststorageprocessor)
-- [LoggingInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/logginginterceptor)
-- [AuthorizationTokenInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor)
 
 ## Request authorization
 Networking provides a default authorization handling for OAuth scenarios. In order to utilise this we
@@ -201,3 +188,46 @@ var urlParameters: [String: Any]? {
      ["filter": ArrayParameter([1, 2, 3], arrayEncoding: .individual)]
 }
 ```
+
+## Retry-ability
+Both [APIManager](https://strvcom.github.io/ios-networking/documentation/networking/apimanager) and [DownloadAPIManager](https://strvcom.github.io/ios-networking/documentation/networking/downloadapimanager) allow for configurable retry mechanism. You can provide a custom after failure [RetryConfiguration](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration), specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, [RetryConfiguration.default](https://strvcom.github.io/ios-networking/documentation/networking/retryconfiguration/default) configuration is used.
+
+```swift
+let retryConfiguration = RetryConfiguration(retries: 2, delay: .constant(1)) { error in 
+    // custom logic here
+}
+let userResponse: UserResponse = try await apiManager.request(
+    UserRouter.getUser,
+    retryConfiguration: retryConfiguration
+)
+``` 
+
+## Modifiers
+Modifiers are useful pieces of code that modify request/response in the network request pipeline.
+![Interceptors diagram](Sources/Networking/Documentation.docc/Resources/interceptors-diagram.png)
+
+There are three types you can leverage:<br>
+
+[RequestAdapting](https://strvcom.github.io/ios-networking/documentation/networking/requestadapting)
+
+Adapters are request transformable components that perform operations on the URLRequest before it is dispatched. They are used to further customise HTTP requests before they are carried out by editing the URLRequest (e.g updating headers).
+
+[ResponseProcessing](https://strvcom.github.io/ios-networking/documentation/networking/responseprocessing)
+
+Response processors are handling the ``Response`` received after a successful network request.
+
+[ErrorProcessing](https://strvcom.github.io/ios-networking/documentation/networking/errorprocessing)
+
+Error processors are handling the `Error` received after a failed network request.
+
+[RequestInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/requestinterceptor)
+
+Interceptors handle both adapting and response/error processing.
+
+By conforming to these protocols, you can create your own adaptors/processors/interceptors.
+
+Here is list of classes provided by this library which implement these protocols:
+- [StatusCodeProcessor](https://strvcom.github.io/ios-networking/documentation/networking/statuscodeprocessor)
+- [EndpointRequestStorageProcessor](https://strvcom.github.io/ios-networking/documentation/networking/endpointrequeststorageprocessor)
+- [LoggingInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/logginginterceptor)
+- [AuthorizationTokenInterceptor](https://strvcom.github.io/ios-networking/documentation/networking/authorizationtokeninterceptor)
