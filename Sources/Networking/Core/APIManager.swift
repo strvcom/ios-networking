@@ -125,7 +125,10 @@ public extension APIManager {
 }
 
 private extension APIManager {
-    func request(_ endpointRequest: EndpointRequest, retryConfiguration: RetryConfiguration?) async throws -> Response {
+    func request(
+        _ endpointRequest: EndpointRequest,
+        retryConfiguration: RetryConfiguration?
+    ) async throws -> Response {
         do {
             // create original url request
             var request = try endpointRequest.endpoint.asRequest()
@@ -149,8 +152,12 @@ private extension APIManager {
             return response
         } catch {
             do {
-                // If retry fails (retryCount is 0 or Task.sleep throwed), catch the error and process it with `ErrorProcessing` plugins.
-                try await sleepIfRetry(for: error, endpointRequest: endpointRequest, retryConfiguration: retryConfiguration)
+                // If retry fails (retryCount is 0 or Task.sleep thrown), catch the error and process it with `ErrorProcessing` plugins.
+                try await sleepIfRetry(
+                    for: error,
+                    endpointRequest: endpointRequest,
+                    retryConfiguration: retryConfiguration
+                )
                 return try await request(endpointRequest, retryConfiguration: retryConfiguration)
             } catch {
                 // error processing
