@@ -57,7 +57,9 @@ private extension UploadsView {
                 )
                 .onChange(of: selectedPhotoPickerItem) { photo in
                     photo?.loadTransferable(type: Data.self) { result in
-                        viewModel.uploadImage(result: result)
+                        Task {
+                            await viewModel.uploadImage(result: result)
+                        }
                     }
                 }
 

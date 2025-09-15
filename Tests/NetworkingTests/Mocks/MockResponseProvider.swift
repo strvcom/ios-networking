@@ -1,11 +1,12 @@
 //
-//  StoredResponseProvider.swift
+//  MockResponseProvider.swift
 //
 //
 //  Created by Matej Molnár on 04.01.2023.
 //
 
 import Foundation
+@testable import Networking
 
 // necessary for NSDataAsset import
 #if os(macOS)
@@ -14,9 +15,11 @@ import Foundation
     import UIKit
 #endif
 
+// MARK: - MockResponseProvider definition
+
 /// A response provider which creates responses for requests from corresponding data files stored in Assets.
 @NetworkingActor
-open class StoredResponseProvider: ResponseProviding {
+open class MockResponseProvider: ResponseProviding {
     private let bundle: Bundle
     private let sessionId: String
     private let requestCounter = Counter()
@@ -35,7 +38,7 @@ open class StoredResponseProvider: ResponseProviding {
     /// - Parameter request: URL request.
     public func response(for request: URLRequest) async throws -> Response {
         guard let model = try? await loadModel(for: request) else {
-            throw NetworkError.underlying(error: StoredResponseProviderError.unableToLoadAssetData)
+            throw NetworkError.underlying(error: MockResponseProviderError.unableToLoadAssetData)
         }
 
         guard
@@ -48,16 +51,16 @@ open class StoredResponseProvider: ResponseProviding {
                 headerFields: model.responseHeaders
             )
         else {
-            throw NetworkError.underlying(error: StoredResponseProviderError.unableToConstructResponse)
+            throw NetworkError.underlying(error: MockResponseProviderError.unableToConstructResponse)
         }
-        
+
         return Response(model.responseBody ?? Data(), httpResponse)
     }
 }
 
 // MARK: Private helper functions
 
-private extension StoredResponseProvider {
+private extension MockResponseProvider {
     /// Loads a corresponding file from Assets for a given ``URLRequest`` and decodes the data to `EndpointRequestStorageModel`.
     func loadModel(for request: URLRequest) async throws -> EndpointRequestStorageModel? {
         // counting from 0, check storage request processing
@@ -68,7 +71,7 @@ private extension StoredResponseProvider {
             requestCounter.increment(for: request.identifier)
             return try decoder.decode(EndpointRequestStorageModel.self, from: data)
         }
-        
+
         // return previous response, if no more stored indexed api calls
         // swiftlint:disable:next empty_count
         if count > 0, let data = NSDataAsset(name: "\(sessionId)_\(request.identifier)_\(count - 1)", bundle: bundle)?.data {

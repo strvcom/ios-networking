@@ -13,9 +13,10 @@ public typealias DownloadResult = (URLSessionDownloadTask, Response)
 // MARK: - Defines Download API managing
 
 /// A definition of an API layer with methods for handling data downloading.
-///
-/// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
-public protocol DownloadAPIManaging {
+/// Recommended to be used as singleton.
+/// If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
+@NetworkingActor
+public protocol DownloadAPIManaging: Sendable {
     /// List of all currently ongoing download tasks.
     var allTasks: [URLSessionDownloadTask] { get async }
     
@@ -35,8 +36,7 @@ public protocol DownloadAPIManaging {
         resumableData: Data?,
         retryConfiguration: RetryConfiguration?
     ) async throws -> DownloadResult
-    
-    
+
     /// Provides real time download updates for a given `URLSessionTask`
     /// - Parameter task: The task whose updates are requested.
     /// - Returns: An async stream of download states describing the task's download progress.

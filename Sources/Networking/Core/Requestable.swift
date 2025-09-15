@@ -67,7 +67,8 @@ import Foundation
  Some of the properties have default implementations defined in the `Requestable+Convenience` extension.
 */
 
-public protocol Requestable: EndpointIdentifiable {
+/// A type that represents an API endpoint.
+public protocol Requestable: EndpointIdentifiable, Sendable {
     /// The host URL of REST API.
     var baseURL: URL { get }
 

@@ -9,6 +9,7 @@
 import XCTest
 import Foundation
 
+@NetworkingActor
 final class ErrorProcessorTests: XCTestCase {
     enum MockRouter: Requestable {
         case testMockSimpleError

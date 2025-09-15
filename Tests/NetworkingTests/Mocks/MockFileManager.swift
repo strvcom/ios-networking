@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 
 /// A subclass of `FileManager` where the file existence is based on a dictionary whose key is the file path.
-final class MockFileManager: FileManager {
+final class MockFileManager: FileManager, @unchecked Sendable {
     enum Function: Equatable {
         case fileExists(path: String)
         case createDirectory(path: String)

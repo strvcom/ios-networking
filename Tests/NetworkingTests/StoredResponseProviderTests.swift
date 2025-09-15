@@ -8,6 +8,7 @@
 @testable import Networking
 import XCTest
 
+@NetworkingActor
 final class StoredResponseProviderTests: XCTestCase {
     // swiftlint:disable:next force_unwrapping
     private lazy var mockUrlRequest = URLRequest(url: URL(string: "https://reqres.in/api/users?page=2")!)

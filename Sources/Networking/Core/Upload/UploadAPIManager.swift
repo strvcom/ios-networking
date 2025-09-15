@@ -29,21 +29,18 @@ import Foundation
  5. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `UploadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
  */
 @available(iOS 15.0, *)
-open class UploadAPIManager: NSObject {
+open class UploadAPIManager: NSObject, UploadAPIManaging {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
         get async {
             let activeTasks = await urlSession.allTasks.compactMap { $0 as? URLSessionUploadTask }
-            return await uploadTasks
-                .getValues()
-                .values
-                // Values may contain inactive tasks
-                .filter { activeTasks.contains($0.task) }
+            // Values may contain inactive tasks
+            return uploadTasks.values.filter { activeTasks.contains($0.task) }
         }
     }
 
     // MARK: - Private Properties
-    private var uploadTasks = ThreadSafeDictionary<String, UploadTask>()
+    private var uploadTasks = [String: UploadTask]()
 
     private lazy var urlSession = URLSession(
         configuration: urlSessionConfiguration,
@@ -82,7 +79,7 @@ open class UploadAPIManager: NSObject {
 // MARK: URLSessionDataDelegate
 @available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionDataDelegate {
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive data: Data
@@ -93,7 +90,9 @@ extension UploadAPIManager: URLSessionDataDelegate {
             }
             
             if let originalRequest = dataTask.originalRequest,
-               let response = dataTask.response {
+               let response = dataTask.response,
+               dataTask.state == .completed
+            {
                 do {
                     try await handleUploadTaskCompletion(
                         uploadTask: uploadTask,
@@ -115,7 +114,7 @@ extension UploadAPIManager: URLSessionDataDelegate {
 // MARK: - URLSessionTaskDelegate
 @available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionTaskDelegate {
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didSendBodyData bytesSent: Int64,
@@ -123,26 +122,24 @@ extension UploadAPIManager: URLSessionTaskDelegate {
         totalBytesExpectedToSend: Int64
     ) {
         Task {
-            await uploadTask(for: task)?
-                .statePublisher
-                .send(UploadTask.State(task: task))
+            let uploadTask = await uploadTask(for: task)
+            uploadTask?.stateContinuation.yield(UploadTask.State(task: task))
         }
     }
         
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didCompleteWithError error: Error?
     ) {
         Task {
-            await uploadTask(for: task)?
-                .statePublisher
-                .send(UploadTask.State(task: task))
-
             guard let uploadTask = await uploadTask(for: task) else {
                 return
             }
-                        
+
+            uploadTask.stateContinuation.yield(UploadTask.State(task: task))
+            uploadTask.stateContinuation.finish()
+
             await handleUploadTaskError(
                 uploadTask: uploadTask,
                 error: error
@@ -153,8 +150,8 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 
 // MARK: - UploadAPIManaging
 @available(iOS 15.0, *)
-extension UploadAPIManager: UploadAPIManaging {
-    public func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
+public extension UploadAPIManager {
+    func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
 
         switch type {
@@ -191,7 +188,7 @@ extension UploadAPIManager: UploadAPIManaging {
         }
     }
     
-    public func invalidateSession(shouldFinishTasks: Bool) {
+    func invalidateSession(shouldFinishTasks: Bool) {
         if shouldFinishTasks {
             urlSession.finishTasksAndInvalidate()
         } else {
@@ -199,15 +196,15 @@ extension UploadAPIManager: UploadAPIManaging {
         }
     }
 
-    public func retry(taskId: String) async throws {
+    func retry(taskId: String) async throws {
         // Get stored upload task to invoke the request with the same arguments
-        guard let existingUploadTask = await uploadTasks.getValue(for: taskId) else {
+        guard let existingUploadTask = uploadTasks[taskId] else {
             throw NetworkError.unknown
         }
 
         // Removes the existing task from internal storage so that the `uploadRequest`
         // invocation treats the request/task as new
-        await uploadTasks.set(value: nil, for: taskId)
+        uploadTasks[taskId] = nil
 
         try await uploadRequest(
             existingUploadTask.uploadable,
@@ -215,13 +212,10 @@ extension UploadAPIManager: UploadAPIManaging {
         )
     }
 
-    public func stateStream(for uploadTaskId: UploadTask.ID) async -> StateStream {
-        let uploadTask = await uploadTasks
-            .getValues()
-            .values
-            .first { $0.id == uploadTaskId }
+    func stateStream(for uploadTaskId: UploadTask.ID) -> StateStream {
+        let uploadTask = uploadTasks.values.first { $0.id == uploadTaskId }
 
-        return uploadTask?.stateStream ?? Empty().eraseToAnyPublisher().values
+        return uploadTask?.stateStream ?? AsyncStream.makeStream(of: UploadTask.State.self).stream
     }
 }
 
@@ -241,14 +235,14 @@ private extension UploadAPIManager {
                 for: urlRequest
             )
             
-            let uploadTask = await existingUploadTaskOrNew(
+            let uploadTask = existingUploadTaskOrNew(
                 for: sessionUploadTask,
                 request: request,
                 uploadable: uploadable
             )
             
             // Store the task for future processing
-            await uploadTasks.set(value: uploadTask, for: request.id)
+            uploadTasks[request.id] = uploadTask
             sessionUploadTask.resume()
 
             return uploadTask
@@ -262,8 +256,8 @@ private extension UploadAPIManager {
         for sessionUploadTask: URLSessionUploadTask,
         request: EndpointRequest,
         uploadable: Uploadable
-    ) async -> UploadTask {
-        guard var existingUploadTask = await uploadTasks.getValue(for: request.id) else {
+    ) -> UploadTask {
+        guard var existingUploadTask = uploadTasks[request.id] else {
             return UploadTask(
                 sessionUploadTask: sessionUploadTask,
                 endpointRequest: request,
@@ -290,7 +284,7 @@ private extension UploadAPIManager {
         
         // Cleanup on successful task completion
         await uploadTask.cleanup()
-        await uploadTasks.set(value: nil, for: uploadTask.endpointRequest.id)
+        uploadTasks[uploadTask.endpointRequest.id] = nil
     }
     
     func handleUploadTaskError(
@@ -347,11 +341,8 @@ private extension UploadAPIManager {
         return adaptedRequest
     }
 
-    func uploadTask(for task: URLSessionTask) async -> UploadTask? {
-        await uploadTasks
-            .getValues()
-            .values
-            .first { $0.taskIdentifier == task.taskIdentifier }
+    func uploadTask(for task: URLSessionTask) -> UploadTask? {
+        uploadTasks.values.first { $0.taskIdentifier == task.taskIdentifier }
     }
 
     func temporaryFileUrl(for request: EndpointRequest) throws -> URL {

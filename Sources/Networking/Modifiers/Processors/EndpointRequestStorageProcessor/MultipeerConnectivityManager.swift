@@ -7,45 +7,49 @@
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
 
+// @preconcurrency suppresses a swift concurrency warning: Non-sendable type ...
+@preconcurrency import MultipeerConnectivity
 import OSLog
-import MultipeerConnectivity
 
-open class MultipeerConnectivityManager: NSObject {
+@NetworkingActor
+public final class MultipeerConnectivityManager: NSObject {
     public static let service = "networking-jobs"
     public static let macOSAppDisplayName = "networking-macos-app"
     
     private var buffer: [EndpointRequestStorageModel]
     private var peers = Set<MCPeerID>()
-    private lazy var myPeerId: MCPeerID = {
-        #if os(macOS)
-        let deviceName = Host.current().localizedName ?? "macOS"
-        #else
-        let deviceName = UIDevice.current.name
-        #endif
-        
-        #if targetEnvironment(simulator)
-        return MCPeerID(displayName: "Simulator - " + deviceName)
-        #else
-        return MCPeerID(displayName: deviceName)
-        #endif
-    }()
-    
-    private lazy var session = MCSession(
-        peer: myPeerId,
-        securityIdentity: nil,
-        encryptionPreference: .none
-    )
-    private lazy var nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(
-        peer: myPeerId,
-        discoveryInfo: nil,
-        serviceType: MultipeerConnectivityManager.service
-    )
-    
-    init(buffer: [EndpointRequestStorageModel]) {
+
+    private let session: MCSession
+    private let nearbyServiceAdvertiser: MCNearbyServiceAdvertiser
+
+    init(
+        buffer: [EndpointRequestStorageModel],
+        deviceName: String
+    ) {
         self.buffer = buffer
+
+        let myPeerId: MCPeerID = {
+            #if targetEnvironment(simulator)
+            return MCPeerID(displayName: "Simulator - " + deviceName)
+            #else
+            return MCPeerID(displayName: deviceName)
+            #endif
+        }()
+
+        self.session = MCSession(
+            peer: myPeerId,
+            securityIdentity: nil,
+            encryptionPreference: .none
+        )
         
+        self.nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(
+            peer: myPeerId,
+            discoveryInfo: nil,
+            serviceType: MultipeerConnectivityManager.service
+        )
+
         super.init()
-         
+
         session.delegate = self
         nearbyServiceAdvertiser.delegate = self
         nearbyServiceAdvertiser.startAdvertisingPeer()
@@ -81,23 +85,8 @@ private extension MultipeerConnectivityManager {
         buffer.removeAll()
         os_log("🎈 Request data were successfully sent via multipeer connection")
     }
-}
 
-// MARK: - MCNearbyServiceAdvertiserDelegate
-extension MultipeerConnectivityManager: MCNearbyServiceAdvertiserDelegate {
-    public func advertiser(
-        _ advertiser: MCNearbyServiceAdvertiser,
-        didReceiveInvitationFromPeer peerID: MCPeerID,
-        withContext context: Data?,
-        invitationHandler: @escaping (Bool, MCSession?) -> Void
-    ) {
-        invitationHandler(true, self.session)
-    }
-}
-
-// MARK: - MCSessionDelegate
-extension MultipeerConnectivityManager: MCSessionDelegate {
-    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+    func stateChanged(_ state: MCSessionState, for peerID: MCPeerID) {
         switch state {
         case .connected:
             peers.insert(peerID)
@@ -110,11 +99,32 @@ extension MultipeerConnectivityManager: MCSessionDelegate {
             break
         }
     }
+}
+
+// MARK: - MCNearbyServiceAdvertiserDelegate
+extension MultipeerConnectivityManager: @preconcurrency MCNearbyServiceAdvertiserDelegate {
+    public func advertiser(
+        _ advertiser: MCNearbyServiceAdvertiser,
+        didReceiveInvitationFromPeer peerID: MCPeerID,
+        withContext context: Data?,
+        invitationHandler: @escaping (Bool, MCSession?) -> Void
+    ) {
+        invitationHandler(true, session)
+    }
+}
+
+// MARK: - MCSessionDelegate
+extension MultipeerConnectivityManager: MCSessionDelegate {
+    nonisolated public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        Task {
+            await stateChanged(state, for: peerID)
+        }
+    }
     
-    public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {}
-    public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
-    public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
-    public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
+    nonisolated public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {}
+    nonisolated public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
+    nonisolated public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
+    nonisolated public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
 }
 
 #endif

@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import Combine
+// The @preconcurrency suppresses Sendable warning for AnyCancellables which doesn't yet conform to Sendable.
+@preconcurrency import Combine
 
 /** Default download API manager which is responsible for the creation and management of network file downloads.
 
@@ -34,10 +35,14 @@ open class DownloadAPIManager: NSObject, Retryable {
     private let sessionId: String
     private let downloadStateDictSubject = CurrentValueSubject<[URLSessionTask: URLSessionTask.DownloadState], Never>([:])
     private var urlSession = URLSession(configuration: .default)
-    private var taskStateCancellables = ThreadSafeDictionary<URLSessionTask, AnyCancellable>()
-    private var downloadStateDict = ThreadSafeDictionary<URLSessionTask, URLSessionTask.DownloadState>()
-    
-    internal var retryCounter = Counter()
+    private var taskStateCancellables = [URLSessionTask: AnyCancellable]()
+    private var downloadStateDict = [URLSessionTask: URLSessionTask.DownloadState]() {
+        didSet {
+            downloadStateDictSubject.send(downloadStateDict)
+        }
+    }
+
+    let retryCounter = Counter()
     
     public var allTasks: [URLSessionDownloadTask] {
         get async {
@@ -91,7 +96,11 @@ extension DownloadAPIManager: DownloadAPIManaging {
     ) async throws -> DownloadResult {
         /// create identifiable request from endpoint
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
-        return try await downloadRequest(endpointRequest, resumableData: resumableData, retryConfiguration: retryConfiguration)
+        return try await downloadRequest(
+            endpointRequest,
+            resumableData: resumableData,
+            retryConfiguration: retryConfiguration
+        )
     }
     
     /// Creates an async stream of download state updates for a given task.
@@ -140,19 +149,17 @@ private extension DownloadAPIManager {
                     return urlSession.downloadTask(with: request)
                 }
             }()
-            
+
             /// downloadTask must be initiated by resume() before we try to await a response from downloadObserver, because it gets the response from URLSessionDownloadDelegate methods
-            downloadTask.resume()
-            
-            updateTasks()
-            
-            let urlResponse = try await downloadTask.asyncResponse()
-            
+            let urlResponse = try await downloadTask.resumeWithResponse()
+
             /// process response
             let response = try await responseProcessors.process((Data(), urlResponse), with: request, for: endpointRequest)
             
+            await updateTasks()
+
             /// reset retry count
-            await retryCounter.reset(for: endpointRequest.id)
+            retryCounter.reset(for: endpointRequest.id)
             
             /// create download AsyncStream
             return (downloadTask, response)
@@ -180,47 +187,48 @@ private extension DownloadAPIManager {
     /// Creates a record in the `downloadStateDict` for each task and observes their states.
     /// Every `downloadStateDict` update triggers an event to the `downloadStateDictSubject`
     /// which then leads to a task state update from `progressStream`.
-    func updateTasks() {
-        Task {
-            for task in await allTasks where await downloadStateDict.getValue(for: task) == nil {
-                /// In case there is no DownloadState for a given task in the dictionary, we need to create one.
-                await downloadStateDict.set(value: .init(task: task), for: task)
-                
-                /// We need to observe URLSessionTask.State via KVO individually for each task, because there is no delegate callback for the state change.
-                let cancellable = task
-                    .publisher(for: \.state)
-                    .sink { [weak self] state in
-                        guard let self else {
-                            return
-                        }
-                        
-                        Task {
-                            await self.downloadStateDict.update(task: task, for: \.taskState, with: state)
-                            self.downloadStateDictSubject.send(await self.downloadStateDict.getValues())
-                            
-                            if state == .completed {
-                                await self.taskStateCancellables.set(value: nil, for: task)
-                            }
+    func updateTasks() async {
+        for task in await allTasks where downloadStateDict[task] == nil {
+            /// In case there is no DownloadState for a given task in the dictionary, we need to create one.
+            downloadStateDict[task] = .init(task: task)
+
+            /// We need to observe URLSessionTask.State via KVO individually for each task, because there is no delegate callback for the state change.
+            let cancellable = task
+                .publisher(for: \.state)
+                .sink { [weak self] state in
+                    guard let self else {
+                        return
+                    }
+
+                    Task {
+                        var mutableTask = self.downloadStateDict[task]
+                        mutableTask?.taskState = state
+                        self.downloadStateDict[task] = mutableTask
+                        self.downloadStateDictSubject.send(self.downloadStateDict)
+
+                        if state == .completed {
+                            self.taskStateCancellables[task] = nil
                         }
                     }
-                
-                await taskStateCancellables.set(value: cancellable, for: task)
-            }
+                }
+
+            taskStateCancellables[task] = cancellable
         }
     }
 }
 
 // MARK: - URLSession Delegate
 extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
-    public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        Task {
-            await downloadStateDict.update(task: downloadTask, for: \.downloadedBytes, with: totalBytesWritten)
-            await downloadStateDict.update(task: downloadTask, for: \.totalBytes, with: totalBytesExpectedToWrite)
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
+    nonisolated public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        Task { @NetworkingActor in
+            var mutableTask = downloadStateDict[downloadTask]
+            mutableTask?.downloadedBytes = totalBytesWritten
+            mutableTask?.totalBytes = totalBytesExpectedToWrite
+            downloadStateDict[downloadTask] = mutableTask
         }
     }
     
-    public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    nonisolated public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         do {
             guard let response = downloadTask.response else {
                 return
@@ -228,23 +236,25 @@ extension DownloadAPIManager: URLSessionDelegate, URLSessionDownloadDelegate {
             
             // Move downloaded contents to documents as location will be unavailable after scope of this method.
             let tempURL = try location.moveContentsToDocuments(response: response)
-            Task {
-                await downloadStateDict.update(task: downloadTask, for: \.downloadedFileURL, with: tempURL)
-                downloadStateDictSubject.send(await downloadStateDict.getValues())
-                updateTasks()
+            Task { @NetworkingActor in
+                var mutableTask = downloadStateDict[downloadTask]
+                mutableTask?.downloadedFileURL = tempURL
+                downloadStateDict[downloadTask] = mutableTask
             }
         } catch {
-            Task {
-                await downloadStateDict.update(task: downloadTask, for: \.error, with: error)
+            Task { @NetworkingActor in
+                var mutableTask = downloadStateDict[downloadTask]
+                mutableTask?.error = error
+                downloadStateDict[downloadTask] = mutableTask
             }
         }
     }
     
-    public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        Task {
-            await downloadStateDict.update(task: task, for: \.error, with: error)
-            downloadStateDictSubject.send(await downloadStateDict.getValues())
-            updateTasks()
+    nonisolated public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        Task { @NetworkingActor in
+            var mutableTask = downloadStateDict[task]
+            mutableTask?.error = error
+            downloadStateDict[task] = mutableTask
         }
     }
 }

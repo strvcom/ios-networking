@@ -11,6 +11,7 @@ analyzer_rules:
 # Rule identifiers to exclude from running.
 #
 disabled_rules:
+  - opening_brace
 
 #
 # Some rules are only opt-in. Find all the available rules by running: swiftlint rules
