@@ -11,26 +11,6 @@ import XCTest
 private let baseURLString = "https://requestable.tests"
 
 final class URLParametersTests: XCTestCase {
-    enum Router: Requestable {
-        case urlParameters([String: any Sendable])
-
-        var baseURL: URL {
-            // swiftlint:disable:next force_unwrapping
-            URL(string: baseURLString)!
-        }
-
-        var path: String {
-            ""
-        }
-
-        var urlParameters: [String: Any]? {
-            switch self {
-            case let .urlParameters(parameters):
-                parameters
-            }
-        }
-    }
-    
     func testDefaultEncoding() async throws {
         let keyString = "name[first]"
         let keyPercentEncodedString = "name%5Bfirst%5D"
@@ -48,7 +28,7 @@ final class URLParametersTests: XCTestCase {
         let queryItems = percentEncodedQueryItems(from: url)
         
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == keyPercentEncodedString })?.value,
+            queryItems.value(for: keyPercentEncodedString),
             valuePercentEncodedString
         )
     }
@@ -65,7 +45,7 @@ final class URLParametersTests: XCTestCase {
         
         let queryItems = percentEncodedQueryItems(from: url)
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "date" })?.value,
+            queryItems.value(for: "date"),
             dateString
         )
     }
@@ -83,7 +63,7 @@ final class URLParametersTests: XCTestCase {
         
         let queryItems = percentEncodedQueryItems(from: url)
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "date" })?.value,
+            queryItems.value(for: "date"),
             datePlusSignPercentEncodedString
         )
     }
@@ -106,12 +86,12 @@ final class URLParametersTests: XCTestCase {
         
         let queryItems = percentEncodedQueryItems(from: url)
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "date" })?.value,
+            queryItems.value(for: "date"),
             datePlusSignPercentEncodedString
         )
         
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "search" })?.value,
+            queryItems.value(for: "search"),
             searchString
         )
     }
@@ -135,12 +115,12 @@ final class URLParametersTests: XCTestCase {
         
         let queryItems = percentEncodedQueryItems(from: url)
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "date" })?.value,
+            queryItems.value(for: "date"),
             datePlusSignPercentEncodedString
         )
         
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "search" })?.value,
+            queryItems.value(for: "search"),
             searchPercentEncodedString
         )
     }
@@ -159,16 +139,152 @@ final class URLParametersTests: XCTestCase {
         
         let queryItems = percentEncodedQueryItems(from: url)
         XCTAssertEqual(
-            queryItems.first(where: { $0.name == "date" })?.value,
+            queryItems.value(for: "date"),
             customPercentEncodedString
+        )
+    }
+
+    func testOptionalsParametersEncodingWithValues() async throws {
+        let parameters = OptionalParametersRouter.Parameters(
+            int: 10,
+            string: "testString",
+            stringsArray: ["1", "2"]
+        )
+        let router = OptionalParametersRouter.test(parameters)
+
+        let request = try router.asRequest()
+
+        guard let url = request.url else {
+            XCTFail("Can't create url from router")
+            return
+        }
+
+        let queryItems = percentEncodedQueryItems(from: url)
+
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.int.stringValue),
+            "10"
+        )
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.string.stringValue),
+            "testString"
+        )
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.stringsArray.stringValue),
+            "1,2"
+        )
+    }
+
+    func testOptionalsParametersEncodingWithNils() async throws {
+        let parameters = OptionalParametersRouter.Parameters(
+            int: 10,
+            string: nil,
+            stringsArray: nil
+        )
+        let router = OptionalParametersRouter.test(parameters)
+
+        let request = try router.asRequest()
+
+        guard let url = request.url else {
+            XCTFail("Can't create url from router")
+            return
+        }
+
+        let queryItems = percentEncodedQueryItems(from: url)
+
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.int.stringValue),
+            "10"
+        )
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.string.stringValue),
+            nil
+        )
+        XCTAssertEqual(
+            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.stringsArray.stringValue),
+            nil
         )
     }
 }
 
+// MARK: Helpers
 private extension URLParametersTests {
     // Helper method to create query items from URL to compare it with expected percent encoding
     func percentEncodedQueryItems(from: URL) -> [URLQueryItem] {
         let urlComponents = URLComponents(url: from, resolvingAgainstBaseURL: true)
         return urlComponents?.percentEncodedQueryItems ?? []
+    }
+}
+
+private extension [URLQueryItem] {
+    func value(for key: String) -> String? {
+        first(where: { $0.name == key })?.value
+    }
+}
+
+// MARK: Routers
+private enum Router: Requestable {
+    case urlParameters([String: any Sendable])
+
+    var baseURL: URL {
+        // swiftlint:disable:next force_unwrapping
+        URL(string: baseURLString)!
+    }
+
+    var path: String {
+        ""
+    }
+
+    var urlParameters: [String: Any]? {
+        switch self {
+        case let .urlParameters(parameters):
+            parameters
+                .compactMapValues { $0 }
+        }
+    }
+}
+
+private enum OptionalParametersRouter: Requestable {
+    struct Parameters: Codable {
+        enum CodingKeys: CodingKey {
+            case int
+            case string
+            case stringsArray
+        }
+
+        let int: Int?
+        let string: String?
+        let stringsArray: [String]?
+    }
+
+    case test(Parameters)
+
+    var baseURL: URL {
+        // swiftlint:disable:next force_unwrapping
+        URL(string: baseURLString)!
+    }
+
+    var path: String {
+        ""
+    }
+
+    var urlParameters: [String: Any]? {
+        switch self {
+        case let .test(params):
+            var urlParameters: [String: Any] = [
+                Parameters.CodingKeys.int.stringValue: params.int as Any,
+                Parameters.CodingKeys.string.stringValue: params.string as Any
+            ]
+
+            if let stringsArray = params.stringsArray {
+                urlParameters[Parameters.CodingKeys.stringsArray.stringValue] = ArrayParameter(stringsArray, arrayEncoding: .commaSeparated)
+            }
+
+            return urlParameters.compactMapValues { $0 }
+        }
+    }
+
+    var method: HTTPMethod {
+        .get
     }
 }
