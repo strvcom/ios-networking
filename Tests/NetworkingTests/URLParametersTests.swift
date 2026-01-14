@@ -145,7 +145,7 @@ final class URLParametersTests: XCTestCase {
     }
 
     func testOptionalsParametersEncodingWithValues() async throws {
-        let parameters = OptionalParametersRouter.Parameters(
+        let parameters = OptionalParameters(
             int: 10,
             string: "testString",
             stringsArray: ["1", "2"]
@@ -162,21 +162,21 @@ final class URLParametersTests: XCTestCase {
         let queryItems = percentEncodedQueryItems(from: url)
 
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.int.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.int.stringValue),
             "10"
         )
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.string.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.string.stringValue),
             "testString"
         )
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.stringsArray.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.stringsArray.stringValue),
             "1,2"
         )
     }
 
     func testOptionalsParametersEncodingWithNils() async throws {
-        let parameters = OptionalParametersRouter.Parameters(
+        let parameters = OptionalParameters(
             int: 10,
             string: nil,
             stringsArray: nil
@@ -193,15 +193,15 @@ final class URLParametersTests: XCTestCase {
         let queryItems = percentEncodedQueryItems(from: url)
 
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.int.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.int.stringValue),
             "10"
         )
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.string.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.string.stringValue),
             nil
         )
         XCTAssertEqual(
-            queryItems.value(for: OptionalParametersRouter.Parameters.CodingKeys.stringsArray.stringValue),
+            queryItems.value(for: OptionalParameters.CodingKeys.stringsArray.stringValue),
             nil
         )
     }
@@ -244,20 +244,20 @@ private enum Router: Requestable {
     }
 }
 
-private enum OptionalParametersRouter: Requestable {
-    struct Parameters: Codable {
-        enum CodingKeys: CodingKey {
-            case int
-            case string
-            case stringsArray
-        }
-
-        let int: Int?
-        let string: String?
-        let stringsArray: [String]?
+private struct OptionalParameters: Codable {
+    enum CodingKeys: CodingKey {
+        case int
+        case string
+        case stringsArray
     }
 
-    case test(Parameters)
+    let int: Int?
+    let string: String?
+    let stringsArray: [String]?
+}
+
+private enum OptionalParametersRouter: Requestable {
+    case test(OptionalParameters)
 
     var baseURL: URL {
         // swiftlint:disable:next force_unwrapping
@@ -272,15 +272,15 @@ private enum OptionalParametersRouter: Requestable {
         switch self {
         case let .test(params):
             var urlParameters: [String: Any] = [
-                Parameters.CodingKeys.int.stringValue: params.int as Any,
-                Parameters.CodingKeys.string.stringValue: params.string as Any
+                OptionalParameters.CodingKeys.int.stringValue: params.int as Any,
+                OptionalParameters.CodingKeys.string.stringValue: params.string as Any
             ]
 
             if let stringsArray = params.stringsArray {
-                urlParameters[Parameters.CodingKeys.stringsArray.stringValue] = ArrayParameter(stringsArray, arrayEncoding: .commaSeparated)
+                urlParameters[OptionalParameters.CodingKeys.stringsArray.stringValue] = ArrayParameter(stringsArray, arrayEncoding: .commaSeparated)
             }
 
-            return urlParameters.compactMapValues { $0 }
+            return urlParameters
         }
     }
 
