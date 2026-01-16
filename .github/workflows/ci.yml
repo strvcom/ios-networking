@@ -23,14 +23,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: 'iOS 18.2, Xcode 16.2'
-            destination: 'OS=18.2,name=iPhone 16 Pro'
-            xcode: 'Xcode_16.2'
-            runsOn: macos-15
-          - name: 'macOS 15, Xcode 16.2'
+          - name: 'iOS 26.1, Xcode 26.2'
+            destination: 'OS=26.1,name=iPhone 16 Pro'
+            xcode: 'Xcode_26.2'
+            runsOn: macos-26
+          - name: 'macOS 26, Xcode 26.2'
             destination: 'platform=macOS'
-            xcode: 'Xcode_16.2'
-            runsOn: macos-15
+            xcode: 'Xcode_26.2'
+            runsOn: macos-26
     steps:
       - uses: actions/checkout@v4
 
