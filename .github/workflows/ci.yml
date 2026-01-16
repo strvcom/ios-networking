@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: 'iOS 26.1, Xcode 26.2'
-            destination: 'OS=26.1,name=iPhone 16 Pro'
+          - name: 'iOS 26.2, Xcode 26.2'
+            destination: 'OS=26.2,name=iPhone 17 Pro'
             xcode: 'Xcode_26.2'
             runsOn: macos-26
           - name: 'macOS 26, Xcode 26.2'
