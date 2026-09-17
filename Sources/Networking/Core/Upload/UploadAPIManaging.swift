@@ -11,7 +11,6 @@ import Foundation
 /// A definition of an API layer with methods for handling data uploading.
 ///
 /// Recommended to be used as singleton. If you wish to use multiple instances, make sure you manually invalidate url session by calling the `invalidateSession` method.
-@available(iOS 15.0, *)
 @NetworkingActor
 public protocol UploadAPIManaging: Sendable {
     typealias StateStream = AsyncStream<UploadTask.State>
@@ -49,7 +48,6 @@ public protocol UploadAPIManaging: Sendable {
     func invalidateSession(shouldFinishTasks: Bool)
 }
 
-@available(iOS 15.0, *)
 public extension UploadAPIManaging {
     /// Initiates a data upload request for the specified endpoint.
     /// - Parameters:

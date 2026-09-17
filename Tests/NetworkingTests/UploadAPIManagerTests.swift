@@ -9,7 +9,6 @@
 import XCTest
 
 @NetworkingActor
-@available(iOS 15.0, *)
 final class UploadAPIManagerTests: XCTestCase {
     enum UploadRouter: Requestable {
         case mock
