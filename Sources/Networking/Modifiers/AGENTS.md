@@ -1,0 +1,2 @@
+- `Interceptors/Authorization/AuthorizationTokenInterceptor` must be both a request adapter and a response processor, and it coordinates concurrent token-refresh races — read its existing task-sharing logic before changing refresh behavior. Refresh itself must go through a separate manager without that interceptor to avoid recursion.
+- `Processors/EndpointRequestStorageProcessor` produces recorded response files consumed as fixtures by `Tests/NetworkingTests`. Its multipeer manager is only instantiated in `DEBUG`; production behavior must not depend on multipeer sharing.
