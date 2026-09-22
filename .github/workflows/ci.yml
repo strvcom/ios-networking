@@ -22,7 +22,7 @@ jobs:
       matrix:
         include:
           - name: 'iOS Simulator'
-            destination: 'platform=iOS Simulator,name=iPhone 17 Pro'
+            destination: 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
           - name: 'macOS'
             destination: 'platform=macOS'
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: 'Running unit tests on ${{ matrix.name }}'
         run: |
             set -o pipefail && \
-            xcodebuild clean test -resultBundlePath "TestResults-${{ matrix.name }}" -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" | tee "build-log-${{ matrix.name }}.txt" | xcpretty
+            xcodebuild clean test -resultBundlePath "TestResults-${{ matrix.name }}" -skipPackagePluginValidation -scheme "Networking" -destination "${{ matrix.destination }}" | tee "build-log-${{ matrix.name }}.txt"
 
       # Missing Xcode 16 support
       # https://github.com/kishikawakatsumi/xcresulttool/issues/765
