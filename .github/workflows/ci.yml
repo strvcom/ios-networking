@@ -15,22 +15,16 @@ concurrency:
 jobs:
   unit-tests:
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.runsOn }}
-    env:
-      DEVELOPER_DIR: "/Applications/${{ matrix.xcode }}.app/Contents/Developer"
+    runs-on: [self-hosted, macOS, mobile-ci]
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: 'iOS 26.5, Xcode 26.6'
-            destination: 'OS=26.5,name=iPhone 17 Pro'
-            xcode: 'Xcode_26.6'
-            runsOn: macos-26
-          - name: 'macOS 15, Xcode 16.2'
+          - name: 'iOS Simulator'
+            destination: 'platform=iOS Simulator,name=iPhone 17 Pro'
+          - name: 'macOS'
             destination: 'platform=macOS'
-            xcode: 'Xcode_16.2'
-            runsOn: macos-15
     steps:
       - uses: actions/checkout@v4
 
