@@ -1,0 +1,3 @@
+- `DownloadAPIManager` and `UploadAPIManager` are parallel managers, not layers on top of `APIManager`; a fix needed in one is not automatically needed—or safe to make—in another.
+- A `URLSession` retains its download or upload manager through the delegate. Prefer a long-lived manager and call `invalidateSession(shouldFinishTasks:)` when a disposable manager is no longer needed.
+- After `APIManager.invalidateUrlSession()`, requests throw `APIManagerError.invalidUrlSession` until `setResponseProvider(_:)` installs a replacement. Do not require callers to recreate the manager.
