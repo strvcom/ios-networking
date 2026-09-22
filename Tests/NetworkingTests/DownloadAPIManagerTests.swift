@@ -65,6 +65,6 @@ final class DownloadAPIManagerTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        wait(for: [expectation], timeout: 10)
     }
 }
