@@ -28,7 +28,6 @@ import Foundation
  4. You can retry a specific task in case of failure with ``retry(taskId:)``
  5. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `UploadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
  */
-@available(iOS 15.0, *)
 open class UploadAPIManager: NSObject, UploadAPIManaging {
     // MARK: - Public Properties
     public var activeTasks: [UploadTask] {
@@ -77,7 +76,6 @@ open class UploadAPIManager: NSObject, UploadAPIManaging {
 }
 
 // MARK: URLSessionDataDelegate
-@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionDataDelegate {
     nonisolated public func urlSession(
         _ session: URLSession,
@@ -112,7 +110,6 @@ extension UploadAPIManager: URLSessionDataDelegate {
 }
 
 // MARK: - URLSessionTaskDelegate
-@available(iOS 15.0, *)
 extension UploadAPIManager: URLSessionTaskDelegate {
     nonisolated public func urlSession(
         _ session: URLSession,
@@ -149,7 +146,6 @@ extension UploadAPIManager: URLSessionTaskDelegate {
 }
 
 // MARK: - UploadAPIManaging
-@available(iOS 15.0, *)
 public extension UploadAPIManager {
     func upload(_ type: UploadType, to endpoint: Requestable) async throws -> UploadTask {
         let endpointRequest = EndpointRequest(endpoint, sessionId: sessionId)
@@ -220,7 +216,6 @@ public extension UploadAPIManager {
 }
 
 // MARK: - Private API
-@available(iOS 15.0, *)
 private extension UploadAPIManager {
     @discardableResult
     func uploadRequest(
