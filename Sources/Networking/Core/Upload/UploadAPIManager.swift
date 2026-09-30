@@ -16,17 +16,19 @@ import Foundation
 
  ## Usage
 
- 1. Start a download by calling the ``upload(_:to:)`` function and passing ``UploadType`` which defines three types of possible resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
+ 1. Start an upload by calling the ``upload(_:to:)`` function and passing ``UploadType`` which defines three types of possible resources for upload `Data`, file `URL` and ``MultipartFormData``. It returns an `UploadTask`, which is a struct that under the hood represents + manages a URLSessionUploadTask and provides its state.
  2. The ``activeTasks`` property enables you to keep track of current tasks in progress.
- 3. In order to observe progress of a specific task you can obtain a ``UploadAPIManaging/StateStream`` which is an `AsyncPublisher` of ``UploadTask/State`` with ``stateStream(for:)``.
+ 3. In order to observe progress of a specific task you can obtain an ``UploadAPIManaging/StateStream`` which is an `AsyncStream` of ``UploadTask/State`` with ``stateStream(for:)``.
 
  ```swift
- for await uploadState in await uploadManager.stateStream(for: task.id) {
- ...
+ let uploadManager = UploadAPIManager()
+ let uploadTask = try await uploadManager.upload(.file(fileURL), to: uploadURL)
+ for await uploadState in await uploadManager.stateStream(for: uploadTask.id) {
+     ...
  }
  ```
  4. You can retry a specific task in case of failure with ``retry(taskId:)``
- 5. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `UploadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
+ 5. Prefer one long-lived manager. If you create a temporary manager, call ``invalidateSession(shouldFinishTasks:)`` when you are finished with it. `URLSession` strongly retains its delegate, so without invalidation the manager stays in memory and leaks until the app exits.
  */
 open class UploadAPIManager: NSObject, UploadAPIManaging {
     // MARK: - Public Properties

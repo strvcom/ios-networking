@@ -22,11 +22,13 @@ import Foundation
  3. In order to observe progress of a specific task you can obtain an `AsyncStream` of ``Foundation/URLSessionTask/DownloadState`` with ``progressStream(for:)``.
  Example:
  ```swift
- for try await downloadState in downloadAPIManager.shared.progressStream(for: task) {
+ let downloadManager = DownloadAPIManager()
+ let (task, _) = try await downloadManager.downloadRequest(fileURL)
+ for await downloadState in await downloadManager.progressStream(for: task) {
      ...
  }
  ```
- 4. In case you are not using a singleton instance don't forget to call ``invalidateSession(shouldFinishTasks:)`` once the instance is not needed anymore in order to prevent memory leaks, since the `DownloadAPIManager` is not automatically deallocated from memory because of a `URLSession` holding a reference to it.
+ 4. Prefer one long-lived manager. If you create a temporary manager, call ``invalidateSession(shouldFinishTasks:)`` when you are finished with it. `URLSession` strongly retains its delegate, so without invalidation the manager stays in memory and leaks until the app exits.
  */
 open class DownloadAPIManager: NSObject, Retryable {
     private let requestAdapters: [RequestAdapting]

@@ -8,9 +8,12 @@
 - [Modifiers](#modifiers)
 - [Request authorization](#request-authorization)
 - [Associated array query parameters](#associated-array-query-parameters)
+- [Invalidating URLSession](#invalidating-urlsession)
 
 ## Overview
 Heavily inspired by Moya, the networking layer's philosophy is focused on creating individual endpoint routers, transforming them into a valid URLRequest objects and applying optional adapters and processors in the network call pipeline utilising native `URLSession` under the hood.
+
+Manager APIs are isolated to ``NetworkingActor``, so cross-actor calls require `await`. The package does not provide shared manager instances; applications own their ``APIManager``, ``DownloadAPIManager``, and ``UploadAPIManager`` instances.
 
 ## Making requests
 There is no 1 line way of making a request from scratch in order to ensure consistency and better structure. First we need to define a Router by conforming to ``Requestable`` protocol. Which in the simplest form can look like this:
@@ -38,7 +41,8 @@ enum UserRouter: Requestable {
 
 Then we can make a request on an ``APIManager`` instance, which is responsible for handling the whole request flow.
 ```swift
-let response = try await APIManager().request(UserRouter.getUser)
+let apiManager = APIManager()
+let response = try await apiManager.request(UserRouter.getUser)
 ```
 If you specify object type, the ``APIManager`` will automatically perform the decoding (given the received JSON correctly maps to the decodable). You can also specify a custom json decoder.
 
@@ -49,32 +53,53 @@ let userResponse: UserResponse = try await apiManager.request(UserRouter.getUser
 ## Downloading files
 Downloads are being handled by a designated ``DownloadAPIManager``. Here is an example of a basic form of file download from a `URL`. It returns a tuple of `URLSessionDownloadTask` and ``Response`` (result for the HTTP handshake).
 ```swift
-let (task, response) = try await DownloadAPIManager().request(url: URL)
+let downloadManager = DownloadAPIManager()
+let (task, response) = try await downloadManager.downloadRequest(fileURL)
 ```
 
 You can then observe the download progress for a given `URLSessionDownloadTask`
 ```swift
-for try await downloadState in downloadAPIManager.shared.progressStream(for: task) {
-    ...
+for await downloadState in downloadManager.progressStream(for: task) {
 }
 ```
 
 In case you need to provide some specific info in the request, you can define a type conforming to ``Requestable`` protocol and pass that to the ``DownloadAPIManager`` instead of the `URL`.
 
+Prefer one long-lived download manager. If you create a temporary manager, call ``DownloadAPIManaging/invalidateSession(shouldFinishTasks:)`` when you are finished with it. `URLSession` strongly retains its delegate, so without invalidation the manager stays in memory and leaks until the app exits.
+
 ## Uploading files
 Uploads are being handled by a designated ``UploadAPIManager``. Here is an example of a basic form of file upload to a `URL`. It returns an ``UploadTask`` which is a struct that represents + manages a `URLSessionUploadTask` and provides its state.
 ```swift
-let uploadTask = try await uploadManager.upload(.file(fileUrl), to: "https://upload.com/file")
+let uploadManager = UploadAPIManager()
+
+// Upload a file.
+let uploadTask = try await uploadManager.upload(.file(fileURL), to: uploadURL)
+
+// Upload raw data.
+let dataUploadTask = try await uploadManager.upload(
+    .data(data, contentType: "application/octet-stream"),
+    to: uploadURL
+)
+
+// Upload multipart form data.
+var formData = MultipartFormData()
+try formData.append(from: fileURL, name: "file")
+let multipartUploadTask = try await uploadManager.upload(
+    .multipart(data: formData, sizeThreshold: 10_000_000),
+    to: uploadURL
+)
 ```
 
 You can then observe the upload progress for a given ``UploadTask``
 ```swift
-for await uploadState in await uploadManager.stateStream(for: task.id) {
-...
+for await uploadState in await uploadManager.stateStream(for: uploadTask.id) {
+    // Handle progress through uploadState.fractionCompleted.
 }
 ```
 
 In case you need to provide some specific info in the request, you can define a type conforming to ``Requestable`` protocol and pass that to the ``UploadAPIManager`` instead of the upload `URL`.
+
+Prefer one long-lived upload manager. If you create a temporary manager, call ``UploadAPIManaging/invalidateSession(shouldFinishTasks:)`` when you are finished with it. Otherwise, its `URLSession` keeps it in memory until the app exits.
 
 ## Retry-ability
 Both ``APIManager`` and ``DownloadAPIManager`` allow for configurable retry mechanism. You can provide a custom after failure ``RetryConfiguration``, specifying the count of retries, delay and a handler that determines whether the request should be tried again. Otherwise, ``RetryConfiguration/default`` configuration is used.
@@ -92,6 +117,8 @@ let userResponse: UserResponse = try await apiManager.request(
 ## Modifiers
 Modifiers are useful pieces of code that modify request/response in the network request pipeline.
 ![Interceptors diagram](interceptors-diagram.png)
+
+Managers use `[StatusCodeProcessor.shared]` by default. Passing `responseProcessors:` replaces that default, so include ``StatusCodeProcessor/shared`` explicitly unless you intentionally want to stop rejecting unacceptable HTTP status codes.
 
 There are three types you can leverage:<br>
 
@@ -123,13 +150,15 @@ Here is list of classes provided by this library which implement these protocols
 Networking provides a default authorization handling for OAuth scenarios. In order to utilise this we
 have to first create our own implementation of ``AuthorizationStorageManaging`` and ``AuthorizationManaging`` which we inject into to  ``AuthorizationTokenInterceptor`` and then pass it to the ``APIManager`` as both adapter and processor.
 
+The token-refresh request must use a separate ``APIManager`` without this interceptor; otherwise, refreshing can recursively trigger itself.
+
 ```swift
 let authManager = AuthorizationManager()
 let authorizationInterceptor = AuthorizationTokenInterceptor(authorizationManager: authManager)
 let apiManager = APIManager(
-            requestAdapters: [authorizationInterceptor],
-            responseProcessors: [authorizationInterceptor]
-        )
+    requestAdapters: [authorizationInterceptor],
+    responseProcessors: [authorizationInterceptor, StatusCodeProcessor.shared]
+)
 ```
 
 After login we have to save the ``AuthorizationData`` to the ``AuthorizationStorageManaging``.
@@ -178,6 +207,6 @@ var urlParameters: [String: Any]? {
 ```
 
 ## Invalidating URLSession
-APIManager exposes a method for invalidating the current URLSession in case the current response provider is using one. This can me handy in times it's necessary to terminate all URLSession operations and prevent URLSession from entering an broken/undefined state (this can happen for example if your app is suspended prematurely).
+``APIManager/invalidateUrlSession()`` cancels tasks and invalidates the current response provider when it is a `URLSession`.
 
-After calling the `invalidateUrlSession` method, a flag `urlSessionIsInvalidated` is set indicating whether the current session is invalidated or not. In case it has been invalidated, it is no longer possible to use the previously created urlSession and all usages will lead to a runtime error. New session has to be created and passed to APIManager instance by using the `setResponseProvider` method.
+Subsequent requests throw ``APIManagerError/invalidUrlSession`` until a replacement session or provider is installed with ``APIManager/setResponseProvider(_:)``; the manager itself can be reused.
