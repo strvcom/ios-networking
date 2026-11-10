@@ -131,13 +131,37 @@ private extension Requestable {
             return [URLQueryItem(name: key, value: parameter.encodedValue)]
             
         default:
-            return [
-                URLQueryItem(name: key, value: String(describing: value))
-                    .percentEncoded()
-            ]
+            if let stringValue = stringValue(value) {
+                return [
+                    URLQueryItem(name: key, value: stringValue)
+                        .percentEncoded()
+                ]
+            } else {
+                return []
+            }
         }
     }
-    
+
+    // Since `Any` type can be of type `Optional` under the hood, we want to make sure that the resulting string won't be encoded as "Optional({value})", because that's the default result of passing an `Optional` type to `String(describing: )` init.
+    //
+    // Example:
+    // let optionalInt: Int? = 10
+    // String(describing: optionalInt) == "Optional(10)"
+    // stringValue(optionalInt) == "10"
+    func stringValue(_ value: Any) -> String? {
+        let mirror = Mirror(reflecting: value)
+
+        if mirror.displayStyle == .optional {
+            if let first = mirror.children.first {
+                return String(describing: first.value)
+            } else {
+                return nil
+            }
+        }
+
+        return String(describing: value)
+    }
+
     func buildArrayParameter(
         key: String,
         parameter: ArrayParameter
